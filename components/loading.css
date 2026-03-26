@@ -1,0 +1,125 @@
+/**
+ * Loading — Web
+ *
+ * 1) **Spinner** — indeterminate. Widgets, modals, panels, and inline loading
+ *    — not on tables.
+ * 2) **Linear bar** + `.loading-linear--table` — **tables only**: first child
+ *    above `<table>`, inside `.ds-data-table-shell` (see `data-table.css`).
+ *
+ * Determinate circular rings: `progress.css`. Native: system UI (index demo).
+ */
+
+:root {
+  --loading-accent: var(--color-brand, var(--color-brand-500));
+  --loading-track: var(--color-neutral-200);
+  --loading-spinner-border: 3px;
+  --loading-line-height: 4px;
+  --loading-line-radius: 2px;
+  --loading-table-line-height: 3px;
+}
+
+/* ── Spinner (indeterminate) — widgets, modals, non-table surfaces ── */
+.loading-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: var(--loading-spinner-border) solid var(--loading-track);
+  border-top-color: var(--loading-accent);
+  border-radius: 50%;
+  animation: loading-spinner-rotate 0.75s linear infinite;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.loading-spinner--sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+.loading-spinner--lg {
+  width: 48px;
+  height: 48px;
+  border-width: 4px;
+}
+
+@keyframes loading-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Linear bar — table loading only when using .loading-linear--table ── */
+.loading-linear {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+}
+
+.loading-linear--table {
+  max-width: none;
+  margin: 0;
+}
+
+.loading-linear--table .loading-linear__track {
+  height: var(--loading-table-line-height);
+  border-radius: 0;
+}
+
+.loading-linear--table.loading-linear--determinate .loading-linear__fill,
+.loading-linear--table.loading-linear--indeterminate .loading-linear__bar {
+  border-radius: 0;
+}
+
+.loading-linear__track {
+  position: relative;
+  height: var(--loading-line-height);
+  background: var(--loading-track);
+  border-radius: var(--loading-line-radius);
+  overflow: hidden;
+}
+
+/* Determinate: set --loading-progress 0–1 or use .loading-linear__fill width */
+.loading-linear--determinate .loading-linear__fill {
+  height: 100%;
+  width: calc(var(--loading-progress, 0) * 100%);
+  background: var(--loading-accent);
+  border-radius: var(--loading-line-radius);
+  transition: width 0.2s ease;
+}
+
+/* Indeterminate: sliding segment */
+.loading-linear--indeterminate .loading-linear__bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: var(--loading-accent);
+  border-radius: var(--loading-line-radius);
+  animation: loading-linear-indeterminate 1.2s ease-in-out infinite;
+}
+
+@keyframes loading-linear-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+    border-color: var(--loading-track);
+    border-top-color: var(--loading-accent);
+    opacity: 0.85;
+  }
+
+  .loading-linear--indeterminate .loading-linear__bar {
+    animation: none;
+    width: 45%;
+    transform: translateX(60%);
+  }
+}

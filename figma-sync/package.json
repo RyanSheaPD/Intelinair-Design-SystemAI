@@ -1,0 +1,13 @@
+{
+  "name": "intelinair-figma-sync",
+  "version": "1.0.0",
+  "description": "Sync Figma Variables → tokens.css / tokens.json / tokens.ts",
+  "type": "module",
+  "scripts": {
+    "sync": "node sync.js",
+    "sync:dry": "node sync.js --dry-run"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}

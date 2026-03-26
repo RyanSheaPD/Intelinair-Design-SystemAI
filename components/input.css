@@ -1,0 +1,94 @@
+/**
+ * Input boxes
+ * Background: neutral primitives or white. States: normal, hover, active (focus), disabled.
+ * Border 1px, radius 10px. Hover: border 4px Brand 200. Active: border 1px Brand 200.
+ * Placeholder: primitive gray 300 (neutral-300).
+ * All inputs have a title above, flush left — use .input-group with .input__title.
+ */
+
+.input-group {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.input__title {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 0 0 var(--spacing-xs, 4px) 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+}
+
+.input {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px var(--spacing-m, 10px);
+  background: var(--input-bg, var(--color-surface));
+  color: var(--color-neutral-900);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-input, 10px);
+  font-family: var(--font-family);
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input::placeholder {
+  color: var(--color-neutral-300);
+}
+
+/* Hover: border appears 4px using Brand 200 (box-shadow to avoid layout shift) */
+.input:hover:not(:disabled):not(:focus) {
+  border-color: var(--color-primitive-200);
+  box-shadow: 0 0 0 3px var(--color-primitive-200);
+}
+
+/* Active / focus: border 1px Brand 200 */
+.input:focus {
+  outline: none;
+  border-color: var(--color-primitive-200);
+  border-width: 1px;
+  box-shadow: 0 0 0 1px var(--color-primitive-200);
+}
+
+.input:focus:hover {
+  box-shadow: 0 0 0 3px var(--color-primitive-200);
+}
+
+/* Disabled */
+.input:disabled {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-500);
+  border-color: var(--color-neutral-200);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.input:disabled::placeholder {
+  color: var(--color-neutral-400);
+}
+
+/* Optional: muted background (neutral) variant */
+.input--muted {
+  --input-bg: var(--color-neutral-100);
+}
+
+/* State preview classes for docs — show hover/active as static examples */
+.input--state-hover {
+  border-color: var(--color-primitive-200);
+  box-shadow: 0 0 0 3px var(--color-primitive-200);
+}
+.input--state-active {
+  outline: none;
+  border-color: var(--color-primitive-200);
+  border-width: 1px;
+  box-shadow: 0 0 0 1px var(--color-primitive-200);
+}

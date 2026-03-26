@@ -1,0 +1,134 @@
+/**
+ * Switch — Material Design defaults (M2-style track + thumb)
+ * ~52×32 track, elevated thumb; checked uses primary-tinted track.
+ * Use input[type=checkbox] + role="switch" for semantics.
+ */
+
+:root {
+  --md-switch-track-w: 52px;
+  --md-switch-track-h: 32px;
+  --md-switch-thumb: 24px;
+  --md-switch-thumb-offset: 4px;
+  --md-switch-color: var(--color-action, #1a73e8);
+  --md-switch-track-off: rgba(0, 0, 0, 0.38);
+  --md-switch-disabled-opacity: 0.38;
+}
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-m, 10px);
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-14, 14px);
+  line-height: 1.25;
+  color: var(--color-text);
+  user-select: none;
+}
+
+.switch__input {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--md-switch-track-w);
+  height: var(--md-switch-track-h);
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.switch__input:focus {
+  outline: none;
+}
+
+.switch__input:focus-visible ~ .switch__visual .switch__track {
+  box-shadow:
+    0 0 0 2px var(--color-surface, #fff),
+    0 0 0 4px var(--md-switch-color);
+}
+
+.switch__visual {
+  position: relative;
+  width: var(--md-switch-track-w);
+  height: var(--md-switch-track-h);
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.switch__track {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--md-switch-track-h) / 2);
+  background: var(--md-switch-track-off);
+  transition: background 0.2s ease;
+}
+
+.switch__thumb {
+  position: absolute;
+  top: var(--md-switch-thumb-offset);
+  left: var(--md-switch-thumb-offset);
+  width: var(--md-switch-thumb);
+  height: var(--md-switch-thumb);
+  border-radius: 50%;
+  background: var(--color-surface, #fff);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 1px 1px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease;
+}
+
+/* Checked: tinted track (Material ~50% primary) */
+.switch__input:checked ~ .switch__visual .switch__track {
+  background: var(--color-primitive-300, #93c5fd);
+}
+
+@supports (background: color-mix(in srgb, red 50%, transparent)) {
+  .switch__input:checked ~ .switch__visual .switch__track {
+    background: color-mix(in srgb, var(--md-switch-color) 50%, transparent);
+  }
+}
+
+.switch__input:checked ~ .switch__visual .switch__thumb {
+  transform: translateX(
+    calc(
+      var(--md-switch-track-w) - var(--md-switch-thumb) - (var(--md-switch-thumb-offset) * 2)
+    )
+  );
+}
+
+.switch__input:disabled {
+  cursor: not-allowed;
+}
+
+.switch__input:disabled ~ .switch__visual,
+.switch:has(.switch__input:disabled) .switch__label {
+  opacity: var(--md-switch-disabled-opacity);
+}
+
+.switch:has(.switch__input:disabled) {
+  cursor: not-allowed;
+}
+
+.switch__label {
+  padding-top: 1px;
+}
+
+/* Static on state (docs) */
+.switch.switch--state-on .switch__track {
+  background: var(--color-primitive-300, #93c5fd);
+}
+@supports (background: color-mix(in srgb, red 50%, transparent)) {
+  .switch.switch--state-on .switch__track {
+    background: color-mix(in srgb, var(--md-switch-color) 50%, transparent);
+  }
+}
+.switch.switch--state-on .switch__thumb {
+  transform: translateX(
+    calc(
+      var(--md-switch-track-w) - var(--md-switch-thumb) - (var(--md-switch-thumb-offset) * 2)
+    )
+  );
+}

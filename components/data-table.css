@@ -1,0 +1,153 @@
+/**
+ * Data table (web)
+ *
+ * Static HTML / design-system parity with retailer **Angular Material MDC** tables.
+ * In the app, equivalent rules hang off:
+ *   `.retailer-table .mat-mdc-table:not(.inner-table) .mat-mdc-row:not(.expanded-row) …`
+ *   `.mdc-data-table__cell`, `.mat-mdc-table-sticky`, etc.
+ *
+ * Use `.ds-data-table` on `<table>` and BEM cells below for demos and non-Angular pages.
+ * Typography: **Figtree** 14px / 400 / 17px line-height (match `mat-mdc-cell` stack).
+ *
+ * **Table loading bar:** link `loading.css` after tokens. Wrap table in
+ * `.ds-data-table-shell` → optional `.loading-linear.loading-linear--indeterminate.loading-linear--table`
+ * (first child, full width) → `.ds-data-table-shell__scroll` → `<table class="ds-data-table">`.
+ * Do not use the linear bar outside this pattern; use `.loading-spinner` elsewhere.
+ */
+
+:root {
+  --ds-table-border-row: #e6e6e6;
+  --ds-table-bg-row: #ffffff;
+  --ds-table-bg-header: var(--color-neutral-50, #fafafa);
+  --ds-table-text: rgba(0, 0, 0, 0.87);
+  --ds-table-font-size: 14px;
+  --ds-table-line-height: 17px;
+  --ds-table-row-min-height: 50px;
+  --ds-table-cell-padding: 0 0 0 5px;
+  --ds-table-row-transition: height 225ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Shell: top loading bar + scrollable table body */
+.ds-data-table-shell {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ds-table-border-row);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  background: var(--ds-table-bg-row);
+}
+
+.ds-data-table-shell > .loading-linear--table {
+  flex-shrink: 0;
+}
+
+.ds-data-table-shell__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.ds-data-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-family: var(--font-family);
+  font-size: var(--ds-table-font-size);
+  font-weight: 400;
+  line-height: var(--ds-table-line-height);
+  letter-spacing: normal;
+  color: var(--ds-table-text);
+  background: var(--ds-table-bg-row);
+}
+
+.ds-data-table thead th {
+  box-sizing: border-box;
+  text-align: left;
+  font-weight: 600;
+  color: var(--ds-table-text);
+  background: var(--ds-table-bg-header);
+  border-bottom: 1px solid var(--ds-table-border-row);
+  padding: var(--ds-table-cell-padding);
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ds-data-table tbody tr {
+  box-sizing: border-box;
+  height: auto;
+  background-color: var(--ds-table-bg-row);
+  transition: var(--ds-table-row-transition);
+}
+
+/* Fixed 50px row band like mat-mdc-row (single-line + ellipsis) */
+.ds-data-table--fixed-height tbody td {
+  height: var(--ds-table-row-min-height);
+  max-height: var(--ds-table-row-min-height);
+}
+
+.ds-data-table tbody tr.ds-data-table__row--clickable {
+  cursor: pointer;
+}
+
+.ds-data-table tbody td {
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: left;
+  border-bottom: 1px solid var(--ds-table-border-row);
+  min-height: var(--ds-table-row-min-height);
+  padding: var(--ds-table-cell-padding);
+  vertical-align: middle;
+  color: var(--ds-table-text);
+}
+
+/* Inner flex alignment (matches justify-items: stretch; align-items: center in app) */
+/* Flex row for vertical center; wrap copy in .ds-data-table__text for ellipsis */
+.ds-data-table__cell-inner {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: calc(var(--ds-table-row-min-height) - 2px);
+  gap: 8px;
+}
+
+.ds-data-table__text {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: var(--ds-table-line-height);
+}
+
+/* Sticky column / header — maps to `.mat-mdc-table-sticky` */
+.ds-data-table .ds-data-table__cell--sticky,
+.ds-data-table thead th.ds-data-table__cell--sticky {
+  position: sticky !important;
+  left: 0;
+  z-index: 1;
+  background: var(--ds-table-bg-row);
+}
+
+.ds-data-table thead th.ds-data-table__cell--sticky {
+  background: var(--ds-table-bg-header);
+  z-index: 2;
+}
+
+/* Optional: zebra (not in retailer snippet; off by default) */
+.ds-data-table--zebra tbody tr:nth-child(even) {
+  background-color: var(--color-neutral-50, #fafafa);
+}
+
+.ds-data-table--zebra tbody tr:nth-child(even) td.ds-data-table__cell--sticky {
+  background-color: var(--color-neutral-50, #fafafa);
+}
+
+/* Optional column width helpers (e.g. fields table grower / farm ~8%) */
+.ds-data-table__col--w-8 {
+  width: 8%;
+}
+.ds-data-table__col--w-12 {
+  width: 12%;
+}

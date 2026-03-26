@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__figma-remote-mcp__generate_figma_design",
+      "Bash(open \"http://localhost:3005/pages/myfs-scouting.html#figmacapture=b432806c-2e0e-40b8-9b28-0394e0043e1c&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fb432806c-2e0e-40b8-9b28-0394e0043e1c%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:8765/pages/agmri-advanced-analytics.html#figmacapture=14c9dcb8-5aa4-47fe-a6e2-643ea69fcfc2&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F14c9dcb8-5aa4-47fe-a6e2-643ea69fcfc2%2Fsubmit&figmadelay=1000\")"
+    ]
+  }
+}

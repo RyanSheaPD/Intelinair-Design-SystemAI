@@ -1,0 +1,376 @@
+/**
+ * Modal — cards and popups
+ * Use as a card (inline panel) or as a popup (overlay + centered).
+ * Optional X in the top-right of the header to dismiss (add .modal__close in header).
+ * Popup: scroll lock, focus trap, return focus, and open/close animation are in the demo script.
+ */
+
+/* ----- Scroll lock (when any popup is open) ----- */
+html.modal-overlay-open,
+body.modal-overlay-open {
+  overflow: hidden;
+}
+
+/* ----- The panel (shared by card and popup) ----- */
+.modal {
+  background: var(--color-neutral-50);
+  border: var(--border-width-1) solid var(--color-neutral-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  box-sizing: border-box;
+}
+
+/* ----- Popup: overlay + centered modal ----- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-backdrop, rgba(0, 0, 0, 0.4));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-l);
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.modal-overlay[aria-hidden="true"] {
+  display: none;
+}
+
+/* Open/close animation */
+.modal-overlay[aria-hidden="false"] {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay[aria-hidden="false"].modal-overlay--open {
+  opacity: 1;
+}
+
+.modal-overlay[aria-hidden="false"] .modal {
+  opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.modal-overlay[aria-hidden="false"].modal-overlay--open .modal {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.modal-overlay .modal {
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Popup size variants (use on .modal-overlay) */
+.modal-overlay--sm .modal {
+  max-width: 360px;
+}
+
+.modal-overlay--lg .modal {
+  max-width: 560px;
+}
+
+.modal-overlay--xl .modal {
+  max-width: 640px;
+}
+
+/* ----- Header (title + optional close) ----- */
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-m);
+  padding: var(--spacing-l);
+  border-bottom: var(--border-width-1) solid var(--color-neutral-200);
+  flex-shrink: 0;
+}
+
+.modal__title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-18);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* Dismiss: X button in top right */
+.modal__close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.modal__close:hover {
+  color: var(--color-text);
+  background: var(--color-neutral-100);
+}
+
+.modal__close:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primitive-200);
+}
+
+.modal__close svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* ----- Body and footer ----- */
+.modal__body {
+  padding: var(--spacing-l);
+  overflow: auto;
+  flex: 1 1 auto;
+  font-family: var(--font-family);
+  font-size: var(--font-size-14);
+  color: var(--color-text);
+}
+
+.modal__footer {
+  padding: var(--spacing-l);
+  border-top: var(--border-width-1) solid var(--color-neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-m);
+  flex-shrink: 0;
+}
+
+.modal__footer--start {
+  justify-content: flex-start;
+}
+
+.modal__footer--between {
+  justify-content: space-between;
+}
+
+/* Dividers — 1px, neutral primitives */
+.modal__divider {
+  height: 0;
+  border: none;
+  border-top: var(--border-width-1) solid var(--color-neutral-200);
+  margin: 0 var(--spacing-l);
+  flex-shrink: 0;
+}
+
+/* Full-width divider (e.g. between body and footer) */
+.modal__divider--full {
+  margin: 0;
+}
+
+/* ----- Split layout: vertical — lighter top, darker bottom ----- */
+.modal__split {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.modal__split > .modal__main {
+  flex: 1 1 auto;
+  background: var(--color-neutral-50);
+  padding: var(--spacing-l);
+  overflow: auto;
+  min-width: 0;
+}
+
+.modal__split > .modal__side {
+  flex: 1 1 auto;
+  background: var(--color-neutral-100);
+  padding: var(--spacing-l);
+  overflow: auto;
+  min-width: 0;
+  border-top: var(--border-width-1) solid var(--color-neutral-200);
+}
+
+/* ----- Card usage (no overlay, no close) ----- */
+.modal--card {
+  max-height: none;
+}
+
+/* ----- Export modal: header with back + title, meta row, close ----- */
+.modal--export .modal__header {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding-bottom: var(--spacing-m);
+}
+
+.modal--export .modal__header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--spacing-m);
+}
+
+.modal--export .modal__header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+}
+
+.modal--export .modal__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.modal--export .modal__back:hover {
+  background: var(--color-neutral-100);
+}
+
+.modal--export .modal__back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.modal--export .modal__title {
+  font-size: var(--font-size-16);
+}
+
+.modal--export .modal__meta {
+  width: 100%;
+  margin-top: 2px;
+  font-size: var(--font-size-12);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-s);
+}
+
+.modal--export .modal__meta-icon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  color: inherit;
+}
+
+.modal--export .modal__meta-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Export modal: warning / instruction text */
+.modal--export .modal__warning {
+  margin-top: var(--spacing-m);
+  font-size: var(--font-size-12);
+  color: var(--color-error);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.modal--export .modal__instruction {
+  margin-top: var(--spacing-m);
+  font-size: var(--font-size-12);
+  color: var(--color-text-muted);
+}
+
+/* Export modal: use .tabs.tabs--text for text-only tabs (Image layers | Alerts) */
+
+/* Export modal: toggle list */
+.modal--export .modal__toggle-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.modal--export .modal__toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-m);
+  padding: var(--spacing-m) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-14);
+  color: var(--color-text);
+}
+
+.modal--export .modal__toggle-item:last-child {
+  border-bottom: none;
+}
+
+/* Toggle switch (pill: off = gray, on = blue) */
+.modal__toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--color-neutral-300);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.modal__toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
+}
+
+.modal__toggle[aria-pressed="true"],
+.modal__toggle.checked {
+  background: var(--color-brand);
+}
+
+.modal__toggle[aria-pressed="true"]::after,
+.modal__toggle.checked::after {
+  transform: translateX(20px);
+}
+
+/* Export modal: download link (blue, with icon) */
+.modal--export .modal__download-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-s);
+  font-size: var(--font-size-14);
+  font-weight: 500;
+  color: var(--color-action);
+  text-decoration: none;
+  margin-bottom: var(--spacing-m);
+}
+
+.modal--export .modal__download-link:hover {
+  text-decoration: underline;
+}
+
+.modal--export .modal__download-link svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}

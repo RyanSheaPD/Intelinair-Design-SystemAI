@@ -1,0 +1,136 @@
+/**
+ * Filter pills / Pills
+ * 4 states: normal, hover, active, disabled.
+ * Normal (unselected): bg ramp-100, text WCAG AA (≥4.5:1 on that bg). Active: bg ramp-500, text from --color-text-on-*-500.
+ * Height 30px, optional leading icon.
+ */
+
+.filter-pill {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--layout-gap, 4px);
+  height: 30px;
+  padding: 6px var(--spacing-m, 10px);
+  background: var(--filter-pill-bg, var(--color-primitive-100));
+  color: var(--filter-pill-text, var(--color-text-on-primitive-100));
+  border: none;
+  border-radius: var(--radius-pill, 20px);
+  font-family: var(--font-family);
+  font-size: var(--font-size-callout, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-tight, 1.2);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  --filter-pill-bg-active: var(--color-primitive-200);
+  --filter-pill-text-active: var(--color-text-on-primitive-500);
+}
+
+/* Hover — background + white text (primary) or 900/black (amber/green/red) */
+.filter-pill:hover:not(:disabled):not([aria-pressed="true"]) {
+  background: var(--filter-pill-bg-hover, var(--color-primitive-200));
+  color: var(--filter-pill-text-hover, #fff);
+}
+
+.filter-pill:hover:not(:disabled):not([aria-pressed="true"]) .filter-pill__icon {
+  color: var(--filter-pill-text-hover, #fff);
+}
+
+/* Active — text from neutral ramp (50 or 900) for contrast with background */
+.filter-pill[aria-pressed="true"],
+.filter-pill--active {
+  background: var(--filter-pill-bg-active, var(--color-primitive-500));
+  color: var(--filter-pill-text-active);
+}
+
+.filter-pill[aria-pressed="true"]:hover:not(:disabled),
+.filter-pill--active:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+/* Disabled */
+.filter-pill:disabled {
+  background: var(--filter-pill-bg-disabled, var(--color-primitive-100));
+  color: var(--filter-pill-text-disabled, #999);
+  cursor: not-allowed;
+}
+
+/* Color ramp variants — unselected text WCAG AA on ramp-100; active text uses --color-text-on-*-500 */
+.filter-pill--primary {
+  --filter-pill-bg: var(--color-primitive-100);
+  --filter-pill-bg-hover: var(--color-primitive-200);
+  --filter-pill-bg-active: var(--color-primitive-500);
+  --filter-pill-text: var(--color-text-on-primitive-100);
+  --filter-pill-text-active: var(--color-text-on-primitive-500);
+  --filter-pill-bg-disabled: var(--color-primitive-100);
+}
+
+.filter-pill--success {
+  --filter-pill-bg: var(--color-success-100);
+  --filter-pill-bg-hover: var(--color-success-200);
+  --filter-pill-bg-active: var(--color-success-500);
+  --filter-pill-text: var(--color-text-on-success-100);
+  --filter-pill-text-hover: var(--color-success-900);
+  --filter-pill-text-active: var(--color-text-on-success-500);
+  --filter-pill-bg-disabled: var(--color-success-100);
+}
+
+.filter-pill--warning {
+  --filter-pill-bg: var(--color-warning-100);
+  --filter-pill-bg-hover: var(--color-warning-200);
+  --filter-pill-bg-active: var(--color-warning-500);
+  --filter-pill-text: var(--color-text-on-warning-100);
+  --filter-pill-text-hover: var(--color-warning-900);
+  --filter-pill-text-active: var(--color-text-on-warning-500);
+  --filter-pill-bg-disabled: var(--color-warning-100);
+}
+
+.filter-pill--danger {
+  --filter-pill-bg: var(--color-danger-100);
+  --filter-pill-bg-hover: var(--color-danger-200);
+  --filter-pill-bg-active: var(--color-danger-500);
+  --filter-pill-text: var(--color-text-on-danger-100);
+  --filter-pill-text-hover: var(--color-danger-900);
+  --filter-pill-text-active: var(--color-text-on-danger-500);
+  --filter-pill-bg-disabled: var(--color-danger-100);
+}
+
+/* Optional leading icon */
+.filter-pill__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  color: inherit;
+  fill: currentColor;
+}
+
+.filter-pill__icon svg,
+.filter-pill__icon img {
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+}
+
+/* Divider bar between text segments — vertical, 4px gap at top and bottom */
+.filter-pill__divider {
+  width: var(--border-width-1, 1px);
+  align-self: stretch;
+  min-height: 0;
+  margin: 4px 2px;
+  background: currentColor;
+  opacity: 0.4;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 1px;
+}
+
+.filter-pill[aria-pressed="true"] .filter-pill__divider,
+.filter-pill--active .filter-pill__divider {
+  background: currentColor;
+  opacity: 0.5;
+}

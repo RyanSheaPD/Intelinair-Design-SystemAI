@@ -1,0 +1,111 @@
+/**
+ * Radio — Material Design defaults (M2-style)
+ * 20×20dp outer ring, 10dp inner dot when selected.
+ */
+
+:root {
+  --md-radio-outer: 20px;
+  --md-radio-inner: 10px;
+  --md-radio-border-width: 2px;
+  --md-radio-color: var(--color-action, #1a73e8);
+  --md-radio-border: var(--color-neutral-600, #5f6368);
+  --md-radio-disabled-opacity: 0.38;
+}
+
+.radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-m, 10px);
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-14, 14px);
+  line-height: 1.25;
+  color: var(--color-text);
+  user-select: none;
+}
+
+.radio__input {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--md-radio-outer);
+  height: var(--md-radio-outer);
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.radio__input:focus {
+  outline: none;
+}
+
+.radio__input:focus-visible + .radio__outer {
+  box-shadow:
+    0 0 0 2px var(--color-surface, #fff),
+    0 0 0 4px var(--md-radio-color);
+}
+
+.radio__outer {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--md-radio-outer);
+  height: var(--md-radio-outer);
+  border: var(--md-radio-border-width) solid var(--md-radio-border);
+  border-radius: 50%;
+  background: var(--color-surface, #fff);
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+  pointer-events: none;
+}
+
+.radio__outer::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--md-radio-inner);
+  height: var(--md-radio-inner);
+  margin: calc(var(--md-radio-inner) / -2) 0 0 calc(var(--md-radio-inner) / -2);
+  border-radius: 50%;
+  background: var(--md-radio-color);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.radio__input:checked + .radio__outer {
+  border-color: var(--md-radio-color);
+}
+
+.radio__input:checked + .radio__outer::after {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.radio__input:disabled {
+  cursor: not-allowed;
+}
+
+.radio__input:disabled + .radio__outer,
+.radio:has(.radio__input:disabled) .radio__label {
+  opacity: var(--md-radio-disabled-opacity);
+}
+
+.radio:has(.radio__input:disabled) {
+  cursor: not-allowed;
+}
+
+.radio__label {
+  padding-top: 1px;
+}
+
+.radio.radio--state-selected .radio__outer {
+  border-color: var(--md-radio-color);
+}
+.radio.radio--state-selected .radio__outer::after {
+  transform: scale(1);
+  opacity: 1;
+}

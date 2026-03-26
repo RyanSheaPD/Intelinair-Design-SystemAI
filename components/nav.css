@@ -1,0 +1,158 @@
+/**
+ * Nav — sidebar navigation
+ * Uses nav tokens. Background brand-primary; default text/icon white;
+ * active item white background, brand text/icon.
+ *
+ * When used as the left sidebar: the sidebar container (e.g. .dashboard__side) must be
+ * the first child of the layout, flush left (left: 0), full height, with z-index above
+ * main content so no header, toolbar, or overlay can sit on top of it.
+ */
+
+.nav {
+  width: var(--nav-width);
+  min-height: 100%;
+  background: var(--nav-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-m) 0;
+  gap: var(--spacing-xs);
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+.nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  width: var(--nav-item-width);
+  height: var(--nav-item-height);
+  border: none;
+  border-radius: var(--nav-item-radius);
+  background: transparent;
+  color: var(--nav-text-default);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: var(--nav-font-size);
+  font-weight: var(--nav-font-weight);
+  line-height: var(--line-height-tight);
+  box-sizing: border-box;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav__item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.nav__item[aria-current="page"],
+.nav__item--active {
+  background: var(--nav-item-active-background);
+  color: var(--nav-text-active);
+}
+
+.nav__item[aria-current="page"] .nav__icon,
+.nav__item--active .nav__icon {
+  color: var(--nav-icon-active);
+}
+
+.nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nav-icon-size);
+  height: var(--nav-icon-size);
+  color: var(--nav-icon-default);
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.nav__icon svg {
+  width: var(--nav-icon-size);
+  height: var(--nav-icon-size);
+}
+
+.nav__label {
+  font-size: var(--nav-font-size);
+  font-weight: var(--nav-font-weight);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+/* MyFS Red brand variant — uses MyFS color ramp */
+.nav--myfs {
+  --nav-background: var(--color-myfs-500);
+  --nav-text-active: var(--color-myfs-500);
+  --nav-icon-active: var(--color-myfs-500);
+}
+
+/* ----- Mobile bottom nav (iOS / Android) — 4 items: Fields, Scout, Weather, More ----- */
+/* Background: neutral-100 or neutral-500 (use .nav--bottom-dark for 500). Active item uses brand/primary color. */
+.nav--bottom {
+  width: 100%;
+  min-height: 0;
+  height: var(--nav-mobile-height);
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  gap: 0;
+  background: var(--nav-mobile-background);
+  border-top: 1px solid var(--color-border);
+}
+
+.nav--bottom .nav__item {
+  flex: 1;
+  width: auto;
+  height: 100%;
+  min-height: var(--nav-mobile-height);
+  border-radius: 0;
+  color: var(--nav-mobile-text-default);
+}
+
+.nav--bottom .nav__item:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.nav--bottom .nav__icon {
+  width: var(--nav-mobile-icon-size);
+  height: var(--nav-mobile-icon-size);
+  color: var(--nav-mobile-icon-default);
+}
+
+.nav--bottom .nav__icon svg {
+  width: var(--nav-mobile-icon-size);
+  height: var(--nav-mobile-icon-size);
+}
+
+.nav--bottom .nav__label {
+  font-size: var(--nav-mobile-font-size);
+}
+
+.nav--bottom .nav__item[aria-current="page"],
+.nav--bottom .nav__item--active {
+  background: transparent;
+  color: var(--nav-mobile-text-active);
+}
+
+.nav--bottom .nav__item[aria-current="page"] .nav__icon,
+.nav--bottom .nav__item--active .nav__icon {
+  color: var(--nav-mobile-icon-active);
+}
+
+/* Optional: dark bottom bar (neutral-500 background); active still uses brand color */
+.nav--bottom-dark {
+  --nav-mobile-background: var(--nav-mobile-background-alt);
+  --nav-mobile-text-default: var(--color-neutral-300);
+  --nav-mobile-icon-default: var(--color-neutral-300);
+}
+
+/* MyFS Red on mobile bottom nav — active uses MyFS ramp */
+.nav--bottom.nav--myfs {
+  --nav-mobile-text-active: var(--color-myfs-500);
+  --nav-mobile-icon-active: var(--color-myfs-500);
+}

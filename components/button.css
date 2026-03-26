@@ -1,0 +1,201 @@
+/**
+ * Buttons
+ * Radius, 3 states (hover, active, disabled), optional icon + text.
+ */
+
+.btn {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--layout-gap, 4px);
+  padding: 10px var(--spacing-l, 20px);
+  background: var(--color-brand, #3c84c7);
+  color: var(--color-text-on-brand, #fff);
+  border: none;
+  border-radius: var(--radius-button, 999px);
+  font-family: var(--font-family);
+  font-size: var(--font-size-callout, 12px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--line-height-tight, 1.2);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.15s ease, filter 0.15s ease;
+}
+
+/* Hover */
+.btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+/* Active */
+.btn:active:not(:disabled) {
+  filter: brightness(0.92);
+}
+
+/* Disabled (primary) */
+.btn:disabled {
+  background: var(--color-surface-muted, #ebf3f9);
+  color: #888;
+  cursor: not-allowed;
+  filter: none;
+}
+
+/* Secondary: white background, brand text, optional icon + text */
+.btn--secondary {
+  background: var(--color-surface, #fff);
+  color: var(--color-brand, #3c84c7);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: rgba(var(--color-brand-rgb, 60, 132, 199), 0.08);
+}
+
+.btn--secondary:active:not(:disabled) {
+  background: rgba(var(--color-brand-rgb, 60, 132, 199), 0.16);
+}
+
+.btn--secondary:disabled {
+  background: var(--color-surface, #fff);
+  color: #888;
+}
+
+/* Optional icon (before text) */
+.btn__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  color: inherit;
+  fill: currentColor;
+}
+
+.btn__icon svg {
+  width: 1em;
+  height: 1em;
+}
+
+/* Material Symbols (when used inside .btn__icon) */
+.btn__icon .material-symbols-outlined {
+  font-size: 1em;
+  color: inherit;
+}
+
+/* MyFS Red brand variant — uses MyFS color ramp */
+.btn--myfs {
+  background: var(--color-myfs-500);
+  color: var(--color-text-on-myfs-500, #fff);
+}
+
+.btn--myfs:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn--myfs:active:not(:disabled) {
+  filter: brightness(0.92);
+}
+
+.btn--secondary.btn--myfs {
+  background: var(--color-surface);
+  color: var(--color-myfs-500);
+}
+
+.btn--secondary.btn--myfs:hover:not(:disabled) {
+  background: var(--color-myfs-100);
+}
+
+.btn--secondary.btn--myfs:active:not(:disabled) {
+  background: var(--color-myfs-200);
+}
+
+/* Semantic variants (amber/warning, green/success, red/danger): hover text = 900 of ramp or black */
+.btn--success {
+  background: var(--color-success-400);
+  color: var(--color-success-900);
+}
+
+.btn--success:hover:not(:disabled) {
+  filter: brightness(1.08);
+  color: var(--color-success-900);
+}
+
+.btn--success:active:not(:disabled) {
+  filter: brightness(0.92);
+  color: var(--color-success-900);
+}
+
+.btn--warning {
+  background: var(--color-warning-400);
+  color: var(--color-warning-900);
+}
+
+.btn--warning:hover:not(:disabled) {
+  filter: brightness(1.08);
+  color: var(--color-warning-900);
+}
+
+.btn--warning:active:not(:disabled) {
+  filter: brightness(0.92);
+  color: var(--color-warning-900);
+}
+
+.btn--danger {
+  background: var(--color-danger-400);
+  color: var(--color-danger-900);
+}
+
+.btn--danger:hover:not(:disabled) {
+  filter: brightness(1.08);
+  color: var(--color-danger-900);
+}
+
+.btn--danger:active:not(:disabled) {
+  filter: brightness(0.92);
+  color: var(--color-danger-900);
+}
+
+/* Glass buttons — map controls (zoom, layers, directions, GPS). 32×32, icon-only, neutral-50 @ 80% opacity, icon color neutral-800. */
+.btn--glass {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  background: rgba(var(--color-neutral-50-rgb, 250, 250, 250), 0.8);
+  color: var(--color-neutral-800, #000);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-button, 999px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.btn--glass .btn__icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-neutral-800, #000);
+}
+
+.btn--glass .btn__icon svg {
+  width: 20px;
+  height: 20px;
+  color: var(--color-neutral-800, #000);
+  fill: none;
+  stroke: currentColor;
+}
+
+.btn--glass:hover:not(:disabled) {
+  background: rgba(var(--color-neutral-50-rgb, 250, 250, 250), 0.95);
+  filter: none;
+}
+
+.btn--glass:active:not(:disabled) {
+  background: rgba(var(--color-neutral-100-rgb, 245, 245, 245), 0.9);
+  filter: none;
+}
+
+.btn--glass:disabled {
+  background: rgba(var(--color-neutral-50-rgb, 250, 250, 250), 0.5);
+  color: var(--color-text-disabled, #888);
+}

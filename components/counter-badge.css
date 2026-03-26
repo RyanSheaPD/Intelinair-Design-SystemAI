@@ -1,0 +1,73 @@
+/**
+ * Counter badge (notification / count badge)
+ * Use for: unread messages, alerts, notifications, new items.
+ * Colors: default = brand; then status (danger, warning, success, info); cyan ramp for count pills/tabs.
+ * Rules: display 1–999; value-overflow "999+" in app when > 999; hide-when-zero (use .counter-badge--zero or [data-count="0"]).
+ */
+
+.counter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--counter-badge-min-width);
+  height: var(--counter-badge-height);
+  padding: 0 var(--counter-badge-padding-x);
+  border-radius: var(--counter-badge-radius);
+  background: var(--counter-badge-bg);
+  color: var(--counter-badge-text);
+  font-family: var(--font-family);
+  font-size: var(--counter-badge-font-size);
+  font-weight: var(--counter-badge-font-weight);
+  line-height: 1;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* Hide when zero (hide-when-zero: true) — add this class or data-count="0" in app */
+.counter-badge--zero,
+.counter-badge[data-count="0"] {
+  display: none;
+}
+
+/* Overflow: show "999+" in app when value > 999; style the content the same */
+.counter-badge__value {
+  display: block;
+}
+
+/* ----- Color variants: default (brand), then status, then ramp ----- */
+.counter-badge--brand,
+.counter-badge {
+  --counter-badge-bg: var(--color-brand);
+  --counter-badge-text: var(--color-text-on-brand);
+}
+
+.counter-badge--danger {
+  --counter-badge-bg: var(--color-danger);
+  --counter-badge-text: var(--color-text-on-danger);
+}
+
+.counter-badge--warning {
+  --counter-badge-bg: var(--color-warning);
+  --counter-badge-text: var(--color-text-on-warning);
+}
+
+.counter-badge--success {
+  --counter-badge-bg: var(--color-success);
+  --counter-badge-text: var(--color-text-on-success);
+}
+
+.counter-badge--info {
+  --counter-badge-bg: var(--color-info);
+  --counter-badge-text: var(--color-text-on-info);
+}
+
+.counter-badge--cyan {
+  --counter-badge-bg: var(--color-cyan-500);
+  --counter-badge-text: #fff;
+}
+
+/* Extended: primitive 500 ramp (e.g. neutral or custom) */
+.counter-badge--primary-500 {
+  --counter-badge-bg: var(--color-primitive-500);
+  --counter-badge-text: var(--color-text-on-brand);
+}

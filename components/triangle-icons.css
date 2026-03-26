@@ -1,0 +1,54 @@
+/* Triangle icon set
+   Set --icon-bg on the parent container to match whatever surface
+   the icon sits on (white, dark, brand blue, etc.)
+   Default: dark surface (#3a3a3a)
+   Size: set --triangle-icon-size (default 16px). Mobile uses 20px for readability.
+   Tap target: use .icon-wrap--touch when the icon is a button/link for 44px min on mobile.
+*/
+.icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  --triangle-icon-size: 16px;
+}
+
+.icon-wrap svg {
+  display: block;
+  width: var(--triangle-icon-size);
+  height: auto;
+  overflow: visible;
+}
+
+/* Mobile: icon max 14×14px; stroke 0.5; optional touch target */
+@media (max-width: 768px) {
+  .icon-wrap {
+    --triangle-icon-size: 14px;
+  }
+  .icon-wrap svg {
+    width: 14px;
+    height: 14px;
+    max-width: 14px;
+    max-height: 14px;
+    object-fit: contain;
+  }
+  .icon-wrap svg polygon,
+  .icon-wrap svg polygon.thin {
+    stroke-width: 0.5;
+  }
+  .icon-wrap--touch {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+.icon-wrap svg polygon {
+  fill: #D4D4D4;
+  stroke: var(--icon-bg, #3a3a3a);
+  stroke-width: 1;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
+}
+
+.icon-wrap svg polygon.thin {
+  stroke-width: 1;
+}

@@ -1,0 +1,263 @@
+/**
+ * Tabs — tab container with optional icon, label, active indicator
+ * Default: center aligned, icon above label. Use .tabs--text for text-only tabs (no icon).
+ */
+
+.tabs {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  font-family: var(--font-family);
+}
+
+.tabs__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--tab-icon-label-spacing);
+  width: var(--tab-width, 110px);
+  min-width: var(--tab-width, 110px);
+  height: var(--tab-height);
+  padding: 0 var(--tab-padding-x);
+  padding-bottom: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--tab-text-default);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.tabs__item:hover {
+  color: var(--tab-text-active);
+}
+
+.tabs__item[aria-selected="true"],
+.tabs__item--active {
+  color: var(--tab-text-active);
+  font-weight: var(--tab-font-weight-active);
+}
+
+.tabs__item[aria-selected="true"] .tabs__icon,
+.tabs__item--active .tabs__icon {
+  color: var(--tab-text-active);
+}
+
+.tabs__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tab-icon-size);
+  height: var(--tab-icon-size);
+  color: inherit;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.tabs__icon svg,
+.tabs__icon img {
+  width: var(--tab-icon-size);
+  height: var(--tab-icon-size);
+  object-fit: contain;
+}
+
+/* Badge-style tab icons (generic or disease): use .tabs__icon--badge for same visual treatment */
+.tabs__icon--badge {
+  color: inherit;
+}
+
+.tabs__label {
+  font-size: var(--tab-font-size);
+  font-weight: var(--tab-font-weight-default);
+  line-height: var(--line-height-tight);
+  white-space: nowrap;
+}
+
+.tabs__item[aria-selected="true"] .tabs__label,
+.tabs__item--active .tabs__label {
+  font-weight: var(--tab-font-weight-active);
+}
+
+/* Bar under tab: full width of tab (110px) */
+.tabs__indicator-wrap {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.tabs__indicator {
+  width: 100%;
+  height: var(--tab-indicator-height);
+  border-radius: var(--tab-indicator-radius);
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.tabs__item[aria-selected="true"] .tabs__indicator,
+.tabs__item--active .tabs__indicator {
+  background: var(--tab-indicator-color);
+}
+
+/* ----- Text-only tabs (no icon) ----- */
+.tabs--text {
+  justify-content: flex-start;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabs--text .tabs__item {
+  width: auto;
+  min-width: 0;
+  height: auto;
+  padding: var(--spacing-m) var(--spacing-l);
+  margin-bottom: -1px;
+  flex-direction: row;
+  gap: 0;
+  color: var(--color-text-muted);
+  border-bottom: 2px solid transparent;
+}
+
+.tabs--text .tabs__item:hover {
+  color: var(--color-text);
+}
+
+.tabs--text .tabs__item[aria-selected="true"],
+.tabs--text .tabs__item--active {
+  color: var(--tab-text-active);
+  font-weight: var(--tab-font-weight-active);
+  border-bottom-color: var(--tab-indicator-color);
+}
+
+.tabs--text .tabs__icon {
+  display: none;
+}
+
+.tabs--text .tabs__indicator-wrap,
+.tabs--text .tabs__indicator {
+  display: none;
+}
+
+/* ----- Category tabs (icon + label inline, optional count pill) ----- */
+/* Use .tabs__icon with SVG (or img). For compressed tabs, emoji in .tabs__icon are also acceptable. */
+.tabs--category {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--spacing-m);
+}
+
+.tabs--category .tabs__item {
+  flex-direction: row;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  padding: var(--spacing-s) var(--spacing-m);
+  gap: var(--spacing-s);
+  margin-bottom: -1px;
+  color: var(--color-text-muted);
+  border-bottom: 3px solid transparent;
+  font-size: var(--font-size-14);
+}
+
+.tabs--category .tabs__item:hover {
+  color: var(--color-text);
+}
+
+.tabs--category .tabs__item[aria-selected="true"],
+.tabs--category .tabs__item--active {
+  color: var(--color-text);
+  font-weight: var(--tab-font-weight-active);
+  border-bottom-color: var(--tab-indicator-color);
+}
+
+.tabs--category .tabs__icon {
+  width: var(--tab-category-icon-size, 20px);
+  height: var(--tab-category-icon-size, 20px);
+}
+
+.tabs--category .tabs__icon svg,
+.tabs--category .tabs__icon img {
+  width: var(--tab-category-icon-size, 20px);
+  height: var(--tab-category-icon-size, 20px);
+}
+
+.tabs--category .tabs__label {
+  font-size: var(--font-size-14);
+}
+
+.tabs--category .tabs__indicator-wrap,
+.tabs--category .tabs__indicator {
+  display: none;
+}
+
+/* Count pill next to label (e.g. scouting report category counts) — supports 1–999; uses cyan ramp */
+.tabs__count {
+  min-width: 22px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--tab-count-bg, var(--color-cyan-100));
+  color: var(--tab-count-text, var(--color-cyan-800));
+  font-size: var(--font-size-12);
+  font-weight: 600;
+  flex-shrink: 0;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.tabs--category .tabs__item[aria-selected="true"] .tabs__count,
+.tabs--category .tabs__item--active .tabs__count {
+  background: var(--tab-count-bg-active, var(--color-myfs-100));
+  color: var(--tab-count-text-active, var(--color-myfs-500));
+}
+
+/* ----- Compressed category tabs (smaller padding, smaller icon; emoji work well here) ----- */
+.tabs--category-compressed .tabs__item {
+  padding: 6px 10px;
+  gap: 6px;
+}
+
+.tabs--category-compressed .tabs__icon {
+  width: var(--tab-category-compressed-icon-size, 18px);
+  height: var(--tab-category-compressed-icon-size, 18px);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.tabs--category-compressed .tabs__icon svg,
+.tabs--category-compressed .tabs__icon img {
+  width: var(--tab-category-compressed-icon-size, 18px);
+  height: var(--tab-category-compressed-icon-size, 18px);
+}
+
+.tabs--category-compressed .tabs__label {
+  font-size: var(--font-size-12);
+}
+
+.tabs--category-compressed .tabs__count {
+  padding: 2px 6px;
+  font-size: 11px;
+}
+
+/* ----- Scrollable category tabs (iOS / Android) — horizontal scroll when tabs exceed viewport ----- */
+.tabs--category-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  flex-wrap: nowrap;
+  min-width: 0;
+  scrollbar-width: none;
+}
+
+.tabs--category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs--category-scroll .tabs__item {
+  flex-shrink: 0;
+}

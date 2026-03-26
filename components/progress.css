@@ -1,0 +1,93 @@
+/**
+ * Progress indicator — Web (determinate circular)
+ * Optional percentage ring — not the indeterminate spinner (see `loading.css` `.loading-spinner`)
+ * nor the table loading bar (see `.loading-linear--table` + `.ds-data-table-shell`).
+ */
+
+:root {
+  --progress-indicator-color: var(--color-brand, var(--color-brand-500));
+  --progress-indicator-track: var(--color-neutral-200);
+  --progress-indicator-size: 40px;
+  --progress-indicator-stroke: 3;
+  --progress-indicator-progress: 0;
+}
+
+/* Stack: ring + optional caption */
+.progress-indicator {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-s, 8px);
+  font-family: var(--font-family);
+  vertical-align: middle;
+}
+
+.progress-indicator__ring {
+  position: relative;
+  width: var(--progress-indicator-size);
+  height: var(--progress-indicator-size);
+  flex-shrink: 0;
+}
+
+.progress-indicator__ring--sm {
+  --progress-indicator-size: 28px;
+  --progress-indicator-stroke: 2.5;
+}
+
+.progress-indicator__ring--lg {
+  --progress-indicator-size: 56px;
+  --progress-indicator-stroke: 4;
+}
+
+.progress-indicator__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.progress-indicator__track,
+.progress-indicator__value {
+  fill: none;
+  stroke-width: var(--progress-indicator-stroke);
+}
+
+.progress-indicator__track {
+  stroke: var(--progress-indicator-track);
+}
+
+.progress-indicator__value {
+  stroke: var(--progress-indicator-color);
+  stroke-linecap: round;
+  /* r = 15.9155 → circumference 100 */
+  stroke-dasharray: calc(var(--progress-indicator-progress, 0) * 100) 100;
+  transition: stroke-dasharray 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-indicator__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--progress-indicator-size) * 0.26);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-text);
+  pointer-events: none;
+}
+
+.progress-indicator__caption {
+  margin: 0;
+  font-size: var(--font-size-13, 13px);
+  color: var(--color-text-muted);
+  text-align: center;
+  max-width: 16em;
+  line-height: 1.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-indicator__value {
+    transition: none;
+  }
+}

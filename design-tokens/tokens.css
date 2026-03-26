@@ -1,0 +1,374 @@
+/**
+ * Intelinair Design System — Design Tokens
+ * Derived from Figma Variable Design System (test)
+ * RGB values from Figma API (0-1) converted to hex.
+ */
+
+:root {
+  /* ========== COLOR RAMPS ========== */
+  /*
+   * Usage: Brand color is used only where explicitly called out (e.g. primary button, nav brand area).
+   * Everywhere else, blue comes from the color ramp (primitive). Switch --color-brand-* per brand.
+   */
+
+  /* Primitive blue (100–900) — use for pills, filter pills, tags, selection/focus accents. Stays blue regardless of brand. */
+  --color-primitive-100: #DBEAFE;
+  --color-primitive-200: #BFDBFE;
+  --color-primitive-300: #93C5FD;
+  --color-primitive-400: #60A5FA;
+  --color-primitive-500: #3B82F6;
+  --color-primitive-600: #2563EB;
+  --color-primitive-700: #1D4ED8;
+  --color-primitive-800: #1E40AF;
+  --color-primitive-900: #1E3A8A;
+
+  /* Brand blue (100–900) — use for buttons, primary CTAs, nav brand elements. Switch these values per brand. */
+  --color-brand-100: #e8f0fa;
+  --color-brand-200: #c5daf0;
+  --color-brand-300: #9ec2e5;
+  --color-brand-400: #6ba3d6;
+  --color-brand-500: #3c84c7;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  --color-brand: var(--color-brand-500);
+  --color-brand-rgb: 60, 132, 199;
+
+  /* MyFS Red (multi-brand) — use MyFS ramp below for all MyFS UI */
+  --color-brand-myfs: var(--color-myfs-500);
+  --color-brand-myfs-rgb: var(--color-myfs-rgb);
+
+  /* MyFS color ramp (100–500, 900 for text on light) */
+  --color-myfs-100: #fde8eb;
+  --color-myfs-200: #f9c4cc;
+  --color-myfs-300: #f19ca9;
+  --color-myfs-400: #e55a6e;
+  --color-myfs-500: #c41e3a;
+  --color-myfs-900: #6b0f1a;
+  --color-myfs-rgb: 196, 30, 58;
+
+  /* Primary alias */
+  --color-primary: var(--color-brand);
+  --color-primary-rgb: var(--color-brand-rgb);
+
+  /* Accent / semantic (e.g. pill icon/text) */
+  --color-accent: #cd0e13;
+  --color-accent-rgb: 205, 14, 19;
+
+  /* Neutral ramp (0–900) — surfaces, borders, text */
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #fafafa;
+  --color-neutral-50-rgb: 250, 250, 250;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-100-rgb: 245, 245, 245;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+
+  /* Surface — from neutral primitives */
+  --color-surface: var(--color-neutral-0);
+  --color-surface-muted: var(--color-neutral-100);
+
+  /* Background (page / canvas) — #FFFFFF */
+  --color-background: var(--color-neutral-0);
+
+  /* Text — from neutral primitives */
+  --color-text: var(--color-neutral-900);
+  --color-text-primary: var(--color-text);
+  --color-text-muted: var(--color-neutral-500);
+  --color-text-disabled: var(--color-neutral-400);
+  --color-text-inverse: #fff;
+  --color-text-link: var(--color-action);
+
+  /* Border — from neutral primitives */
+  --color-border: var(--color-neutral-200);
+  --color-border-strong: var(--color-neutral-300);
+  --color-border-focus: var(--color-action);
+
+  /* Icon — semantic */
+  --color-icon-default: var(--color-text);
+  --color-icon-muted: var(--color-text-muted);
+  --color-icon-active: var(--color-action);
+  --color-icon-disabled: var(--color-text-disabled);
+
+  /* Focus (focus ring / outline) */
+  --color-focus-ring: var(--color-action);
+
+  /* Link — from color ramp (primitive) unless in a brand-called-out area */
+  --color-link: var(--color-action);
+  --color-link-hover: var(--color-primitive-400);
+  --color-link-visited: var(--color-primitive-400);
+
+  /* Action — default blue from color ramp. Use --color-brand only where brand is explicitly called out (e.g. primary button). */
+  --color-action: var(--color-primitive-500);
+  --color-action-primary: var(--color-action);
+  --color-action-brand: var(--color-brand);
+
+  /* Status (success, warning, error, info) */
+  --color-status-success: var(--color-success);
+  --color-status-warning: var(--color-warning);
+  --color-status-error: var(--color-error);
+  --color-status-info: var(--color-info);
+
+  /* Interactive (filter pill selected) */
+  --color-interactive: #04b8f1;
+  --color-interactive-overlay: rgba(255, 255, 255, 0.85);
+
+  /* Semantic (error = accent, info = ramp blue) */
+  --color-success: #22c55e;
+  --color-success-rgb: 34, 197, 94;
+  --color-warning: #f59e0b;
+  --color-warning-rgb: 245, 158, 11;
+  --color-error: var(--color-accent);
+  --color-error-rgb: var(--color-accent-rgb);
+  --color-danger: var(--color-error);
+  --color-info: var(--color-primitive-500);
+  --color-info-rgb: 60, 132, 199;
+
+  /* Text on colored backgrounds (badges, status pills, buttons). WCAG AA: chosen for ≥4.5:1 on that background. */
+  --color-text-on-brand: #fff;
+  --color-text-on-brand-myfs: var(--color-text-on-myfs-500);
+  --color-text-on-myfs-500: #fff;
+  --color-text-on-danger: #fff;
+  --color-text-on-warning: #fff;
+  --color-text-on-success: #fff;
+  --color-text-on-info: #fff;
+
+  /* WCAG 2.1 AA contrast — text on ramp-500 (active pills, filled badges). Chosen for ≥4.5:1 (normal text). Use these for any text on these backgrounds. */
+  --color-text-on-primitive-500: var(--color-neutral-0);
+  --color-text-on-success-500: var(--color-neutral-0);
+  --color-text-on-warning-500: var(--color-neutral-900);
+  --color-text-on-danger-500: var(--color-neutral-0);
+
+  /* WCAG 2.1 AA — text on ramp-100 (unselected filter pills). ≥4.5:1 for normal text. */
+  --color-text-on-primitive-100: #1e5a96;
+  --color-text-on-brand-100: #1e5a96;
+  --color-text-on-success-100: var(--color-success-900);
+  --color-text-on-warning-100: var(--color-warning-900);
+  --color-text-on-danger-100: var(--color-danger-900);
+
+  /* Success ramp (100–900) */
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: var(--color-success);
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+
+  /* Warning ramp (100–900) */
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: var(--color-warning);
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+
+  /* Danger / Red ramp (100–900) */
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-300: #fca5a5;
+  --color-danger-400: #f87171;
+  --color-danger-500: var(--color-danger);
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+  --color-danger-800: #991b1b;
+  --color-danger-900: #7f1d1d;
+
+  /* Cyan ramp (100–900) — badges, count pills, tabs count, tags */
+  --color-cyan-100: #cffafe;
+  --color-cyan-200: #a5f3fc;
+  --color-cyan-300: #67e8f9;
+  --color-cyan-400: #22d3ee;
+  --color-cyan-500: #06b6d4;
+  --color-cyan-600: #0891b2;
+  --color-cyan-700: #0e7490;
+  --color-cyan-800: #155e75;
+  --color-cyan-900: #164e63;
+
+  /* ========== SPACING SCALE ========== */
+  --spacing-xs: 4px;
+  --spacing-s: 5px;
+  --spacing-m: 10px;
+  --spacing-l: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 40px;
+  --spacing-4xl: 48px;
+  --spacing-5xl: 64px;
+
+  /* ========== RADIUS SCALE ========== */
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 15px;
+  --radius-2xl: 20px;
+  --radius-3xl: 40px;
+  /* Semantic aliases */
+  --radius-pill: var(--radius-2xl);
+  --radius-button: var(--radius-2xl);
+  --radius-input: var(--radius-lg);
+  --radius-smooth: var(--radius-xl);
+
+  /* ========== BORDER SCALE ========== */
+  --border-width-0: 0;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-4: 4px;
+
+  /* Modal popup backdrop */
+  --modal-backdrop: rgba(0, 0, 0, 0.4);
+
+  /* ========== SHADOW SCALE ========== */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.06);
+
+  /* ========== TYPOGRAPHY SCALE ========== */
+  /* Web — default */
+  --font-family-web: "Figtree", system-ui, sans-serif;
+  /* iOS — mobile context (load FS Pro via @font-face in app if needed) */
+  --font-family-ios: "FS Pro", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Android — mobile context (Roboto; load via Google Fonts or @font-face in app) */
+  --font-family-android: "Roboto", system-ui, sans-serif;
+  /* Default; override to --font-family-ios or --font-family-android when platform is set */
+  --font-family: var(--font-family-web);
+
+  /* Font size scale (px) */
+  --font-size-8: 8px;
+  --font-size-9: 9px;
+  --font-size-10: 10px;
+  --font-size-11: 11px;
+  --font-size-12: 12px;
+  --font-size-13: 13px;
+  --font-size-14: 14px;
+  --font-size-15: 15px;
+  --font-size-16: 16px;
+  --font-size-17: 17px;
+  --font-size-18: 18px;
+  --font-size-20: 20px;
+  --font-size-22: 22px;
+  --font-size-24: 24px;
+  --font-size-28: 28px;
+  --font-size-32: 32px;
+  --font-size-34: 34px;
+  --font-size-38: 38px;
+  --font-size-52: 52px;
+
+  --font-size-callout: var(--font-size-12);
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  /* Line height scale */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Type styles (size + weight) */
+  --type-header-size: var(--font-size-52);
+  --type-header-weight: var(--font-weight-bold);
+  --type-title1-size: var(--font-size-38);
+  --type-title1-weight: var(--font-weight-bold);
+  --type-title2-size: var(--font-size-22);
+  --type-title2-weight: var(--font-weight-bold);
+  --type-title3-size: var(--font-size-20);
+  --type-title3-weight: var(--font-weight-bold);
+  --type-subhead-size: var(--font-size-12);
+  --type-subhead-weight: var(--font-weight-regular);
+  --type-callout-size: var(--font-size-14);
+  --type-callout-weight: var(--font-weight-regular);
+  --type-body-size: var(--font-size-16);
+  --type-body-weight: var(--font-weight-regular);
+  --type-footnote-size: var(--font-size-14);
+  --type-footnote-weight: var(--font-weight-regular);
+  --type-headline-size: var(--font-size-18);
+  --type-headline-weight: var(--font-weight-semibold);
+
+  /* Large title (iOS/Android primary) and captions */
+  --type-large-title-size: var(--font-size-34);
+  --type-large-title-weight: var(--font-weight-bold);
+  --type-caption-size: var(--font-size-12);
+  --type-caption-weight: var(--font-weight-regular);
+  --type-caption-11-size: var(--font-size-11);
+  --type-caption-9-size: var(--font-size-9);
+
+  /* ----- Tabs ----- */
+  --tab-height: 90px;
+  --tab-width: 110px;
+  --tab-padding-x: 16px;
+  --tab-font-size: 12px;
+  --tab-font-weight-default: var(--font-weight-regular);
+  --tab-font-weight-active: var(--font-weight-semibold);
+  --tab-icon-size: 42px;
+  --tab-icon-label-spacing: 4px;
+  --tab-indicator-height: 4px;
+  --tab-indicator-radius: 2px;
+  --tab-indicator-color: var(--color-action-primary);
+  --tab-text-default: var(--color-text-muted);
+  --tab-text-active: var(--color-text-primary);
+
+  /* ----- Nav (sidebar) ----- */
+  --nav-width: 80px;
+  --nav-item-width: 60px;
+  --nav-item-height: 56px;
+  --nav-item-radius: 10px;
+  --nav-icon-size: 26px;
+  --nav-font-size: 12px;
+  --nav-font-weight: var(--font-weight-regular);
+  --nav-background: var(--color-brand);
+  --nav-text-default: #fff;
+  --nav-icon-default: #fff;
+  --nav-text-active: var(--color-brand);
+  --nav-icon-active: var(--color-brand);
+  --nav-item-active-background: #fff;
+
+  /* ----- Nav mobile (bottom bar, iOS/Android) — 4 items: Fields, Scout, Weather, More ----- */
+  --nav-mobile-background: var(--color-neutral-100);
+  --nav-mobile-background-alt: var(--color-neutral-500);
+  --nav-mobile-text-default: var(--color-neutral-500);
+  --nav-mobile-icon-default: var(--color-neutral-500);
+  --nav-mobile-text-active: var(--color-brand);
+  --nav-mobile-icon-active: var(--color-brand);
+  --nav-mobile-height: 56px;
+  --nav-mobile-icon-size: 24px;
+  --nav-mobile-font-size: 11px;
+
+  /* ----- Counter badge (notification / count) — supports 1–999; overflow show "999+" in app ----- */
+  --counter-badge-min-width: 22px;
+  --counter-badge-height: 18px;
+  --counter-badge-padding-x: 6px;
+  --counter-badge-radius: 999px;
+  --counter-badge-font-size: var(--font-size-11);
+  --counter-badge-font-weight: var(--font-weight-semibold);
+  /* Default = brand; variants use status then primitive-500 ramp */
+  --counter-badge-bg: var(--color-brand);
+  --counter-badge-text: var(--color-text-on-brand);
+
+  /* ----- Dropdown / Dropdown search ----- */
+  --dropdown-max-visible-items: 8;
+  --dropdown-item-height: 40px;
+  --dropdown-list-max-height: calc(var(--dropdown-item-height) * var(--dropdown-max-visible-items));
+
+  /* ----- Menu (action list / dropdown menu) ----- */
+  --menu-min-width: 180px;
+  --menu-item-height: 40px;
+  --menu-radius: var(--radius-input, 10px);
+  --menu-padding-y: 4px;
+
+  /* ----- Layout ----- */
+  --layout-gap: 4px;
+}
