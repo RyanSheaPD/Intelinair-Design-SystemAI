@@ -235,17 +235,75 @@ See [`standard-layout.html`](../standard-layout.html) for the canonical HTML imp
 
 ## Mobile Layout (iOS / Android)
 
-On mobile, the sidebar nav moves to a **bottom tab bar**:
+On mobile, the standard layout changes significantly. The sidebar nav becomes a bottom tab bar, the header simplifies, and overlay panels (like Advanced filters) become bottom sheets instead of side drawers.
+
+```
+┌──────────────────────────────────────────────┐
+│  Header (56px) — logo left, avatar right     │
+├──────────────────────────────────────────────┤
+│  Page Toolbar (title + filter pills)         │
+├──────────────────────────────────────────────┤
+│  Tab Bar (horizontal scroll)                 │
+├──────────────────────────────────────────────┤
+│                                              │
+│         Main Content Area                    │
+│         (cards stack single-column)          │
+│                                              │
+├──────────────────────────────────────────────┤
+│  Bottom Tab Bar (Fields, Scout, Weather, More)│
+└──────────────────────────────────────────────┘
+```
+
+### Bottom Tab Bar (replaces sidebar nav)
 
 | Property        | Value                                      |
 |-----------------|--------------------------------------------|
 | Position        | Fixed bottom                               |
-| Height          | `--nav-mobile-height`                      |
-| Layout          | Horizontal, evenly spaced                  |
+| Height          | `--nav-mobile-height` (56px)               |
+| Layout          | Horizontal, evenly spaced (`space-around`) |
 | Items           | 4 items: Fields, Scout, Weather, More      |
-| Background      | `--nav-mobile-background` (light or dark)  |
+| Background      | `--nav-mobile-background` (neutral-100)    |
 | Border          | `1px solid` top (`--color-border`)         |
 | Active state    | Brand color text + icon (no background)    |
+| Safe area       | `padding-bottom: env(safe-area-inset-bottom)` for devices with home indicator |
+| Dark variant    | `.nav--bottom-dark` — neutral-500 background, neutral-300 inactive icons |
+
+### Mobile Header
+
+- Same height (`56px`) as desktop but full width (no sidebar offset)
+- Logo left, avatar right — search moves to a dedicated search screen or collapses behind a search icon
+- No breadcrumbs on mobile
+
+### Mobile Page Toolbar
+
+- Title left, filter pills scroll horizontally
+- "Advanced filters" button opens a **bottom sheet** instead of a side drawer
+- View mode switcher may be collapsed into a single icon button
+
+### Mobile Content Area
+
+- Cards stack in a **single column** (full width, no grid)
+- Table view switches to card list on mobile — no horizontal data table
+- Map view remains full-screen
+- Content scrolls above the fixed bottom tab bar; bottom padding accounts for tab bar height
+
+### Advanced Filters — Bottom Sheet (mobile)
+
+On mobile, the advanced filter sidebar converts to a bottom sheet that slides up from the bottom of the screen.
+
+| Property        | Value                                      |
+|-----------------|--------------------------------------------|
+| Position        | Fixed bottom, full width                   |
+| Max height      | `85vh` (leaves status bar visible)         |
+| Background      | `--color-surface`                          |
+| Border radius   | `--radius-xl` top-left and top-right only  |
+| Handle          | `40px × 4px` centered drag handle bar, `--color-neutral-300` |
+| Shadow          | `--shadow-lg` upward                       |
+| Scrim           | `rgba(0, 0, 0, 0.32)` behind the sheet    |
+| Scroll          | Internal scroll on the filter body         |
+| Safe area       | `padding-bottom: env(safe-area-inset-bottom)` |
+
+The bottom sheet contains the same filter items as the desktop sidebar (grower, crop type, growth stage, field state, tags, emergence score, field potential, area affected, GDD, planting date) but laid out full-width to take advantage of the wider touch targets on mobile.
 
 ---
 
