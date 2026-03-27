@@ -128,7 +128,28 @@ A horizontal bar immediately below the header. Present on Growers, Fields, Scout
 6. Vertical divider
 7. Collapse/expand chevron — `30px` square button, `--radius-sm`, border `--color-border`
 
-All filter pills use the `.filter-pill` component. The Advanced filters button uses `.btn` (primary filled).
+All toolbar pills use `.filter-pill.filter-pill--neutral` (neutral color ramp). The Advanced filters button uses `.btn.btn--neutral` (neutral-800 filled, white text).
+
+### View Mode Switcher (item 5)
+
+The view mode control is a neutral filter pill with a dropdown menu that lets the user switch between three content views.
+
+| Property        | Value                                      |
+|-----------------|--------------------------------------------|
+| Component       | `.filter-pill.filter-pill--neutral`        |
+| Icon            | Changes to match active view (see below)   |
+| Label           | Displays current view name                 |
+| Chevron         | `expand_more` icon, toggles dropdown       |
+
+**Dropdown menu options:**
+
+| Option          | Icon               | Description                            |
+|-----------------|--------------------|----------------------------------------|
+| **Table view**  | `view_list`        | Data table with sortable columns       |
+| **List view**   | `grid_view`        | Card-based thumbnail grid              |
+| **Map view**    | `map`              | Geospatial map with field boundaries   |
+
+When the user selects a view, the pill label and icon update to reflect the active view, and the content area switches accordingly. Only one view is visible at a time.
 
 ---
 
@@ -182,13 +203,27 @@ The remaining viewport space below the tab bar (or below the header on pages wit
 
 ### View Modes (Growers, Fields, Scout, Disease)
 
-| Mode       | Description                                           |
-|------------|-------------------------------------------------------|
-| **Table**  | Data table (`ds-data-table`) with rows and columns    |
-| **List**   | Card-based grid layout (`field-card` components)      |
-| **Map**    | Map view with geospatial data                         |
+The user toggles between these via the view mode dropdown in the page toolbar. Only one view is visible at a time.
 
-The user toggles between these via the view mode dropdown in the page toolbar.
+#### Table View (default)
+- Component: `ds-data-table` inside `ds-data-table-shell`
+- Full-width table with fixed `50px` row height
+- Sortable column headers, sticky first column
+- Columns: checkbox, star, field name, grower, farm, acres, crop, last flight, GDD, disease pills, status pill
+- Status pills use semantic filter-pill variants (danger, warning, success)
+- Disease pills use `field-card__disease-pill--{disease}` color coding
+
+#### List View (card grid)
+- Component: `field-card` in a responsive CSS grid
+- Grid: `auto-fill`, `minmax(280px, 1fr)`, `20px` gap
+- Each card shows: field image, title + star, subtitle (grower/farm), meta row (acres, flight date, crop, GDD), divider, disease pills or status tags, action links
+- Cards use `--radius-xl` (15px), `--shadow-sm`, white background
+
+#### Map View
+- Full content area replaced with a geospatial map
+- Field boundaries rendered as polygons
+- Map controls (zoom, layers) use `.btn--glass` (32x32, frosted glass style)
+- No padding on content area when map is active — map fills edge to edge
 
 ---
 
