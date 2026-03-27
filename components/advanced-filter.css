@@ -1,0 +1,386 @@
+/**
+ * Advanced filter sidebar
+ * Right-side slide-over panel triggered by the "Advanced filters" button in the page toolbar.
+ * Contains stacked filter controls: chip inputs, select dropdowns, range sliders, date pickers.
+ * Overlays content with a scrim; panel sits inset 10px top/bottom from viewport edge.
+ */
+
+/* Scrim overlay */
+.advanced-filter-scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.32);
+  z-index: 999;
+}
+
+/* Panel shell */
+.advanced-filter {
+  position: fixed;
+  top: 10px;
+  bottom: 10px;
+  right: 10px;
+  width: 380px;
+  max-width: calc(100vw - 100px);
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.16));
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-family);
+}
+
+/* Header row */
+.advanced-filter__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.advanced-filter__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advanced-filter__header-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+
+.advanced-filter__header-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.advanced-filter__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.advanced-filter__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.advanced-filter__close:hover {
+  background: var(--color-neutral-100);
+  color: var(--color-text);
+}
+
+/* Scrollable body */
+.advanced-filter__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px;
+}
+
+/* Individual filter item */
+.advanced-filter__item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.advanced-filter__item:last-child {
+  border-bottom: none;
+}
+
+/* Item header: label + reset */
+.advanced-filter__item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.advanced-filter__item-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.advanced-filter__item-reset {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-action);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-family);
+}
+
+.advanced-filter__item-reset:hover {
+  text-decoration: underline;
+}
+
+/* Chip input: used for grower, crop type, growth stage */
+.advanced-filter__chip-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 10px;
+  background: var(--color-neutral-50, var(--color-surface));
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-input);
+  cursor: text;
+}
+
+.advanced-filter__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: var(--color-primitive-100);
+  border: 1px solid var(--color-primitive-200);
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-primitive-800);
+}
+
+.advanced-filter__chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: none;
+  color: var(--color-primitive-500);
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.advanced-filter__chip-remove:hover {
+  color: var(--color-primitive-800);
+}
+
+.advanced-filter__chip-input input {
+  flex: 1;
+  min-width: 60px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: 14px;
+  color: var(--color-text);
+  padding: 0;
+}
+
+.advanced-filter__chip-input input::placeholder {
+  color: var(--color-neutral-300);
+}
+
+/* Select dropdown */
+.advanced-filter__select {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 32px 8px 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-input);
+  font-family: var(--font-family);
+  font-size: 14px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z' fill='%23666'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+}
+
+.advanced-filter__select:focus {
+  outline: none;
+  border-color: var(--color-primitive-200);
+  box-shadow: 0 0 0 1px var(--color-primitive-200);
+}
+
+/* Range input row: min / max side by side */
+.advanced-filter__range-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advanced-filter__range-input {
+  flex: 1;
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-input);
+  font-family: var(--font-family);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.advanced-filter__range-input:focus {
+  outline: none;
+  border-color: var(--color-primitive-200);
+  box-shadow: 0 0 0 1px var(--color-primitive-200);
+}
+
+/* Input with suffix (e.g. "ac") */
+.advanced-filter__input-with-suffix {
+  flex: 1;
+  position: relative;
+}
+
+.advanced-filter__input-with-suffix input {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 32px 8px 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-input);
+  font-family: var(--font-family);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.advanced-filter__input-with-suffix input:focus {
+  outline: none;
+  border-color: var(--color-primitive-200);
+  box-shadow: 0 0 0 1px var(--color-primitive-200);
+}
+
+.advanced-filter__input-suffix {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+/* Range slider track */
+.advanced-filter__slider {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  margin-top: 4px;
+}
+
+.advanced-filter__slider-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  transform: translateY(-50%);
+  background: var(--color-neutral-200);
+  border-radius: 2px;
+}
+
+.advanced-filter__slider-fill {
+  position: absolute;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  background: var(--color-primitive-500);
+  border-radius: 2px;
+}
+
+.advanced-filter__slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  background: var(--color-surface);
+  border: 2px solid var(--color-primitive-500);
+  border-radius: 50%;
+  cursor: grab;
+}
+
+/* Date input row */
+.advanced-filter__date-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advanced-filter__date-input {
+  flex: 1;
+  position: relative;
+}
+
+.advanced-filter__date-input input {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 36px 8px 10px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-input);
+  font-family: var(--font-family);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.advanced-filter__date-input input::placeholder {
+  color: var(--color-neutral-300);
+}
+
+.advanced-filter__date-input input:focus {
+  outline: none;
+  border-color: var(--color-primitive-200);
+  box-shadow: 0 0 0 1px var(--color-primitive-200);
+}
+
+.advanced-filter__date-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+/* Range separator dash */
+.advanced-filter__range-sep {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+/* Footer: apply / clear all */
+.advanced-filter__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}

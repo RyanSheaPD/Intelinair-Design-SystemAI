@@ -64,6 +64,8 @@
   <link rel="stylesheet" href="components/counter-badge.css" />
   <link rel="stylesheet" href="components/header.css" />
   <link rel="stylesheet" href="components/alert.css" />
+  <link rel="stylesheet" href="components/advanced-filter.css" />
+  <link rel="stylesheet" href="components/bottom-sheet.css" />
   <link rel="stylesheet" href="components/triangle-icons.css" />
   <style>
     body {
@@ -345,6 +347,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: var(--spacing-l);
+      align-items: start;
     }
 
     /* Tab icon with count badge overlay */
@@ -1984,7 +1987,7 @@
             <span class="field-card__row-right">KBHJG76478 <span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></span></span>
           </div>
           <hr class="field-card__divider" />
-          <div class="field-card__pills" style="flex-direction: column; align-items: stretch;">
+          <div class="field-card__pills" style="flex-direction: column; align-items: flex-start;">
             <div class="field-card__status-pill">
               <span class="field-card__status-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 18v2M8 18v2M6 12h12M6 8h12M4 4h16v8H4z"/><path d="M8 4v4M16 4v4"/></svg></span>
               <span>Harvest ready</span>
@@ -2567,13 +2570,804 @@
     <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.5rem;">Composite layouts using design system components.</p>
   </section>
 
+  <h3 class="type-title3" style="margin: 1.5rem 0 0.5rem;">Web</h3>
+
   <details class="demo-details demo-section">
     <summary class="demo-details__summary"><h2 class="type-title3">Layout example — standard page layout (Disease)</h2></summary>
     <div class="demo-details__content">
-    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Full standard page layout: sidebar nav + header + page toolbar (neutral pills, filters, view switcher) + disease tab bar + switchable content area (table / list / map). <a href="standard-layout.html" target="_blank" rel="noopener">Open full page</a> · <a href="docs/standard-page-layout.md" target="_blank" rel="noopener">View spec (.md)</a></p>
-    <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; height: 600px;">
-      <iframe src="standard-layout.html" style="width: 100%; height: 100%; border: none;"></iframe>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Full standard page layout: sidebar nav + header + page toolbar (neutral pills, filters, view switcher) + disease tab bar + switchable content area (table / list / map). <a href="docs/standard-page-layout.md" target="_blank" rel="noopener">View spec (.md)</a></p>
+
+    <div class="std-layout-shell">
+
+      <!-- 1. SIDEBAR NAV -->
+      <aside class="std-layout-shell__side">
+        <nav class="nav" aria-label="Standard layout nav">
+          <a href="#" class="nav__item">
+            <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
+            <span class="nav__label">Home</span>
+          </a>
+          <a href="#" class="nav__item">
+            <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
+            <span class="nav__label">Growers</span>
+          </a>
+          <a href="#" class="nav__item">
+            <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+            <span class="nav__label">Fields</span>
+          </a>
+          <a href="#" class="nav__item">
+            <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+            <span class="nav__label">Scout</span>
+          </a>
+          <a href="#" class="nav__item">
+            <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
+            <span class="nav__label">Weather</span>
+          </a>
+          <a href="#" class="nav__item" aria-current="page">
+            <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">coronavirus</span></span>
+            <span class="nav__label">Disease</span>
+          </a>
+          <a href="#" class="nav__item">
+            <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">folder_shared</span></span>
+            <span class="nav__label">Groups</span>
+          </a>
+          <a href="#" class="nav__item">
+            <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+            <span class="nav__label">Settings</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- MAIN COLUMN -->
+      <div class="std-layout-shell__main">
+
+        <!-- 2. HEADER -->
+        <header class="header">
+          <div class="header__left">
+            <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+          </div>
+          <div class="header__center">
+            <div class="header__search-wrap">
+              <span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <input type="search" class="header__search" placeholder="Search fields, growers..." />
+            </div>
+          </div>
+          <div class="header__right">
+            <span class="header__user-name">Ryan Shea</span>
+            <span class="header__avatar" aria-label="User avatar">RS</span>
+          </div>
+        </header>
+
+        <!-- 3. PAGE TOOLBAR -->
+        <div class="std-page-toolbar">
+          <h1 class="std-page-toolbar__title">Disease</h1>
+          <div class="std-page-toolbar__controls">
+            <button class="filter-pill filter-pill--neutral">
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">settings</span></span>
+              Affected only
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
+            </button>
+            <button class="filter-pill filter-pill--neutral">
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span>
+              Favorite fields
+            </button>
+            <button class="btn btn--neutral" style="padding:6px 14px;">
+              <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span>
+              Advanced filters
+            </button>
+            <span class="std-page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral">
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">view_list</span></span>
+              Table view
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
+            </button>
+            <span class="std-page-toolbar__divider"></span>
+            <button class="std-page-toolbar__collapse" aria-label="Collapse toolbar">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. TAB BAR -->
+        <div class="std-page-tabs">
+          <div class="tabs" role="tablist">
+            <button class="tabs__item" role="tab" aria-selected="true">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://intelinair-misc.s3.amazonaws.com/common/icons/disease_badges/all.svg" alt="All" /></span>
+                <span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
+              </span>
+              <span class="tabs__label">All</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/corn_tarspot.png" alt="Tar spot" /></span>
+                <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
+              </span>
+              <span class="tabs__label">Tar spot</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/corn_gls.png" alt="Gray leaf spot" /></span>
+                <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
+              </span>
+              <span class="tabs__label">Gray leaf spot</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/corn_sorust.png" alt="Southern rust" /></span>
+                <span class="counter-badge counter-badge--danger" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
+              </span>
+              <span class="tabs__label">Southern rust</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+          </div>
+          <div class="std-page-tabs__right">Weather data collected at noon ET</div>
+        </div>
+
+        <!-- 5. CONTENT AREA (table view) -->
+        <main class="std-page-content">
+          <div class="ds-data-table-shell">
+            <div class="ds-data-table-shell__scroll">
+              <table class="ds-data-table ds-data-table--fixed-height">
+                <thead>
+                  <tr>
+                    <th style="width:5%;"><input type="checkbox" /></th>
+                    <th style="width:5%;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-warning-500);">star</span></th>
+                    <th style="width:15%;">Field</th>
+                    <th style="width:10%;">Grower</th>
+                    <th style="width:8%;">Farm</th>
+                    <th style="width:8%;">Acres</th>
+                    <th style="width:8%;">Crop</th>
+                    <th style="width:10%;">Last Flight</th>
+                    <th style="width:8%;">GDD</th>
+                    <th style="width:12%;">Disease</th>
+                    <th style="width:11%;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="checkbox" /></td>
+                    <td><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-warning-500);">star</span></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">North Quarter 12</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Johnson Farms</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Home</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">142.3</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-brand);">Corn</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Mar 15, 2026</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-warning-600);">1,245</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="field-card__disease-pill field-card__disease-pill--tarspot">Tar spot</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="filter-pill filter-pill--danger" style="height:24px;font-size:11px;padding:4px 8px;">Affected</span></div></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" /></td>
+                    <td><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-neutral-300);">star_border</span></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">South 80</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Miller Ag</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">River</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">80.0</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-brand);">Soybeans</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Mar 12, 2026</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-warning-600);">980</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="field-card__disease-pill field-card__disease-pill--fls">FLS</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="filter-pill filter-pill--warning" style="height:24px;font-size:11px;padding:4px 8px;">Monitoring</span></div></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" /></td>
+                    <td><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-warning-500);">star</span></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">West Field A</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Johnson Farms</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Home</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">210.5</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-brand);">Corn</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Mar 14, 2026</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-warning-600);">1,312</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="field-card__disease-pill field-card__disease-pill--gls">GLS</span> <span class="field-card__disease-pill field-card__disease-pill--nclb">NCLB</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="filter-pill filter-pill--danger" style="height:24px;font-size:11px;padding:4px 8px;">Affected</span></div></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" /></td>
+                    <td><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-neutral-300);">star_border</span></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Hilltop 40</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Davis Corp</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">East</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">40.2</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-brand);">Corn</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Mar 10, 2026</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-warning-600);">1,105</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="field-card__disease-pill field-card__disease-pill--srust">S. Rust</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="filter-pill filter-pill--success" style="height:24px;font-size:11px;padding:4px 8px;">Clear</span></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+
+      </div><!-- /.std-layout-shell__main -->
+
+    </div><!-- /.std-layout-shell -->
+
     </div>
+  </details>
+
+  <details class="demo-details demo-section">
+    <summary class="demo-details__summary"><h2 class="type-title3">Layout example — card grid (Fields list view)</h2></summary>
+    <div class="demo-details__content">
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Responsive card grid used in the List view mode on Fields, Growers, Scout, and Disease pages. Grid: <code>auto-fill</code>, <code>minmax(280px, 1fr)</code>, <code>20px</code> gap. Cards use <code>.field-card</code> and <code>.field-card--detail</code>.</p>
+
+    <!-- Card grid: compact summary cards (Fields page) -->
+    <h3 class="type-footnote" style="font-weight:600; margin-bottom: 0.75rem;">Compact field cards (no image)</h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px; align-items:start; margin-bottom:2rem;">
+
+      <!-- Card: starred, with scouting tags -->
+      <article class="field-card">
+        <div class="field-card__body">
+          <div class="field-card__title-row">
+            <h3 class="field-card__title">North Quarter 12</h3>
+            <span class="field-card__star" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+          </div>
+          <p class="field-card__subtitle">Johnson Farms, Michael Williams <span class="field-card__star"><svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span></p>
+          <div class="field-card__meta">
+            <span>142.3 ac</span><span class="field-card__meta-sep">|</span>
+            <span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2-1 3-2 3 2 1 1-.5-2.5-2.5-2"/></svg></span><span>3/15</span><span class="field-card__meta-sep">|</span>
+            <span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg></span><span style="color:var(--color-brand);">Corn</span>
+          </div>
+          <hr class="field-card__divider" />
+          <div class="field-card__row">
+            <span class="field-card__row-left"><span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2-1 3-2 3 2 1 1-.5-2.5-2.5-2"/></svg></span> 3/14</span>
+            <span class="field-card__row-right">KBHJG76478 <span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></span></span>
+          </div>
+          <div class="field-card__pills">
+            <a href="#" class="field-card__tag">Stand count 1</a>
+            <a href="#" class="field-card__tag">Weeds 2</a>
+          </div>
+          <div class="field-card__actions">
+            <a href="#" class="field-card__action">Field card</a>
+            <a href="#" class="field-card__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Virtual scout</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card: no star, no scouting report -->
+      <article class="field-card">
+        <div class="field-card__body">
+          <h3 class="field-card__title">South 80</h3>
+          <p class="field-card__subtitle">Miller Ag, River Farm</p>
+          <div class="field-card__meta">
+            <span>80.0 ac</span><span class="field-card__meta-sep">|</span>
+            <span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2-1 3-2 3 2 1 1-.5-2.5-2.5-2"/></svg></span><span>N/A</span><span class="field-card__meta-sep">|</span>
+            <span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg></span><span style="color:var(--color-brand);">Soybeans</span>
+          </div>
+          <hr class="field-card__divider" />
+          <div class="field-card__row">
+            <span class="field-card__row-left"><span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2-1 3-2 3 2 1 1-.5-2.5-2.5-2"/></svg></span> 3/12</span>
+          </div>
+          <p class="field-card__status-msg">No scouting report</p>
+          <div class="field-card__actions">
+            <a href="#" class="field-card__action">Field card</a>
+            <a href="#" class="field-card__action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Virtual scout</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card: grower card variant -->
+      <article class="field-card">
+        <div class="field-card__body">
+          <h3 class="field-card__title">Davis Corp</h3>
+          <div class="field-card__meta">
+            <span>480 ac</span><span class="field-card__meta-sep">|</span>
+            <span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg></span><span style="color:var(--color-brand);">Corn</span>
+          </div>
+          <hr class="field-card__divider" />
+          <div class="field-card__row">
+            <span class="field-card__row-left"><span class="field-card__meta-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2-1 3-2 3 2 1 1-.5-2.5-2.5-2"/></svg></span> 3/10</span>
+          </div>
+          <p class="field-card__status-msg">No scouting report</p>
+          <div class="field-card__actions">
+            <a href="#" class="field-card__action">Grower card</a>
+            <a href="#" class="field-card__action">View fields</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Card grid: detail cards with images (Disease list view) -->
+    <h3 class="type-footnote" style="font-weight:600; margin-bottom: 0.75rem;">Detail field cards with image (Disease list view)</h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px; align-items:start; margin-bottom:2rem;">
+
+      <!-- Detail card 1 -->
+      <article class="field-card field-card--detail">
+        <div class="field-card__image-wrap">
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--color-success-200),var(--color-success-400));display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:48px;color:var(--color-success-700);opacity:0.5;">satellite_alt</span>
+          </div>
+        </div>
+        <div class="field-card__body">
+          <div class="field-card__title-row"><h3 class="field-card__title">North Quarter 12</h3><span class="field-card__star"><svg viewBox="0 0 18 18" fill="var(--color-warning-500)" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5l2.47 5.01L17 7.27l-4 3.9.94 5.51L9 14.27l-4.94 2.41.94-5.51-4-3.9 5.53-.76z"/></svg></span></div>
+          <p class="field-card__subtitle">Johnson Farms &middot; Home</p>
+          <div class="field-card__meta"><span>142.3 ac</span><span class="field-card__meta-sep">&middot;</span><span>Mar 15, 2026</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-brand);">Corn</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-warning-600);">GDD 1,245</span></div>
+          <hr class="field-card__divider" />
+          <div class="field-card__pills"><span class="field-card__disease-pill field-card__disease-pill--tarspot">Tar spot</span></div>
+          <div class="field-card__actions"><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span> View</a><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:18px;">map</span> Map</a></div>
+        </div>
+      </article>
+
+      <!-- Detail card 2 -->
+      <article class="field-card field-card--detail">
+        <div class="field-card__image-wrap">
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--color-primitive-200),var(--color-primitive-400));display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:48px;color:var(--color-primitive-700);opacity:0.5;">satellite_alt</span>
+          </div>
+        </div>
+        <div class="field-card__body">
+          <div class="field-card__title-row"><h3 class="field-card__title">South 80</h3></div>
+          <p class="field-card__subtitle">Miller Ag &middot; River</p>
+          <div class="field-card__meta"><span>80.0 ac</span><span class="field-card__meta-sep">&middot;</span><span>Mar 12, 2026</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-brand);">Soybeans</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-warning-600);">GDD 980</span></div>
+          <hr class="field-card__divider" />
+          <div class="field-card__pills"><span class="field-card__disease-pill field-card__disease-pill--fls">FLS</span></div>
+          <div class="field-card__actions"><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span> View</a><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:18px;">map</span> Map</a></div>
+        </div>
+      </article>
+
+      <!-- Detail card 3 -->
+      <article class="field-card field-card--detail">
+        <div class="field-card__image-wrap">
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--color-warning-200),var(--color-warning-300));display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:48px;color:var(--color-warning-700);opacity:0.5;">satellite_alt</span>
+          </div>
+        </div>
+        <div class="field-card__body">
+          <div class="field-card__title-row"><h3 class="field-card__title">West Field A</h3><span class="field-card__star"><svg viewBox="0 0 18 18" fill="var(--color-warning-500)" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5l2.47 5.01L17 7.27l-4 3.9.94 5.51L9 14.27l-4.94 2.41.94-5.51-4-3.9 5.53-.76z"/></svg></span></div>
+          <p class="field-card__subtitle">Johnson Farms &middot; Home</p>
+          <div class="field-card__meta"><span>210.5 ac</span><span class="field-card__meta-sep">&middot;</span><span>Mar 14, 2026</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-brand);">Corn</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-warning-600);">GDD 1,312</span></div>
+          <hr class="field-card__divider" />
+          <div class="field-card__pills"><span class="field-card__disease-pill field-card__disease-pill--gls">GLS</span><span class="field-card__disease-pill field-card__disease-pill--nclb">NCLB</span></div>
+          <div class="field-card__actions"><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span> View</a><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:18px;">map</span> Map</a></div>
+        </div>
+      </article>
+
+      <!-- Detail card 4: status pills -->
+      <article class="field-card field-card--detail">
+        <div class="field-card__image-wrap">
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--color-neutral-200),var(--color-neutral-300));display:flex;align-items:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:48px;color:var(--color-neutral-500);opacity:0.5;">satellite_alt</span>
+          </div>
+        </div>
+        <div class="field-card__body">
+          <div class="field-card__title-row"><h3 class="field-card__title">Hilltop 40</h3></div>
+          <p class="field-card__subtitle">Davis Corp &middot; East</p>
+          <div class="field-card__meta"><span>40.2 ac</span><span class="field-card__meta-sep">&middot;</span><span>Mar 10, 2026</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-brand);">Corn</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-warning-600);">GDD 1,105</span></div>
+          <hr class="field-card__divider" />
+          <div class="field-card__pills" style="flex-direction:column; align-items:flex-start;">
+            <div class="field-card__status-pill">
+              <span class="field-card__status-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 18v2M8 18v2M6 12h12M6 8h12M4 4h16v8H4z"/><path d="M8 4v4M16 4v4"/></svg></span>
+              <span>Harvest ready</span>
+              <span class="field-card__status-pill-value">2 ac | 3%</span>
+            </div>
+            <div class="field-card__status-pill">
+              <span class="field-card__status-pill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></span>
+              <span>Replant</span>
+              <span class="field-card__status-pill-value">2 ac | 3%</span>
+            </div>
+          </div>
+          <hr class="field-card__divider" />
+          <div class="field-card__actions"><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:18px;">visibility</span> View</a><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:18px;">map</span> Map</a></div>
+        </div>
+      </article>
+
+    </div>
+
+    </div>
+  </details>
+
+  <details class="demo-details demo-section">
+    <summary class="demo-details__summary"><h2 class="type-title3">Layout example — advanced filter sidebar</h2></summary>
+    <div class="demo-details__content">
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Right-side slide-over panel triggered by the "Advanced filters" button in the page toolbar. Overlays content with a scrim. Panel is inset <code>10px</code> top/bottom from viewport edge, <code>380px</code> wide, with <code>--radius-xl</code> corners. Filter items stack vertically, each with a label and "Reset" link.</p>
+
+    <div style="display:flex; gap:20px; align-items:flex-start;">
+      <div style="position:relative; width:400px; min-height:700px; background:var(--color-surface); border-radius:var(--radius-xl); box-shadow:var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.16)); display:flex; flex-direction:column; overflow:hidden; border:1px solid var(--color-border);">
+
+        <div class="advanced-filter__header">
+          <div class="advanced-filter__header-left">
+            <span class="advanced-filter__header-icon"><svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.667 10.667C0.478 10.667 0.32 10.603 0.192 10.475C0.064 10.347 0 10.189 0 10s.064-.347.192-.475C.32 9.397.478 9.333.667 9.333h2.666c.19 0 .347.064.475.192.128.128.192.286.192.475s-.064.347-.192.475c-.128.128-.286.192-.475.192H.667zm0-8C.478 2.667.32 2.603.192 2.475.064 2.347 0 2.189 0 2s.064-.347.192-.475C.32 1.397.478 1.333.667 1.333H6c.189 0 .347.064.475.192.128.128.192.286.192.475s-.064.347-.192.475C6.347 2.603 6.189 2.667 6 2.667H.667zM6 12c-.189 0-.347-.064-.475-.192A.645.645 0 015.333 11.333V8.667c0-.189.064-.347.192-.475A.645.645 0 016 8c.189 0 .347.064.475.192.128.128.192.286.192.475v.666h4.666c.19 0 .348.064.475.192.128.128.192.286.192.475s-.064.347-.192.475c-.127.128-.286.192-.475.192H6.667v.666c0 .19-.064.348-.192.475A.645.645 0 016 12zM3.333 8a.645.645 0 01-.475-.192.645.645 0 01-.191-.475V6.667H.667A.645.645 0 01.192 6.475.645.645 0 010 6c0-.189.064-.347.192-.475A.645.645 0 01.667 5.333h2V4.667c0-.189.064-.347.192-.475A.645.645 0 013.333 4c.19 0 .348.064.475.192.128.128.192.286.192.475v2.666c0 .19-.064.348-.192.475A.645.645 0 013.333 8zM6 6.667a.645.645 0 01-.475-.192A.645.645 0 015.333 6c0-.189.064-.347.192-.475A.645.645 0 016 5.333h5.333c.19 0 .348.064.475.192.128.128.192.286.192.475s-.064.347-.192.475c-.127.128-.286.192-.475.192H6zm2.667-2.667a.645.645 0 01-.475-.192A.645.645 0 018 3.333V.667c0-.189.064-.347.192-.475A.645.645 0 018.667 0c.188 0 .347.064.475.192.128.128.192.286.192.475v.666h2c.19 0 .348.064.475.192.128.128.192.286.192.475s-.064.347-.192.475c-.127.128-.286.192-.475.192h-2v.666c0 .19-.064.348-.192.475A.645.645 0 018.667 4z" fill="currentColor"/></svg></span>
+            <span class="advanced-filter__title">Advanced filters</span>
+          </div>
+          <button class="advanced-filter__close" aria-label="Close advanced filters">
+            <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+          </button>
+        </div>
+
+        <div class="advanced-filter__body">
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Filter by grower</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__chip-input">
+              <span class="advanced-filter__chip">Johnson Farms <button class="advanced-filter__chip-remove" aria-label="Remove">&times;</button></span>
+              <span class="advanced-filter__chip">Miller Ag <button class="advanced-filter__chip-remove" aria-label="Remove">&times;</button></span>
+              <input type="text" placeholder="Search growers..." />
+            </div>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Crop type</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__chip-input">
+              <input type="text" placeholder="Search crop types..." />
+            </div>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Growth stage</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__chip-input">
+              <input type="text" placeholder="Search growth stages..." />
+            </div>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Field state</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <select class="advanced-filter__select">
+              <option value="" disabled selected>Pick one</option>
+              <option>Active</option>
+              <option>Inactive</option>
+              <option>Archived</option>
+            </select>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Filter by tags</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <select class="advanced-filter__select">
+              <option value="" disabled selected>Pick one</option>
+              <option>Priority</option>
+              <option>Review needed</option>
+              <option>High yield</option>
+            </select>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Emergence score</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__range-row">
+              <input type="number" class="advanced-filter__range-input" placeholder="Min" step="0.1" />
+              <span class="advanced-filter__range-sep">&ndash;</span>
+              <input type="number" class="advanced-filter__range-input" placeholder="Max" step="0.1" />
+            </div>
+            <div class="advanced-filter__slider">
+              <div class="advanced-filter__slider-track"></div>
+              <div class="advanced-filter__slider-fill" style="left:10%; width:80%;"></div>
+              <div class="advanced-filter__slider-thumb" style="left:10%;"></div>
+              <div class="advanced-filter__slider-thumb" style="left:90%;"></div>
+            </div>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Field potential</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <select class="advanced-filter__select">
+              <option value="" disabled selected>Pick one</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Area affected</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__range-row">
+              <div class="advanced-filter__input-with-suffix">
+                <input type="number" placeholder="Min" />
+                <span class="advanced-filter__input-suffix">ac</span>
+              </div>
+              <span class="advanced-filter__range-sep">&ndash;</span>
+              <div class="advanced-filter__input-with-suffix">
+                <input type="number" placeholder="Max" />
+                <span class="advanced-filter__input-suffix">ac</span>
+              </div>
+            </div>
+            <div class="advanced-filter__slider">
+              <div class="advanced-filter__slider-track"></div>
+              <div class="advanced-filter__slider-fill" style="left:0%; width:100%;"></div>
+              <div class="advanced-filter__slider-thumb" style="left:0%;"></div>
+              <div class="advanced-filter__slider-thumb" style="left:100%;"></div>
+            </div>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Minimum / Maximum GDD</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__range-row">
+              <input type="number" class="advanced-filter__range-input" placeholder="Min" value="17.5" />
+              <span class="advanced-filter__range-sep">&ndash;</span>
+              <input type="number" class="advanced-filter__range-input" placeholder="Max" value="209" />
+            </div>
+            <div class="advanced-filter__slider">
+              <div class="advanced-filter__slider-track"></div>
+              <div class="advanced-filter__slider-fill" style="left:5%; width:90%;"></div>
+              <div class="advanced-filter__slider-thumb" style="left:5%;"></div>
+              <div class="advanced-filter__slider-thumb" style="left:95%;"></div>
+            </div>
+          </div>
+
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Planting date</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__date-row">
+              <div class="advanced-filter__date-input">
+                <input type="text" placeholder="From" />
+                <span class="advanced-filter__date-icon"><span class="material-symbols-outlined" style="font-size:18px;">calendar_today</span></span>
+              </div>
+              <span class="advanced-filter__range-sep">&ndash;</span>
+              <div class="advanced-filter__date-input">
+                <input type="text" placeholder="To" />
+                <span class="advanced-filter__date-icon"><span class="material-symbols-outlined" style="font-size:18px;">calendar_today</span></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    </div>
+  </details>
+
+  <h3 class="type-title3" style="margin: 1.5rem 0 0.5rem;">iOS / Android</h3>
+
+  <details class="demo-details demo-section">
+    <summary class="demo-details__summary"><h2 class="type-title3">Layout example — mobile standard page (iOS / Android)</h2></summary>
+    <div class="demo-details__content">
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">On mobile, the sidebar nav becomes a bottom tab bar, the header goes full width, and cards stack single-column. Simulated at 390px width (iPhone 14). <a href="docs/standard-page-layout.md#mobile-layout-ios--android" target="_blank" rel="noopener">View spec (.md)</a></p>
+
+    <!-- Mobile phone frame -->
+    <div style="width:390px; height:780px; border:1px solid var(--color-border); border-radius:40px; overflow:hidden; background:var(--color-background); display:flex; flex-direction:column; box-shadow:var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.12)); position:relative;">
+
+      <!-- Status bar mockup -->
+      <div style="height:44px; background:var(--color-surface); display:flex; align-items:flex-end; justify-content:space-between; padding:0 24px 4px; font-size:12px; font-weight:600; color:var(--color-text); flex-shrink:0;">
+        <span>9:41</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <span class="material-symbols-outlined" style="font-size:14px;">signal_cellular_alt</span>
+          <span class="material-symbols-outlined" style="font-size:14px;">wifi</span>
+          <span class="material-symbols-outlined" style="font-size:14px;">battery_full</span>
+        </div>
+      </div>
+
+      <!-- Header (full width, no sidebar offset) -->
+      <header class="header" style="border-radius:0; min-height:48px; padding:4px 16px;">
+        <div class="header__left">
+          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" style="height:24px;" /></a>
+        </div>
+        <div class="header__right" style="gap:8px;">
+          <button style="background:none; border:none; cursor:pointer; display:inline-flex;"><span class="material-symbols-outlined" style="font-size:22px; color:var(--color-text-muted);">search</span></button>
+          <span class="header__avatar" aria-label="User avatar" style="width:32px; height:32px; font-size:12px;">RS</span>
+        </div>
+      </header>
+
+      <!-- Page toolbar (mobile) -->
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 16px; border-bottom:1px solid var(--color-border); flex-shrink:0;">
+        <span style="font-size:16px; font-weight:600; color:var(--color-text);">Fields</span>
+        <div style="display:flex; gap:8px; align-items:center; overflow-x:auto;">
+          <button class="filter-pill filter-pill--neutral" style="font-size:12px; height:28px; padding:0 10px; white-space:nowrap;">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:12px;">tune</span></span>
+            Filters
+          </button>
+          <button class="filter-pill filter-pill--neutral" style="font-size:12px; height:28px; padding:0 10px; white-space:nowrap;">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:12px;">view_list</span></span>
+            List
+          </button>
+        </div>
+      </div>
+
+      <!-- Content: single-column card stack -->
+      <div style="flex:1; overflow-y:auto; padding:12px 16px; display:flex; flex-direction:column; gap:12px;">
+
+        <article class="field-card">
+          <div class="field-card__body" style="padding:12px 14px;">
+            <div class="field-card__title-row">
+              <h3 class="field-card__title" style="font-size:15px;">North Quarter 12</h3>
+              <span class="field-card__star"><svg viewBox="0 0 18 18" fill="var(--color-warning-500)" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5l2.47 5.01L17 7.27l-4 3.9.94 5.51L9 14.27l-4.94 2.41.94-5.51-4-3.9 5.53-.76z"/></svg></span>
+            </div>
+            <p class="field-card__subtitle">Johnson Farms &middot; Home</p>
+            <div class="field-card__meta"><span>142.3 ac</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-brand);">Corn</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-warning-600);">GDD 1,245</span></div>
+            <hr class="field-card__divider" />
+            <div class="field-card__pills"><span class="field-card__disease-pill field-card__disease-pill--tarspot">Tar spot</span></div>
+            <div class="field-card__actions"><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:16px;">visibility</span> View</a><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:16px;">map</span> Map</a></div>
+          </div>
+        </article>
+
+        <article class="field-card">
+          <div class="field-card__body" style="padding:12px 14px;">
+            <h3 class="field-card__title" style="font-size:15px;">South 80</h3>
+            <p class="field-card__subtitle">Miller Ag &middot; River</p>
+            <div class="field-card__meta"><span>80.0 ac</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-brand);">Soybeans</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-warning-600);">GDD 980</span></div>
+            <hr class="field-card__divider" />
+            <div class="field-card__pills"><span class="field-card__disease-pill field-card__disease-pill--fls">FLS</span></div>
+            <div class="field-card__actions"><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:16px;">visibility</span> View</a><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:16px;">map</span> Map</a></div>
+          </div>
+        </article>
+
+        <article class="field-card">
+          <div class="field-card__body" style="padding:12px 14px;">
+            <div class="field-card__title-row">
+              <h3 class="field-card__title" style="font-size:15px;">West Field A</h3>
+              <span class="field-card__star"><svg viewBox="0 0 18 18" fill="var(--color-warning-500)" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5l2.47 5.01L17 7.27l-4 3.9.94 5.51L9 14.27l-4.94 2.41.94-5.51-4-3.9 5.53-.76z"/></svg></span>
+            </div>
+            <p class="field-card__subtitle">Johnson Farms &middot; Home</p>
+            <div class="field-card__meta"><span>210.5 ac</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-brand);">Corn</span><span class="field-card__meta-sep">&middot;</span><span style="color:var(--color-warning-600);">GDD 1,312</span></div>
+            <hr class="field-card__divider" />
+            <div class="field-card__pills"><span class="field-card__disease-pill field-card__disease-pill--gls">GLS</span><span class="field-card__disease-pill field-card__disease-pill--nclb">NCLB</span></div>
+            <div class="field-card__actions"><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:16px;">visibility</span> View</a><a href="#" class="field-card__action"><span class="material-symbols-outlined" style="font-size:16px;">map</span> Map</a></div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Bottom tab bar -->
+      <nav class="nav nav--bottom" style="position:relative; border-radius:0;">
+        <a href="#" class="nav__item" aria-current="page">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:24px;">grass</span></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:24px;">search</span></span>
+          <span class="nav__label">Scout</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:24px;">cloud</span></span>
+          <span class="nav__label">Weather</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:24px;">more_horiz</span></span>
+          <span class="nav__label">More</span>
+        </a>
+      </nav>
+
+    </div><!-- /phone frame -->
+
+    </div>
+  </details>
+
+  <details class="demo-details demo-section">
+    <summary class="demo-details__summary"><h2 class="type-title3">Layout example — advanced filters bottom sheet (mobile)</h2></summary>
+    <div class="demo-details__content">
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">On mobile, the advanced filter sidebar converts to a bottom sheet. Slides up from the bottom, max-height <code>85vh</code>, drag handle at top, <code>--radius-xl</code> on top corners. Same filter items as desktop.</p>
+
+    <!-- Mobile phone frame with bottom sheet -->
+    <div style="width:390px; height:780px; border:1px solid var(--color-border); border-radius:40px; overflow:hidden; background:var(--color-background); display:flex; flex-direction:column; box-shadow:var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.12)); position:relative;">
+
+      <!-- Scrim + dimmed content behind -->
+      <div style="position:absolute; inset:0; background:rgba(0,0,0,0.32); z-index:1; border-radius:40px;"></div>
+
+      <!-- Bottom sheet (positioned at bottom) -->
+      <div style="position:absolute; bottom:0; left:0; right:0; max-height:85%; background:var(--color-surface); border-radius:15px 15px 0 0; box-shadow:0 -4px 24px rgba(0,0,0,0.16); z-index:2; display:flex; flex-direction:column; overflow:hidden;">
+
+        <!-- Drag handle -->
+        <div class="bottom-sheet__handle">
+          <div class="bottom-sheet__handle-bar"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="bottom-sheet__header">
+          <div class="bottom-sheet__header-left">
+            <span class="bottom-sheet__header-icon"><svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.667 10.667C0.478 10.667 0.32 10.603 0.192 10.475C0.064 10.347 0 10.189 0 10s.064-.347.192-.475C.32 9.397.478 9.333.667 9.333h2.666c.19 0 .347.064.475.192.128.128.192.286.192.475s-.064.347-.192.475c-.128.128-.286.192-.475.192H.667zm0-8C.478 2.667.32 2.603.192 2.475.064 2.347 0 2.189 0 2s.064-.347.192-.475C.32 1.397.478 1.333.667 1.333H6c.189 0 .347.064.475.192.128.128.192.286.192.475s-.064.347-.192.475C6.347 2.603 6.189 2.667 6 2.667H.667zM6 12c-.189 0-.347-.064-.475-.192A.645.645 0 015.333 11.333V8.667c0-.189.064-.347.192-.475A.645.645 0 016 8c.189 0 .347.064.475.192.128.128.192.286.192.475v.666h4.666c.19 0 .348.064.475.192.128.128.192.286.192.475s-.064.347-.192.475c-.127.128-.286.192-.475.192H6.667v.666c0 .19-.064.348-.192.475A.645.645 0 016 12zM3.333 8a.645.645 0 01-.475-.192.645.645 0 01-.191-.475V6.667H.667A.645.645 0 01.192 6.475.645.645 0 010 6c0-.189.064-.347.192-.475A.645.645 0 01.667 5.333h2V4.667c0-.189.064-.347.192-.475A.645.645 0 013.333 4c.19 0 .348.064.475.192.128.128.192.286.192.475v2.666c0 .19-.064.348-.192.475A.645.645 0 013.333 8zM6 6.667a.645.645 0 01-.475-.192A.645.645 0 015.333 6c0-.189.064-.347.192-.475A.645.645 0 016 5.333h5.333c.19 0 .348.064.475.192.128.128.192.286.192.475s-.064.347-.192.475c-.127.128-.286.192-.475.192H6zm2.667-2.667a.645.645 0 01-.475-.192A.645.645 0 018 3.333V.667c0-.189.064-.347.192-.475A.645.645 0 018.667 0c.188 0 .347.064.475.192.128.128.192.286.192.475v.666h2c.19 0 .348.064.475.192.128.128.192.286.192.475s-.064.347-.192.475c-.127.128-.286.192-.475.192h-2v.666c0 .19-.064.348-.192.475A.645.645 0 018.667 4z" fill="currentColor"/></svg></span>
+            <span class="bottom-sheet__title">Advanced filters</span>
+          </div>
+          <button class="bottom-sheet__close" aria-label="Close">
+            <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+          </button>
+        </div>
+
+        <!-- Scrollable filter body -->
+        <div class="bottom-sheet__body" style="max-height:500px;">
+
+          <!-- Filter: Grower -->
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Filter by grower</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__chip-input">
+              <span class="advanced-filter__chip">Johnson Farms <button class="advanced-filter__chip-remove" aria-label="Remove">&times;</button></span>
+              <input type="text" placeholder="Search growers..." />
+            </div>
+          </div>
+
+          <!-- Filter: Crop type -->
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Crop type</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__chip-input">
+              <input type="text" placeholder="Search crop types..." />
+            </div>
+          </div>
+
+          <!-- Filter: Field state -->
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Field state</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <select class="advanced-filter__select">
+              <option value="" disabled selected>Pick one</option>
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+
+          <!-- Filter: GDD range -->
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Minimum / Maximum GDD</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__range-row">
+              <input type="number" class="advanced-filter__range-input" placeholder="Min" value="17.5" />
+              <span class="advanced-filter__range-sep">&ndash;</span>
+              <input type="number" class="advanced-filter__range-input" placeholder="Max" value="209" />
+            </div>
+            <div class="advanced-filter__slider">
+              <div class="advanced-filter__slider-track"></div>
+              <div class="advanced-filter__slider-fill" style="left:5%; width:90%;"></div>
+              <div class="advanced-filter__slider-thumb" style="left:5%;"></div>
+              <div class="advanced-filter__slider-thumb" style="left:95%;"></div>
+            </div>
+          </div>
+
+          <!-- Filter: Planting date -->
+          <div class="advanced-filter__item">
+            <div class="advanced-filter__item-header">
+              <span class="advanced-filter__item-label">Planting date</span>
+              <button class="advanced-filter__item-reset">Reset</button>
+            </div>
+            <div class="advanced-filter__date-row">
+              <div class="advanced-filter__date-input">
+                <input type="text" placeholder="From" />
+                <span class="advanced-filter__date-icon"><span class="material-symbols-outlined" style="font-size:18px;">calendar_today</span></span>
+              </div>
+              <span class="advanced-filter__range-sep">&ndash;</span>
+              <div class="advanced-filter__date-input">
+                <input type="text" placeholder="To" />
+                <span class="advanced-filter__date-icon"><span class="material-symbols-outlined" style="font-size:18px;">calendar_today</span></span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /body -->
+
+      </div><!-- /bottom sheet -->
+
+    </div><!-- /phone frame -->
+
     </div>
   </details>
   </div>
@@ -2964,10 +3758,46 @@
       initMenu('demo-menu-icons-trigger', 'demo-menu-icons-panel');
       initMenu('demo-menu-checkbox-trigger', 'demo-menu-checkbox-panel');
       initMenu('demo-menu-radio-trigger', 'demo-menu-radio-panel');
-      initMenu('layout-menu-trigger', 'layout-menu-panel');
       initMenu('header-notifications-trigger', 'header-notifications-panel');
       initMenu('header-flag-trigger', 'header-flag-menu');
-      initDropdown('layout-dropdown-trigger', 'layout-dropdown-list');
+
+      /* Standard layout — view mode switcher */
+      (function() {
+        var trigger = document.getElementById('std-view-mode-trigger');
+        var menu = document.getElementById('std-view-mode-menu');
+        var iconEl = document.getElementById('std-view-mode-icon');
+        var labelEl = document.getElementById('std-view-mode-label');
+        if (!trigger || !menu) return;
+        var items = menu.querySelectorAll('.menu__item');
+        var content = document.getElementById('std-page-content');
+
+        trigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var open = menu.hasAttribute('hidden');
+          if (open) { menu.removeAttribute('hidden'); trigger.setAttribute('aria-expanded', 'true'); }
+          else { menu.setAttribute('hidden', ''); trigger.setAttribute('aria-expanded', 'false'); }
+        });
+        document.addEventListener('click', function() {
+          menu.setAttribute('hidden', '');
+          trigger.setAttribute('aria-expanded', 'false');
+        });
+        items.forEach(function(item) {
+          item.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var view = item.dataset.view;
+            iconEl.textContent = item.dataset.icon;
+            labelEl.textContent = item.dataset.label;
+            items.forEach(function(i) { i.style.background = 'transparent'; i.style.color = 'var(--color-text)'; });
+            item.style.background = 'var(--color-primitive-100)';
+            item.style.color = 'var(--color-brand)';
+            document.querySelectorAll('.std-view-panel').forEach(function(p) { p.style.display = 'none'; });
+            document.getElementById('std-view-' + view).style.display = '';
+            if (view === 'map') { content.style.padding = '0'; } else { content.style.padding = ''; }
+            menu.setAttribute('hidden', '');
+            trigger.setAttribute('aria-expanded', 'false');
+          });
+        });
+      })();
 
       (function () {
         var display = document.getElementById('header-flag-display');

@@ -21,10 +21,16 @@ Cards are used for **field summaries**, **field detail (information card)**, and
 - **Outline tag** (e.g. “Stand count 1”, “Weeds 2”): Use `.field-card__tag`. Border `--color-primitive-300`, background surface, text `--color-action`. Radius `--radius-pill`.
 - **Status pill** (e.g. “Harvest ready”, “Replant”): Use `.field-card__status-pill`. Danger ramp (100 background, 400 border, 900 text). Radius `--radius-pill`. Include icon + label + value when needed.
 
+### Card height and action placement
+- Card height is **content-driven** — cards size to fit their content, not to match sibling card heights in a grid row.
+- Action buttons sit directly below the last content element with no extra gap. Do not use `margin-top: auto` or `flex: 1` on the body to force equal-height rows.
+- In a grid layout, cards in the same row may have different heights. This is intentional — whitespace should come from content, not from stretching.
+
 ### Do not
 - Use different border-radius values for cards vs modals; keep both on `--radius-xl`.
 - Use regular weight for card bottom actions; use semibold.
 - Flush action links to far left/right; keep them distributed with content centered in each half.
+- Force equal-height cards by stretching the card body or adding auto margins to push actions down. Card height follows content.
 
 ---
 
