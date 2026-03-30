@@ -78,6 +78,14 @@
     .data-row__cell { padding: 8px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-right: 1px solid var(--color-border); }
     .data-row__cell:last-child { border-right: none; }
 
+    /* Checkbox column — hidden by default, shown on row hover */
+    .table-header-bar__col[data-col="checkbox"],
+    .data-row__cell[data-col="checkbox"] { opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
+    .data-row:hover .data-row__cell[data-col="checkbox"],
+    .data-row__cell[data-col="checkbox"].is-checked,
+    .table-header-bar:hover .table-header-bar__col[data-col="checkbox"],
+    .table-header-bar__col[data-col="checkbox"].is-checked { opacity: 1; pointer-events: auto; }
+
     .page-content { flex: 1; overflow-y: auto; padding: 0; background: var(--color-background); }
 
     /* View panels */
@@ -385,14 +393,16 @@
 
         <!-- Table header -->
         <div class="table-header-bar">
-          <span class="table-header-bar__col" style="flex:0 0 5%;">&nbsp;</span>
-          <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 15%;">Field <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
-          <span class="table-header-bar__col" style="flex:0 0 10%;">Trial ID</span>
-          <span class="table-header-bar__col table-header-bar__col--sortable table-header-bar__col--active" style="flex:0 0 15%;">Protocol <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">arrow_downward</span></span></span>
-          <span class="table-header-bar__col" style="flex:0 0 8%;">Crop</span>
-          <span class="table-header-bar__col" style="flex:0 0 10%;">Zones</span>
-          <span class="table-header-bar__col" style="flex:0 0 13%;">Crop Specialist</span>
-          <span class="table-header-bar__col" style="flex:0 0 8%;">Status</span>
+          <span class="table-header-bar__col" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" id="select-all" onchange="toggleSelectAll(this)" /></span>
+          <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 13%;">Field <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+          <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 11%;">Farm <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+          <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 11%;">Grower <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+          <span class="table-header-bar__col" style="flex:0 0 9%;">Trial ID</span>
+          <span class="table-header-bar__col table-header-bar__col--sortable table-header-bar__col--active" style="flex:0 0 12%;">Protocol <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">arrow_downward</span></span></span>
+          <span class="table-header-bar__col" style="flex:0 0 6%;">Crop</span>
+          <span class="table-header-bar__col" style="flex:0 0 9%;">Zones</span>
+          <span class="table-header-bar__col" style="flex:0 0 10%;">Crop Specialist</span>
+          <span class="table-header-bar__col" style="flex:0 0 6%;">Status</span>
           <span class="table-header-bar__col" style="flex:1;border-right:none;">Actions</span>
         </div>
 
@@ -400,20 +410,22 @@
         <main class="page-content">
           <!-- Trial Row 1 -->
           <div class="data-row" data-protocol="yield">
-            <span class="data-row__cell" style="flex:0 0 5%;"><input type="checkbox" class="checkbox" /></span>
-            <span class="data-row__cell" style="flex:0 0 15%; font-weight:500;">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
               <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-success-500);vertical-align:middle;margin-right:4px;">science</span>
               Willow Creek South
             </span>
-            <span class="data-row__cell" style="flex:0 0 10%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-001</span>
-            <span class="data-row__cell" style="flex:0 0 15%;">Yield Enhancement</span>
-            <span class="data-row__cell" style="flex:0 0 8%; color:var(--color-brand);">Corn</span>
-            <span class="data-row__cell" style="flex:0 0 10%;">
+            <span class="data-row__cell" style="flex:0 0 11%;">Davidson Home</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Davidson Ag Partners</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-001</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Yield Enhancement</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
               <span class="zone-pill zone-pill--control">1 Ctrl</span>
               <span class="zone-pill zone-pill--treatment">2 Trt</span>
             </span>
-            <span class="data-row__cell" style="flex:0 0 13%;">Sarah Mitchell</span>
-            <span class="data-row__cell" style="flex:0 0 8%;"><span class="trial-status trial-status--active">Active</span></span>
+            <span class="data-row__cell" style="flex:0 0 10%;">Sarah Mitchell</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--active">Active</span></span>
             <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
               <a href="#" onclick="showTrialDetail('TRL-2026-001'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
               <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
@@ -422,20 +434,22 @@
 
           <!-- Trial Row 2 -->
           <div class="data-row" data-protocol="pest">
-            <span class="data-row__cell" style="flex:0 0 5%;"><input type="checkbox" class="checkbox" /></span>
-            <span class="data-row__cell" style="flex:0 0 15%; font-weight:500;">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
               <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-success-500);vertical-align:middle;margin-right:4px;">science</span>
               Hawkins Quarter
             </span>
-            <span class="data-row__cell" style="flex:0 0 10%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-002</span>
-            <span class="data-row__cell" style="flex:0 0 15%;">Pest Management</span>
-            <span class="data-row__cell" style="flex:0 0 8%; color:var(--color-brand);">Corn</span>
-            <span class="data-row__cell" style="flex:0 0 10%;">
+            <span class="data-row__cell" style="flex:0 0 11%;">Davidson Home</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Davidson Ag Partners</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-002</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Pest Management</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
               <span class="zone-pill zone-pill--control">1 Ctrl</span>
               <span class="zone-pill zone-pill--treatment">1 Trt</span>
             </span>
-            <span class="data-row__cell" style="flex:0 0 13%;">James Thornton</span>
-            <span class="data-row__cell" style="flex:0 0 8%;"><span class="trial-status trial-status--active">Active</span></span>
+            <span class="data-row__cell" style="flex:0 0 10%;">James Thornton</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--active">Active</span></span>
             <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
               <a href="#" onclick="showTrialDetail('TRL-2026-002'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
               <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
@@ -444,20 +458,22 @@
 
           <!-- Trial Row 3 -->
           <div class="data-row" data-protocol="yield">
-            <span class="data-row__cell" style="flex:0 0 5%;"><input type="checkbox" class="checkbox" /></span>
-            <span class="data-row__cell" style="flex:0 0 15%; font-weight:500;">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
               <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-success-500);vertical-align:middle;margin-right:4px;">science</span>
               Bottoms East
             </span>
-            <span class="data-row__cell" style="flex:0 0 10%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-003</span>
-            <span class="data-row__cell" style="flex:0 0 15%;">Yield Enhancement</span>
-            <span class="data-row__cell" style="flex:0 0 8%; color:var(--color-brand);">Soybeans</span>
-            <span class="data-row__cell" style="flex:0 0 10%;">
+            <span class="data-row__cell" style="flex:0 0 11%;">Thornton South</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">James Thornton</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-003</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Yield Enhancement</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Soybeans</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
               <span class="zone-pill zone-pill--control">1 Ctrl</span>
               <span class="zone-pill zone-pill--treatment">3 Trt</span>
             </span>
-            <span class="data-row__cell" style="flex:0 0 13%;">Sarah Mitchell</span>
-            <span class="data-row__cell" style="flex:0 0 8%;"><span class="trial-status trial-status--active">Active</span></span>
+            <span class="data-row__cell" style="flex:0 0 10%;">Sarah Mitchell</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--active">Active</span></span>
             <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
               <a href="#" onclick="showTrialDetail('TRL-2026-003'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
               <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
@@ -466,20 +482,22 @@
 
           <!-- Trial Row 4 — Excluded -->
           <div class="data-row" data-protocol="pest" style="background:var(--color-warning-50, #fffbeb);">
-            <span class="data-row__cell" style="flex:0 0 5%;"><input type="checkbox" class="checkbox" /></span>
-            <span class="data-row__cell" style="flex:0 0 15%; font-weight:500;">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
               <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-warning-500);vertical-align:middle;margin-right:4px;">science</span>
               Sunflower Bend 22
             </span>
-            <span class="data-row__cell" style="flex:0 0 10%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-004</span>
-            <span class="data-row__cell" style="flex:0 0 15%;">Pest Management</span>
-            <span class="data-row__cell" style="flex:0 0 8%; color:var(--color-brand);">Corn</span>
-            <span class="data-row__cell" style="flex:0 0 10%;">
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell North</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell Farm</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-004</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Pest Management</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
               <span class="zone-pill zone-pill--control">1 Ctrl</span>
               <span class="zone-pill zone-pill--treatment">1 Trt</span>
             </span>
-            <span class="data-row__cell" style="flex:0 0 13%;">James Thornton</span>
-            <span class="data-row__cell" style="flex:0 0 8%;"><span class="trial-status trial-status--excluded">Excluded</span></span>
+            <span class="data-row__cell" style="flex:0 0 10%;">James Thornton</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--excluded">Excluded</span></span>
             <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
               <a href="#" onclick="showTrialDetail('TRL-2026-004'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
               <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
@@ -488,20 +506,22 @@
 
           <!-- Trial Row 5 -->
           <div class="data-row" data-protocol="fertility">
-            <span class="data-row__cell" style="flex:0 0 5%;"><input type="checkbox" class="checkbox" /></span>
-            <span class="data-row__cell" style="flex:0 0 15%; font-weight:500;">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
               <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-success-500);vertical-align:middle;margin-right:4px;">science</span>
               Prairie View
             </span>
-            <span class="data-row__cell" style="flex:0 0 10%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-005</span>
-            <span class="data-row__cell" style="flex:0 0 15%;">Fertility</span>
-            <span class="data-row__cell" style="flex:0 0 8%; color:var(--color-brand);">Corn</span>
-            <span class="data-row__cell" style="flex:0 0 10%;">
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell North</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell Farm</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-005</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Fertility</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
               <span class="zone-pill zone-pill--control">1 Ctrl</span>
               <span class="zone-pill zone-pill--treatment">2 Trt</span>
             </span>
-            <span class="data-row__cell" style="flex:0 0 13%;">Lisa Chen</span>
-            <span class="data-row__cell" style="flex:0 0 8%;"><span class="trial-status trial-status--active">Active</span></span>
+            <span class="data-row__cell" style="flex:0 0 10%;">Lisa Chen</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--active">Active</span></span>
             <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
               <a href="#" onclick="showTrialDetail('TRL-2026-005'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
               <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
@@ -1152,6 +1172,50 @@
 
     function filterByProtocol(protocol) {
       switchTab(document.querySelector('.tabs__item[aria-selected="true"]'), protocol);
+    }
+
+    /* ===== CHECKBOX VISIBILITY ===== */
+    function toggleRowCheckbox(cb) {
+      var cell = cb.closest('[data-col="checkbox"]');
+      if (cb.checked) {
+        cell.classList.add('is-checked');
+      } else {
+        cell.classList.remove('is-checked');
+      }
+      updateSelectAllState();
+    }
+
+    function toggleSelectAll(cb) {
+      var headerCol = cb.closest('[data-col="checkbox"]');
+      var rowCells = document.querySelectorAll('.data-row .data-row__cell[data-col="checkbox"]');
+      rowCells.forEach(function(cell) {
+        var rowCb = cell.querySelector('.checkbox');
+        rowCb.checked = cb.checked;
+        if (cb.checked) {
+          cell.classList.add('is-checked');
+        } else {
+          cell.classList.remove('is-checked');
+        }
+      });
+      if (cb.checked) {
+        headerCol.classList.add('is-checked');
+      } else {
+        headerCol.classList.remove('is-checked');
+      }
+    }
+
+    function updateSelectAllState() {
+      var all = document.querySelectorAll('.data-row .data-row__cell[data-col="checkbox"] .checkbox');
+      var checked = document.querySelectorAll('.data-row .data-row__cell[data-col="checkbox"] .checkbox:checked');
+      var selectAll = document.getElementById('select-all');
+      var headerCol = selectAll.closest('[data-col="checkbox"]');
+      selectAll.checked = all.length > 0 && checked.length === all.length;
+      selectAll.indeterminate = checked.length > 0 && checked.length < all.length;
+      if (checked.length > 0) {
+        headerCol.classList.add('is-checked');
+      } else {
+        headerCol.classList.remove('is-checked');
+      }
     }
   </script>
 
