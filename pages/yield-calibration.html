@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yield Calibration — AgMRI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+
+  <!-- Design tokens + components -->
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/dropdown.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/data-table.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/counter-badge.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/loading.css" />
+  <link rel="stylesheet" href="../components/alert.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body { font-family: var(--font-family); background: var(--color-background); color: var(--color-text); }
+
+    /* App shell */
+    .app { display: flex; height: 100vh; overflow: hidden; }
+    .app__side { flex-shrink: 0; height: 100%; z-index: 10; }
+    .app__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; }
+    .app__content { flex: 1; overflow-y: auto; padding: var(--spacing-l, 20px) var(--spacing-xl, 32px); }
+
+    /* Page header row with back + title */
+    .page-header-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-m, 10px);
+      margin-bottom: var(--spacing-l, 20px);
+    }
+    .page-title {
+      font-size: var(--font-size-22, 22px);
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 0;
+    }
+    .page-subtitle {
+      font-size: var(--font-size-14, 14px);
+      color: var(--color-text-muted);
+      margin: 4px 0 0 0;
+    }
+
+    /* Summary stat cards row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-m, 10px);
+      margin-bottom: var(--spacing-l, 20px);
+    }
+    .stat-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl, 16px);
+      padding: var(--spacing-l, 20px);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xs, 4px);
+    }
+    .stat-card__label {
+      font-size: var(--font-size-12, 12px);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .stat-card__value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.1;
+    }
+    .stat-card__unit {
+      font-size: var(--font-size-14, 14px);
+      font-weight: 400;
+      color: var(--color-text-muted);
+    }
+    .stat-card--highlight .stat-card__value {
+      color: var(--color-brand);
+    }
+
+    /* Calibration form section */
+    .calib-section {
+      margin-bottom: var(--spacing-l, 20px);
+    }
+    .calib-section__title {
+      font-size: var(--font-size-16, 16px);
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0 0 var(--spacing-m, 10px) 0;
+    }
+
+    /* Two-column form grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-m, 10px) var(--spacing-l, 20px);
+      margin-bottom: var(--spacing-m, 10px);
+    }
+    .form-grid--3col {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-s, 5px);
+      margin-bottom: var(--spacing-m, 10px);
+    }
+
+    /* Section divider */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: var(--spacing-l, 20px) 0;
+    }
+
+    /* Alert inline */
+    .calib-alert {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-m, 10px);
+      padding: var(--spacing-m, 10px) var(--spacing-l, 20px);
+      background: var(--color-success-100);
+      border: 1px solid var(--color-success-400);
+      border-radius: var(--radius-xl, 16px);
+      margin-bottom: var(--spacing-l, 20px);
+      font-size: var(--font-size-14, 14px);
+      color: var(--color-success-900);
+    }
+    .calib-alert__icon {
+      display: inline-flex;
+      width: 20px; height: 20px;
+      color: var(--color-success-500);
+      flex-shrink: 0;
+    }
+    .calib-alert__icon svg { width: 20px; height: 20px; }
+
+    /* Variance indicator */
+    .variance--positive { color: var(--color-success-600); }
+    .variance--negative { color: var(--color-danger-600); }
+
+    /* Action row */
+    .action-row {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-m, 10px);
+      justify-content: flex-end;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar nav -->
+  <aside class="app__side">
+    <nav class="nav" aria-label="Main">
+      <a href="#" class="nav__item">
+        <span class="nav__icon" aria-hidden="true"><svg viewBox="0 0 17.3333 18.9583" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
+        <span class="nav__label">Home</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon" aria-hidden="true"><svg viewBox="0 0 26 25.0029" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M21.8696 17.9963V11.4889C21.8655 7.93512 19.5601 4.75801 16.0877 3.52086C15.8098 1.88368 14.2013 0.772613 12.4948 1.03921C11.1662 1.24678 10.1246 2.2461 9.90823 3.52087C6.4361 4.75761 4.13175 7.93549 4.13043 11.4889V17.9963C4.13043 19.655 2.72889 20.9997 1 20.9997H25C23.2711 20.9997 21.8696 19.655 21.8696 17.9963Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 20.9997C16.542 22.7266 14.9217 24.0029 12.9932 24.0029C11.0833 24.0029 9.47582 22.7512 9 21.0498" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g></svg></span>
+        <span class="nav__label">Alerts</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon" aria-hidden="true"><svg viewBox="0 0 24 20" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 12C14.3261 12 15.5975 12.5272 16.5352 13.4648C17.4728 14.4025 18 15.6739 18 17V19C18 19.5523 17.5523 20 17 20C16.4477 20 16 19.5523 16 19V17C16 16.2044 15.6837 15.4415 15.1211 14.8789C14.6289 14.3867 13.9835 14.0829 13.2969 14.0146L13 14H5C4.20435 14 3.44152 14.3163 2.87891 14.8789C2.3163 15.4415 2 16.2044 2 17V19C2 19.5523 1.55228 20 1 20C0.447715 20 0 19.5523 0 19V17C0 15.6739 0.527162 14.4025 1.46484 13.4648C2.40253 12.5272 3.67392 12 5 12H13ZM9 0C11.7614 0 14 2.23858 14 5C14 7.76142 11.7614 10 9 10C6.23858 10 4 7.76142 4 5C4 2.23858 6.23858 0 9 0ZM9 2C7.34315 2 6 3.34315 6 5C6 6.65685 7.34315 8 9 8C10.6569 8 12 6.65685 12 5C12 3.34315 10.6569 2 9 2Z" fill="currentColor"/></svg></span>
+        <span class="nav__label">Growers</span>
+      </a>
+      <a href="fields-list.html" class="nav__item" aria-current="page">
+        <span class="nav__icon" aria-hidden="true"><svg viewBox="0 0 25 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.43262 12.7021C9.67193 12.7516 9.82653 12.9853 9.77735 13.2246L7.63379 23.583C7.58437 23.8251 7.37115 23.9995 7.12403 24H1.042C0.926451 23.9997 0.813647 23.9601 0.723639 23.8877C0.505235 23.7116 0.470661 23.3915 0.64649 23.1729L8.99415 12.8604C9.06993 12.7663 9.18048 12.7072 9.30079 12.6963V12.6943C9.34477 12.6901 9.38934 12.6933 9.43262 12.7021ZM12.5 12.542C12.7641 12.5419 12.9921 12.7268 13.0459 12.9854L15.1982 23.375C15.2052 23.4093 15.208 23.4445 15.208 23.4795C15.2078 23.767 14.9751 24.0001 14.6875 24H10.3154C10.2805 24 10.2452 23.9962 10.2109 23.9893C9.92936 23.9315 9.74817 23.6567 9.80567 23.375L11.9551 12.9854C12.0085 12.727 12.2362 12.542 12.5 12.542ZM15.6992 12.6963C15.8195 12.7075 15.9299 12.7665 16.0059 12.8604L24.3535 23.167C24.4301 23.2593 24.4716 23.3762 24.4707 23.4961C24.4683 23.7766 24.2386 24.0022 23.958 24H17.876C17.6289 23.9995 17.4156 23.8251 17.3662 23.583L15.2227 13.2256C15.2138 13.1823 15.2116 13.1377 15.2158 13.0938C15.2394 12.8505 15.4559 12.6728 15.6992 12.6963ZM5.31641 13.3496C5.42475 13.3233 5.53779 13.3702 5.59669 13.4648C5.65935 13.5598 5.65221 13.6843 5.57911 13.7715L0.462896 20.0928C0.413602 20.1534 0.338902 20.1883 0.260748 20.1885C0.117102 20.1887 0.000396453 20.0724 5.80463e-06 19.9287V16.3955C-0.0015452 15.8255 0.307829 15.3003 0.806646 15.0244C2.22904 14.2687 3.74538 13.7048 5.31641 13.3496ZM19.6836 13.3496C21.2546 13.7048 22.771 14.2687 24.1934 15.0244C24.6922 15.3003 25.0016 15.8255 25 16.3955V19.9238C24.9998 20.0018 24.9647 20.0757 24.9043 20.125C24.7927 20.2157 24.6278 20.1995 24.5371 20.0879L19.4209 13.7666C19.3707 13.7041 19.3518 13.622 19.3701 13.5439C19.403 13.4039 19.5436 13.3167 19.6836 13.3496ZM7.2002 8.03125C8.01174 5.10466 11.0421 3.38979 13.9688 4.20117C16.8954 5.01265 18.6101 8.04307 17.7988 10.9697C17.6544 11.4696 17.1366 11.7628 16.6338 11.6289C16.1234 11.493 15.8201 10.9684 15.9561 10.458C16.1294 9.83182 16.1294 9.17013 15.9561 8.54395C15.4275 6.63501 13.4509 5.51632 11.542 6.04492C9.63327 6.57361 8.51451 8.5492 9.04297 10.458C9.17687 10.9608 8.88366 11.4786 8.38379 11.623C7.87648 11.7694 7.34683 11.477 7.2002 10.9697C6.9337 10.0084 6.93369 8.99256 7.2002 8.03125ZM5.08301 9.11426C5.6583 9.11426 6.125 9.58096 6.12501 10.1562C6.12501 10.7315 5.65831 11.1982 5.08301 11.1982H4.042C3.4667 11.1982 3.00001 10.7315 3.00001 10.1562C3.00001 9.58096 3.4667 9.11426 4.042 9.11426H5.08301ZM21.083 9.11426C21.6583 9.11426 22.125 9.58096 22.125 10.1562C22.125 10.7315 21.6583 11.1982 21.083 11.1982H20.042C19.4667 11.1982 19 10.7315 19 10.1562C19 9.58096 19.4667 9.11426 20.042 9.11426H21.083ZM5.47462 3.00098C5.87427 2.58718 6.53444 2.57497 6.94825 2.97461L7.68653 3.71289C8.09303 4.11993 8.09249 4.77889 7.68555 5.18555C7.27862 5.59219 6.61965 5.5923 6.2129 5.18555L5.47462 4.44824C5.08489 4.0447 5.08512 3.40466 5.47462 3.00098ZM18.3643 2.97461C18.7678 2.58488 19.4078 2.58511 19.8115 2.97461C20.2253 3.37427 20.2375 4.03444 19.8379 4.44824L19.0996 5.18555C18.6929 5.5923 18.0339 5.59219 17.627 5.18555C17.22 4.77888 17.2195 4.11993 17.626 3.71289L18.3643 2.97461ZM12.6563 0C13.2315 4.319e-06 13.6982 0.466698 13.6982 1.04199V2.08301C13.6982 2.6583 13.2315 3.125 12.6563 3.125C12.081 3.125 11.6143 2.6583 11.6143 2.08301V1.04199C11.6143 0.466695 12.081 0 12.6563 0Z" fill="currentColor"/></svg></span>
+        <span class="nav__label">Fields</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon" aria-hidden="true"><svg viewBox="0 0 24.9993 22.9999" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M13.3413 0.809221C14.5774 -0.269739 16.4207 -0.269741 17.6568 0.809221C17.7492 0.889953 17.8262 0.986501 17.8833 1.09438L17.9331 1.20668L19.357 4.94203L20.7066 6.29262C20.7663 6.35239 20.8182 6.41933 20.8609 6.49184L20.9185 6.60512L23.7896 13.3043L23.9497 13.4645L23.8892 13.5221L24.0279 13.7233C25.5021 15.9812 25.2982 19.015 23.4175 21.0592L23.2417 21.2418C20.8986 23.5849 17.1005 23.5848 14.7574 21.2418C13.7987 20.2832 13.2314 19.0812 13.0572 17.8346C13.0325 17.7651 13.0142 17.6924 13.0054 17.6168L12.9995 17.4997V9.00453C12.9325 9.00344 12.8632 9.00124 12.7915 9.00063L11.9995 8.99965V17.9997C11.9995 18.2406 11.9139 18.4618 11.772 18.6344C11.5027 19.5894 10.9941 20.4913 10.2427 21.2428C7.89976 23.5858 4.10055 23.5853 1.75735 21.2428C-0.377096 19.1084 -0.567195 15.7663 1.18704 13.4166L4.07962 6.6686C4.11302 6.59065 4.15685 6.51762 4.20853 6.45082L4.29153 6.35512L5.63821 5.00746L7.06302 1.21156C7.10663 1.09527 7.17117 0.988217 7.25345 0.896135L7.34134 0.809221C8.5774 -0.269741 10.4207 -0.269739 11.6568 0.809221C11.8432 0.971988 11.9617 1.19729 11.9917 1.44008L11.9995 1.56215V5.56215C11.9995 6.11429 11.5516 6.56192 10.9995 6.56215C10.4868 6.56215 10.0633 6.17656 10.0054 5.67934L9.99954 5.56215L9.99856 2.10024L9.8804 2.05824C9.54944 1.9552 9.18533 1.9889 8.87649 2.16078L8.83255 2.18813L7.43509 5.91371C7.39753 6.01379 7.34466 6.10721 7.27786 6.19008L7.20657 6.26918L5.84231 7.63442L4.29349 11.2467C6.23352 10.6733 8.40629 11.1005 9.99954 12.528V9.05824C9.32308 9.13897 9.08296 9.31938 8.89407 9.69692C8.64708 10.1909 8.04625 10.3912 7.55228 10.1442C7.05842 9.89724 6.85826 9.29727 7.10501 8.80336C7.85983 7.29372 8.79659 7.01071 11.399 6.99965H12.5992C15.2018 7.01069 16.1392 7.29365 16.8941 8.80336C17.1406 9.29713 16.9404 9.89716 16.4468 10.1442C15.9528 10.3912 15.352 10.1909 15.105 9.69692C15.0723 9.63148 15.0373 9.57235 14.9995 9.51821V12.5289C16.6011 11.0937 18.7871 10.6696 20.7349 11.2565L19.1558 7.57094L17.7915 6.20668C17.7252 6.14028 17.6687 6.06483 17.6236 5.98305L17.565 5.85512L16.1675 2.1891L16.1216 2.16078C15.8128 1.98891 15.4487 1.95517 15.1177 2.05824L14.9995 2.10024V5.49965C14.9994 6.01238 14.613 6.43505 14.1158 6.49281L13.9995 6.49965C13.4867 6.49965 13.0632 6.1132 13.0054 5.61586L12.9995 5.49965V1.56215C12.9996 1.27355 13.124 0.999059 13.3413 0.809221ZM8.66849 14.0202C7.0981 12.611 4.68142 12.6618 3.17142 14.1715C3.08445 14.2585 3.00163 14.3484 2.92435 14.4411L2.91849 14.4567C2.85416 14.6067 2.75656 14.732 2.63919 14.8297C1.63611 16.3793 1.81348 18.4698 3.17142 19.8278C4.73353 21.3897 7.26563 21.3898 8.82767 19.8278C10.3373 18.3178 10.3881 15.9011 8.97903 14.3307L8.82767 14.1715L8.66849 14.0202ZM21.6685 14.0202C20.0981 12.611 17.6815 12.6619 16.1714 14.1715C14.6094 15.7336 14.6093 18.2657 16.1714 19.8278C17.7335 21.3897 20.2656 21.3898 21.8277 19.8278C23.3373 18.3178 23.3881 15.9011 21.979 14.3307L21.8277 14.1715L21.6685 14.0202Z" fill="currentColor"/></g></svg></span>
+        <span class="nav__label">Scout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main area -->
+  <div class="app__main">
+    <!-- Header with back button -->
+    <header class="header">
+      <div class="header__left">
+        <button class="btn btn--secondary header__back" aria-label="Back">
+          <span class="btn__icon"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></span>
+          <span>Back</span>
+        </button>
+        <a href="#" class="header__logo">AgMRI</a>
+      </div>
+      <div class="header__center">
+        <div class="header__search-wrap">
+          <span class="header__search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+          <input type="search" class="header__search" placeholder="Search..." />
+        </div>
+      </div>
+      <div class="header__right">
+        <span class="header__user-name">Adam Ford</span>
+        <span class="header__avatar" aria-label="User avatar">AF</span>
+        <div class="header__notifications">
+          <button class="header__notifications-btn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="app__content">
+
+      <!-- Page title -->
+      <div class="page-header-row">
+        <div>
+          <h1 class="page-title">Yield Calibration</h1>
+          <p class="page-subtitle">Field 17-1 — Adam Ford — IL, LaSalle County — Soybeans 2024</p>
+        </div>
+        <div class="action-row" style="margin-left: auto;">
+          <button class="btn btn--secondary">Export CSV</button>
+          <button class="btn btn--primary">Save Calibration</button>
+        </div>
+      </div>
+
+      <!-- Success alert -->
+      <div class="calib-alert">
+        <span class="calib-alert__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+        <span>Yield data loaded — <strong>42 zones</strong> matched across 3 hybrids. Review and adjust predicted values below.</span>
+      </div>
+
+      <!-- Summary stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-card__label">Avg Actual Yield</span>
+          <span class="stat-card__value">79.8 <span class="stat-card__unit">bu/ac</span></span>
+        </div>
+        <div class="stat-card stat-card--highlight">
+          <span class="stat-card__label">Avg Predicted Yield</span>
+          <span class="stat-card__value">81.2 <span class="stat-card__unit">bu/ac</span></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__label">Avg Variance</span>
+          <span class="stat-card__value variance--positive">+1.8%</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__label">Zones Analyzed</span>
+          <span class="stat-card__value">42</span>
+        </div>
+      </div>
+
+      <!-- Calibration inputs -->
+      <section class="calib-section">
+        <h2 class="calib-section__title">Calibration Parameters</h2>
+        <div class="form-grid form-grid--3col">
+          <div class="input-group">
+            <label class="input__title" for="moisture">Moisture Adjustment (%)</label>
+            <input class="input" id="moisture" type="number" value="13.0" step="0.1" />
+          </div>
+          <div class="input-group">
+            <label class="input__title" for="shrink">Shrink Factor (%)</label>
+            <input class="input" id="shrink" type="number" value="1.5" step="0.1" />
+          </div>
+          <div class="input-group">
+            <label class="input__title" for="test-weight">Test Weight (lb/bu)</label>
+            <input class="input" id="test-weight" type="number" value="60.0" step="0.1" />
+          </div>
+        </div>
+      </section>
+
+      <hr class="section-divider" />
+
+      <!-- Filter pills -->
+      <section class="calib-section">
+        <h2 class="calib-section__title">Zone-Level Yield Data</h2>
+        <div class="filter-bar">
+          <button class="filter-pill filter-pill--primary" aria-pressed="true">All hybrids</button>
+          <button class="filter-pill filter-pill--primary" aria-pressed="false">P31Z32E</button>
+          <button class="filter-pill filter-pill--primary" aria-pressed="false">XO 3105E</button>
+          <button class="filter-pill filter-pill--primary" aria-pressed="false">XO 2865E</button>
+        </div>
+      </section>
+
+      <!-- Data table -->
+      <div class="ds-data-table-shell" style="max-height: 440px;">
+        <div class="ds-data-table-shell__scroll">
+          <table class="ds-data-table ds-data-table--fixed-height">
+            <thead>
+              <tr>
+                <th class="ds-data-table__cell--sticky" style="width: 10%;" scope="col">Hybrid</th>
+                <th style="width: 10%;" scope="col">Seed Brand</th>
+                <th style="width: 12%;" scope="col">Drainage Class</th>
+                <th style="width: 10%;" scope="col">Yield (bu/ac)</th>
+                <th style="width: 10%;" scope="col">Seeding Rate</th>
+                <th style="width: 10%;" scope="col">Speed (mph)</th>
+                <th style="width: 8%;" scope="col">NCCPI</th>
+                <th style="width: 8%;" scope="col">Slope</th>
+                <th style="width: 10%;" scope="col">Predicted</th>
+                <th style="width: 8%;" scope="col">Variance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">P31Z32E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Pioneer</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Somewhat poorly</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>81.12</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">139,982</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.74</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.92</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">1.30</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">82.50</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+1.7%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">XO 3105E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Xitavo</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Well drained</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>74.39</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">139,753</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.58</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.84</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">7.05</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">76.10</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+2.3%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">XO 3105E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Xitavo</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Poorly drained</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>73.47</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">139,733</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.59</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.83</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">1.31</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">74.90</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+1.9%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">XO 3105E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Xitavo</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Poorly drained</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>72.98</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">139,674</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.61</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.83</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.70</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">74.20</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+1.7%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">XO 3105E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Xitavo</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Poorly drained</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>73.16</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">139,746</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.64</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.83</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.70</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">74.50</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+1.8%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">XO 3105E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Xitavo</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Somewhat poorly</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>78.77</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">139,628</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.55</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.89</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">1.08</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">80.30</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+1.9%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">XO 3105E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Xitavo</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Poorly drained</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>80.52</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">139,513</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.62</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.83</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.71</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">81.90</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+1.7%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">XO 2865E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Xitavo</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Poorly drained</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>79.35</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">139,727</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">5.97</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.83</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.70</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">80.80</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+1.8%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">P31Z32E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Pioneer</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Well drained</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>87.53</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">140,733</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.08</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.89</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">4.24</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">85.90</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--negative">-1.9%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">P31Z32E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Pioneer</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Moderately well</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>81.03</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">140,213</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">5.96</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.74</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">7.00</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">82.40</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--positive">+1.7%</span></div></td>
+              </tr>
+              <tr class="ds-data-table__row--clickable">
+                <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">P31Z32E</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Pioneer</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Moderately well</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text"><strong>93.59</strong></span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">140,106</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">6.42</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">0.68</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">4.60</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color: var(--color-brand);">90.10</span></div></td>
+                <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text variance--negative">-3.7%</span></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bottom actions -->
+      <div style="margin-top: var(--spacing-l, 20px);">
+        <div class="action-row">
+          <button class="btn btn--secondary">Discard Changes</button>
+          <button class="btn btn--primary">Apply Calibration</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
