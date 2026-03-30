@@ -268,35 +268,35 @@
     <!-- SIDEBAR NAV -->
     <aside class="page-shell__side">
       <nav class="nav" aria-label="Main navigation">
-        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
+        <a href="#" class="nav__item" data-page="home" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
           <span class="nav__label">Home</span>
         </a>
-        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
+        <a href="#" class="nav__item" data-page="growers" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
           <span class="nav__label">Growers</span>
         </a>
-        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
+        <a href="#" class="nav__item" data-page="fields" aria-current="page" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
           <span class="nav__label">Fields</span>
         </a>
-        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
+        <a href="#" class="nav__item" data-page="scout" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
           <span class="nav__label">Scout</span>
         </a>
-        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
+        <a href="#" class="nav__item" data-page="weather" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
           <span class="nav__label">Weather</span>
         </a>
-        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
+        <a href="#" class="nav__item" data-page="disease" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">coronavirus</span></span>
           <span class="nav__label">Disease</span>
         </a>
-        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
+        <a href="#" class="nav__item" data-page="groups" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">folder_shared</span></span>
           <span class="nav__label">Groups</span>
         </a>
-        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
+        <a href="#" class="nav__item" data-page="settings" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
           <span class="nav__label">Settings</span>
         </a>
@@ -318,71 +318,185 @@
           </div>
         </div>
         <div class="header__right">
-          <span class="header__user-name">Ryan Shea</span>
-          <span class="header__avatar" aria-label="User avatar">RS</span>
+          <span class="header__user-name">Sample User</span>
+          <span class="header__avatar" aria-label="User avatar">SU</span>
         </div>
       </header>
 
-      <!-- PAGE TOOLBAR (customize per page) -->
-      <div class="page-toolbar">
-        <h1 class="page-toolbar__title">Page Title</h1>
-        <div class="page-toolbar__controls">
-          <!-- Add filter pills, buttons here -->
+      <!-- ========== PAGE-SPECIFIC TOOLBAR + TABS ========== -->
+      <!-- Each page section includes its own toolbar and optional tab bar -->
 
-          <!-- SYSTEM RULE: Pages with field/map data MUST include this view switcher -->
-          <span class="page-toolbar__divider"></span>
-          <div class="view-switcher view-switcher--with-collapse" id="view-switcher">
-            <button class="view-switcher__trigger" onclick="toggleViewSwitcher()">
-              <span class="material-symbols-outlined" id="vs-icon">view_list</span>
-              <span class="view-switcher__label" id="vs-label">List view</span>
-              <span class="material-symbols-outlined view-switcher__caret">expand_more</span>
+      <!-- FIELDS PAGE -->
+      <div class="page-section" data-page-section="fields">
+        <div class="page-toolbar">
+          <h1 class="page-toolbar__title">Fields</h1>
+          <div class="page-toolbar__controls">
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-danger-500);">notifications</span></span> Alerts only</button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral" onclick="openAdvancedFilters()"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">dashboard_customize</span></span> Customize table</button>
+            <span class="page-toolbar__divider"></span>
+            <div class="view-switcher view-switcher--with-collapse" id="view-switcher">
+              <button class="view-switcher__trigger" onclick="toggleViewSwitcher()"><span class="material-symbols-outlined" id="vs-icon">view_list</span><span class="view-switcher__label" id="vs-label">List view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+              <button class="view-switcher__collapse" aria-label="Collapse"><span class="material-symbols-outlined">expand_less</span></button>
+              <div class="view-switcher__menu" id="view-switcher-menu">
+                <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')"><span class="material-symbols-outlined">view_list</span> List view</button>
+                <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+                <button class="view-switcher__option" onclick="setView('map','map','Map view')"><span class="material-symbols-outlined">map</span> Map view</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="page-tabs">
+          <div class="tabs" role="tablist">
+            <button class="tabs__item" role="tab" aria-selected="true"><span class="tabs__icon-wrap"><span class="tabs__icon tabs__icon--badge"><img src="https://intelinair-misc.s3.amazonaws.com/common/icons/disease_badges/all.svg" alt="All" /></span><span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">12</span></span><span class="tabs__label">All</span><span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISEASE PAGE -->
+      <div class="page-section" data-page-section="disease" style="display:none;">
+        <div class="page-toolbar">
+          <h1 class="page-toolbar__title">Disease</h1>
+          <div class="page-toolbar__controls">
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">settings</span></span> Affected only <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span></button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral" onclick="openAdvancedFilters()"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+            <span class="page-toolbar__divider"></span>
+            <div class="view-switcher view-switcher--with-collapse" id="view-switcher-disease">
+              <button class="view-switcher__trigger" onclick="toggleViewSwitcherById('view-switcher-disease')"><span class="material-symbols-outlined">view_list</span><span class="view-switcher__label">List view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+              <button class="view-switcher__collapse"><span class="material-symbols-outlined">expand_less</span></button>
+              <div class="view-switcher__menu">
+                <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')"><span class="material-symbols-outlined">view_list</span> List view</button>
+                <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+                <button class="view-switcher__option" onclick="setView('map','map','Map view')"><span class="material-symbols-outlined">map</span> Map view</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="page-tabs">
+          <div class="tabs" role="tablist">
+            <button class="tabs__item" role="tab" aria-selected="true">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://intelinair-misc.s3.amazonaws.com/common/icons/disease_badges/all.svg" alt="All" /></span>
+                <span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">6</span>
+              </span>
+              <span class="tabs__label">All</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
             </button>
-            <button class="view-switcher__collapse" aria-label="Collapse panel">
-              <span class="material-symbols-outlined">expand_less</span>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/corn_tarspot.png" alt="Tar spot" /></span>
+                <span class="counter-badge counter-badge--danger" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">3</span>
+              </span>
+              <span class="tabs__label">Tar spot</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
             </button>
-            <div class="view-switcher__menu" id="view-switcher-menu">
-              <button class="view-switcher__option view-switcher__option--active" onclick="setView('list', 'view_list', 'List view')">
-                <span class="material-symbols-outlined">view_list</span> List view
-              </button>
-              <button class="view-switcher__option" onclick="setView('thumbnail', 'grid_view', 'Thumbnail view')">
-                <span class="material-symbols-outlined">grid_view</span> Thumbnail view
-              </button>
-              <button class="view-switcher__option" onclick="setView('map', 'map', 'Map view')">
-                <span class="material-symbols-outlined">map</span> Map view
-              </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/corn_blight.png" alt="Blight" /></span>
+                <span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">2</span>
+              </span>
+              <span class="tabs__label">Blight</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/corn_gls.png" alt="GLS" /></span>
+                <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">2</span>
+              </span>
+              <span class="tabs__label">GLS</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/corn_sorust.png" alt="Southern rust" /></span>
+                <span class="counter-badge counter-badge--danger" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">1</span>
+              </span>
+              <span class="tabs__label">Southern rust</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/soy_fls.png" alt="FLS" /></span>
+                <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">1</span>
+              </span>
+              <span class="tabs__label">FLS</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="https://static.intelinair.com/disease_badges/soy_targetspot.png" alt="Target spot" /></span>
+                <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
+              </span>
+              <span class="tabs__label">Target spot</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCOUT PAGE -->
+      <div class="page-section" data-page-section="scout" style="display:none;">
+        <div class="page-toolbar">
+          <h1 class="page-toolbar__title">Scout</h1>
+          <div class="page-toolbar__controls">
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral" onclick="openAdvancedFilters()"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">dashboard_customize</span></span> Customize table</button>
+            <span class="page-toolbar__divider"></span>
+            <div class="view-switcher view-switcher--with-collapse" id="view-switcher-scout">
+              <button class="view-switcher__trigger" onclick="toggleViewSwitcherById('view-switcher-scout')"><span class="material-symbols-outlined">view_list</span><span class="view-switcher__label">List view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+              <button class="view-switcher__collapse"><span class="material-symbols-outlined">expand_less</span></button>
+              <div class="view-switcher__menu">
+                <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')"><span class="material-symbols-outlined">view_list</span> List view</button>
+                <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+                <button class="view-switcher__option" onclick="setView('map','map','Map view')"><span class="material-symbols-outlined">map</span> Map view</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- TAB BAR (remove if page has no tabs) -->
-      <div class="page-tabs">
-        <div class="tabs" role="tablist">
-          <button class="tabs__item" role="tab" aria-selected="true">
-            <span class="tabs__icon-wrap">
-              <span class="tabs__icon tabs__icon--badge"><img src="https://intelinair-misc.s3.amazonaws.com/common/icons/disease_badges/all.svg" alt="All" /></span>
-              <span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
-            </span>
-            <span class="tabs__label">All</span>
-            <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
-          </button>
-          <button class="tabs__item" role="tab" aria-selected="false">
-            <span class="tabs__icon-wrap">
-              <span class="tabs__icon tabs__icon--badge"><!-- tab icon here --></span>
-              <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
-            </span>
-            <span class="tabs__label">Tab 2</span>
-            <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
-          </button>
-          <button class="tabs__item" role="tab" aria-selected="false">
-            <span class="tabs__icon-wrap">
-              <span class="tabs__icon tabs__icon--badge"><!-- tab icon here --></span>
-              <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
-            </span>
-            <span class="tabs__label">Tab 3</span>
-            <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
-          </button>
-        </div>
+      <!-- HOME / GROWERS / WEATHER / GROUPS / SETTINGS (generic placeholder pages) -->
+      <div class="page-section" data-page-section="home" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Home</h1><div class="page-toolbar__controls"></div></div>
+      </div>
+      <div class="page-section" data-page-section="growers" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Growers</h1><div class="page-toolbar__controls">
+          <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+          <span class="page-toolbar__divider"></span>
+          <button class="filter-pill filter-pill--neutral" onclick="openAdvancedFilters()"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+        </div></div>
+      </div>
+      <div class="page-section" data-page-section="weather" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Weather</h1><div class="page-toolbar__controls">
+          <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+          <span class="page-toolbar__divider"></span>
+          <div class="view-switcher view-switcher--with-collapse" id="view-switcher-weather">
+            <button class="view-switcher__trigger" onclick="toggleViewSwitcherById('view-switcher-weather')"><span class="material-symbols-outlined">view_list</span><span class="view-switcher__label">List view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+            <button class="view-switcher__collapse"><span class="material-symbols-outlined">expand_less</span></button>
+            <div class="view-switcher__menu">
+              <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')"><span class="material-symbols-outlined">view_list</span> List view</button>
+              <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+              <button class="view-switcher__option" onclick="setView('map','map','Map view')"><span class="material-symbols-outlined">map</span> Map view</button>
+            </div>
+          </div>
+        </div></div>
+      </div>
+      <div class="page-section" data-page-section="groups" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Groups</h1><div class="page-toolbar__controls"></div></div>
+      </div>
+      <div class="page-section" data-page-section="settings" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Settings</h1><div class="page-toolbar__controls"></div></div>
       </div>
 
       <!-- CONTENT AREA: LIST VIEW (default) -->
@@ -400,10 +514,10 @@
           <span style="flex:1; padding:0 12px;">Status</span>
         </div>
         <!-- Clickable rows -->
-        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('1912-SBCR Webster E','Pleasant Hill','Dowson Farms','79.2','N/A','N/A')">
-          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">1912-SBCR Webster E</span>
-          <span style="flex:0 0 12%; padding:8px 12px;">Pleasant Hill</span>
-          <span style="flex:0 0 12%; padding:8px 12px;">Dowson Farms</span>
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('Ridgeline North 40','Oakwood','Greenfield Ag','79.2','N/A','N/A')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">Ridgeline North 40</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Oakwood</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Greenfield Ag</span>
           <span style="flex:0 0 8%; padding:8px 12px;">79.2</span>
           <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">Unknown</span>
           <span style="flex:0 0 10%; padding:8px 12px; color:var(--color-text-muted);">218 days ago</span>
@@ -411,10 +525,10 @@
           <span style="flex:0 0 12%; padding:8px 12px; color:var(--color-text-muted);">--</span>
           <span style="flex:1; padding:8px 12px; color:var(--color-success-600);">No issues</span>
         </div>
-        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('South','Home','Duane Dougherty','102.4','N/A','N/A')">
-          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">South</span>
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('Creekside 80','Home','J. Parker','102.4','N/A','N/A')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">Creekside 80</span>
           <span style="flex:0 0 12%; padding:8px 12px;">Home</span>
-          <span style="flex:0 0 12%; padding:8px 12px;">Duane Dougherty</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">J. Parker</span>
           <span style="flex:0 0 8%; padding:8px 12px;">102.4</span>
           <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">Unknown</span>
           <span style="flex:0 0 10%; padding:8px 12px; color:var(--color-text-muted);">N/A</span>
@@ -422,10 +536,10 @@
           <span style="flex:0 0 12%; padding:8px 12px; color:var(--color-text-muted);">--</span>
           <span style="flex:1; padding:8px 12px; color:var(--color-success-600);">No issues</span>
         </div>
-        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('West Quarter','Home','Mike Henderson','88.1','Corn','1,245')">
-          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">West Quarter</span>
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('Prairie Bend 12','Home','T. Brooks','88.1','Corn','1,245')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">Prairie Bend 12</span>
           <span style="flex:0 0 12%; padding:8px 12px;">Home</span>
-          <span style="flex:0 0 12%; padding:8px 12px;">Mike Henderson</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">T. Brooks</span>
           <span style="flex:0 0 8%; padding:8px 12px;">88.1</span>
           <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-brand);">Corn</span>
           <span style="flex:0 0 10%; padding:8px 12px;">Mar 15</span>
@@ -457,24 +571,24 @@
             <div class="field-detail-header__top">
               <div class="field-detail-header__title-group">
                 <div class="field-detail-header__title-row">
-                  <h2 class="field-detail-header__title" id="fd-title">1912-SBCR Webster E</h2>
+                  <h2 class="field-detail-header__title" id="fd-title">Ridgeline North 40</h2>
                   <span class="field-detail-header__favorite">
                     <span class="material-symbols-outlined" style="font-size:20px;">star_border</span>
                     Add to favorite
                   </span>
                 </div>
                 <div class="field-detail-header__subtitle" id="fd-subtitle">
-                  Pleasant Hill, <a href="#">Dowson Farms</a>
+                  Oakwood, <a href="#">Greenfield Ag</a>
                 </div>
               </div>
             </div>
 
             <div class="field-detail-header__info" id="fd-info">
-              Farm Name: <span id="fd-farm">Pleasant Hill</span>
+              Farm Name: <span id="fd-farm">Oakwood</span>
               <a href="#" class="field-detail-header__info-edit">
                 <span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit
               </a><br />
-              Field Name: <span id="fd-field-name">13-SBCR Webster E80</span><br />
+              Field Name: <span id="fd-field-name">Ridgeline North 40</span><br />
               Reported Area: <span id="fd-reported-area">79.41</span><br />
               <span class="field-detail-header__info-review">For review(Farm was updated)</span>
             </div>
@@ -578,7 +692,7 @@
               </div>
               <div style="display:flex; gap:12px; font-size:13px;">
                 <span style="color:var(--color-text-muted); white-space:nowrap; min-width:80px;">220 days ago</span>
-                <span>Farm name updated to "Pleasant Hill"</span>
+                <span>Farm name updated</span>
               </div>
               <div style="display:flex; gap:12px; font-size:13px;">
                 <span style="color:var(--color-text-muted); white-space:nowrap; min-width:80px;">365 days ago</span>
@@ -628,16 +742,16 @@
         <!-- Thumbnail card grid -->
         <div class="thumb-grid">
 
-          <!-- Card 1: South (N/A data, no boundary image) -->
+          <!-- Card 1: Creekside 80 (N/A data, no boundary image) -->
           <div class="field-card">
             <div class="thumb-card__layout">
               <div class="field-card__body" style="flex:1;">
                 <div style="display:flex; align-items:center; gap:4px;">
-                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('South','Home','Duane Dougherty','102.4','N/A','N/A'); return false;">South</a>
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('Creekside 80','Home','J. Parker','102.4','N/A','N/A'); return false;">Creekside 80</a>
                 </div>
                 <div class="field-card__subtitle">
                   <span>Home</span>
-                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">Duane Dougherty</a>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">J. Parker</a>
                 </div>
                 <div class="field-card__meta">
                   <span>102.4 ac</span>
@@ -670,7 +784,7 @@
               <div class="thumb-card__image thumb-card__image--empty"></div>
             </div>
             <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
-              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('South','Home','Duane Dougherty','102.4','N/A','N/A')">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('Creekside 80','Home','J. Parker','102.4','N/A','N/A')">
                 <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
                 View field
               </button>
@@ -678,16 +792,16 @@
             </div>
           </div>
 
-          <!-- Card 2: Dill farm (N/A data, with boundary image) -->
+          <!-- Card 2: Harvest Hill (N/A data, with boundary image) -->
           <div class="field-card">
             <div class="thumb-card__layout">
               <div class="field-card__body" style="flex:1;">
                 <div style="display:flex; align-items:center; gap:4px;">
-                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('Dill farm','Dill farm','Duane Dougherty','70.7','N/A','N/A'); return false;">Dill farm</a>
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('Harvest Hill','Harvest Hill','J. Parker','70.7','N/A','N/A'); return false;">Harvest Hill</a>
                 </div>
                 <div class="field-card__subtitle">
-                  <span>Dill farm,</span>
-                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">Duane Dougherty</a>
+                  <span>Harvest Hill,</span>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">J. Parker</a>
                 </div>
                 <div class="field-card__meta">
                   <span>70.7 ac</span>
@@ -722,7 +836,7 @@
               </div>
             </div>
             <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
-              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('Dill farm','Dill farm','Duane Dougherty','70.7','N/A','N/A')">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('Harvest Hill','Harvest Hill','J. Parker','70.7','N/A','N/A')">
                 <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
                 View field
               </button>
@@ -730,16 +844,16 @@
             </div>
           </div>
 
-          <!-- Card 3: West Quarter (with data populated) -->
+          <!-- Card 3: Prairie Bend 12 (with data populated) -->
           <div class="field-card">
             <div class="thumb-card__layout">
               <div class="field-card__body" style="flex:1;">
                 <div style="display:flex; align-items:center; gap:4px;">
-                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('West Quarter','Home','Mike Henderson','88.1','Corn','1,245'); return false;">West Quarter</a>
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('Prairie Bend 12','Home','T. Brooks','88.1','Corn','1,245'); return false;">Prairie Bend 12</a>
                 </div>
                 <div class="field-card__subtitle">
                   <span>Home,</span>
-                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">Mike Henderson</a>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">T. Brooks</a>
                 </div>
                 <div class="field-card__meta">
                   <span>88.1 ac</span>
@@ -774,7 +888,7 @@
               </div>
             </div>
             <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
-              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('West Quarter','Home','Mike Henderson','88.1','Corn','1,245')">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('Prairie Bend 12','Home','T. Brooks','88.1','Corn','1,245')">
                 <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
                 View field
               </button>
@@ -793,19 +907,420 @@
         </div>
       </main>
 
+      <!-- PAGE-SPECIFIC CONTENT PLACEHOLDERS (for non-Fields pages) -->
+      <main class="page-content page-content--placeholder" data-page-content="home" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">home</span>
+          <span style="font-size:16px; font-weight:500;">Welcome to AgMRI</span>
+          <span style="font-size:13px;">Select a section from the navigation to get started.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="growers" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">group</span>
+          <span style="font-size:16px; font-weight:500;">Growers</span>
+          <span style="font-size:13px;">Manage grower accounts, assign fields, and view contact details.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="disease" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">coronavirus</span>
+          <span style="font-size:16px; font-weight:500;">Disease Detection</span>
+          <span style="font-size:13px;">Monitor disease pressure across fields. Filter by pathogen type.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="scout" style="display:none; padding:0; flex-direction:column;">
+
+        <!-- Sub-header: All scouting reports -->
+        <div style="padding:12px 20px; border-bottom:1px solid var(--color-border); background:var(--color-surface);">
+          <span style="font-size:16px; font-weight:600; color:var(--color-action); border-bottom:3px solid var(--color-action); padding-bottom:10px;">All scouting reports</span>
+        </div>
+
+        <!-- Category tabs with badge icons -->
+        <div style="display:flex; align-items:flex-end; gap:16px; padding:16px 20px 0; background:var(--color-surface); border-bottom:1px solid var(--color-border); overflow-x:auto; flex-shrink:0;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; border-bottom:3px solid var(--color-action); min-width:60px;">
+            <div style="position:relative;"><img src="https://intelinair-misc.s3.amazonaws.com/common/icons/disease_badges/all.svg" alt="All" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--info" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">198</span></div>
+            <span style="font-size:11px; color:var(--color-action); font-weight:500;">All</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/weed-pressure.svg" alt="Weeds" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--success" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">43</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Weeds</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:36px; color:var(--color-warning-500);">spa</span><span class="counter-badge counter-badge--warning" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">33</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Crop health</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/stand-count.svg" alt="Stand Count" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--info" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">25</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Stand Count</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/weed-escape.svg" alt="Weed Escape" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--warning" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">12</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Weed Escape</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/low-emergence.svg" alt="Low Emergence" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--danger" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">9</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Low Emergence</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/replant-opportunity.svg" alt="Replant" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--warning" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">7</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Replant</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/low-crop-health.svg" alt="Low Crop Health" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--danger" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">5</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Crop Health</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:36px; color:var(--color-neutral-500);">more_horiz</span><span class="counter-badge counter-badge--info" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">22</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Other</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:36px; color:var(--color-primitive-500);">science</span><span class="counter-badge counter-badge--info" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">18</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Soil Sample</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:36px; color:var(--color-warning-600);">local_fire_department</span><span class="counter-badge counter-badge--warning" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">10</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Leaf Firing</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:36px; color:var(--color-danger-500);">bug_report</span><span class="counter-badge counter-badge--danger" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">8</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Pests</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:36px; color:var(--color-success-600);">water_drop</span><span class="counter-badge counter-badge--success" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">8</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Fertility</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:36px; color:var(--color-danger-600);">coronavirus</span><span class="counter-badge counter-badge--danger" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">6</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Disease</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/harvest-ready.svg" alt="Harvest Ready" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--success" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">4</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Harvest Ready</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><span class="material-symbols-outlined" style="font-size:36px; color:var(--color-success-500);">trending_up</span><span class="counter-badge counter-badge--success" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">6</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Yield Estim</span>
+          </div>
+        </div>
+
+        <!-- Status filter pills -->
+        <div style="display:flex; align-items:center; gap:8px; padding:12px 20px; background:var(--color-surface); border-bottom:1px solid var(--color-border); flex-shrink:0;">
+          <span class="filter-pill filter-pill--neutral" style="font-size:12px;">Needs scouted <span class="counter-badge counter-badge--info" style="font-size:9px; min-width:16px; height:15px; padding:0 3px; margin-left:4px;">59</span></span>
+          <span class="filter-pill filter-pill--neutral" style="font-size:12px;">In progress <span class="counter-badge counter-badge--warning" style="font-size:9px; min-width:16px; height:15px; padding:0 3px; margin-left:4px;">45</span></span>
+          <span style="font-size:13px; font-weight:500; color:var(--color-success-600);">Approved <span style="font-weight:600;">127</span></span>
+          <span style="font-size:13px; color:var(--color-text-muted);">Pending review <span class="counter-badge counter-badge--neutral" style="font-size:9px; min-width:16px; height:15px; padding:0 3px; margin-left:2px; background:var(--color-warning-500); color:var(--color-neutral-0);">7</span></span>
+        </div>
+
+        <!-- Create combined PDF button -->
+        <div style="padding:12px 20px; flex-shrink:0;">
+          <button class="btn btn--brand" style="padding:8px 20px; font-size:14px; border-radius:var(--radius-pill,20px);">Create combined PDF</button>
+        </div>
+
+        <!-- Scouting reports table -->
+        <div style="flex:1; overflow-y:auto;">
+          <!-- Table header -->
+          <div style="display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid var(--color-border); background:var(--color-neutral-100); font-size:12px; font-weight:400; color:var(--color-text-muted); position:sticky; top:0; z-index:1;">
+            <span style="flex:0 0 14%; padding:0 12px; border-right:1px solid var(--color-border);">Field</span>
+            <span style="flex:0 0 9%; padding:0 12px; border-right:1px solid var(--color-border);">Farm</span>
+            <span style="flex:0 0 14%; padding:0 12px; border-right:1px solid var(--color-border);">Grower</span>
+            <span style="flex:0 0 7%; padding:0 12px; border-right:1px solid var(--color-border);">Area</span>
+            <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">Crop</span>
+            <span style="flex:0 0 5%; padding:0 12px; border-right:1px solid var(--color-border);">GDD</span>
+            <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">Status</span>
+            <span style="flex:0 0 10%; padding:0 12px; border-right:1px solid var(--color-border);">Categories</span>
+            <span style="flex:0 0 11%; padding:0 12px; border-right:1px solid var(--color-border);">Created by</span>
+            <span style="flex:1; padding:0 12px; cursor:pointer;">Scout date <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">arrow_downward</span></span>
+          </div>
+
+          <!-- Row 1 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">description</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Field A - Section 10</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Farm Alpha</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">GROWER ONE LLC.</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">129.8 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Soil Test 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">A. Vance</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/30</span>
+          </div>
+
+          <!-- Row 2 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">crop_square</span> <a href="#" style="color:var(--color-action); text-decoration:none;">West Block</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">All</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">J. SMITH FARMS</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">2 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-success-600); font-size:12px;">Other 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">H. Benton</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/29</span>
+          </div>
+
+          <!-- Row 3 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">eco</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Route 3</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Red Bud</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">M. FEHR</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">28.1 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Corn</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-success-600); font-size:12px;">Weeds 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">B. Parsons</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/27</span>
+          </div>
+
+          <!-- Row 4 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">landscape</span> <a href="#" style="color:var(--color-action); text-decoration:none;">West Plot</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Clifford</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">C.D. WEBER</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">20.7 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Winter Wheat</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Crop health 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">A. Ramos</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/27</span>
+          </div>
+
+          <!-- Row 5 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">home</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Home 1</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Home</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">D. &amp; M. Henderson</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">15.7 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Rye</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Crop health 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">A. Hunter</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/27</span>
+          </div>
+
+          <!-- Row 6 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">church</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Cemetery</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Cemetery</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">C.K. PARKER</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">8.5 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Wheat</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-success-600); font-size:12px;">Weeds 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">C. Sprung</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/26</span>
+          </div>
+
+          <!-- Row 7 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">water</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Lake Section 72</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Dilling</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">G. Masters Inc</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">66.5 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Winter Wheat</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Crop health 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">S. Marsig</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/26</span>
+          </div>
+
+          <!-- Row 8 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">north</span> <a href="#" style="color:var(--color-action); text-decoration:none;">North Section</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Vics</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">B. WEBER</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">52.7 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Alfalfa</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Crop health 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">N. Weber</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/26</span>
+          </div>
+
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="weather" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">cloud</span>
+          <span style="font-size:16px; font-weight:500;">Weather</span>
+          <span style="font-size:13px;">View forecasts, precipitation history, and GDD accumulation by field.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="groups" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">folder_shared</span>
+          <span style="font-size:16px; font-weight:500;">Groups</span>
+          <span style="font-size:13px;">Organize fields into groups for bulk actions and reporting.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="settings" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">settings</span>
+          <span style="font-size:16px; font-weight:500;">Settings</span>
+          <span style="font-size:13px;">Account preferences, notification settings, and user management.</span>
+        </div>
+      </main>
+
     </div><!-- /.page-shell__main -->
 
   </div><!-- /.page-shell -->
 
+  <!-- ADVANCED FILTERS SIDE SHEET -->
+  <div class="advanced-filter-scrim" id="af-scrim" style="display:none;" onclick="closeAdvancedFilters()"></div>
+  <div class="advanced-filter" id="af-panel" style="display:none;">
+    <div class="advanced-filter__header">
+      <div class="advanced-filter__header-left">
+        <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
+        <span class="advanced-filter__title">Advanced filters</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:4px;">
+        <button class="advanced-filter__close" onclick="resetAdvancedFilters()" aria-label="Reset filters">
+          <span class="material-symbols-outlined" style="font-size:18px;">refresh</span>
+        </button>
+        <button class="advanced-filter__close" onclick="closeAdvancedFilters()" aria-label="Close">
+          <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div style="display:flex; border-bottom:1px solid var(--color-border); padding:0 20px; gap:0;">
+      <button class="af-tab" onclick="switchAfTab(this, 'crop-plan')" style="padding:12px 16px; font-size:14px; color:var(--color-text-muted); background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; font-family:var(--font-family);">Crop plan</button>
+      <button class="af-tab af-tab--active" onclick="switchAfTab(this, 'field-filters')" style="padding:12px 16px; font-size:14px; color:var(--color-action); background:none; border:none; border-bottom:2px solid var(--color-action); cursor:pointer; font-weight:500; font-family:var(--font-family);">Field filters</button>
+      <button class="af-tab" onclick="switchAfTab(this, 'crop-filter')" style="padding:12px 16px; font-size:14px; color:var(--color-text-muted); background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; font-family:var(--font-family);">Crop filter <span style="display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 4px; border-radius:50%; background:var(--color-primitive-500); color:var(--color-neutral-0); font-size:10px; font-weight:600; margin-left:4px;">4</span></button>
+    </div>
+
+    <!-- Scrollable body -->
+    <div class="advanced-filter__body">
+
+      <!-- Filter: Grower -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Filter by grower</span>
+        </div>
+        <select class="advanced-filter__select">
+          <option value="" disabled selected>Placeholder</option>
+          <option>J. Parker</option>
+          <option>T. Brooks</option>
+          <option>Valley Co-op</option>
+        </select>
+      </div>
+
+      <!-- Filter: Crop type (dropdown) -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Crop type</span>
+        </div>
+        <select class="advanced-filter__select">
+          <option value="" disabled selected>Placeholder</option>
+          <option>Corn</option>
+          <option>Soybeans</option>
+          <option>Wheat</option>
+        </select>
+      </div>
+
+      <!-- Filter: Crop type (second) -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Crop type</span>
+        </div>
+        <select class="advanced-filter__select">
+          <option value="" disabled selected>Placeholder</option>
+          <option>Corn</option>
+          <option>Soybeans</option>
+        </select>
+      </div>
+
+      <!-- Filter: Crop type (third) -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Crop type</span>
+        </div>
+        <select class="advanced-filter__select">
+          <option value="" disabled selected>Placeholder</option>
+          <option>Corn</option>
+          <option>Soybeans</option>
+        </select>
+      </div>
+
+      <!-- Filter: Range with slider -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Crop type</span>
+        </div>
+        <div class="advanced-filter__range-row">
+          <input type="text" class="advanced-filter__range-input" placeholder="Placeholder" />
+          <input type="text" class="advanced-filter__range-input" placeholder="Placeholder" />
+        </div>
+        <div class="advanced-filter__slider" style="margin-top:12px;">
+          <div class="advanced-filter__slider-track"></div>
+          <div class="advanced-filter__slider-fill" style="left:0; right:0;"></div>
+          <div class="advanced-filter__slider-thumb" style="left:0;"></div>
+          <div class="advanced-filter__slider-thumb" style="left:100%;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--color-text-muted); margin-top:4px;">
+          <span>1</span>
+          <span>15</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="advanced-filter__footer">
+      <button class="btn" style="padding:6px 16px;" onclick="closeAdvancedFilters()">Cancel</button>
+      <button class="btn btn--brand" style="padding:6px 16px;" onclick="closeAdvancedFilters()">Apply</button>
+    </div>
+  </div>
+
   <script>
-    /* ===== NAV SELECTION ===== */
-    function selectNav(el) {
+    /* ===== PAGE NAVIGATION ===== */
+    var activePage = 'fields';
+    var fieldsPages = ['fields']; // pages that use the list/thumbnail/map/detail content panels
+
+    function navigateTo(el) {
+      var page = el.dataset.page;
+
+      // Update nav active state
       document.querySelectorAll('.nav__item').forEach(function(a) { a.removeAttribute('aria-current'); });
       el.setAttribute('aria-current', 'page');
-      // Update page title to match selected nav label
-      var label = el.querySelector('.nav__label').textContent;
-      var title = document.querySelector('.page-toolbar__title');
-      if (title) title.textContent = label;
+
+      // Hide all page sections (toolbar + tabs)
+      document.querySelectorAll('.page-section').forEach(function(s) { s.style.display = 'none'; });
+      var section = document.querySelector('[data-page-section="' + page + '"]');
+      if (section) section.style.display = '';
+
+      // Hide all content panels
+      ['content-list', 'content-thumbnail', 'content-map', 'content-field-detail'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+      document.querySelectorAll('.page-content--placeholder').forEach(function(p) { p.style.display = 'none'; });
+
+      // Show appropriate content
+      if (fieldsPages.indexOf(page) > -1) {
+        // Fields page uses the full list/thumbnail/map/detail flow
+        currentViewMode = 'list';
+        document.getElementById('content-list').style.display = '';
+      } else {
+        // Other pages show their placeholder
+        var placeholder = document.querySelector('[data-page-content="' + page + '"]');
+        if (placeholder) placeholder.style.display = '';
+      }
+
+      activePage = page;
+    }
+
+    function toggleViewSwitcherById(id) {
+      document.getElementById(id).classList.toggle('view-switcher--open');
     }
 
     /* ===== VIEW SWITCHER ===== */
@@ -866,10 +1381,35 @@
       document.getElementById('content-' + currentViewMode).style.display = '';
     }
 
-    // Close dropdown when clicking outside
+    /* ===== ADVANCED FILTERS ===== */
+    function openAdvancedFilters() {
+      document.getElementById('af-scrim').style.display = '';
+      document.getElementById('af-panel').style.display = '';
+    }
+    function closeAdvancedFilters() {
+      document.getElementById('af-scrim').style.display = 'none';
+      document.getElementById('af-panel').style.display = 'none';
+    }
+    function resetAdvancedFilters() {
+      document.querySelectorAll('.advanced-filter__select').forEach(function(s) { s.selectedIndex = 0; });
+      document.querySelectorAll('.advanced-filter__range-input').forEach(function(i) { i.value = ''; });
+    }
+    function switchAfTab(el, tab) {
+      document.querySelectorAll('.af-tab').forEach(function(t) {
+        t.style.color = 'var(--color-text-muted)';
+        t.style.borderBottom = '2px solid transparent';
+        t.style.fontWeight = '400';
+      });
+      el.style.color = 'var(--color-action)';
+      el.style.borderBottom = '2px solid var(--color-action)';
+      el.style.fontWeight = '500';
+    }
+
+    // Close all view switcher dropdowns when clicking outside
     document.addEventListener('click', function(e) {
-      var vs = document.getElementById('view-switcher');
-      if (vs && !vs.contains(e.target)) vs.classList.remove('view-switcher--open');
+      document.querySelectorAll('.view-switcher').forEach(function(vs) {
+        if (!vs.contains(e.target)) vs.classList.remove('view-switcher--open');
+      });
     });
   </script>
 
