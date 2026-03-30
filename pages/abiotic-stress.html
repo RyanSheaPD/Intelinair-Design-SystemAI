@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="../components/counter-badge.css" />
   <link rel="stylesheet" href="../components/header.css" />
   <link rel="stylesheet" href="../components/empty-state.css" />
+  <link rel="stylesheet" href="../components/view-switcher.css" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -503,19 +504,45 @@
         <h1 class="page-toolbar__title">Abiotic Stress</h1>
         <div class="page-toolbar__controls">
           <button class="filter-pill filter-pill--neutral">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">settings</span></span>
+            Affected only
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
+          </button>
+          <button class="filter-pill filter-pill--neutral">
             <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span>
             Favorite fields
           </button>
-          <button class="btn btn--neutral" style="padding:6px 14px;">
-            <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span>
+          <button class="filter-pill filter-pill--neutral">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span>
+            Favorite growers
+          </button>
+          <span class="page-toolbar__divider"></span>
+          <button class="filter-pill filter-pill--neutral">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span>
             Advanced filters
           </button>
           <span class="page-toolbar__divider"></span>
-          <button class="filter-pill filter-pill--neutral" id="view-toggle-btn">
-            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">sort</span></span>
-            Sort: Score
-            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
-          </button>
+          <div class="view-switcher view-switcher--with-collapse" id="view-switcher">
+            <button class="view-switcher__trigger" onclick="toggleViewSwitcher()">
+              <span class="material-symbols-outlined" id="vs-icon">view_list</span>
+              <span class="view-switcher__label" id="vs-label">List view</span>
+              <span class="material-symbols-outlined view-switcher__caret">expand_more</span>
+            </button>
+            <button class="view-switcher__collapse" aria-label="Collapse panel">
+              <span class="material-symbols-outlined">expand_less</span>
+            </button>
+            <div class="view-switcher__menu">
+              <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')">
+                <span class="material-symbols-outlined">view_list</span> List view
+              </button>
+              <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')">
+                <span class="material-symbols-outlined">grid_view</span> Thumbnail view
+              </button>
+              <button class="view-switcher__option" onclick="setView('map','map','Map view')">
+                <span class="material-symbols-outlined">map</span> Map view
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -992,6 +1019,22 @@
   </div><!-- /.page-shell -->
 
   <script>
+    /* ===== VIEW SWITCHER ===== */
+    function toggleViewSwitcher() {
+      document.getElementById('view-switcher').classList.toggle('view-switcher--open');
+    }
+    function setView(view, icon, label) {
+      document.getElementById('vs-icon').textContent = icon;
+      document.getElementById('vs-label').textContent = label;
+      document.querySelectorAll('.view-switcher__option').forEach(function(o) { o.classList.remove('view-switcher__option--active'); });
+      event.currentTarget.classList.add('view-switcher__option--active');
+      document.getElementById('view-switcher').classList.remove('view-switcher--open');
+    }
+    document.addEventListener('click', function(e) {
+      var vs = document.getElementById('view-switcher');
+      if (vs && !vs.contains(e.target)) vs.classList.remove('view-switcher--open');
+    });
+
     var currentVersion = 'a';
 
     function switchVersion(v) {

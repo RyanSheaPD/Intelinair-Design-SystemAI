@@ -68,10 +68,15 @@
   color: var(--ds-table-text);
   background: var(--ds-table-bg-header);
   border-bottom: 1px solid var(--ds-table-border-row);
+  border-right: 1px solid var(--ds-table-border-row);
   padding: var(--ds-table-cell-padding);
   vertical-align: middle;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.ds-data-table thead th:last-child {
+  border-right: none;
 }
 
 .ds-data-table tbody tr {

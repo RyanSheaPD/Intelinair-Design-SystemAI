@@ -1243,29 +1243,29 @@
         <table class="ds-data-table ds-data-table--fixed-height">
           <thead>
             <tr>
-              <th class="ds-data-table__cell--sticky ds-data-table__col--w-8" scope="col">Grower</th>
+              <th class="ds-data-table__cell--sticky" scope="col">Field</th>
               <th class="ds-data-table__col--w-8" scope="col">Farm</th>
-              <th scope="col">Field</th>
+              <th class="ds-data-table__col--w-8" scope="col">Grower</th>
               <th scope="col">Crop</th>
             </tr>
           </thead>
           <tbody>
             <tr class="ds-data-table__row--clickable">
-              <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">M. Williams</span></div></td>
+              <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Glendale-01</span></div></td>
               <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Central Ag</span></div></td>
-              <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Glendale-01</span></div></td>
+              <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">M. Williams</span></div></td>
               <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Corn</span></div></td>
             </tr>
             <tr class="ds-data-table__row--clickable">
-              <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">J. Rivera</span></div></td>
+              <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Riverside 12</span></div></td>
               <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">North Fork</span></div></td>
-              <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Riverside 12</span></div></td>
+              <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">J. Rivera</span></div></td>
               <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Soybeans</span></div></td>
             </tr>
             <tr class="ds-data-table__row--clickable">
-              <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">A. Chen</span></div></td>
+              <td class="ds-data-table__cell--sticky"><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Long field name that truncates with ellipsis when space is tight</span></div></td>
               <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Oak Valley</span></div></td>
-              <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Long field name that truncates with ellipsis when space is tight</span></div></td>
+              <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">A. Chen</span></div></td>
               <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Wheat</span></div></td>
             </tr>
           </tbody>
@@ -2590,7 +2590,7 @@
             <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
             <span class="nav__label">Growers</span>
           </a>
-          <a href="#" class="nav__item">
+          <a href="#" class="nav__item" aria-current="page">
             <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
             <span class="nav__label">Fields</span>
           </a>
@@ -2602,7 +2602,7 @@
             <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
             <span class="nav__label">Weather</span>
           </a>
-          <a href="#" class="nav__item" aria-current="page">
+          <a href="#" class="nav__item">
             <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">coronavirus</span></span>
             <span class="nav__label">Disease</span>
           </a>
@@ -2639,30 +2639,35 @@
 
         <!-- 3. PAGE TOOLBAR -->
         <div class="std-page-toolbar">
-          <h1 class="std-page-toolbar__title">Disease</h1>
+          <h1 class="std-page-toolbar__title">Fields</h1>
           <div class="std-page-toolbar__controls">
             <button class="filter-pill filter-pill--neutral">
-              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">settings</span></span>
-              Affected only
-              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-danger-500);">notifications</span></span>
+              Alerts only
             </button>
             <button class="filter-pill filter-pill--neutral">
               <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span>
               Favorite fields
             </button>
-            <button class="btn btn--neutral" style="padding:6px 14px;">
-              <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span>
+            <button class="filter-pill filter-pill--neutral">
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span>
+              Favorite growers
+            </button>
+            <span class="std-page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral">
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span>
               Advanced filters
             </button>
             <span class="std-page-toolbar__divider"></span>
             <button class="filter-pill filter-pill--neutral">
-              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">view_list</span></span>
-              Table view
-              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">dashboard_customize</span></span>
+              Customize table
             </button>
             <span class="std-page-toolbar__divider"></span>
-            <button class="std-page-toolbar__collapse" aria-label="Collapse toolbar">
-              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <button class="filter-pill filter-pill--neutral">
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">view_list</span></span>
+              List view
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">check</span></span>
             </button>
           </div>
         </div>
@@ -2716,8 +2721,8 @@
                     <th style="width:5%;"><input type="checkbox" /></th>
                     <th style="width:5%;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-warning-500);">star</span></th>
                     <th style="width:15%;">Field</th>
-                    <th style="width:10%;">Grower</th>
                     <th style="width:8%;">Farm</th>
+                    <th style="width:10%;">Grower</th>
                     <th style="width:8%;">Acres</th>
                     <th style="width:8%;">Crop</th>
                     <th style="width:10%;">Last Flight</th>
@@ -2731,8 +2736,8 @@
                     <td><input type="checkbox" /></td>
                     <td><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-warning-500);">star</span></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">North Quarter 12</span></div></td>
-                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Johnson Farms</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Home</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Johnson Farms</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">142.3</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-brand);">Corn</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Mar 15, 2026</span></div></td>
@@ -2744,8 +2749,8 @@
                     <td><input type="checkbox" /></td>
                     <td><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-neutral-300);">star_border</span></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">South 80</span></div></td>
-                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Miller Ag</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">River</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Miller Ag</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">80.0</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-brand);">Soybeans</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Mar 12, 2026</span></div></td>
@@ -2757,8 +2762,8 @@
                     <td><input type="checkbox" /></td>
                     <td><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-warning-500);">star</span></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">West Field A</span></div></td>
-                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Johnson Farms</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Home</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Johnson Farms</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">210.5</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-brand);">Corn</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Mar 14, 2026</span></div></td>
@@ -2770,8 +2775,8 @@
                     <td><input type="checkbox" /></td>
                     <td><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-neutral-300);">star_border</span></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Hilltop 40</span></div></td>
-                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Davis Corp</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">East</span></div></td>
+                    <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Davis Corp</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">40.2</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text" style="color:var(--color-brand);">Corn</span></div></td>
                     <td><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">Mar 10, 2026</span></div></td>

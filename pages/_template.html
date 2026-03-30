@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="../components/bottom-sheet.css" />
   <link rel="stylesheet" href="../components/empty-state.css" />
   <link rel="stylesheet" href="../components/triangle-icons.css" />
+  <link rel="stylesheet" href="../components/view-switcher.css" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -162,35 +163,35 @@
     <!-- SIDEBAR NAV -->
     <aside class="page-shell__side">
       <nav class="nav" aria-label="Main navigation">
-        <a href="#" class="nav__item">
+        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
           <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
           <span class="nav__label">Home</span>
         </a>
-        <a href="#" class="nav__item">
+        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
           <span class="nav__label">Growers</span>
         </a>
-        <a href="#" class="nav__item">
+        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
           <span class="nav__label">Fields</span>
         </a>
-        <a href="#" class="nav__item">
+        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
           <span class="nav__label">Scout</span>
         </a>
-        <a href="#" class="nav__item">
+        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
           <span class="nav__label">Weather</span>
         </a>
-        <a href="#" class="nav__item">
+        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">coronavirus</span></span>
           <span class="nav__label">Disease</span>
         </a>
-        <a href="#" class="nav__item">
+        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">folder_shared</span></span>
           <span class="nav__label">Groups</span>
         </a>
-        <a href="#" class="nav__item">
+        <a href="#" class="nav__item" onclick="selectNav(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
           <span class="nav__label">Settings</span>
         </a>
@@ -221,7 +222,31 @@
       <div class="page-toolbar">
         <h1 class="page-toolbar__title">Page Title</h1>
         <div class="page-toolbar__controls">
-          <!-- Add filter pills, buttons, view switcher here -->
+          <!-- Add filter pills, buttons here -->
+
+          <!-- SYSTEM RULE: Pages with field/map data MUST include this view switcher -->
+          <span class="page-toolbar__divider"></span>
+          <div class="view-switcher view-switcher--with-collapse" id="view-switcher">
+            <button class="view-switcher__trigger" onclick="toggleViewSwitcher()">
+              <span class="material-symbols-outlined" id="vs-icon">view_list</span>
+              <span class="view-switcher__label" id="vs-label">List view</span>
+              <span class="material-symbols-outlined view-switcher__caret">expand_more</span>
+            </button>
+            <button class="view-switcher__collapse" aria-label="Collapse panel">
+              <span class="material-symbols-outlined">expand_less</span>
+            </button>
+            <div class="view-switcher__menu" id="view-switcher-menu">
+              <button class="view-switcher__option view-switcher__option--active" onclick="setView('list', 'view_list', 'List view')">
+                <span class="material-symbols-outlined">view_list</span> List view
+              </button>
+              <button class="view-switcher__option" onclick="setView('thumbnail', 'grid_view', 'Thumbnail view')">
+                <span class="material-symbols-outlined">grid_view</span> Thumbnail view
+              </button>
+              <button class="view-switcher__option" onclick="setView('map', 'map', 'Map view')">
+                <span class="material-symbols-outlined">map</span> Map view
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -263,6 +288,35 @@
     </div><!-- /.page-shell__main -->
 
   </div><!-- /.page-shell -->
+
+  <script>
+    /* ===== NAV SELECTION ===== */
+    function selectNav(el) {
+      document.querySelectorAll('.nav__item').forEach(function(a) { a.removeAttribute('aria-current'); });
+      el.setAttribute('aria-current', 'page');
+      // Update page title to match selected nav label
+      var label = el.querySelector('.nav__label').textContent;
+      var title = document.querySelector('.page-toolbar__title');
+      if (title) title.textContent = label;
+    }
+
+    /* ===== VIEW SWITCHER ===== */
+    function toggleViewSwitcher() {
+      document.getElementById('view-switcher').classList.toggle('view-switcher--open');
+    }
+    function setView(view, icon, label) {
+      document.getElementById('vs-icon').textContent = icon;
+      document.getElementById('vs-label').textContent = label;
+      document.querySelectorAll('.view-switcher__option').forEach(function(o) { o.classList.remove('view-switcher__option--active'); });
+      event.currentTarget.classList.add('view-switcher__option--active');
+      document.getElementById('view-switcher').classList.remove('view-switcher--open');
+    }
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      var vs = document.getElementById('view-switcher');
+      if (vs && !vs.contains(e.target)) vs.classList.remove('view-switcher--open');
+    });
+  </script>
 
 </body>
 </html>
