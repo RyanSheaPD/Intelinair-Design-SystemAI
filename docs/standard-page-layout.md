@@ -46,7 +46,7 @@ Every screen in the AgMRI platform shares a consistent shell composed of three s
 - Label font: `10px` (`--nav-font-size`), weight `500`
 
 ### Nav Content (three tiers, single flat list — no dividers)
-- **Tier 1 (Core — always present):** Home, Growers, Fields, Scout, Weather, Settings
+- **Tier 1 (Core — always present):** Home, Growers, Fields, Scout, Weather, Settings (Settings and Connect Machine Data are pinned to the bottom of the nav)
 - **Tier 2 (Optional — per subscription):** AI Chat, Groups, Analyze, Disease, Library, Crop Plan, Connect Machine Data
 - **Tier 3 (Client-specific):** Custom branded modules, third-party integrations
 - If a client doesn't have access to a module, it is **not shown** — no greyed/locked states
@@ -165,7 +165,8 @@ A horizontal tab row below the page toolbar. Runs full width, flush left against
 | Overflow        | Horizontal scroll when tabs exceed width   |
 
 ### Tab Structure
-- Always starts with an **"All"** tab
+- Always starts with an **"All"** tab — icon: `https://intelinair-misc.s3.amazonaws.com/common/icons/disease_badges/all.svg`, badge: `counter-badge--warning`
+- The "All" tab is required on every page that uses a tab bar
 - Remaining tabs are page-specific (e.g. Disease has Tar spot, Gray leaf spot, Southern rust, N. corn leaf blight, Frogeye Leaf Spot, Target spot, Septoria brown spot)
 - Each tab: icon/badge image above label, with a count badge (colored circle) at top-right of the icon
 - Active tab: `--color-primitive-500` underline indicator, `--color-text` label color
@@ -321,6 +322,204 @@ The bottom sheet contains the same filter items as the desktop sidebar (grower, 
 
 ---
 
+## Home / Dashboard Layout
+
+The Home page uses the standard sidebar nav and header but has a unique dashboard layout instead of the toolbar + tabs + content pattern.
+
+```
+┌──────┬──────────────────────────────────────────┐
+│      │  Header (56px) — no back button          │
+│      ├──────────────────────────────────────────┤
+│      │  Background image (crop field, blurred)  │
+│ Nav  │  ┌─────────────────────────────────────┐ │
+│ 80px │  │ Greeting + Summary Stats            │ │
+│      │  ├──────────────┬──────────────────────┤ │
+│      │  │ Widget Card  │ Widget Card          │ │
+│      │  ├──────────────┴──────────────────────┤ │
+│      │  │ Widget Card (full width)            │ │
+│      │  ├──────────────┬──────────────────────┤ │
+│      │  │ Widget Card  │ Widget Card          │ │
+│      │  └──────────────┴──────────────────────┘ │
+└──────┴──────────────────────────────────────────┘
+```
+
+### Key differences from standard pages
+- **No page toolbar** — no title bar, no filter pills, no view switcher
+- **No tab bar** — dashboard has no tabs
+- **Background image** — content area uses a crop field background image (blurred/tinted) instead of white `--color-background`
+- **No back button** in the header
+
+### Greeting section
+
+| Property        | Value                                      |
+|-----------------|--------------------------------------------|
+| Layout          | Left: date + greeting + org name. Right: summary stats |
+| Date            | `14px`, `--color-text-muted` (e.g. "Mar 29") |
+| Greeting        | Large heading, weight `700` (e.g. "Hello Ryan") |
+| Org name        | `14px`, `--color-text-muted` (e.g. "IntelinAir") |
+| Summary stats   | Right-aligned, large numbers with labels below (Growers, Alerts, Fields) separated by vertical dividers |
+
+### Dashboard widget cards
+
+Cards arranged in a responsive two-column grid below the greeting.
+
+| Property        | Value                                      |
+|-----------------|--------------------------------------------|
+| Background      | `--color-surface` (white)                  |
+| Border          | `1px solid --color-border`                 |
+| Border radius   | `--radius-xl` (15px)                       |
+| Shadow          | `--shadow-sm`                              |
+| Padding         | `20px`                                     |
+| Grid            | Two-column layout, some cards span full width |
+
+### Widget types on Home
+
+| Widget            | Layout     | Content                                    |
+|-------------------|------------|--------------------------------------------|
+| **Crop growth**   | 2/3 width  | Crop type pills + stacked bar chart by growth stage |
+| **Alerts overview** | 1/3 width | Alert icon + empty state or alert list     |
+| **Weather**       | Full width | Current conditions + 7-day forecast + precipitation table |
+| **Scouting**      | 2/3 width  | Category pills (All, Weeds, Fertility, etc.) + area chart (new vs total reports) + Day/Week/Season toggle |
+| **Fields outlook** | 1/3 width | Donut/gauge chart with counts (Unknown, Good, Fair, Low) |
+| **Fields to watch** | Full width | Crop type filter + Favorite pills + field card list or empty state |
+
+### Empty states on dashboard
+- **Fields to watch:** Warning icon illustration + "No fields" text
+- **Alerts overview:** Bell icon illustration + "No alerts detected" text
+
+---
+
+## Analyze Layout
+
+The Analyze page uses the standard sidebar nav and header but replaces the toolbar with a **filter bar** and uses a chart-driven content area instead of tables or cards.
+
+```
+┌──────┬──────────────────────────────────────────┐
+│      │  Header (56px)                           │
+│      ├──────────────────────────────────────────┤
+│      │  Filter Bar (dropdowns + advanced btn)   │
+│ Nav  ├──────────────────────────────────────────┤
+│ 80px │  Radar Chart + Summary    │  (empty/chart)│
+│      ├──────────────────────────────────────────┤
+│      │  Section Title (e.g. "Emergence")        │
+│      │  Chart / Empty State                     │
+│      │                                          │
+└──────┴──────────────────────────────────────────┘
+```
+
+### Key differences from standard pages
+- **No tab bar** — no tabs
+- **Filter bar instead of toolbar** — horizontal row of dropdown filters, not a title + pills
+- **No page title** in the filter bar — the filters themselves define the view
+- **Chart-driven content** — radar charts, bar charts, scatter plots instead of data tables
+- **Two-panel layout** — top section splits into chart (left) and summary or secondary chart (right)
+- **Metric switcher** — right-aligned dropdown in the filter bar area (e.g. "Emergence")
+
+### Filter bar
+
+| Property        | Value                                      |
+|-----------------|--------------------------------------------|
+| Layout          | Flexbox, items center-aligned, gap between filters |
+| Padding         | `10px 20px`                                |
+| Background      | `--color-surface`                          |
+| Border          | `1px solid` bottom (`--color-border`)      |
+
+### Filter controls (left to right)
+1. **Season select** — year dropdown (e.g. "2026")
+2. **Group by** — dropdown with brand-colored value (e.g. "Growers")
+3. **Sort by** — dropdown with brand-colored value (e.g. "Yield average")
+4. **Order by** — dropdown with brand-colored value (e.g. "Descending")
+5. **Crop types** — dropdown with brand-colored value (e.g. "Corn")
+6. **Advanced filters button** — icon button (tune/sliders icon)
+7. **Metric switcher** — right-aligned dropdown (e.g. "Emergence") — controls which chart section is shown
+
+### Filter dropdown style
+- Label text: `--color-text`, regular weight
+- Value text: `--color-brand`, regular weight
+- Dropdown arrow: chevron or caret after value
+- All inline, no pill styling — plain text with dropdown arrows
+
+### Content sections
+
+Content is divided into horizontal sections, each with a title and chart area.
+
+**Top section (two-panel):**
+- Left: Radar/spider chart (labeled axes: Pre Death, Poor Emrg, Nutrient Def, Stress Mid, Stress Late) + Percent/Bu/ac toggle + grower summary (name, field count, Reduced Emrg values, County average)
+- Right: Secondary chart or placeholder
+
+**Lower sections:**
+- Section title (e.g. "Emergence") with bottom border
+- Full-width chart area or empty state
+
+### Empty state
+- Illustration: chart/magnifying glass icon (muted gray)
+- Text: "No analytics data available for selected company"
+- Color: `--color-text-muted`, centered
+
+---
+
+## Crop Plan / Library Layout
+
+The Crop Plan and Library pages use a simplified layout: standard nav + header, then a **text tab bar** directly below the header (no toolbar, no icon tabs), followed by a search/filter row and a data table.
+
+```
+┌──────┬──────────────────────────────────────────┐
+│      │  Header (56px)                           │
+│      ├──────────────────────────────────────────┤
+│      │  Text Tab Bar (Sections | Crop plan)     │
+│ Nav  ├──────────────────────────────────────────┤
+│ 80px │  Search + Filter by + Create button      │
+│      ├──────────────────────────────────────────┤
+│      │  Status group label (e.g. "Published 1") │
+│      │  Table header row                        │
+│      │  Data rows                               │
+│      │                                          │
+└──────┴──────────────────────────────────────────┘
+```
+
+### Key differences from standard pages
+- **No page toolbar** — no title bar with filter pills
+- **Text-only tab bar** — simple underlined text tabs (no icons, no count badges), directly below the header
+- **Search + filter row** — inline search input + "Filter by" dropdown + right-aligned "+ Create" action button
+- **Status group labels** — rows are grouped under colored status labels (e.g. "Published" in green with a count badge)
+- **Simple data table** — standard column headers with vertical separators, no summary bar
+
+### Text tab bar
+
+| Property        | Value                                      |
+|-----------------|--------------------------------------------|
+| Layout          | Horizontal, left-aligned                   |
+| Padding         | `0 20px`                                   |
+| Background      | `--color-surface`                          |
+| Border          | `1px solid` bottom (`--color-border`) — active tab has `--color-primitive-500` underline |
+| Tab style       | Text only, `14px`, `--color-primitive-500` for active, `--color-text-muted` for inactive |
+| No icons        | Unlike the standard tab bar, these tabs have no badge images or count overlays |
+
+### Search + filter row
+
+| Property        | Value                                      |
+|-----------------|--------------------------------------------|
+| Layout          | Flexbox, items center-aligned              |
+| Padding         | `12px 20px`                                |
+| Background      | `--color-surface`                          |
+| Search input    | Rounded, with search icon, placeholder "Search by title and description" |
+| Filter dropdown | "Filter by" label + brand-colored value (e.g. "All") with dropdown arrow |
+| Create button   | Right-aligned, brand color, "+ Create" with dropdown arrow |
+
+### Status group labels
+
+| Property        | Value                                      |
+|-----------------|--------------------------------------------|
+| Font            | `12px`, weight `600`                       |
+| Color           | Semantic — green for "Published", etc.     |
+| Count           | Inline number badge after the label        |
+| Padding         | `8px 20px`                                 |
+
+### Table columns (Crop Plan)
+Name, Category, Products, Timing, Date created, Date revised, Created by — with vertical separator borders matching the data table rules.
+
+---
+
 ## Exceptions
 
 The following pages **do not** use this standard layout (no sidebar nav + header shell):
@@ -338,3 +537,4 @@ These pages have their own standalone layouts.
 3. The nav **always** runs full height, flush left — it never wraps to content height
 4. All three tiers of nav items appear in a **single flat list** with no visual separation
 5. Brand tokens (`--color-brand-*`) are used for nav background, avatar, and primary CTAs — **not** for semantic UI elements like links or tags (those use `--color-primitive-*`)
+6. Every page that uses a tab bar **must** include an "All" tab as the first tab, using the standard `all.svg` icon and `counter-badge--warning` badge

@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Abiotic Stress — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Design tokens -->
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+
+  <!-- Components -->
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/data-table.css" />
+  <link rel="stylesheet" href="../components/field-card.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/counter-badge.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/empty-state.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
+
+    /* Standard layout shell */
+    .page-shell { display: flex; height: 100vh; }
+    .page-shell__side { flex-shrink: 0; width: var(--nav-width); height: 100%; z-index: 10; }
+    .page-shell__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; }
+
+    /* Page toolbar */
+    .page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-m); padding: var(--spacing-m) var(--spacing-l); border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; }
+    .page-toolbar__title { font-size: var(--font-size-18); font-weight: 600; color: var(--color-text); margin: 0; white-space: nowrap; }
+    .page-toolbar__controls { display: flex; align-items: center; gap: var(--spacing-s); flex-wrap: wrap; }
+    .page-toolbar__divider { width: 1px; height: 24px; background: var(--color-border); flex-shrink: 0; }
+
+    /* Neutral pill/btn */
+    .filter-pill--neutral { --filter-pill-bg: var(--color-neutral-100); --filter-pill-bg-hover: var(--color-neutral-200); --filter-pill-text: var(--color-neutral-700); --filter-pill-text-hover: var(--color-neutral-900); }
+    .btn--neutral { background: var(--color-neutral-800); color: var(--color-neutral-0); }
+    .btn--neutral:hover:not(:disabled) { filter: brightness(1.15); }
+
+    /* Content area */
+    /* Tab bar */
+    .page-tabs { display: flex; align-items: stretch; border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; overflow-x: auto; }
+    .page-tabs .tabs { justify-content: flex-start; flex: 1; padding-top: var(--spacing-l); }
+    .page-tabs__right { display: flex; align-items: center; padding-right: var(--spacing-l); flex-shrink: 0; font-size: var(--font-size-12); color: var(--color-text-muted); }
+
+    /* Summary bar */
+    .summary-bar {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background: var(--color-surface-muted);
+      flex-shrink: 0;
+      gap: 0;
+    }
+    .summary-bar__stats {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 0 auto;
+    }
+    .summary-bar__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 40px;
+    }
+    .summary-bar__value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+    .summary-bar__label {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    .summary-bar__divider {
+      width: 1px;
+      height: 32px;
+      background: var(--color-border);
+      flex-shrink: 0;
+    }
+
+    /* Table header bar (below summary bar, above scrollable content) */
+    .table-header-bar {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-neutral-100);
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-text-muted);
+      gap: 0;
+    }
+    .table-header-bar__col {
+      padding: 0 12px;
+      white-space: nowrap;
+      border-right: 1px solid var(--color-border);
+    }
+    .table-header-bar__col:last-child {
+      border-right: none;
+    }
+    .table-header-bar__col--sortable {
+      cursor: pointer;
+    }
+    .table-header-bar__col--active {
+      color: var(--color-text);
+      font-weight: 500;
+    }
+    .table-header-bar__sort-icon {
+      display: inline-flex;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+
+    /* Severity label pill (HIGH / MOD / LOW) */
+    .stress-severity {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill, 20px);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border: 1px solid;
+    }
+    .stress-severity--high { color: var(--color-danger-700); border-color: var(--color-danger-300); background: var(--color-danger-50, #fef2f2); }
+    .stress-severity--mod { color: #c2410c; border-color: #fed7aa; background: #fff7ed; }
+    .stress-severity--low { color: var(--color-success-700); border-color: var(--color-success-300); background: var(--color-success-50, #f0fdf4); }
+
+    /* Growth stage badge */
+    .growth-stage-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      padding: 3px 10px;
+      border: 1px solid var(--color-neutral-300);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+      background: var(--color-surface);
+    }
+
+    /* Field name link */
+    .data-row__field-link {
+      color: var(--color-action);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .data-row__field-link:hover { text-decoration: underline; }
+    .data-row__field-thumb {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+
+    /* Data rows (flex-based, aligned to header bar) */
+    .data-row {
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      min-height: 50px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+      font-size: 13px;
+      color: var(--color-text);
+    }
+    .data-row:hover {
+      background: var(--color-neutral-50, #fafafa);
+    }
+    .data-row__cell {
+      padding: 8px 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-right: 1px solid var(--color-border);
+    }
+    .data-row__cell:last-child {
+      border-right: none;
+    }
+
+    .page-content { flex: 1; overflow-y: auto; padding: 0; background: var(--color-background); }
+    .page-content .view-panel--field-detail { padding: var(--spacing-l); }
+
+    /* View panels */
+    .view-panel { display: none; }
+    .view-panel--active { display: block; }
+
+    /* ===== STRESS SCORE BADGE ===== */
+    .stress-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font-family);
+    }
+    .stress-badge__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .stress-badge__label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+    /* Color ramps: green (1-30), yellow (31-60), orange (61-80), red (81-100) */
+    .stress-badge--low .stress-badge__dot { background: var(--color-success-500); }
+    .stress-badge--low { color: var(--color-success-700); }
+    .stress-badge--moderate .stress-badge__dot { background: var(--color-warning-500); }
+    .stress-badge--moderate { color: var(--color-warning-700); }
+    .stress-badge--high .stress-badge__dot { background: #f97316; }
+    .stress-badge--high { color: #c2410c; }
+    .stress-badge--severe .stress-badge__dot { background: var(--color-danger-500); }
+    .stress-badge--severe { color: var(--color-danger-700); }
+
+    /* Stress bar (mini horizontal bar in table) */
+    .stress-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+    }
+    .stress-bar__track {
+      flex: 1;
+      height: 6px;
+      background: var(--color-neutral-100);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .stress-bar__fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .stress-bar__fill--low { background: var(--color-success-500); }
+    .stress-bar__fill--moderate { background: var(--color-warning-500); }
+    .stress-bar__fill--high { background: #f97316; }
+    .stress-bar__fill--severe { background: var(--color-danger-500); }
+
+    /* ===== FIELD VIEW: STRESS TIMELINE ===== */
+    .field-detail { max-width: 960px; }
+    .field-detail__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-action);
+      text-decoration: none;
+      margin-bottom: 16px;
+    }
+    .field-detail__back:hover { text-decoration: underline; }
+    .field-detail__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .field-detail__title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 0 0 4px;
+    }
+    .field-detail__subtitle {
+      font-size: 14px;
+      color: var(--color-text-muted);
+    }
+    .field-detail__score-card {
+      text-align: center;
+      padding: 16px 24px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      min-width: 120px;
+    }
+    .field-detail__score-value {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .field-detail__score-label {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+
+    /* Timeline chart container */
+    .stress-timeline {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .stress-timeline__title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0 0 4px;
+    }
+    .stress-timeline__subtitle {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin: 0 0 20px;
+    }
+    .stress-timeline__legend {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    .stress-timeline__legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stress-timeline__legend-line {
+      width: 24px;
+      height: 3px;
+      border-radius: 2px;
+    }
+    .stress-timeline__legend-line--actual { background: var(--color-primitive-500); }
+    .stress-timeline__legend-line--predicted { background: var(--color-primitive-300); background-image: repeating-linear-gradient(90deg, var(--color-primitive-300) 0, var(--color-primitive-300) 4px, transparent 4px, transparent 8px); }
+    .stress-timeline__legend-line--threshold { background: var(--color-danger-400); height: 2px; border-style: dashed; }
+
+    /* SVG chart area */
+    .stress-timeline__chart {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .stress-timeline__chart svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    /* Growth stage labels row */
+    .stress-timeline__stages {
+      display: flex;
+      border-top: 1px solid var(--color-border);
+      margin-top: 8px;
+      padding-top: 8px;
+    }
+    .stress-timeline__stage {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      padding: 4px 0;
+      position: relative;
+    }
+    .stress-timeline__stage--current {
+      color: var(--color-primitive-600);
+      background: var(--color-primitive-50, var(--color-primitive-100));
+      border-radius: var(--radius-sm);
+    }
+    .stress-timeline__stage--future {
+      color: var(--color-neutral-300);
+    }
+
+    /* Data source info */
+    .stress-timeline__info {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--color-border);
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    .stress-timeline__info-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Tooltip (on hover) */
+    .stress-tooltip {
+      position: absolute;
+      padding: 8px 12px;
+      background: var(--color-neutral-900);
+      color: var(--color-neutral-0);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-family: var(--font-family);
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+    }
+    .stress-tooltip__stage { font-weight: 600; }
+    .stress-tooltip__value { margin-top: 2px; }
+
+    /* Growth stage detail table */
+    .stage-detail-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .stage-detail-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface-muted);
+    }
+    .stage-detail-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text);
+    }
+    .stage-detail-table tr:last-child td { border-bottom: none; }
+    .stage-detail-table .data-type--predicted {
+      font-style: italic;
+      color: var(--color-text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-shell">
+
+    <!-- SIDEBAR NAV -->
+    <aside class="page-shell__side">
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
+          <span class="nav__label">Home</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
+          <span class="nav__label">Growers</span>
+        </a>
+        <a href="#" class="nav__item" aria-current="page">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+          <span class="nav__label">Scout</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
+          <span class="nav__label">Weather</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">coronavirus</span></span>
+          <span class="nav__label">Disease</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">folder_shared</span></span>
+          <span class="nav__label">Groups</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+          <span class="nav__label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN COLUMN -->
+    <div class="page-shell__main">
+
+      <!-- HEADER -->
+      <header class="header">
+        <div class="header__left">
+          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+        </div>
+        <div class="header__center">
+          <div class="header__search-wrap">
+            <span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <input type="search" class="header__search" placeholder="Search fields, growers..." />
+          </div>
+        </div>
+        <div class="header__right">
+          <span class="header__user-name">Ryan Shea</span>
+          <span class="header__avatar" aria-label="User avatar">RS</span>
+        </div>
+      </header>
+
+      <!-- PAGE TOOLBAR -->
+      <div class="page-toolbar">
+        <h1 class="page-toolbar__title">Abiotic Stress</h1>
+        <div class="page-toolbar__controls">
+          <button class="filter-pill filter-pill--neutral">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span>
+            Favorite fields
+          </button>
+          <button class="btn btn--neutral" style="padding:6px 14px;">
+            <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span>
+            Advanced filters
+          </button>
+          <span class="page-toolbar__divider"></span>
+          <button class="filter-pill filter-pill--neutral" id="view-toggle-btn">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">sort</span></span>
+            Sort: Score
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB BAR -->
+      <div class="page-tabs">
+        <div class="tabs" role="tablist">
+          <button class="tabs__item" role="tab" aria-selected="true">
+            <span class="tabs__icon-wrap">
+              <span class="tabs__icon tabs__icon--badge"><img src="https://intelinair-misc.s3.amazonaws.com/common/icons/disease_badges/all.svg" alt="All" /></span>
+              <span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">6</span>
+            </span>
+            <span class="tabs__label">All</span>
+            <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- VERSION TOGGLE -->
+      <div style="display:flex; align-items:center; justify-content:center; gap:4px; padding:8px 20px; background:var(--color-surface); border-bottom:1px solid var(--color-border); flex-shrink:0;">
+        <span style="font-size:12px; color:var(--color-text-muted); margin-right:8px;">Layout:</span>
+        <button class="btn" id="btn-version-a" style="padding:4px 14px; font-size:12px;" onclick="switchVersion('a')">Version A</button>
+        <button class="btn" id="btn-version-b" style="padding:4px 14px; font-size:12px; opacity:0.5;" onclick="switchVersion('b')">Version B</button>
+      </div>
+
+      <!-- ========== VERSION A: Summary bar + stress bars ========== -->
+      <div id="version-a" style="display:flex; flex-direction:column; flex:1; min-height:0;">
+
+      <!-- SUMMARY BAR -->
+      <div class="summary-bar">
+        <div class="summary-bar__stats">
+          <div class="summary-bar__item">
+            <span class="summary-bar__value">611</span>
+            <span class="summary-bar__label">Total fields</span>
+          </div>
+          <span class="summary-bar__divider"></span>
+          <div class="summary-bar__item">
+            <span class="summary-bar__value">47</span>
+            <span class="summary-bar__label">Avg. stress</span>
+          </div>
+          <span class="summary-bar__divider"></span>
+          <div class="summary-bar__item">
+            <span class="summary-bar__value">38</span>
+            <span class="summary-bar__label">High stress (&ge;67)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLE HEADER BAR (Version A) -->
+      <div class="table-header-bar">
+        <span class="table-header-bar__col" style="flex:0 0 18%;">Field</span>
+        <span class="table-header-bar__col" style="flex:0 0 12%;">Grower</span>
+        <span class="table-header-bar__col" style="flex:0 0 8%;">Acres</span>
+        <span class="table-header-bar__col" style="flex:0 0 8%;">Crop</span>
+        <span class="table-header-bar__col" style="flex:0 0 10%;">Growth Stage</span>
+        <span class="table-header-bar__col table-header-bar__col--sortable table-header-bar__col--active" style="flex:0 0 22%;">Abiotic Stress Score <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">arrow_downward</span></span></span>
+        <span class="table-header-bar__col" style="flex:1;border-right:none;">Last Updated</span>
+      </div>
+
+      <main class="page-content" style="padding:0;">
+        <div id="view-list-a">
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 18%; font-weight:500;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-warning-500);vertical-align:middle;margin-right:6px;">star</span>Willow Creek South</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Davidson Ag Partners</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">142</span>
+            <span class="data-row__cell" style="flex:0 0 8%;color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 10%;">VT</span>
+            <span class="data-row__cell" style="flex:0 0 22%;"><div class="stress-bar"><span class="stress-badge stress-badge--severe"><span class="stress-badge__dot"></span> 91</span><div class="stress-bar__track"><div class="stress-bar__fill stress-bar__fill--severe" style="width:91%;"></div></div></div></span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 12 <a href="#" class="field-card__action" style="margin-left:auto;" onclick="showFieldView('Willow Creek South'); return false;"><span class="material-symbols-outlined" style="font-size:16px;">visibility</span> View</a></span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 18%; font-weight:500;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-neutral-300);vertical-align:middle;margin-right:6px;">star_border</span>Hawkins Quarter</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Davidson Ag Partners</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">96</span>
+            <span class="data-row__cell" style="flex:0 0 8%;color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 10%;">R1</span>
+            <span class="data-row__cell" style="flex:0 0 22%;"><div class="stress-bar"><span class="stress-badge stress-badge--high"><span class="stress-badge__dot"></span> 78</span><div class="stress-bar__track"><div class="stress-bar__fill stress-bar__fill--high" style="width:78%;"></div></div></div></span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 15 <a href="#" class="field-card__action" style="margin-left:auto;" onclick="showFieldView('Hawkins Quarter'); return false;"><span class="material-symbols-outlined" style="font-size:16px;">visibility</span> View</a></span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 18%; font-weight:500;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-neutral-300);vertical-align:middle;margin-right:6px;">star_border</span>Bottoms East</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">James Thornton</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">210</span>
+            <span class="data-row__cell" style="flex:0 0 8%;color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 10%;">V12</span>
+            <span class="data-row__cell" style="flex:0 0 22%;"><div class="stress-bar"><span class="stress-badge stress-badge--high"><span class="stress-badge__dot"></span> 67</span><div class="stress-bar__track"><div class="stress-bar__fill stress-bar__fill--high" style="width:67%;"></div></div></div></span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 22 <a href="#" class="field-card__action" style="margin-left:auto;" onclick="showFieldView('Bottoms East'); return false;"><span class="material-symbols-outlined" style="font-size:16px;">visibility</span> View</a></span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 18%; font-weight:500;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-warning-500);vertical-align:middle;margin-right:6px;">star</span>Sunflower Bend 22</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Mitchell Farm</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">180</span>
+            <span class="data-row__cell" style="flex:0 0 8%;color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 10%;">V8</span>
+            <span class="data-row__cell" style="flex:0 0 22%;"><div class="stress-bar"><span class="stress-badge stress-badge--moderate"><span class="stress-badge__dot"></span> 52</span><div class="stress-bar__track"><div class="stress-bar__fill stress-bar__fill--moderate" style="width:52%;"></div></div></div></span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 20 <a href="#" class="field-card__action" style="margin-left:auto;" onclick="showFieldView('Sunflower Bend 22'); return false;"><span class="material-symbols-outlined" style="font-size:16px;">visibility</span> View</a></span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 18%; font-weight:500;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-neutral-300);vertical-align:middle;margin-right:6px;">star_border</span>Prairie View</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Mitchell Farm</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">120</span>
+            <span class="data-row__cell" style="flex:0 0 8%;color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 10%;">V6</span>
+            <span class="data-row__cell" style="flex:0 0 22%;"><div class="stress-bar"><span class="stress-badge stress-badge--low"><span class="stress-badge__dot"></span> 33</span><div class="stress-bar__track"><div class="stress-bar__fill stress-bar__fill--low" style="width:33%;"></div></div></div></span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 25 <a href="#" class="field-card__action" style="margin-left:auto;" onclick="showFieldView('Prairie View'); return false;"><span class="material-symbols-outlined" style="font-size:16px;">visibility</span> View</a></span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 18%; font-weight:500;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-neutral-300);vertical-align:middle;margin-right:6px;">star_border</span>North 40</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Davidson Ag Partners</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">65</span>
+            <span class="data-row__cell" style="flex:0 0 8%;color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 10%;">--</span>
+            <span class="data-row__cell" style="flex:0 0 22%;color:var(--color-text-muted);">No data</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">--</span>
+          </div>
+
+        </div><!-- /view-list-a -->
+
+      </div><!-- /version-a -->
+
+      <!-- ========== VERSION B: Severity pills, no summary bar ========== -->
+      <div id="version-b" style="display:none; flex-direction:column; flex:1; min-height:0;">
+
+      <!-- TABLE HEADER BAR (Version B) -->
+      <div class="table-header-bar">
+        <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 16%;">Field <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+        <span class="table-header-bar__col table-header-bar__col--sortable table-header-bar__col--active" style="flex:0 0 14%;">Abiotic stress <span class="material-symbols-outlined" style="font-size:13px;vertical-align:middle;margin-left:2px;cursor:help;color:var(--color-text-muted);">info</span> <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">arrow_downward</span></span></span>
+        <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 9%;">Growth stage <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+        <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 11%;">Farm <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+        <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 16%;">Grower <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+        <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 8%;">Acres <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+        <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 8%;">Crop <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+        <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:1;border-right:none;">Planted <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+      </div>
+
+      <main class="page-content" style="padding:0;">
+
+        <div class="view-panel view-panel--active" id="view-list-b">
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" onclick="showFieldView('Willow Creek South'); return false;">Willow Creek South</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;"><span class="stress-badge stress-badge--severe"><span class="stress-badge__dot"></span> 91</span> <span class="stress-severity stress-severity--high">HIGH</span></span>
+            <span class="data-row__cell" style="flex:0 0 9%;"><span class="growth-stage-badge">VT</span></span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Home</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-brand);vertical-align:middle;margin-right:4px;">person</span>DAVIDSON AG PARTNERS</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">142</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 12</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" onclick="showFieldView('Hawkins Quarter'); return false;">Hawkins Quarter</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;"><span class="stress-badge stress-badge--high"><span class="stress-badge__dot"></span> 78</span> <span class="stress-severity stress-severity--high">HIGH</span></span>
+            <span class="data-row__cell" style="flex:0 0 9%;"><span class="growth-stage-badge">R1</span></span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Home</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-brand);vertical-align:middle;margin-right:4px;">person</span>DAVIDSON AG PARTNERS</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">96</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 15</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" onclick="showFieldView('Bottoms East'); return false;">Bottoms East</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;"><span class="stress-badge stress-badge--high"><span class="stress-badge__dot"></span> 67</span> <span class="stress-severity stress-severity--high">HIGH</span></span>
+            <span class="data-row__cell" style="flex:0 0 9%;"><span class="growth-stage-badge">V12</span></span>
+            <span class="data-row__cell" style="flex:0 0 11%;">River Bottom</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-neutral-500);vertical-align:middle;margin-right:4px;">person</span>JAMES THORNTON</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">210</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 22</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" onclick="showFieldView('Sunflower Bend 22'); return false;">Sunflower Bend 22</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;"><span class="stress-badge stress-badge--moderate"><span class="stress-badge__dot"></span> 52</span> <span class="stress-severity stress-severity--mod">MOD</span></span>
+            <span class="data-row__cell" style="flex:0 0 9%;"><span class="growth-stage-badge">V8</span></span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell Farms</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-brand);vertical-align:middle;margin-right:4px;">person</span>MITCHELL FARM</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">180</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 20</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" onclick="showFieldView('Cedar Hollow'); return false;">Cedar Hollow</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;"><span class="stress-badge stress-badge--moderate"><span class="stress-badge__dot"></span> 44</span> <span class="stress-severity stress-severity--mod">MOD</span></span>
+            <span class="data-row__cell" style="flex:0 0 9%;"><span class="growth-stage-badge">V10</span></span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell Farms</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-brand);vertical-align:middle;margin-right:4px;">person</span>MITCHELL FARM</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">88</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 18</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" onclick="showFieldView('Prairie View'); return false;">Prairie View</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;"><span class="stress-badge stress-badge--low"><span class="stress-badge__dot"></span> 33</span> <span class="stress-severity stress-severity--low">LOW</span></span>
+            <span class="data-row__cell" style="flex:0 0 9%;"><span class="growth-stage-badge">V6</span></span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell Farms</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-brand);vertical-align:middle;margin-right:4px;">person</span>MITCHELL FARM</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">120</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 25</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" onclick="showFieldView('Meadow Ridge'); return false;">Meadow Ridge</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;"><span class="stress-badge stress-badge--low"><span class="stress-badge__dot"></span> 18</span> <span class="stress-severity stress-severity--low">LOW</span></span>
+            <span class="data-row__cell" style="flex:0 0 9%;"><span class="growth-stage-badge">V10</span></span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Thornton</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-neutral-500);vertical-align:middle;margin-right:4px;">person</span>JAMES THORNTON</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">156</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">Apr 18</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" onclick="showFieldView('Henderson Hay'); return false;">Henderson Hay</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;"><span class="stress-badge stress-badge--low"><span class="stress-badge__dot"></span> 8</span> <span class="stress-severity stress-severity--low">LOW</span></span>
+            <span class="data-row__cell" style="flex:0 0 9%;"><span class="growth-stage-badge">V4</span></span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell Farms</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-brand);vertical-align:middle;margin-right:4px;">person</span>MITCHELL FARM</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">74</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">May 1</span>
+          </div>
+
+          <div class="data-row">
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="data-row__field-thumb"><span class="material-symbols-outlined" style="font-size:20px;color:var(--color-neutral-300);">crop_square</span></span><a href="#" class="data-row__field-link" style="color:var(--color-text);">North 40</a></span>
+            <span class="data-row__cell" style="flex:0 0 14%;color:var(--color-text-muted);">No data</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">--</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Home</span>
+            <span class="data-row__cell" style="flex:0 0 16%;"><span class="material-symbols-outlined" style="font-size:16px;color:var(--color-brand);vertical-align:middle;margin-right:4px;">person</span>DAVIDSON AG PARTNERS</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">65</span>
+            <span class="data-row__cell" style="flex:0 0 8%;">Corn</span>
+            <span class="data-row__cell" style="flex:1;border-right:none;">--</span>
+          </div>
+
+        </div><!-- /view-list-b -->
+
+      </main>
+
+      </div><!-- /version-b -->
+
+      <!-- Shared field view -->
+      <div id="field-view-wrap" style="display:none; flex:1; display:none; flex-direction:column; overflow-y:auto;">
+
+        <!-- ==================== FIELD VIEW ==================== -->
+        <div class="view-panel" id="view-field" style="padding:var(--spacing-l);">
+          <div class="field-detail">
+
+            <a href="#" class="field-detail__back" onclick="showListView(); return false;">
+              <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Back to list
+            </a>
+
+            <div class="field-detail__header">
+              <div>
+                <h2 class="field-detail__title" id="field-name">North Quarter 12</h2>
+                <p class="field-detail__subtitle">Johnson Farms &middot; Home &middot; 142.3 ac &middot; <span style="color:var(--color-brand);">Corn</span> &middot; Current stage: <strong>V12</strong></p>
+              </div>
+              <div class="field-detail__score-card">
+                <div class="field-detail__score-value stress-badge--severe" id="field-score-value" style="color:inherit;">87</div>
+                <div class="field-detail__score-label">Stress Score</div>
+              </div>
+            </div>
+
+            <!-- Stress Timeline Chart -->
+            <div class="stress-timeline">
+              <h3 class="stress-timeline__title">Water Stress Timeline</h3>
+              <p class="stress-timeline__subtitle">Abiotic stress values across corn growth stages. Scores aggregated per stage (1 = no stress, 100 = max stress).</p>
+
+              <div class="stress-timeline__legend">
+                <span class="stress-timeline__legend-item"><span class="stress-timeline__legend-line stress-timeline__legend-line--actual"></span> Actual (10-day simulation)</span>
+                <span class="stress-timeline__legend-item"><span class="stress-timeline__legend-line stress-timeline__legend-line--predicted"></span> Predicted (7-day IBM Weather)</span>
+                <span class="stress-timeline__legend-item"><span style="width:1px; height:16px; border-left:2px dashed var(--color-neutral-400);"></span> Current stage</span>
+              </div>
+
+              <!-- SVG Chart -->
+              <div class="stress-timeline__chart">
+                <svg viewBox="0 0 840 220" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--font-family);">
+                  <!-- Grid lines -->
+                  <line x1="40" y1="20" x2="40" y2="180" stroke="var(--color-neutral-100)" stroke-width="1" />
+                  <line x1="40" y1="180" x2="820" y2="180" stroke="var(--color-neutral-200)" stroke-width="1" />
+                  <!-- Y-axis labels -->
+                  <text x="32" y="24" text-anchor="end" fill="var(--color-text-muted)" font-size="10">100</text>
+                  <line x1="40" y1="20" x2="820" y2="20" stroke="var(--color-neutral-100)" stroke-width="1" stroke-dasharray="4,4" />
+                  <text x="32" y="60" text-anchor="end" fill="var(--color-text-muted)" font-size="10">75</text>
+                  <line x1="40" y1="57" x2="820" y2="57" stroke="var(--color-neutral-100)" stroke-width="1" stroke-dasharray="4,4" />
+                  <text x="32" y="100" text-anchor="end" fill="var(--color-text-muted)" font-size="10">50</text>
+                  <line x1="40" y1="97" x2="820" y2="97" stroke="var(--color-neutral-100)" stroke-width="1" stroke-dasharray="4,4" />
+                  <text x="32" y="140" text-anchor="end" fill="var(--color-text-muted)" font-size="10">25</text>
+                  <line x1="40" y1="137" x2="820" y2="137" stroke="var(--color-neutral-100)" stroke-width="1" stroke-dasharray="4,4" />
+                  <text x="32" y="183" text-anchor="end" fill="var(--color-text-muted)" font-size="10">0</text>
+
+                  <!-- Danger threshold line at 80 -->
+                  <line x1="40" y1="52" x2="820" y2="52" stroke="var(--color-danger-300)" stroke-width="1" stroke-dasharray="6,3" />
+                  <text x="822" y="56" fill="var(--color-danger-400)" font-size="9">High risk</text>
+
+                  <!-- Current stage marker (V12 = stage index 6 of 14) -->
+                  <line x1="380" y1="15" x2="380" y2="185" stroke="var(--color-neutral-400)" stroke-width="1.5" stroke-dasharray="4,3" />
+                  <text x="380" y="12" text-anchor="middle" fill="var(--color-primitive-600)" font-size="10" font-weight="600">Today</text>
+
+                  <!-- Actual data line (VE through V12) — solid -->
+                  <polyline
+                    points="96,172 152,168 208,160 264,148 320,132 380,100"
+                    fill="none"
+                    stroke="var(--color-primitive-500)"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <!-- Actual data area fill -->
+                  <polygon
+                    points="96,172 152,168 208,160 264,148 320,132 380,100 380,180 96,180"
+                    fill="var(--color-primitive-500)"
+                    opacity="0.08"
+                  />
+
+                  <!-- Predicted data line (V12 through R6) — dashed -->
+                  <polyline
+                    points="380,100 436,80 492,60 548,40 604,35 660,38 716,50 772,68"
+                    fill="none"
+                    stroke="var(--color-primitive-300)"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-dasharray="6,4"
+                  />
+                  <!-- Predicted area fill -->
+                  <polygon
+                    points="380,100 436,80 492,60 548,40 604,35 660,38 716,50 772,68 772,180 380,180"
+                    fill="var(--color-primitive-300)"
+                    opacity="0.06"
+                  />
+
+                  <!-- Data points — actual (solid circles) -->
+                  <circle cx="96" cy="172" r="5" fill="var(--color-primitive-500)" stroke="var(--color-surface)" stroke-width="2" />
+                  <circle cx="152" cy="168" r="5" fill="var(--color-primitive-500)" stroke="var(--color-surface)" stroke-width="2" />
+                  <circle cx="208" cy="160" r="5" fill="var(--color-primitive-500)" stroke="var(--color-surface)" stroke-width="2" />
+                  <circle cx="264" cy="148" r="5" fill="var(--color-primitive-500)" stroke="var(--color-surface)" stroke-width="2" />
+                  <circle cx="320" cy="132" r="5" fill="var(--color-primitive-500)" stroke="var(--color-surface)" stroke-width="2" />
+                  <circle cx="380" cy="100" r="6" fill="var(--color-primitive-600)" stroke="var(--color-surface)" stroke-width="2" />
+
+                  <!-- Data points — predicted (open circles) -->
+                  <circle cx="436" cy="80" r="5" fill="var(--color-surface)" stroke="var(--color-primitive-300)" stroke-width="2" />
+                  <circle cx="492" cy="60" r="5" fill="var(--color-surface)" stroke="var(--color-primitive-300)" stroke-width="2" />
+                  <circle cx="548" cy="40" r="5" fill="var(--color-surface)" stroke="var(--color-primitive-300)" stroke-width="2" />
+                  <circle cx="604" cy="35" r="5" fill="var(--color-surface)" stroke="var(--color-primitive-300)" stroke-width="2" />
+                  <circle cx="660" cy="38" r="5" fill="var(--color-surface)" stroke="var(--color-primitive-300)" stroke-width="2" />
+                  <circle cx="716" cy="50" r="5" fill="var(--color-surface)" stroke="var(--color-primitive-300)" stroke-width="2" />
+                  <circle cx="772" cy="68" r="5" fill="var(--color-surface)" stroke="var(--color-primitive-300)" stroke-width="2" />
+
+                  <!-- X-axis: Growth stage labels -->
+                  <text x="96"  y="198" text-anchor="middle" fill="var(--color-text-muted)" font-size="10">VE</text>
+                  <text x="152" y="198" text-anchor="middle" fill="var(--color-text-muted)" font-size="10">V2</text>
+                  <text x="208" y="198" text-anchor="middle" fill="var(--color-text-muted)" font-size="10">V6</text>
+                  <text x="264" y="198" text-anchor="middle" fill="var(--color-text-muted)" font-size="10">V8</text>
+                  <text x="320" y="198" text-anchor="middle" fill="var(--color-text-muted)" font-size="10">V10</text>
+                  <text x="380" y="198" text-anchor="middle" fill="var(--color-primitive-600)" font-size="10" font-weight="700">V12</text>
+                  <text x="436" y="198" text-anchor="middle" fill="var(--color-neutral-300)" font-size="10">VT</text>
+                  <text x="492" y="198" text-anchor="middle" fill="var(--color-neutral-300)" font-size="10">R1</text>
+                  <text x="548" y="198" text-anchor="middle" fill="var(--color-neutral-300)" font-size="10">R2</text>
+                  <text x="604" y="198" text-anchor="middle" fill="var(--color-neutral-300)" font-size="10">R3</text>
+                  <text x="660" y="198" text-anchor="middle" fill="var(--color-neutral-300)" font-size="10">R4</text>
+                  <text x="716" y="198" text-anchor="middle" fill="var(--color-neutral-300)" font-size="10">R5</text>
+                  <text x="772" y="198" text-anchor="middle" fill="var(--color-neutral-300)" font-size="10">R6</text>
+
+                  <!-- Axis labels -->
+                  <text x="10" y="100" text-anchor="middle" fill="var(--color-text-muted)" font-size="10" transform="rotate(-90,10,100)">Stress Score</text>
+                  <text x="430" y="215" text-anchor="middle" fill="var(--color-text-muted)" font-size="10">Growth Stage</text>
+                </svg>
+              </div>
+
+              <div class="stress-timeline__info">
+                <span class="stress-timeline__info-item"><span class="material-symbols-outlined" style="font-size:14px;">database</span> Actual: 10-day rolling simulation</span>
+                <span class="stress-timeline__info-item"><span class="material-symbols-outlined" style="font-size:14px;">cloud</span> Predicted: IBM Weather 7-day forecast</span>
+                <span class="stress-timeline__info-item"><span class="material-symbols-outlined" style="font-size:14px;">info</span> Score aggregated per growth stage</span>
+              </div>
+            </div>
+
+            <!-- Growth Stage Detail Table -->
+            <div class="stress-timeline" style="padding:20px;">
+              <h3 class="stress-timeline__title" style="font-size:14px; margin-bottom:12px;">Stage-by-Stage Breakdown</h3>
+              <table class="stage-detail-table">
+                <thead>
+                  <tr>
+                    <th>Growth Stage</th>
+                    <th>Stress Score</th>
+                    <th>Data Type</th>
+                    <th>Date Range</th>
+                    <th>Severity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>VE</td>
+                    <td>5</td>
+                    <td>Actual</td>
+                    <td>May 1 – May 8</td>
+                    <td><span class="stress-badge stress-badge--low"><span class="stress-badge__dot"></span> Low</span></td>
+                  </tr>
+                  <tr>
+                    <td>V2</td>
+                    <td>8</td>
+                    <td>Actual</td>
+                    <td>May 9 – May 18</td>
+                    <td><span class="stress-badge stress-badge--low"><span class="stress-badge__dot"></span> Low</span></td>
+                  </tr>
+                  <tr>
+                    <td>V6</td>
+                    <td>12</td>
+                    <td>Actual</td>
+                    <td>May 19 – Jun 2</td>
+                    <td><span class="stress-badge stress-badge--low"><span class="stress-badge__dot"></span> Low</span></td>
+                  </tr>
+                  <tr>
+                    <td>V8</td>
+                    <td>20</td>
+                    <td>Actual</td>
+                    <td>Jun 3 – Jun 12</td>
+                    <td><span class="stress-badge stress-badge--low"><span class="stress-badge__dot"></span> Low</span></td>
+                  </tr>
+                  <tr>
+                    <td>V10</td>
+                    <td>30</td>
+                    <td>Actual</td>
+                    <td>Jun 13 – Jun 22</td>
+                    <td><span class="stress-badge stress-badge--moderate"><span class="stress-badge__dot"></span> Moderate</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>V12</strong></td>
+                    <td><strong>50</strong></td>
+                    <td><strong>Actual</strong> (current)</td>
+                    <td>Jun 23 – present</td>
+                    <td><span class="stress-badge stress-badge--moderate"><span class="stress-badge__dot"></span> Moderate</span></td>
+                  </tr>
+                  <tr>
+                    <td>VT</td>
+                    <td>63</td>
+                    <td class="data-type--predicted">Predicted</td>
+                    <td class="data-type--predicted">Jul 1 – Jul 8</td>
+                    <td><span class="stress-badge stress-badge--high"><span class="stress-badge__dot"></span> High</span></td>
+                  </tr>
+                  <tr>
+                    <td>R1</td>
+                    <td>75</td>
+                    <td class="data-type--predicted">Predicted</td>
+                    <td class="data-type--predicted">Jul 9 – Jul 18</td>
+                    <td><span class="stress-badge stress-badge--high"><span class="stress-badge__dot"></span> High</span></td>
+                  </tr>
+                  <tr>
+                    <td>R2</td>
+                    <td>87</td>
+                    <td class="data-type--predicted">Predicted</td>
+                    <td class="data-type--predicted">Jul 19 – Jul 28</td>
+                    <td><span class="stress-badge stress-badge--severe"><span class="stress-badge__dot"></span> Severe</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div><!-- /view-field -->
+
+      </div><!-- /field-view-wrap -->
+
+    </div><!-- /.page-shell__main -->
+
+  </div><!-- /.page-shell -->
+
+  <script>
+    var currentVersion = 'a';
+
+    function switchVersion(v) {
+      document.getElementById('version-a').style.display = v === 'a' ? 'flex' : 'none';
+      document.getElementById('version-b').style.display = v === 'b' ? 'flex' : 'none';
+      document.getElementById('field-view-wrap').style.display = 'none';
+      document.getElementById('btn-version-a').style.opacity = v === 'a' ? '1' : '0.5';
+      document.getElementById('btn-version-b').style.opacity = v === 'b' ? '1' : '0.5';
+      currentVersion = v;
+    }
+
+    function showFieldView(name) {
+      document.getElementById('version-a').style.display = 'none';
+      document.getElementById('version-b').style.display = 'none';
+      document.getElementById('field-view-wrap').style.display = 'flex';
+      document.getElementById('field-view-wrap').style.flexDirection = 'column';
+      document.getElementById('view-field').style.display = 'block';
+      document.getElementById('field-name').textContent = name;
+    }
+
+    function showListView() {
+      document.getElementById('field-view-wrap').style.display = 'none';
+      document.getElementById('view-field').style.display = 'none';
+      switchVersion(currentVersion);
+    }
+
+    // Init: show version A
+    switchVersion('a');
+  </script>
+
+</body>
+</html>
