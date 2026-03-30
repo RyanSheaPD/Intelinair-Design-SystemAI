@@ -154,6 +154,111 @@
       padding: var(--spacing-l);
       background: var(--color-background);
     }
+
+    /* ===== THUMBNAIL VIEW ===== */
+    .thumb-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-s) 0;
+      margin-bottom: var(--spacing-m);
+      gap: var(--spacing-m);
+    }
+    .thumb-bar__left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-s);
+    }
+    .thumb-bar__right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .thumb-bar__search {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .thumb-bar__search .input {
+      padding-right: 36px;
+    }
+    .thumb-bar__search-btn {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--color-primitive-500);
+      color: var(--color-neutral-0);
+      border: none;
+      border-radius: var(--radius-sm);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .thumb-bar__search-btn:hover { filter: brightness(1.1); }
+    .thumb-bar__sort-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-left: var(--spacing-s);
+    }
+    .thumb-bar__sort-dir {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--color-text-muted);
+    }
+    .thumb-bar__sort-dir:hover { background: var(--color-neutral-100); }
+    .thumb-bar__aerial-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-success-500);
+      flex-shrink: 0;
+    }
+
+    /* Card grid — always 2 across */
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-l);
+    }
+
+    /* N/A muted value */
+    .field-card__meta-na { color: var(--color-neutral-400); }
+
+    /* Card with side image layout */
+    .thumb-card__layout {
+      display: flex;
+      gap: 0;
+    }
+    .thumb-card__image {
+      flex-shrink: 0;
+      width: 320px;
+      height: 270px;
+      padding: var(--spacing-m);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumb-card__image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .thumb-card__image--empty {
+      width: 320px;
+      height: 270px;
+    }
   </style>
 </head>
 <body>
@@ -280,9 +385,412 @@
         </div>
       </div>
 
-      <!-- CONTENT AREA -->
-      <main class="page-content">
-        <!-- Page content goes here -->
+      <!-- CONTENT AREA: LIST VIEW (default) -->
+      <main class="page-content" id="content-list" style="padding:0;">
+        <!-- Table header -->
+        <div style="display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid var(--color-border); background:var(--color-neutral-100); font-size:12px; font-weight:400; color:var(--color-text-muted);">
+          <span style="flex:0 0 18%; padding:0 12px; border-right:1px solid var(--color-border);">Field</span>
+          <span style="flex:0 0 12%; padding:0 12px; border-right:1px solid var(--color-border);">Farm</span>
+          <span style="flex:0 0 12%; padding:0 12px; border-right:1px solid var(--color-border);">Grower</span>
+          <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">Acres</span>
+          <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">Crop</span>
+          <span style="flex:0 0 10%; padding:0 12px; border-right:1px solid var(--color-border);">Last Flight</span>
+          <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">GDD</span>
+          <span style="flex:0 0 12%; padding:0 12px; border-right:1px solid var(--color-border);">Disease</span>
+          <span style="flex:1; padding:0 12px;">Status</span>
+        </div>
+        <!-- Clickable rows -->
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('1912-SBCR Webster E','Pleasant Hill','Dowson Farms','79.2','N/A','N/A')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">1912-SBCR Webster E</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Pleasant Hill</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Dowson Farms</span>
+          <span style="flex:0 0 8%; padding:8px 12px;">79.2</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">Unknown</span>
+          <span style="flex:0 0 10%; padding:8px 12px; color:var(--color-text-muted);">218 days ago</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">N/A</span>
+          <span style="flex:0 0 12%; padding:8px 12px; color:var(--color-text-muted);">--</span>
+          <span style="flex:1; padding:8px 12px; color:var(--color-success-600);">No issues</span>
+        </div>
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('South','Home','Duane Dougherty','102.4','N/A','N/A')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">South</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Home</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Duane Dougherty</span>
+          <span style="flex:0 0 8%; padding:8px 12px;">102.4</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">Unknown</span>
+          <span style="flex:0 0 10%; padding:8px 12px; color:var(--color-text-muted);">N/A</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">N/A</span>
+          <span style="flex:0 0 12%; padding:8px 12px; color:var(--color-text-muted);">--</span>
+          <span style="flex:1; padding:8px 12px; color:var(--color-success-600);">No issues</span>
+        </div>
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('West Quarter','Home','Mike Henderson','88.1','Corn','1,245')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">West Quarter</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Home</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Mike Henderson</span>
+          <span style="flex:0 0 8%; padding:8px 12px;">88.1</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-brand);">Corn</span>
+          <span style="flex:0 0 10%; padding:8px 12px;">Mar 15</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">1,245</span>
+          <span style="flex:0 0 12%; padding:8px 12px; color:var(--color-text-muted);">--</span>
+          <span style="flex:1; padding:8px 12px; color:var(--color-success-600);">No issues</span>
+        </div>
+      </main>
+
+      <!-- CONTENT AREA: FIELD DETAIL / OVERVIEW (shown when a field is clicked) -->
+      <main class="page-content" id="content-field-detail" style="display:none;">
+
+        <!-- Back link -->
+        <a href="#" onclick="backToList(); return false;" style="display:inline-flex; align-items:center; gap:4px; font-size:14px; font-weight:500; color:var(--color-action); text-decoration:none; margin-bottom:16px;">
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
+          Back to fields
+        </a>
+
+        <!-- FIELD DETAIL HEADER -->
+        <div class="field-detail-header" id="field-detail-card">
+
+          <!-- Boundary thumbnail -->
+          <div class="field-detail-header__thumb">
+            <div class="field-detail-header__thumb-placeholder"></div>
+          </div>
+
+          <!-- Main content -->
+          <div class="field-detail-header__main">
+            <div class="field-detail-header__top">
+              <div class="field-detail-header__title-group">
+                <div class="field-detail-header__title-row">
+                  <h2 class="field-detail-header__title" id="fd-title">1912-SBCR Webster E</h2>
+                  <span class="field-detail-header__favorite">
+                    <span class="material-symbols-outlined" style="font-size:20px;">star_border</span>
+                    Add to favorite
+                  </span>
+                </div>
+                <div class="field-detail-header__subtitle" id="fd-subtitle">
+                  Pleasant Hill, <a href="#">Dowson Farms</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="field-detail-header__info" id="fd-info">
+              Farm Name: <span id="fd-farm">Pleasant Hill</span>
+              <a href="#" class="field-detail-header__info-edit">
+                <span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit
+              </a><br />
+              Field Name: <span id="fd-field-name">13-SBCR Webster E80</span><br />
+              Reported Area: <span id="fd-reported-area">79.41</span><br />
+              <span class="field-detail-header__info-review">For review(Farm was updated)</span>
+            </div>
+
+            <div class="field-detail-header__meta-row">
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Area</span>
+                <span class="field-detail-header__meta-value" id="fd-area">79.2 ac</span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Planting date</span>
+                <span class="field-detail-header__meta-value field-detail-header__meta-value--na">
+                  <span class="material-symbols-outlined" style="font-size:14px;">agriculture</span> N/A
+                </span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label" style="color:var(--color-warning-600);">GDD</span>
+                <span class="field-detail-header__meta-value" id="fd-gdd">N/A</span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Growth stage</span>
+                <span class="field-detail-header__meta-value field-detail-header__meta-value--na">N/A</span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Crop</span>
+                <span class="field-detail-header__meta-value" id="fd-crop">
+                  <span class="field-detail-header__meta-value--warning">Crop unknown</span>
+                  <span class="field-detail-header__meta-value--action">+ Add</span>
+                </span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Hybrid / Variety</span>
+                <span class="field-detail-header__meta-value field-detail-header__meta-value--na">N/A</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div class="field-detail-header__right">
+            <div class="field-detail-header__right-row">
+              <div class="field-detail-header__right-item">
+                <span class="field-detail-header__right-label">Last scout</span>
+                <span class="field-detail-header__right-value">No scouts yet</span>
+              </div>
+              <div class="field-detail-header__right-item">
+                <span class="field-detail-header__right-label">Latest flight</span>
+                <span class="field-detail-header__right-value field-detail-header__right-value--link">
+                  <span class="material-symbols-outlined" style="font-size:14px;">close</span> 218 days ago
+                </span>
+              </div>
+            </div>
+            <div class="field-detail-header__tags">
+              <span class="field-detail-header__tags-label">Field tags</span>
+              <button class="field-detail-header__tag-btn">
+                <span class="material-symbols-outlined" style="font-size:14px;">edit</span> Add tag
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FIELD OVERVIEW CONTENT (below the detail header) -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-l); margin-top:var(--spacing-l);">
+
+          <!-- Imagery / Layers -->
+          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:20px;">
+            <h3 style="font-size:16px; font-weight:600; margin:0 0 12px;">Imagery Layers</h3>
+            <div style="width:100%; height:200px; background:var(--color-neutral-100); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; color:var(--color-text-muted); font-size:13px; margin-bottom:12px;">
+              <span class="material-symbols-outlined" style="font-size:32px; margin-right:8px; color:var(--color-neutral-400);">satellite_alt</span>
+              Satellite imagery with layer controls
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="filter-pill filter-pill--neutral" style="font-size:12px;">NDVI</button>
+              <button class="filter-pill filter-pill--neutral" style="font-size:12px;">True Color</button>
+              <button class="filter-pill filter-pill--neutral" style="font-size:12px;">Thermal</button>
+              <button class="filter-pill filter-pill--neutral" style="font-size:12px;">Emergence</button>
+            </div>
+          </div>
+
+          <!-- Scouting Pins -->
+          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <h3 style="font-size:16px; font-weight:600; margin:0;">Scouting</h3>
+              <button class="btn btn--brand" style="padding:4px 12px; font-size:12px;">
+                <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">add</span></span>
+                Add Pin
+              </button>
+            </div>
+            <div style="text-align:center; padding:32px 0; color:var(--color-text-muted); font-size:13px;">
+              <span class="material-symbols-outlined" style="font-size:36px; color:var(--color-neutral-300); display:block; margin-bottom:8px;">pin_drop</span>
+              No scouts yet. Create a scouting pin to begin.
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:20px;">
+            <h3 style="font-size:16px; font-weight:600; margin:0 0 12px;">Activity Timeline</h3>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div style="display:flex; gap:12px; font-size:13px;">
+                <span style="color:var(--color-text-muted); white-space:nowrap; min-width:80px;">218 days ago</span>
+                <span>Latest flight imagery captured</span>
+              </div>
+              <div style="display:flex; gap:12px; font-size:13px;">
+                <span style="color:var(--color-text-muted); white-space:nowrap; min-width:80px;">220 days ago</span>
+                <span>Farm name updated to "Pleasant Hill"</span>
+              </div>
+              <div style="display:flex; gap:12px; font-size:13px;">
+                <span style="color:var(--color-text-muted); white-space:nowrap; min-width:80px;">365 days ago</span>
+                <span>Field enrolled in monitoring</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reports -->
+          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:20px;">
+            <h3 style="font-size:16px; font-weight:600; margin:0 0 12px;">Reports</h3>
+            <div style="text-align:center; padding:32px 0; color:var(--color-text-muted); font-size:13px;">
+              <span class="material-symbols-outlined" style="font-size:36px; color:var(--color-neutral-300); display:block; margin-bottom:8px;">description</span>
+              No reports available for this field.
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- CONTENT AREA: THUMBNAIL VIEW -->
+      <main class="page-content" id="content-thumbnail" style="display:none;">
+
+        <!-- Thumbnail search/sort bar -->
+        <div class="thumb-bar">
+          <div class="thumb-bar__left">
+            <div class="thumb-bar__search">
+              <input type="search" class="input" placeholder="Search by field or farm name" style="width:240px; height:34px; font-size:13px;" />
+              <button class="thumb-bar__search-btn"><span class="material-symbols-outlined" style="font-size:18px;">search</span></button>
+            </div>
+            <span class="thumb-bar__sort-label">Sort by</span>
+            <button class="filter-pill filter-pill--neutral" style="height:30px; font-size:12px;">
+              Area affected
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
+            </button>
+            <button class="thumb-bar__sort-dir" aria-label="Sort direction">
+              <span class="material-symbols-outlined" style="font-size:18px;">sort</span>
+            </button>
+          </div>
+          <div class="thumb-bar__right">
+            <span class="thumb-bar__aerial-dot"></span>
+            <span style="font-size:13px; color:var(--color-text-muted);">Aerial</span>
+            <span class="material-symbols-outlined" style="font-size:14px; color:var(--color-text-muted);">expand_more</span>
+          </div>
+        </div>
+
+        <!-- Thumbnail card grid -->
+        <div class="thumb-grid">
+
+          <!-- Card 1: South (N/A data, no boundary image) -->
+          <div class="field-card">
+            <div class="thumb-card__layout">
+              <div class="field-card__body" style="flex:1;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('South','Home','Duane Dougherty','102.4','N/A','N/A'); return false;">South</a>
+                </div>
+                <div class="field-card__subtitle">
+                  <span>Home</span>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">Duane Dougherty</a>
+                </div>
+                <div class="field-card__meta">
+                  <span>102.4 ac</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">agriculture</span> N/A</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na">Crop unknown</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na">GDD: N/A</span>
+                </div>
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">eco</span> <span style="color:var(--color-text-muted);">Hybrid / Variety</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">flight</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta" style="flex-wrap:wrap; row-gap:4px;">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">trending_up</span> <span style="color:var(--color-text-muted);">Yield forecast</span> <span class="field-card__meta-na">N/A</span></span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> <span style="color:var(--color-text-muted);">Emergence</span> <span class="field-card__meta-na">N/A</span></span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">landscape</span> <span style="color:var(--color-text-muted);">Field potential</span> <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle; color:var(--color-neutral-400);">do_not_disturb_on</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <p class="field-card__status-msg" style="color:var(--color-success-600); font-size:12px;">No issues detected</p>
+                <hr class="field-card__divider" />
+              </div>
+              <div class="thumb-card__image thumb-card__image--empty"></div>
+            </div>
+            <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('South','Home','Duane Dougherty','102.4','N/A','N/A')">
+                <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
+                View field
+              </button>
+              <a href="#" class="field-card__action" style="flex:0;">Assign</a>
+            </div>
+          </div>
+
+          <!-- Card 2: Dill farm (N/A data, with boundary image) -->
+          <div class="field-card">
+            <div class="thumb-card__layout">
+              <div class="field-card__body" style="flex:1;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('Dill farm','Dill farm','Duane Dougherty','70.7','N/A','N/A'); return false;">Dill farm</a>
+                </div>
+                <div class="field-card__subtitle">
+                  <span>Dill farm,</span>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">Duane Dougherty</a>
+                </div>
+                <div class="field-card__meta">
+                  <span>70.7 ac</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">agriculture</span> N/A</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na">Crop unknown</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na">GDD: N/A</span>
+                </div>
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">eco</span> <span style="color:var(--color-text-muted);">Hybrid / Variety</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">flight</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta" style="flex-wrap:wrap; row-gap:4px;">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">trending_up</span> <span style="color:var(--color-text-muted);">Yield forecast</span> <span class="field-card__meta-na">N/A</span></span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> <span style="color:var(--color-text-muted);">Emergence</span> <span class="field-card__meta-na">N/A</span></span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">landscape</span> <span style="color:var(--color-text-muted);">Field potential</span> <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle; color:var(--color-neutral-400);">do_not_disturb_on</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <p class="field-card__status-msg" style="color:var(--color-success-600); font-size:12px;">No issues detected</p>
+                <hr class="field-card__divider" />
+              </div>
+              <div class="thumb-card__image">
+                <img src="https://htb84o8eyb.execute-api.us-east-1.amazonaws.com/prod/boundary/7dfbd552-8e05-4d53-b12d-e828dbccb766?color=808082&step=10&size=[320,300]" alt="Field boundary" style="max-width:100%; max-height:100%; object-fit:contain;" />
+              </div>
+            </div>
+            <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('Dill farm','Dill farm','Duane Dougherty','70.7','N/A','N/A')">
+                <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
+                View field
+              </button>
+              <a href="#" class="field-card__action" style="flex:0;">Assign</a>
+            </div>
+          </div>
+
+          <!-- Card 3: West Quarter (with data populated) -->
+          <div class="field-card">
+            <div class="thumb-card__layout">
+              <div class="field-card__body" style="flex:1;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('West Quarter','Home','Mike Henderson','88.1','Corn','1,245'); return false;">West Quarter</a>
+                </div>
+                <div class="field-card__subtitle">
+                  <span>Home,</span>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">Mike Henderson</a>
+                </div>
+                <div class="field-card__meta">
+                  <span>88.1 ac</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">agriculture</span> Apr 12</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span style="color:var(--color-brand);">Corn</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span style="color:var(--color-warning-600);">GDD: 1,245</span>
+                </div>
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">eco</span> <span style="color:var(--color-text-muted);">Hybrid / Variety</span> P1185</span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">flight</span> Mar 15, 2026</span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta" style="flex-wrap:wrap; row-gap:4px;">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">trending_up</span> <span style="color:var(--color-text-muted);">Yield forecast</span> 185 bu/ac</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> <span style="color:var(--color-text-muted);">Emergence</span> 94%</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">landscape</span> <span style="color:var(--color-text-muted);">Field potential</span> <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle; color:var(--color-success-500);">check_circle</span> Good</span>
+                </div>
+                <hr class="field-card__divider" />
+                <p class="field-card__status-msg" style="color:var(--color-success-600); font-size:12px;">No issues detected</p>
+                <hr class="field-card__divider" />
+              </div>
+              <div class="thumb-card__image">
+                <img src="https://htb84o8eyb.execute-api.us-east-1.amazonaws.com/prod/boundary/7dfbd552-8e05-4d53-b12d-e828dbccb766?color=808082&step=10&size=[320,300]" alt="Field boundary" style="max-width:100%; max-height:100%; object-fit:contain;" />
+              </div>
+            </div>
+            <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('West Quarter','Home','Mike Henderson','88.1','Corn','1,245')">
+                <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
+                View field
+              </button>
+              <a href="#" class="field-card__action" style="flex:0;">Assign</a>
+            </div>
+          </div>
+
+        </div><!-- /.thumb-grid -->
+      </main>
+
+      <!-- CONTENT AREA: MAP VIEW -->
+      <main class="page-content" id="content-map" style="display:none;">
+        <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); font-size:14px;">
+          <span class="material-symbols-outlined" style="font-size:48px; margin-right:12px; color:var(--color-neutral-300);">map</span>
+          Map view — satellite imagery with field boundary overlays
+        </div>
       </main>
 
     </div><!-- /.page-shell__main -->
@@ -301,16 +809,63 @@
     }
 
     /* ===== VIEW SWITCHER ===== */
+    var currentViewMode = 'list'; // tracks which view the user was on before entering detail
+
     function toggleViewSwitcher() {
       document.getElementById('view-switcher').classList.toggle('view-switcher--open');
     }
+
+    function hideAllPanels() {
+      ['content-list', 'content-thumbnail', 'content-map', 'content-field-detail'].forEach(function(id) {
+        document.getElementById(id).style.display = 'none';
+      });
+    }
+
     function setView(view, icon, label) {
       document.getElementById('vs-icon').textContent = icon;
       document.getElementById('vs-label').textContent = label;
       document.querySelectorAll('.view-switcher__option').forEach(function(o) { o.classList.remove('view-switcher__option--active'); });
       event.currentTarget.classList.add('view-switcher__option--active');
       document.getElementById('view-switcher').classList.remove('view-switcher--open');
+      currentViewMode = view;
+      hideAllPanels();
+      document.getElementById('content-' + view).style.display = '';
     }
+
+    /* ===== FIELD DETAIL NAVIGATION ===== */
+    function showFieldDetail(name, farm, grower, area, crop, gdd) {
+      // Populate the detail card
+      document.getElementById('fd-title').textContent = name;
+      document.getElementById('fd-subtitle').innerHTML = farm + ', <a href="#">' + grower + '</a>';
+      document.getElementById('fd-farm').textContent = farm;
+      document.getElementById('fd-field-name').textContent = name;
+      document.getElementById('fd-reported-area').textContent = area;
+      document.getElementById('fd-area').textContent = area + ' ac';
+
+      if (crop && crop !== 'N/A') {
+        document.getElementById('fd-crop').innerHTML = '<span style="color:var(--color-brand);">' + crop + '</span>';
+      } else {
+        document.getElementById('fd-crop').innerHTML = '<span class="field-detail-header__meta-value--warning">Crop unknown</span> <span class="field-detail-header__meta-value--action">+ Add</span>';
+      }
+
+      if (gdd && gdd !== 'N/A') {
+        document.getElementById('fd-gdd').textContent = gdd;
+        document.getElementById('fd-gdd').className = 'field-detail-header__meta-value field-detail-header__meta-value--warning';
+      } else {
+        document.getElementById('fd-gdd').textContent = 'N/A';
+        document.getElementById('fd-gdd').className = 'field-detail-header__meta-value field-detail-header__meta-value--na';
+      }
+
+      // Show field detail, hide everything else
+      hideAllPanels();
+      document.getElementById('content-field-detail').style.display = '';
+    }
+
+    function backToList() {
+      hideAllPanels();
+      document.getElementById('content-' + currentViewMode).style.display = '';
+    }
+
     // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
       var vs = document.getElementById('view-switcher');

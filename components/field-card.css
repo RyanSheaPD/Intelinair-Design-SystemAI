@@ -41,7 +41,21 @@
   padding: var(--spacing-m) var(--spacing-l);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-s);
+  gap: 0;
+}
+
+/* Every direct child in the body gets a bottom border (horizontal rule between rows) */
+.field-card__body > * {
+  padding: var(--spacing-s) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.field-card__body > *:last-child {
+  border-bottom: none;
+}
+
+/* Hide explicit hr dividers since borders are automatic now */
+.field-card__body > hr.field-card__divider {
+  display: none;
 }
 
 .field-card__title-row {
@@ -83,8 +97,11 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--spacing-s);
-  font-size: var(--font-size-12, 12px);
-  color: var(--color-text-muted);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+  letter-spacing: normal;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .field-card__meta-sep {
@@ -279,4 +296,230 @@
 
 .field-card__dates + .field-card__dates {
   margin-top: 2px;
+}
+
+/* ===== FIELD DETAIL HEADER (expanded view when field is selected) ===== */
+.field-detail-header {
+  display: flex;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-family);
+  overflow: hidden;
+}
+
+.field-detail-header__thumb {
+  flex-shrink: 0;
+  width: 80px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px 0 20px 20px;
+}
+.field-detail-header__thumb img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+.field-detail-header__thumb-placeholder {
+  width: 60px;
+  height: 60px;
+  background: var(--color-neutral-100);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--radius-sm);
+}
+
+.field-detail-header__main {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.field-detail-header__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.field-detail-header__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.field-detail-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-detail-header__title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.field-detail-header__favorite {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.field-detail-header__favorite:hover {
+  color: var(--color-warning-500);
+}
+
+.field-detail-header__subtitle {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.field-detail-header__subtitle a {
+  color: var(--color-action);
+  text-decoration: none;
+}
+.field-detail-header__subtitle a:hover {
+  text-decoration: underline;
+}
+
+.field-detail-header__info {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 1.6;
+}
+.field-detail-header__info-edit {
+  color: var(--color-action);
+  text-decoration: none;
+  font-size: 14px;
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.field-detail-header__info-edit:hover {
+  text-decoration: underline;
+}
+.field-detail-header__info-review {
+  color: var(--color-warning-600);
+}
+
+/* Metadata columns row */
+.field-detail-header__meta-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  padding-top: 8px;
+  margin-top: 4px;
+}
+.field-detail-header__meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 20px;
+  min-width: 0;
+}
+.field-detail-header__meta-col:first-child {
+  padding-left: 0;
+}
+.field-detail-header__meta-label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+}
+.field-detail-header__meta-value {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+  line-height: 19px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.field-detail-header__meta-value--na {
+  color: rgba(0, 0, 0, 0.4);
+}
+.field-detail-header__meta-value--warning {
+  color: var(--color-warning-600);
+}
+.field-detail-header__meta-value--action {
+  color: var(--color-action);
+  cursor: pointer;
+}
+
+/* Right column: scout/flight info + tags */
+.field-detail-header__right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 20px;
+  min-width: 200px;
+}
+
+.field-detail-header__right-row {
+  display: flex;
+  gap: 24px;
+  text-align: right;
+}
+
+.field-detail-header__right-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: flex-end;
+}
+.field-detail-header__right-label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+}
+.field-detail-header__right-value {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.field-detail-header__right-value--link {
+  color: var(--color-action);
+}
+
+.field-detail-header__tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.field-detail-header__tags-label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.field-detail-header__tag-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill, 20px);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-family: var(--font-family);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+.field-detail-header__tag-btn:hover {
+  background: var(--color-neutral-100);
 }
