@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Language Guide — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/data-table.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
+
+    .page-shell { display: flex; height: 100vh; }
+    .page-shell__side { flex-shrink: 0; width: var(--nav-width); height: 100%; z-index: 10; }
+    .page-shell__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; }
+
+    .page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-m); padding: var(--spacing-m) var(--spacing-l); border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; }
+    .page-toolbar__title { font-size: var(--font-size-18); font-weight: 600; color: var(--color-text); margin: 0; }
+    .page-toolbar__controls { display: flex; align-items: center; gap: var(--spacing-s); }
+
+    .page-content { flex: 1; overflow-y: auto; padding: var(--spacing-l) var(--spacing-xl, 32px); background: var(--color-background); }
+
+    /* Section nav tabs */
+    .lang-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; overflow-x: auto; padding: 0 var(--spacing-l); }
+    .lang-tab { padding: 12px 20px; font-size: 14px; font-weight: 500; color: var(--color-text-muted); background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; font-family: var(--font-family); }
+    .lang-tab:hover { color: var(--color-text); }
+    .lang-tab--active { color: var(--color-action); border-bottom-color: var(--color-action); }
+
+    /* Term cards */
+    .term-section { margin-bottom: 32px; }
+    .term-section__title { font-size: 20px; font-weight: 700; color: var(--color-text); margin: 0 0 4px; }
+    .term-section__intent { font-size: 13px; color: var(--color-text-muted); margin: 0 0 16px; font-style: italic; }
+
+    .term-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 20px; margin-bottom: 12px; }
+    .term-card__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .term-card__name { font-size: 16px; font-weight: 700; color: var(--color-text); margin: 0; }
+    .term-card__ds-link { font-size: 12px; color: var(--color-action); text-decoration: none; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+    .term-card__ds-link:hover { text-decoration: underline; }
+
+    .term-card__definition { font-size: 14px; color: var(--color-text); line-height: 1.6; margin-bottom: 12px; }
+
+    .term-card__guidance { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .term-card__do, .term-card__dont { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; line-height: 1.5; }
+    .term-card__do { background: var(--color-success-50, #f0fdf4); border: 1px solid var(--color-success-300); }
+    .term-card__do-label { font-weight: 600; color: var(--color-success-700); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .term-card__dont { background: var(--color-danger-50, #fef2f2); border: 1px solid var(--color-danger-300); }
+    .term-card__dont-label { font-weight: 600; color: var(--color-danger-700); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+
+    .term-card__example { font-size: 13px; color: var(--color-text-muted); padding: 10px 14px; background: var(--color-primitive-100); border-radius: var(--radius-sm); border-left: 3px solid var(--color-primitive-400); }
+    .term-card__example-label { font-weight: 600; color: var(--color-primitive-700); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+
+    .term-card__ds-mapping { margin-top: 12px; padding: 10px 14px; background: var(--color-neutral-100); border-radius: var(--radius-sm); font-size: 13px; }
+    .term-card__ds-mapping-label { font-weight: 600; color: var(--color-text); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .term-card__ds-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-pill, 20px); font-size: 12px; margin: 2px 2px; }
+
+    /* Question callout */
+    .term-card__question { margin-top: 12px; padding: 10px 14px; background: var(--color-warning-50, #fffbeb); border: 1px solid var(--color-warning-300); border-radius: var(--radius-sm); font-size: 13px; color: var(--color-warning-700); display: flex; align-items: flex-start; gap: 8px; }
+    .term-card__question-icon { flex-shrink: 0; }
+
+    /* Search */
+    .lang-search { position: relative; }
+    .lang-search input { width: 280px; height: 34px; padding: 0 12px 0 32px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font-family); }
+    .lang-search input:focus { outline: none; border-color: var(--color-brand); }
+    .lang-search__icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--color-text-muted); }
+
+    /* Stats bar */
+    .lang-stats { display: flex; gap: 24px; padding: 12px 0; margin-bottom: 20px; font-size: 13px; color: var(--color-text-muted); }
+    .lang-stats__item { display: flex; align-items: center; gap: 6px; }
+    .lang-stats__count { font-weight: 700; color: var(--color-text); font-size: 16px; }
+
+    /* Section panels */
+    .lang-panel { display: none; }
+    .lang-panel--active { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="page-shell">
+
+    <!-- SIDEBAR NAV -->
+    <aside class="page-shell__side">
+      <nav class="nav" aria-label="Main navigation">
+        <a href="_template.html" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">home</span></span>
+          <span class="nav__label">Home</span>
+        </a>
+        <a href="#" class="nav__item" aria-current="page">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">menu_book</span></span>
+          <span class="nav__label">Language</span>
+        </a>
+        <a href="_template.html" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="_template.html" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+          <span class="nav__label">Scout</span>
+        </a>
+        <a href="_template.html" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+          <span class="nav__label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="page-shell__main">
+
+      <header class="header">
+        <div class="header__left">
+          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+        </div>
+        <div class="header__center"></div>
+        <div class="header__right">
+          <span class="header__user-name">Sample User</span>
+          <span class="header__avatar" aria-label="User avatar">SU</span>
+        </div>
+      </header>
+
+      <div class="page-toolbar">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <h1 class="page-toolbar__title">Product Language Guide</h1>
+          <span style="font-size:12px; padding:2px 8px; background:var(--color-primitive-100); border-radius:var(--radius-pill,20px); font-weight:500; color:var(--color-primitive-700);">Design System Mapping</span>
+        </div>
+        <div class="page-toolbar__controls">
+          <div class="lang-search">
+            <span class="material-symbols-outlined lang-search__icon" style="font-size:16px;">search</span>
+            <input type="search" placeholder="Search terms..." id="lang-search" oninput="filterTerms(this.value)" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Section tabs -->
+      <div class="lang-tabs">
+        <button class="lang-tab lang-tab--active" onclick="switchSection(this,'all')">All Terms</button>
+        <button class="lang-tab" onclick="switchSection(this,'core')">Core Platform</button>
+        <button class="lang-tab" onclick="switchSection(this,'agronomic')">Agronomic & Field</button>
+        <button class="lang-tab" onclick="switchSection(this,'data')">Data & Analytics</button>
+        <button class="lang-tab" onclick="switchSection(this,'user')">User & Communication</button>
+        <button class="lang-tab" onclick="switchSection(this,'ops')">Operational & Reporting</button>
+      </div>
+
+      <main class="page-content">
+
+        <!-- Stats -->
+        <div class="lang-stats">
+          <div class="lang-stats__item"><span class="lang-stats__count">56</span> terms defined</div>
+          <div class="lang-stats__item"><span class="lang-stats__count">6</span> sections</div>
+          <div class="lang-stats__item"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-warning-500);">help</span> <span id="question-count">7</span> open design system questions</div>
+        </div>
+
+        <!-- ===== CORE PLATFORM ===== -->
+        <div class="term-section" data-section="core">
+          <h2 class="term-section__title">Core Platform Concepts</h2>
+          <p class="term-section__intent">Standardize the names used for the main product surfaces and foundational platform language.</p>
+
+          <div class="term-card" data-term="agmri">
+            <div class="term-card__header">
+              <h3 class="term-card__name">AGMRI</h3>
+            </div>
+            <p class="term-card__definition">The shared Intelinair digital agriculture platform that powers imagery, analytics, scouting, weather, machine data, reporting, and AI-enabled workflows across web and mobile.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use AGMRI for the core shared platform. In white-label contexts, use the partner brand externally.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't call everything "the app" or "the tool" without context.</div>
+            </div>
+            <div class="term-card__example"><div class="term-card__example-label">Example</div>"AGMRI is the core platform powering multiple branded customer experiences."</div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">palette</span> Brand tokens: --color-brand-*</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">image</span> Header logo component</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">web</span> Page shell layout</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="white-label platform">
+            <div class="term-card__header">
+              <h3 class="term-card__name">White-label platform</h3>
+            </div>
+            <p class="term-card__definition">A customer-branded implementation of AGMRI with shared underlying functionality and tailored branding, configuration, or feature exposure.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>White-label platform, branded platform, or branded experience.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't use "reskin," "clone," or "skin-only" when speaking with customers or leadership.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">palette</span> --color-brand-* (swappable per brand)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">palette</span> --color-primitive-* (stays blue)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">layers</span> Nav Tier 3: client-specific branding</span>
+            </div>
+            <div class="term-card__ds-mapping" style="margin-top:12px;">
+              <div class="term-card__ds-mapping-label">Resolved</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> theme-switcher.css — runtime demo component</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">palette</span> Token swapping — production approach (build-time)</span>
+              <p style="font-size:12px; color:var(--color-text-muted); margin-top:6px;">Token swapping is the production approach (swap --color-brand-* values per deployment). The theme switcher is a demo tool that automates this at runtime for stakeholder reviews. Both exist; they serve different purposes.</p>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="virtual scout">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Virtual Scout</h3>
+              <a href="_template.html" class="term-card__ds-link"><span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Scout page</a>
+            </div>
+            <p class="term-card__definition">The field-level imagery and map review experience where users inspect fields, images, zones, and trials. Virtual Scout is a function inside the Scout nav tab, but can also be accessed from the Fields list view or by clicking a field card in thumbnail view.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "Virtual Scout" as the product name.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't reduce it to "image viewer" or "map tab" unless referring to a very specific UI location.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">search</span> Scout nav tab (Tier 1) — primary entry point</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">grass</span> Fields list/thumbnail → click field → Virtual Scout context</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">image</span> Scouting category icons (assets/icons/scouting/)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">view_list</span> Scouting reports table</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">badge</span> "Virtual Scout" badge pill in toolbar (MiField, POMA)</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="analyze">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Analyze</h3>
+            </div>
+            <p class="term-card__definition">The macro-level analysis area used to compare fields, trends, operational outcomes, and broader agronomic performance. Analyze is a Tier 1 navigation item — always visible in the sidebar.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "Analyze" as the module name.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't generically call it "the dashboard" when the experience is broader than a static report.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">analytics</span> Nav: Tier 1 item (needs to be added to template)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">compare</span> Cross-field comparison views</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">trending_up</span> Regional rollup / county-level views</span>
+            </div>
+            <div class="term-card__question">
+              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
+              Analyze is confirmed as Tier 1 nav but does not yet have a page or toolbar pattern in the design system. What toolbar buttons and content layout should it use?
+            </div>
+          </div>
+
+          <div class="term-card" data-term="ai assistant">
+            <div class="term-card__header">
+              <h3 class="term-card__name">AI Assistant</h3>
+            </div>
+            <p class="term-card__definition">The conversational experience that helps users query field, zone, weather, machine, scouting, and macro data in natural language.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "AI Assistant" externally. Internally, "LLM assistant" is acceptable.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't position it as a basic chatbot when the intent is analytical decision support.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">smart_toy</span> ai-assistant-widget.css component</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="product surface">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Product surface</h3>
+            </div>
+            <p class="term-card__definition">A distinct place where functionality appears, such as Virtual Scout, Analyze, crop plans, reporting, or the AI Assistant.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "product surface" internally for planning and scoping.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't call a cross-cutting capability "a page" when it spans multiple workflows.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">dashboard</span> page-section containers (template nav switching)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">tune</span> Page-specific toolbar patterns</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== AGRONOMIC ===== -->
+        <div class="term-section" data-section="agronomic">
+          <h2 class="term-section__title">Agronomic & Field Concepts</h2>
+          <p class="term-section__intent">Keep field, crop, trial, and wheat-model terminology consistent and customer-legible.</p>
+
+          <div class="term-card" data-term="field">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Field</h3>
+              <a href="_template.html" class="term-card__ds-link"><span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Fields page</a>
+            </div>
+            <p class="term-card__definition">The core mapped agricultural unit to which imagery, analytics, weather, scouting, crop plans, and reporting are tied.</p>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">view_list</span> List view: Field is always column 1</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">grid_view</span> Thumbnail view: field-card component</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">info</span> Field detail header component</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">image</span> Field boundary image (API)</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="zone">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Zone</h3>
+            </div>
+            <p class="term-card__definition">A user-defined or system-defined subfield area used for granular comparison, analysis, and note-taking.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "zone" in customer-facing language.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't use "polygon" unless the audience is technical and geometry matters.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">crop_square</span> Zone pills: .zone-pill--control / .zone-pill--treatment</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">draw</span> Zone drawing tools (MiField wizard step 2)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">image</span> field-zones.svg icon</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="trial">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Trial</h3>
+              <a href="mifield-trials.html" class="term-card__ds-link"><span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> MiField Trials page</a>
+            </div>
+            <p class="term-card__definition">A deliberate in-field comparison of products, practices, hybrids, or treatments.</p>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">science</span> MiField Trials page</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">badge</span> Trial status badges: .trial-status--active/excluded/complete</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">dialogs</span> Trial creation wizard (4-step)</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="growth stage">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Growth stage</h3>
+            </div>
+            <p class="term-card__definition">The current crop development stage as modeled or observed in the field. Growth stage models are crop-specific:</p>
+            <div style="margin: 8px 0 12px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; align-items:center; gap:8px; font-size:13px;">
+                <span style="font-weight:600; color:var(--color-brand); min-width:80px;">Corn</span>
+                <span style="color:var(--color-text-muted);">V-stage (VE, V1...VT) and R-stage (R1...R6) system</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:13px;">
+                <span style="font-weight:600; color:var(--color-brand); min-width:80px;">Soybean</span>
+                <span style="color:var(--color-text-muted);">V-stage (VE, VC, V1...Vn) and R-stage (R1...R8) system</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:13px;">
+                <span style="font-weight:600; color:var(--color-brand); min-width:80px;">Wheat</span>
+                <span style="color:var(--color-text-muted);">Feekes scale (1-11.4) or Zadoks scale (00-99) — user selectable. Includes dormancy and green-up stages.</span>
+              </div>
+            </div>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "growth stage" as the umbrella term. Always display the crop-appropriate scale (V/R for corn and soy, Feekes or Zadoks for wheat).</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't mix scale systems. Don't show Feekes labels on a corn field or V-stages on wheat.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">badge</span> growth-stage-badge component</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">table_view</span> Field detail header: Growth stage column</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">table_view</span> Abiotic stress table: Growth Stage column</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">eco</span> Crop type determines which scale to display</span>
+            </div>
+            <div class="term-card__question">
+              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
+              For wheat fields: should the Feekes/Zadoks preference be a user-level setting, or should both scales be shown side-by-side?
+            </div>
+          </div>
+
+          <div class="term-card" data-term="hybrid">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Hybrid</h3>
+            </div>
+            <p class="term-card__definition">A seed variety identifier used in planting, crop-plan, and analysis workflows.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "hybrid" consistently where that is the agronomic language.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't alternate with "variety" unless the customer does.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">eco</span> Thumbnail card: "Hybrid / Variety" row</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">table_view</span> Field detail header: Hybrid / Variety column</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="scouting category">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Scouting category</h3>
+            </div>
+            <p class="term-card__definition">A high-level grouping for scouting observations such as Weeds, Disease, or Insects.</p>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">image</span> 40+ Figma icons in assets/icons/scouting/</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">tab</span> Scout page category tab bar with badge counts</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="scouting tag">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Scouting tag</h3>
+            </div>
+            <p class="term-card__definition">A more specific observation value within a scouting category, such as Waterhemp or Southern Rust.</p>
+            <div class="term-card__question">
+              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
+              The scouting report table has a "Categories" column. Should tag-level filtering be surfaced as filter pills, a column filter, or an advanced filter panel item?
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== DATA & ANALYTICS ===== -->
+        <div class="term-section" data-section="data">
+          <h2 class="term-section__title">Data & Analytics Concepts</h2>
+          <p class="term-section__intent">Separate data-source terms from analytical outputs and reduce ambiguity in reporting language.</p>
+
+          <div class="term-card" data-term="alert">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Alert</h3>
+            </div>
+            <p class="term-card__definition">A surfaced signal that calls attention to a condition that may need review or action.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "alert" when urgency or attention is implied.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't use it for passive informational content.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">warning</span> alert.css component</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">notifications</span> "Alerts only" filter pill (Fields toolbar)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">counter_badge</span> Counter badges on tabs</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="insight">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Insight vs Alert</h3>
+            </div>
+            <p class="term-card__definition"><strong>Insight:</strong> understanding or actionability. <strong>Alert:</strong> urgency requiring attention. These are not interchangeable.</p>
+            <div class="term-card__question">
+              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
+              Should the design system define separate visual patterns for "insight" cards vs "alert" cards? Currently only alert.css exists. An insight component might use primitive-blue instead of danger-red.
+            </div>
+          </div>
+
+          <div class="term-card" data-term="yield calibration">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Yield calibration</h3>
+              <a href="yield-calibration.html" class="term-card__ds-link"><span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Yield Calibration page</a>
+            </div>
+            <p class="term-card__definition">A workflow that adjusts yield data to align with trusted real-world values while preserving spatial variability.</p>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">web</span> Yield Calibration page (pages/yield-calibration.html)</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="disease weather risk">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Disease weather risk</h3>
+            </div>
+            <p class="term-card__definition">A disease-related metric describing how favorable recent weather has been for disease development. Replaces "weather correlation."</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "disease weather risk."</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't use "weather correlation" — too vague for customers.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">coronavirus</span> Disease page tab bar with pathogen icons</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">image</span> Disease badge SVGs (tar-spot, target-leaf-spot, etc.)</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="ndre">
+            <div class="term-card__header">
+              <h3 class="term-card__name">NDRE / Thermal layer</h3>
+            </div>
+            <p class="term-card__definition">NDRE: vegetation index for crop vigor. Thermal layer: heat-based imagery. Both are field imagery layers in Virtual Scout.</p>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">layers</span> Field overview: Imagery Layers section with filter pills (NDVI, True Color, Thermal, Emergence)</span>
+            </div>
+            <div class="term-card__question">
+              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
+              The field overview page has placeholder layer pills. Should there be a formal "layer switcher" component, or are filter pills sufficient?
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== USER & COMMUNICATION ===== -->
+        <div class="term-section" data-section="user">
+          <h2 class="term-section__title">User & Communication Concepts</h2>
+          <p class="term-section__intent">Clarify personas, permission language, communication targeting, and onboarding terms.</p>
+
+          <div class="term-card" data-term="crop specialist">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Crop specialist</h3>
+            </div>
+            <p class="term-card__definition">A primary user persona who manages fields, scouting, agronomic workflows, grower support, and recommendations.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "crop specialist" consistently.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't flatten the role to "salesperson" when it spans technical and agronomic work.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">person</span> Scouting table: "Created by" column</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">assignment_ind</span> MiField: Crop Specialist Assignment (wizard step 3)</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="grower">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Grower</h3>
+            </div>
+            <p class="term-card__definition">The farmer or producer associated with the field, operation, or customer account.</p>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">group</span> Nav: "Growers" (Tier 1)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">table_view</span> Table column 3 (Field → Farm → Grower)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">star</span> "Favorite growers" filter pill</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="company admin">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Company admin / Permission role</h3>
+            </div>
+            <p class="term-card__definition">Company admin: company-level administrative role. Permission role: governs what a user can do. Communication group: targeted messaging audience. These are separate concepts.</p>
+            <div class="term-card__question">
+              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
+              The Settings page in the design system is a placeholder. Should it include a permissions/roles management UI, or is that out of scope for the design system?
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== OPERATIONAL ===== -->
+        <div class="term-section" data-section="ops">
+          <h2 class="term-section__title">Operational & Reporting Concepts</h2>
+          <p class="term-section__intent">Capture cross-functional language that often appears in requirements, roadmap, and enablement work.</p>
+
+          <div class="term-card" data-term="mifield">
+            <div class="term-card__header">
+              <h3 class="term-card__name">MiField</h3>
+              <a href="mifield-trials.html" class="term-card__ds-link"><span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> MiField Trials page</a>
+            </div>
+            <p class="term-card__definition">The trial-related experience within Virtual Scout used to create, manage, and review trials.</p>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "MiField" with the exact product spelling.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't write "My Field."</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">science</span> MiField Trials page (pages/mifield-trials.html)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">badge</span> "Virtual Scout" badge pill</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="advanced filters">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Advanced filters</h3>
+            </div>
+            <p class="term-card__definition">A slide-over panel triggered by the toolbar button, containing stacked filter controls organized by tabs (Crop plan, Field filters, Crop filter).</p>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">tune</span> advanced-filter.css component</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">filter_list</span> filter-pill--neutral toolbar button</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">layers</span> Scrim overlay + right-side panel</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="dashboard fatigue">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Dashboard fatigue / Platform simplification</h3>
+            </div>
+            <p class="term-card__definition">Dashboard fatigue: too many columns, filters, and dense dashboards. Platform simplification: the strategic effort to reduce this while making core value easier to access.</p>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">view_list</span> View switcher: List / Thumbnail / Map</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">dashboard_customize</span> "Customize table" button</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">smart_toy</span> AI Assistant widget</span>
+            </div>
+            <div class="term-card__question">
+              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
+              The "Customize table" button exists in the toolbar but has no implementation. Should the design system include a column picker/reorder modal component?
+            </div>
+          </div>
+
+          <div class="term-card" data-term="ground workability">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Ground workability / Spray outlook</h3>
+            </div>
+            <p class="term-card__definition">Ground workability: weather-informed field access assessment. Spray outlook: weather-driven spray favorability. Both use AND logic across thresholds.</p>
+            <div class="term-card__question">
+              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
+              Weather icons exist in the Figma set (clouds, wind, temperature, rain-acc). Should the Weather page in the design system show these as a dashboard with threshold indicators?
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function switchSection(el, section) {
+      document.querySelectorAll('.lang-tab').forEach(function(t) { t.classList.remove('lang-tab--active'); });
+      el.classList.add('lang-tab--active');
+      document.querySelectorAll('.term-section').forEach(function(s) {
+        if (section === 'all') {
+          s.style.display = '';
+        } else {
+          s.style.display = s.dataset.section === section ? '' : 'none';
+        }
+      });
+    }
+
+    function filterTerms(query) {
+      var q = query.toLowerCase().trim();
+      document.querySelectorAll('.term-card').forEach(function(card) {
+        if (!q) {
+          card.style.display = '';
+          return;
+        }
+        var text = card.textContent.toLowerCase();
+        card.style.display = text.indexOf(q) > -1 ? '' : 'none';
+      });
+    }
+  </script>
+
+</body>
+</html>
