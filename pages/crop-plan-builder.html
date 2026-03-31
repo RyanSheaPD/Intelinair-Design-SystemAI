@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crop Plan Builder — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/checkbox.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/alert.css" />
+  <link rel="stylesheet" href="../components/progress.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
+
+    .page-shell { display: flex; height: 100vh; }
+    .page-shell__side { flex-shrink: 0; width: var(--nav-width); height: 100%; z-index: 10; }
+    .page-shell__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; }
+
+    /* Builder toolbar */
+    .builder-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; }
+    .builder-toolbar__left { display: flex; align-items: center; gap: 12px; }
+    .builder-toolbar__back { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 500; color: var(--color-action); text-decoration: none; cursor: pointer; }
+    .builder-toolbar__back:hover { text-decoration: underline; }
+    .builder-toolbar__title { font-size: 18px; font-weight: 700; color: var(--color-text); }
+    .builder-toolbar__badge { font-size: 12px; padding: 2px 8px; background: var(--color-primitive-100); border-radius: var(--radius-pill, 20px); font-weight: 500; color: var(--color-primitive-700); }
+
+    /* Detect → Investigate → Act stepper */
+    .dia-stepper { display: flex; align-items: center; gap: 0; padding: 12px 24px; background: var(--color-surface); border-bottom: 1px solid var(--color-border); flex-shrink: 0; }
+    .dia-step { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--color-text-muted); cursor: pointer; border-radius: var(--radius-sm); }
+    .dia-step:hover { background: var(--color-neutral-100); }
+    .dia-step--active { color: var(--color-brand); background: var(--color-brand-100); }
+    .dia-step--complete { color: var(--color-success-600); }
+    .dia-step__num { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--color-neutral-300); font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .dia-step--active .dia-step__num { border-color: var(--color-brand); background: var(--color-brand); color: var(--color-neutral-0); }
+    .dia-step--complete .dia-step__num { border-color: var(--color-success-500); background: var(--color-success-500); color: var(--color-neutral-0); }
+    .dia-connector { flex: 1; height: 2px; background: var(--color-neutral-200); margin: 0 4px; max-width: 60px; }
+    .dia-connector--complete { background: var(--color-success-500); }
+
+    /* Content */
+    .builder-content { flex: 1; overflow-y: auto; padding: 24px; background: var(--color-background); }
+
+    /* Section card */
+    .builder-section { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 20px; }
+    .builder-section__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .builder-section__title { font-size: 16px; font-weight: 600; color: var(--color-text); margin: 0; display: flex; align-items: center; gap: 8px; }
+    .builder-section__subtitle { font-size: 13px; color: var(--color-text-muted); margin: 4px 0 0; }
+
+    /* Field/zone selector */
+    .field-zone-row { display: flex; gap: 16px; margin-bottom: 16px; }
+    .field-zone-card { flex: 1; padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+    .field-zone-card__label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 4px; }
+    .field-zone-card__value { font-size: 15px; font-weight: 600; color: var(--color-text); }
+    .field-zone-card__meta { font-size: 12px; color: var(--color-text-muted); margin-top: 2px; }
+
+    /* Hybrid row */
+    .hybrid-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); margin-bottom: 8px; background: var(--color-surface); }
+    .hybrid-row__color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .hybrid-row__name { font-size: 14px; font-weight: 500; flex: 1; }
+    .hybrid-row__maturity { font-size: 12px; color: var(--color-text-muted); width: 60px; }
+    .hybrid-row__alloc { width: 70px; }
+    .hybrid-row__alloc input { width: 100%; height: 32px; padding: 0 8px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 13px; text-align: right; font-family: var(--font-family); }
+    .hybrid-row__status { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-pill, 20px); }
+    .hybrid-row__status--recommended { color: var(--color-success-700); background: var(--color-success-50, #f0fdf4); border: 1px solid var(--color-success-300); }
+    .hybrid-row__status--at-risk { color: var(--color-warning-700); background: var(--color-warning-50, #fffbeb); border: 1px solid var(--color-warning-300); }
+    .hybrid-row__status--not-recommended { color: var(--color-danger-700); background: var(--color-danger-50, #fef2f2); border: 1px solid var(--color-danger-300); }
+    .hybrid-row__remove { background: none; border: none; cursor: pointer; color: var(--color-text-muted); padding: 2px; }
+    .hybrid-row__remove:hover { color: var(--color-danger-600); }
+
+    /* Allocation bar */
+    .alloc-bar { height: 8px; border-radius: 4px; background: var(--color-neutral-200); overflow: hidden; display: flex; margin-top: 8px; }
+    .alloc-bar__seg { height: 100%; transition: width 0.3s ease; }
+
+    /* Input group grid */
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .input-card { padding: 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
+    .input-card__label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 6px; }
+    .input-card__value { font-size: 14px; font-weight: 500; }
+    .input-card select, .input-card input { width: 100%; height: 34px; padding: 0 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font-family); }
+
+    /* Comparison table */
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .compare-table th { text-align: left; padding: 8px 12px; font-weight: 600; font-size: 12px; color: var(--color-text-muted); background: var(--color-neutral-100); border-bottom: 1px solid var(--color-border); }
+    .compare-table td { padding: 10px 12px; border-bottom: 1px solid var(--color-border); }
+    .compare-table__delta { font-weight: 600; }
+    .compare-table__delta--positive { color: var(--color-success-600); }
+    .compare-table__delta--negative { color: var(--color-danger-600); }
+    .compare-table__bar { display: inline-block; height: 6px; border-radius: 3px; vertical-align: middle; margin-left: 6px; }
+
+    /* Recommendation card */
+    .rec-card { padding: 16px; border-radius: var(--radius-sm); margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; }
+    .rec-card--hybrid { background: var(--color-primitive-100); border: 1px solid var(--color-primitive-300); }
+    .rec-card--input { background: var(--color-success-50, #f0fdf4); border: 1px solid var(--color-success-300); }
+    .rec-card--equipment { background: var(--color-warning-50, #fffbeb); border: 1px solid var(--color-warning-300); }
+    .rec-card__icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .rec-card--hybrid .rec-card__icon { background: var(--color-primitive-200); color: var(--color-primitive-700); }
+    .rec-card--input .rec-card__icon { background: var(--color-success-200); color: var(--color-success-700); }
+    .rec-card--equipment .rec-card__icon { background: var(--color-warning-200); color: var(--color-warning-700); }
+    .rec-card__body { flex: 1; }
+    .rec-card__title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .rec-card__desc { font-size: 13px; color: rgba(0,0,0,0.6); }
+    .rec-card__impact { font-size: 12px; font-weight: 500; margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+    .rec-card__confidence { font-size: 11px; color: var(--color-text-muted); }
+    .rec-card__apply { padding: 4px 12px; font-size: 12px; }
+
+    /* Builder panels */
+    .builder-panel { display: none; }
+    .builder-panel--active { display: block; }
+
+    /* Validation banner */
+    .alloc-warning { display: none; align-items: center; gap: 6px; font-size: 12px; color: var(--color-danger-600); margin-top: 6px; }
+    .alloc-warning--visible { display: flex; }
+
+    /* Peer benchmark card */
+    .benchmark-card { display: flex; align-items: center; gap: 20px; padding: 16px; background: var(--color-neutral-100); border-radius: var(--radius-sm); margin-top: 16px; }
+    .benchmark-card__stat { text-align: center; }
+    .benchmark-card__stat-value { font-size: 20px; font-weight: 700; color: var(--color-text); }
+    .benchmark-card__stat-label { font-size: 11px; color: var(--color-text-muted); }
+    .benchmark-card__divider { width: 1px; height: 36px; background: var(--color-border); }
+  </style>
+</head>
+<body>
+
+  <div class="page-shell">
+
+    <!-- NAV -->
+    <aside class="page-shell__side">
+      <nav class="nav" aria-label="Main navigation">
+        <a href="_template.html" class="nav__item">
+          <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
+          <span class="nav__label">Home</span>
+        </a>
+        <a href="_template.html" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="#" class="nav__item" aria-current="page">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">description</span></span>
+          <span class="nav__label">Crop plan</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">analytics</span></span>
+          <span class="nav__label">Analyze</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+          <span class="nav__label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="page-shell__main">
+
+      <header class="header">
+        <div class="header__left"><a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a></div>
+        <div class="header__center"></div>
+        <div class="header__right"><span class="header__user-name">Sample User</span><span class="header__avatar" aria-label="User avatar">SU</span></div>
+      </header>
+
+      <!-- Builder toolbar -->
+      <div class="builder-toolbar">
+        <div class="builder-toolbar__left">
+          <a href="crop-plan.html" class="builder-toolbar__back"><span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span> Crop Plans</a>
+          <span style="color:var(--color-border);">|</span>
+          <span class="builder-toolbar__title">Crop Plan Builder</span>
+          <span class="builder-toolbar__badge">2026 Corn Standard</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" style="padding:6px 14px;">Save Draft</button>
+          <button class="btn btn--brand" style="padding:6px 14px;">Publish</button>
+        </div>
+      </div>
+
+      <!-- Detect → Investigate → Act stepper -->
+      <div class="dia-stepper">
+        <div class="dia-step dia-step--active" id="step-detect" onclick="goToStep('detect')">
+          <span class="dia-step__num">1</span>
+          <span>Detect</span>
+          <span style="font-size:11px; color:var(--color-text-muted);">Field, Hybrids, Inputs</span>
+        </div>
+        <div class="dia-connector" id="conn-1"></div>
+        <div class="dia-step" id="step-investigate" onclick="goToStep('investigate')">
+          <span class="dia-step__num">2</span>
+          <span>Investigate</span>
+          <span style="font-size:11px; color:var(--color-text-muted);">Compare & Evaluate</span>
+        </div>
+        <div class="dia-connector" id="conn-2"></div>
+        <div class="dia-step" id="step-act" onclick="goToStep('act')">
+          <span class="dia-step__num">3</span>
+          <span>Act</span>
+          <span style="font-size:11px; color:var(--color-text-muted);">Recommendations</span>
+        </div>
+      </div>
+
+      <!-- ===== STEP 1: DETECT ===== -->
+      <div class="builder-content">
+        <div class="builder-panel builder-panel--active" id="panel-detect">
+
+          <!-- Field & Zone -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">grass</span> Field & Zone</h3>
+            </div>
+            <div class="field-zone-row">
+              <div class="field-zone-card">
+                <div class="field-zone-card__label">Field</div>
+                <div class="field-zone-card__value">Ridgeline North 40</div>
+                <div class="field-zone-card__meta">79.2 ac &middot; Greenfield Ag</div>
+              </div>
+              <div class="field-zone-card">
+                <div class="field-zone-card__label">Zone</div>
+                <div class="field-zone-card__value">Zone A — High Productivity</div>
+                <div class="field-zone-card__meta">Soil: Drummer silty clay loam &middot; 48.3 ac</div>
+              </div>
+              <div class="field-zone-card">
+                <div class="field-zone-card__label">Zone</div>
+                <div class="field-zone-card__value">Zone B — Moderate</div>
+                <div class="field-zone-card__meta">Soil: Flanagan silt loam &middot; 30.9 ac</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hybrid Assignment -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">eco</span> Hybrid Assignment</h3>
+              <button class="btn" style="padding:4px 12px; font-size:12px;"><span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">add</span></span> Add Hybrid</button>
+            </div>
+            <p class="builder-section__subtitle">Assign one or more hybrids per zone. Allocation must sum to 100%.</p>
+
+            <div class="hybrid-row">
+              <span class="hybrid-row__color" style="background:var(--color-primitive-500);"></span>
+              <span class="hybrid-row__name">Pioneer P1185AM</span>
+              <span class="hybrid-row__maturity">111 CRM</span>
+              <div class="hybrid-row__alloc"><input type="text" value="60" />%</div>
+              <span class="hybrid-row__status hybrid-row__status--recommended">Recommended</span>
+              <button class="hybrid-row__remove"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
+            </div>
+            <div class="hybrid-row">
+              <span class="hybrid-row__color" style="background:#f97316;"></span>
+              <span class="hybrid-row__name">DeKalb DKC64-35</span>
+              <span class="hybrid-row__maturity">114 CRM</span>
+              <div class="hybrid-row__alloc"><input type="text" value="40" />%</div>
+              <span class="hybrid-row__status hybrid-row__status--at-risk">At Risk</span>
+              <button class="hybrid-row__remove"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
+            </div>
+
+            <!-- Allocation bar -->
+            <div class="alloc-bar">
+              <div class="alloc-bar__seg" style="width:60%; background:var(--color-primitive-500);"></div>
+              <div class="alloc-bar__seg" style="width:40%; background:#f97316;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--color-text-muted); margin-top:4px;">
+              <span>P1185AM: 60%</span>
+              <span>DKC64-35: 40%</span>
+            </div>
+            <div class="alloc-warning"><span class="material-symbols-outlined" style="font-size:14px;">error</span> Allocation must equal 100%</div>
+          </div>
+
+          <!-- Management Program -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">science</span> Management Program</h3>
+            </div>
+            <div class="input-grid">
+              <div class="input-card">
+                <div class="input-card__label">Nitrogen — Passes</div>
+                <select><option>1 pass</option><option selected>2 passes</option><option>3 passes</option></select>
+              </div>
+              <div class="input-card">
+                <div class="input-card__label">Nitrogen — Rate (lbs/ac)</div>
+                <input type="number" value="180" />
+              </div>
+              <div class="input-card">
+                <div class="input-card__label">Herbicide Program</div>
+                <select><option>Pre-emerge only</option><option selected>Pre + Post</option><option>Post only</option></select>
+              </div>
+              <div class="input-card">
+                <div class="input-card__label">Potash Rate (lbs/ac)</div>
+                <input type="number" value="60" />
+              </div>
+              <div class="input-card">
+                <div class="input-card__label">Phosphorus Rate (lbs/ac)</div>
+                <input type="number" value="40" placeholder="Optional" />
+              </div>
+              <div class="input-card">
+                <div class="input-card__label">Application Timing</div>
+                <select><option selected>Standard</option><option>Early</option><option>Split</option></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Equipment -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">agriculture</span> Equipment</h3>
+            </div>
+            <div class="input-grid" style="grid-template-columns:1fr 1fr;">
+              <div class="input-card">
+                <div class="input-card__label">Planter Type</div>
+                <select>
+                  <option>Standard</option>
+                  <option selected>Split-Row</option>
+                  <option>Precision</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="input-card" style="display:flex; align-items:center; gap:12px; background:var(--color-primitive-100); border-color:var(--color-primitive-300);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:var(--color-primitive-600);">info</span>
+                <span style="font-size:13px; color:var(--color-primitive-700);">Split-row planters support multi-hybrid strategies within the same pass.</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button class="btn btn--brand" style="padding:8px 20px;" onclick="goToStep('investigate')">
+              Next: Investigate
+              <span class="material-symbols-outlined" style="font-size:16px; margin-left:4px;">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 2: INVESTIGATE ===== -->
+        <div class="builder-panel" id="panel-investigate">
+
+          <!-- Hybrid Evaluation -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">eco</span> Hybrid Evaluation</h3>
+            </div>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Hybrid</th>
+                  <th>Soil Match</th>
+                  <th>Zone Fit</th>
+                  <th>Planter Compat.</th>
+                  <th>Yield Delta</th>
+                  <th>Confidence</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:500;">Pioneer P1185AM</td>
+                  <td><span style="color:var(--color-success-600);">Strong</span></td>
+                  <td>Zone A, B</td>
+                  <td><span style="color:var(--color-success-600);">Compatible</span></td>
+                  <td class="compare-table__delta compare-table__delta--positive">+8.2 bu/ac <span class="compare-table__bar" style="width:40px; background:var(--color-success-500);"></span></td>
+                  <td>0.87</td>
+                  <td><span class="hybrid-row__status hybrid-row__status--recommended">Recommended</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:500;">DeKalb DKC64-35</td>
+                  <td><span style="color:var(--color-warning-600);">Moderate</span></td>
+                  <td>Zone A only</td>
+                  <td><span style="color:var(--color-success-600);">Compatible</span></td>
+                  <td class="compare-table__delta compare-table__delta--positive">+3.1 bu/ac <span class="compare-table__bar" style="width:18px; background:var(--color-warning-500);"></span></td>
+                  <td>0.62</td>
+                  <td><span class="hybrid-row__status hybrid-row__status--at-risk">At Risk</span></td>
+                </tr>
+                <tr style="background:var(--color-neutral-50);">
+                  <td style="font-weight:600;">Blended (60/40)</td>
+                  <td colspan="2" style="color:var(--color-text-muted);">Weighted across zones</td>
+                  <td><span style="color:var(--color-success-600);">Split-Row OK</span></td>
+                  <td class="compare-table__delta compare-table__delta--positive" style="font-weight:700;">+6.2 bu/ac</td>
+                  <td>0.78</td>
+                  <td><span class="hybrid-row__status hybrid-row__status--recommended">Viable</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Management Comparison -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">compare</span> Management Comparison — Your Plan vs Benchmark</h3>
+            </div>
+            <table class="compare-table">
+              <thead>
+                <tr><th>Input</th><th>Your Plan</th><th>Benchmark</th><th>Yield Impact</th><th>% Improvement</th><th>Sample (ac)</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:500;">Nitrogen (2-pass, 180 lbs)</td>
+                  <td>180 lbs / 2 pass</td>
+                  <td>160 lbs / 1 pass</td>
+                  <td class="compare-table__delta compare-table__delta--positive">+5.4 bu/ac</td>
+                  <td class="compare-table__delta compare-table__delta--positive">+3.1%</td>
+                  <td>12,400</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:500;">Herbicide (Pre + Post)</td>
+                  <td>Pre + Post</td>
+                  <td>Pre only</td>
+                  <td class="compare-table__delta compare-table__delta--positive">+2.8 bu/ac</td>
+                  <td class="compare-table__delta compare-table__delta--positive">+1.6%</td>
+                  <td>8,200</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:500;">Potash (60 lbs)</td>
+                  <td>60 lbs/ac</td>
+                  <td>40 lbs/ac</td>
+                  <td class="compare-table__delta compare-table__delta--positive">+1.2 bu/ac</td>
+                  <td class="compare-table__delta compare-table__delta--positive">+0.7%</td>
+                  <td>6,100</td>
+                </tr>
+                <tr style="background:var(--color-neutral-50);">
+                  <td style="font-weight:600;">Combined Impact</td>
+                  <td colspan="2" style="color:var(--color-text-muted);">Multi-input analysis</td>
+                  <td class="compare-table__delta compare-table__delta--positive" style="font-weight:700;">+9.4 bu/ac</td>
+                  <td class="compare-table__delta compare-table__delta--positive" style="font-weight:700;">+5.4%</td>
+                  <td>4,800</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Equipment Impact -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">agriculture</span> Equipment Impact</h3>
+            </div>
+            <div style="padding:16px; background:var(--color-primitive-100); border-radius:var(--radius-sm); border:1px solid var(--color-primitive-300); font-size:14px; color:var(--color-primitive-800);">
+              <span class="material-symbols-outlined" style="font-size:18px; vertical-align:middle; margin-right:6px;">lightbulb</span>
+              <strong>Split-row planters</strong> showed <strong>+4.1 bu/ac</strong> with multi-hybrid strategies in similar soil conditions (Drummer/Flanagan). Sample: 3,200 acres.
+            </div>
+          </div>
+
+          <!-- Peer Benchmark -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">groups</span> Peer Benchmark</h3>
+            </div>
+            <p style="font-size:13px; color:var(--color-text-muted); margin-bottom:12px;">Growers using <strong>P1185AM + DKC64-35</strong> with <strong>2-pass nitrogen</strong> and <strong>split-row planter</strong> in similar conditions:</p>
+            <div class="benchmark-card">
+              <div class="benchmark-card__stat">
+                <div class="benchmark-card__stat-value">198.4</div>
+                <div class="benchmark-card__stat-label">Avg yield (bu/ac)</div>
+              </div>
+              <div class="benchmark-card__divider"></div>
+              <div class="benchmark-card__stat">
+                <div class="benchmark-card__stat-value">+12.6</div>
+                <div class="benchmark-card__stat-label">vs county avg</div>
+              </div>
+              <div class="benchmark-card__divider"></div>
+              <div class="benchmark-card__stat">
+                <div class="benchmark-card__stat-value">2,400</div>
+                <div class="benchmark-card__stat-label">Sample acres</div>
+              </div>
+              <div class="benchmark-card__divider"></div>
+              <div class="benchmark-card__stat">
+                <div style="display:flex; gap:4px;">
+                  <span class="material-symbols-outlined" style="font-size:14px; color:var(--color-success-500);">check_circle</span>
+                  <span class="material-symbols-outlined" style="font-size:14px; color:var(--color-success-500);">check_circle</span>
+                  <span class="material-symbols-outlined" style="font-size:14px; color:var(--color-success-500);">check_circle</span>
+                </div>
+                <div class="benchmark-card__stat-label">Soil + Region + Equipment match</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:8px;">
+            <button class="btn" style="padding:8px 20px;" onclick="goToStep('detect')">
+              <span class="material-symbols-outlined" style="font-size:16px; margin-right:4px;">arrow_back</span> Back: Detect
+            </button>
+            <button class="btn btn--brand" style="padding:8px 20px;" onclick="goToStep('act')">
+              Next: Act
+              <span class="material-symbols-outlined" style="font-size:16px; margin-left:4px;">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 3: ACT ===== -->
+        <div class="builder-panel" id="panel-act">
+
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">lightbulb</span> Recommendations</h3>
+            </div>
+            <p class="builder-section__subtitle">Based on hybrid evaluation, management comparison, equipment, and peer benchmarks.</p>
+
+            <!-- Hybrid recommendation -->
+            <div class="rec-card rec-card--hybrid">
+              <div class="rec-card__icon"><span class="material-symbols-outlined" style="font-size:18px;">eco</span></div>
+              <div class="rec-card__body">
+                <div class="rec-card__title">Adjust hybrid allocation to 65/35</div>
+                <div class="rec-card__desc">Increasing P1185AM to 65% and reducing DKC64-35 to 35% better matches Zone B soil conditions. DKC64-35 shows moderate fit in Zone B — concentrating it in Zone A improves overall blend.</div>
+                <div class="rec-card__impact">
+                  <span class="compare-table__delta compare-table__delta--positive">+1.8 bu/ac expected</span>
+                  <span class="rec-card__confidence">Confidence: 0.81</span>
+                </div>
+              </div>
+              <button class="btn btn--brand rec-card__apply">Apply</button>
+            </div>
+
+            <!-- Input recommendation -->
+            <div class="rec-card rec-card--input">
+              <div class="rec-card__icon"><span class="material-symbols-outlined" style="font-size:18px;">science</span></div>
+              <div class="rec-card__body">
+                <div class="rec-card__title">Consider split nitrogen timing</div>
+                <div class="rec-card__desc">Peers with similar soil and hybrid mix saw +2.3 bu/ac when splitting 2-pass nitrogen into early + sidedress vs standard pre-plant + V6 timing.</div>
+                <div class="rec-card__impact">
+                  <span class="compare-table__delta compare-table__delta--positive">+2.3 bu/ac expected</span>
+                  <span class="rec-card__confidence">Confidence: 0.74</span>
+                </div>
+              </div>
+              <button class="btn btn--brand rec-card__apply">Apply</button>
+            </div>
+
+            <!-- Equipment recommendation -->
+            <div class="rec-card rec-card--equipment">
+              <div class="rec-card__icon"><span class="material-symbols-outlined" style="font-size:18px;">agriculture</span></div>
+              <div class="rec-card__body">
+                <div class="rec-card__title">Split-row planter confirmed optimal</div>
+                <div class="rec-card__desc">Your split-row planter selection is well-matched to the P1185AM + DKC64-35 multi-hybrid strategy. No change recommended.</div>
+                <div class="rec-card__impact">
+                  <span style="color:var(--color-success-600); font-weight:500;">Already optimal</span>
+                  <span class="rec-card__confidence">Confidence: 0.87</span>
+                </div>
+              </div>
+              <span style="font-size:12px; color:var(--color-success-600); font-weight:500; padding:4px 12px;"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">check_circle</span> No action needed</span>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="builder-section">
+            <div class="builder-section__header">
+              <h3 class="builder-section__title"><span class="material-symbols-outlined" style="font-size:18px;">summarize</span> Expected Outcome Summary</h3>
+            </div>
+            <div class="benchmark-card">
+              <div class="benchmark-card__stat">
+                <div class="benchmark-card__stat-value" style="color:var(--color-success-600);">+15.6</div>
+                <div class="benchmark-card__stat-label">Total yield impact (bu/ac)</div>
+              </div>
+              <div class="benchmark-card__divider"></div>
+              <div class="benchmark-card__stat">
+                <div class="benchmark-card__stat-value">3</div>
+                <div class="benchmark-card__stat-label">Recommendations</div>
+              </div>
+              <div class="benchmark-card__divider"></div>
+              <div class="benchmark-card__stat">
+                <div class="benchmark-card__stat-value">2</div>
+                <div class="benchmark-card__stat-label">Actionable</div>
+              </div>
+              <div class="benchmark-card__divider"></div>
+              <div class="benchmark-card__stat">
+                <div class="benchmark-card__stat-value">0.81</div>
+                <div class="benchmark-card__stat-label">Avg confidence</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; margin-top:8px;">
+            <button class="btn" style="padding:8px 20px;" onclick="goToStep('investigate')">
+              <span class="material-symbols-outlined" style="font-size:16px; margin-right:4px;">arrow_back</span> Back: Investigate
+            </button>
+            <div style="display:flex; gap:8px;">
+              <button class="btn" style="padding:8px 20px;">Save Draft</button>
+              <button class="btn btn--brand" style="padding:8px 20px;">
+                <span class="material-symbols-outlined" style="font-size:16px; margin-right:4px;">check</span> Publish Plan
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var steps = ['detect', 'investigate', 'act'];
+    var currentStep = 0;
+
+    function goToStep(name) {
+      var idx = steps.indexOf(name);
+      if (idx === -1) return;
+      currentStep = idx;
+
+      // Update panels
+      document.querySelectorAll('.builder-panel').forEach(function(p) { p.classList.remove('builder-panel--active'); });
+      document.getElementById('panel-' + name).classList.add('builder-panel--active');
+
+      // Update stepper
+      steps.forEach(function(s, i) {
+        var step = document.getElementById('step-' + s);
+        step.className = 'dia-step';
+        if (i < idx) step.classList.add('dia-step--complete');
+        if (i === idx) step.classList.add('dia-step--active');
+      });
+
+      // Connectors
+      var conn1 = document.getElementById('conn-1');
+      var conn2 = document.getElementById('conn-2');
+      conn1.className = 'dia-connector' + (idx > 0 ? ' dia-connector--complete' : '');
+      conn2.className = 'dia-connector' + (idx > 1 ? ' dia-connector--complete' : '');
+
+      // Scroll to top
+      document.querySelector('.builder-content').scrollTop = 0;
+    }
+  </script>
+
+</body>
+</html>

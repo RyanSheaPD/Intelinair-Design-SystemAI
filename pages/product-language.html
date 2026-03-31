@@ -158,7 +158,7 @@
         <div class="lang-stats">
           <div class="lang-stats__item"><span class="lang-stats__count">56</span> terms defined</div>
           <div class="lang-stats__item"><span class="lang-stats__count">6</span> sections</div>
-          <div class="lang-stats__item"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-warning-500);">help</span> <span id="question-count">7</span> open design system questions</div>
+          <div class="lang-stats__item"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-warning-500);">help</span> <span id="question-count">6</span> open design system questions</div>
         </div>
 
         <!-- ===== CORE PLATFORM ===== -->
@@ -405,6 +405,54 @@
               The scouting report table has a "Categories" column. Should tag-level filtering be surfaced as filter pills, a column filter, or an advanced filter panel item?
             </div>
           </div>
+
+          <div class="term-card" data-term="section template recipe">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Section (Template / Recipe)</h3>
+              <a href="crop-plan.html" class="term-card__ds-link"><span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Crop Plan page</a>
+            </div>
+            <p class="term-card__definition">A building block that defines a particular management practice — such as a seeding program, herbicide program, or fertilizer plan. Sections are partial, named elements that can be created, stored, and reused. They are the standardized formulas or templates you create before applying them to fields.</p>
+            <div style="margin:8px 0 12px; padding:12px 16px; background:var(--color-neutral-100); border-radius:var(--radius-sm); font-size:13px; color:rgba(0,0,0,0.6); line-height:1.6;">
+              <strong>Key distinction:</strong> A section is <em>not</em> a crop plan. It is a reusable component that becomes part of a crop plan only when applied to a field. Think of it as a recipe — it exists independently until it's used.
+            </div>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "section" as the current product term. "Template" or "recipe" are acceptable informal alternatives when explaining the concept. Three section types: Soil management, Seed, Applications.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't call a section a "crop plan" — it's not a plan until it's applied to a field. Don't use "template" in UI if the product label is "section."</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">description</span> Crop Plan page → "Sections" tab (default view)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">add</span> "+ Create" dropdown: Soil management, Seed, Applications</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">table_view</span> Sections table: Name, Category, Products, Timing, Date created, Date revised, Created by</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">badge</span> Status: Published / Draft</span>
+            </div>
+          </div>
+
+          <div class="term-card" data-term="crop plan">
+            <div class="term-card__header">
+              <h3 class="term-card__name">Crop Plan</h3>
+              <a href="crop-plan-builder.html" class="term-card__ds-link"><span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> Crop Plan Builder</a>
+            </div>
+            <p class="term-card__definition">The overall collection of sections (templates/recipes) that has been applied to a specific field. A crop plan is <strong>not</strong> a crop plan until it is on the field — it is created by taking planned sections and applying them in bulk to fields. Once applied, the system generates a summary showing the total amount of product needed (seeds, nitrogen, herbicide, etc.) to accomplish the plan.</p>
+            <div style="margin:8px 0 12px; padding:12px 16px; background:var(--color-neutral-100); border-radius:var(--radius-sm); font-size:13px; color:rgba(0,0,0,0.6); line-height:1.6;">
+              <strong>Relationship:</strong> Sections are the building blocks. A crop plan is the completed assembly applied to a field.<br/>
+              <strong>Example:</strong> A "2026 Corn Standard" crop plan might include 4 sections: Standard Corn (seed), Pre-plant Fertilizer, Herbicide Program, and Fungicide Application.
+            </div>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "crop plan" only when referring to the assembled plan applied to a field. Use "template-based crop plan" when emphasizing reusability. Entry points: Crop Plan nav item and Field Detail View.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't call a standalone section a "crop plan." Don't use "spreadsheet plan" once it lives in the product.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">description</span> Crop Plan nav item (Tier 1 — production nav)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">tab</span> Crop Plan page → "Crop plan" tab</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">build</span> Crop Plan Builder (Detect → Investigate → Act)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">eco</span> Hybrid assignment with multi-hybrid allocation</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">science</span> Management program inputs (nitrogen, herbicide, potash)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">agriculture</span> Equipment selection (planter type)</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">lightbulb</span> Recommendations with Apply actions</span>
+            </div>
+          </div>
         </div>
 
         <!-- ===== DATA & ANALYTICS ===== -->
@@ -523,9 +571,30 @@
               <h3 class="term-card__name">Company admin / Permission role</h3>
             </div>
             <p class="term-card__definition">Company admin: company-level administrative role. Permission role: governs what a user can do. Communication group: targeted messaging audience. These are separate concepts.</p>
-            <div class="term-card__question">
-              <span class="material-symbols-outlined term-card__question-icon" style="font-size:18px;">help</span>
-              The Settings page in the design system is a placeholder. Should it include a permissions/roles management UI, or is that out of scope for the design system?
+            <div style="margin: 8px 0 12px; display:flex; flex-direction:column; gap:6px;">
+              <div style="font-size:13px; font-weight:600; color:var(--color-text); margin-bottom:2px;">Three permission levels (managed in Settings &gt; Admin):</div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:13px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:var(--color-neutral-200); font-size:11px; font-weight:700;">U</span>
+                <span><strong>User</strong> — standard access to fields, scouting, and reporting</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:13px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:var(--color-primitive-200); color:var(--color-primitive-800); font-size:11px; font-weight:700;">A</span>
+                <span><strong>Admin</strong> — user management, settings, and configuration</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; font-size:13px;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:50%; background:var(--color-brand-200); color:var(--color-brand-800); font-size:11px; font-weight:700;">S</span>
+                <span><strong>Super Admin</strong> — full system access, cross-company visibility</span>
+              </div>
+            </div>
+            <div class="term-card__guidance">
+              <div class="term-card__do"><div class="term-card__do-label">Use this</div>Use "User," "Admin," and "Super Admin" as the three distinct role levels. Roles are managed in the Settings admin section.</div>
+              <div class="term-card__dont"><div class="term-card__dont-label">Don't use this</div>Don't use "company admin" loosely when you mean one of these three specific levels. Don't confuse permission roles with communication groups.</div>
+            </div>
+            <div class="term-card__ds-mapping">
+              <div class="term-card__ds-mapping-label">Design System Mapping</div>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">settings</span> Settings nav item (Tier 1) — Admin section</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">person</span> 3 role levels: User, Admin, Super Admin</span>
+              <span class="term-card__ds-tag"><span class="material-symbols-outlined" style="font-size:14px;">lock</span> No dedicated permissions UI currently — controlled at admin level</span>
             </div>
           </div>
         </div>
