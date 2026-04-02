@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field Application Detail — Product Editing Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: var(--font-family); background: var(--color-neutral-100); overflow-x: auto; overflow-y: auto; }
+
+    /* ===== FLOW LAYOUT: Side-by-side frames ===== */
+    .flow-canvas {
+      display: flex;
+      gap: 60px;
+      padding: 48px;
+      min-width: max-content;
+    }
+
+    .flow-frame {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .flow-frame__label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .flow-frame__step {
+      font-size: 11px;
+      color: var(--color-neutral-400);
+      margin-top: -8px;
+    }
+
+    /* Simulated browser viewport */
+    .viewport {
+      width: 820px;
+      height: 640px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      background: #2d4a2e;
+    }
+    .viewport__map {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #4a7a3a 0%, #6b9a4a 20%, #e8d44d 40%, #c9a832 55%, #8bba45 70%, #3d6b2e 100%);
+      opacity: 0.7;
+    }
+
+    /* Map controls */
+    .map-controls { position: absolute; top: 16px; right: 16px; display: flex; align-items: center; gap: 8px; z-index: 5; }
+    .map-controls__info { width: 36px; height: 36px; border-radius: 50%; background: var(--color-neutral-700); color: var(--color-neutral-0); display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; font-size: 18px; font-weight: 700; }
+    .map-controls__share { padding: 8px 20px; border-radius: var(--radius-md); border: none; background: var(--color-action); color: var(--color-neutral-0); font-size: 14px; font-weight: 600; font-family: var(--font-family); cursor: pointer; }
+
+    /* ===== APPLICATION DETAIL PANEL ===== */
+    .app-detail {
+      position: absolute;
+      top: 40px; left: 50%; transform: translateX(-50%);
+      width: 520px;
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 10;
+      font-family: var(--font-family);
+    }
+
+    /* Panel header */
+    .app-detail__header { padding: 16px 20px 0; display: flex; flex-direction: column; gap: 4px; }
+    .app-detail__title-row { display: flex; align-items: center; gap: 8px; }
+    .app-detail__title { font-size: 20px; font-weight: 700; color: var(--color-action); margin: 0; line-height: 1.3; }
+    .app-detail__copy-btn { background: none; border: none; cursor: pointer; color: var(--color-text-muted); display: flex; align-items: center; }
+    .app-detail__subtitle { font-size: 14px; color: var(--color-text-muted); display: flex; align-items: center; gap: 8px; }
+    .app-detail__subtitle-star { color: var(--color-warning-500); }
+    .app-detail__meta { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; font-size: 14px; color: rgba(0,0,0,0.45); padding: 4px 0; }
+    .app-detail__meta-sep { margin: 0 2px; color: var(--color-border-strong); user-select: none; }
+
+    /* Application type badge */
+    .app-detail__type-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 10px; border-radius: var(--radius-pill, 20px);
+      font-size: 12px; font-weight: 600;
+    }
+    .app-detail__type-badge--liquid { background: var(--color-primitive-100); color: var(--color-primitive-700); }
+    .app-detail__type-badge--dry { background: var(--color-warning-100); color: var(--color-warning-700); }
+
+    .app-detail__flight-row { display: flex; align-items: center; gap: 0; font-size: 13px; color: var(--color-text-muted); padding: 6px 0 12px; border-bottom: 1px solid var(--color-border); }
+    .app-detail__flight-sep { margin: 0 12px; color: var(--color-border-strong); user-select: none; }
+    .app-detail__flight-gdd { color: var(--color-warning-600); }
+    .app-detail__flight-id { display: inline-flex; align-items: center; gap: 4px; }
+
+    /* Two-column body */
+    .app-detail__body { display: flex; flex: 1; min-height: 0; }
+
+    .app-detail__col-left { flex: 1; padding: 0 20px 16px; border-right: 1px solid var(--color-border); }
+    .app-detail__col-left-title { font-size: 16px; font-weight: 700; color: var(--color-text); padding: 12px 0 8px; }
+    .app-detail__stat { padding: 8px 0; border-bottom: 1px solid var(--color-border); }
+    .app-detail__stat:last-child { border-bottom: none; }
+    .app-detail__stat-label { font-size: 13px; color: var(--color-text-muted); margin-bottom: 2px; }
+    .app-detail__stat-value { font-size: 15px; font-weight: 600; color: var(--color-text); }
+
+    .app-detail__col-right { flex: 1; padding: 0 20px 16px; position: relative; }
+    .app-detail__col-right-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 8px; }
+    .app-detail__col-right-title { font-size: 16px; font-weight: 700; color: var(--color-text); }
+    .app-detail__layers-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: none; border: 1px solid var(--color-border); border-radius: 50%; cursor: pointer; color: var(--color-text-muted); }
+
+    /* Product block */
+    .app-detail__product { margin-bottom: 12px; }
+    .app-detail__product-name { font-size: 14px; font-weight: 600; color: var(--color-text); margin-bottom: 2px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .app-detail__product-mapping { font-size: 12px; color: var(--color-text-muted); font-weight: 400; }
+    .app-detail__product-edit { font-size: 12px; color: var(--color-action); text-decoration: none; cursor: pointer; margin-left: 4px; font-weight: 500; }
+    .app-detail__product-edit:hover { text-decoration: underline; }
+    .app-detail__product-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; padding: 10px; background: var(--color-neutral-50, #fafafa); border-radius: var(--radius-md); }
+    .app-detail__product-stat-label { font-size: 11px; color: var(--color-text-muted); margin-bottom: 2px; }
+    .app-detail__product-stat-value { font-size: 13px; font-weight: 600; color: var(--color-text); }
+
+    /* ===== EDIT PRODUCT DROPDOWN ===== */
+    .product-edit-dropdown {
+      margin-top: 8px;
+      border: 1px solid var(--color-border-focus, var(--color-action));
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .product-edit-dropdown__search {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .product-edit-dropdown__search-icon { color: var(--color-text-muted); display: flex; }
+    .product-edit-dropdown__search input {
+      border: none; outline: none; font-size: 14px; font-family: var(--font-family);
+      color: var(--color-text); width: 100%; background: transparent;
+    }
+    .product-edit-dropdown__search input::placeholder { color: var(--color-neutral-400); }
+
+    .product-edit-dropdown__filter-row {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 12px; color: var(--color-text-muted);
+    }
+    .product-edit-dropdown__filter-chip {
+      display: inline-flex; align-items: center; gap: 2px;
+      padding: 2px 10px; border-radius: var(--radius-pill, 20px);
+      font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid var(--color-border);
+      background: var(--color-surface); color: var(--color-text-muted);
+    }
+    .product-edit-dropdown__filter-chip--active {
+      background: var(--color-action); color: var(--color-neutral-0); border-color: var(--color-action);
+    }
+
+    .product-edit-dropdown__list { max-height: 180px; overflow-y: auto; }
+    .product-edit-dropdown__item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; cursor: pointer; font-size: 14px; color: var(--color-text);
+      border: none; background: none; width: 100%; text-align: left; font-family: var(--font-family);
+    }
+    .product-edit-dropdown__item:hover { background: var(--color-neutral-50, #fafafa); }
+    .product-edit-dropdown__item--selected { background: var(--color-primitive-50, #eff6ff); }
+    .product-edit-dropdown__item--selected::after {
+      content: '';
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--color-action); flex-shrink: 0;
+    }
+    .product-edit-dropdown__item-category {
+      font-size: 11px; color: var(--color-text-muted); margin-left: 8px; font-weight: 400;
+    }
+    .product-edit-dropdown__item--highlighted {
+      background: var(--color-primitive-100);
+    }
+    .product-edit-dropdown__item--highlighted .product-edit-dropdown__item-name {
+      font-weight: 600;
+    }
+
+    .product-edit-dropdown__footer {
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--color-border);
+    }
+    .product-edit-dropdown__cancel {
+      padding: 6px 14px; border-radius: var(--radius-sm); border: 1px solid var(--color-border);
+      background: var(--color-surface); font-size: 13px; font-weight: 500; color: var(--color-text-muted);
+      cursor: pointer; font-family: var(--font-family);
+    }
+    .product-edit-dropdown__save {
+      padding: 6px 14px; border-radius: var(--radius-sm); border: none;
+      background: var(--color-action); font-size: 13px; font-weight: 600; color: var(--color-neutral-0);
+      cursor: pointer; font-family: var(--font-family);
+    }
+    .product-edit-dropdown__save:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Typeahead highlight */
+    .typeahead-match { background: var(--color-warning-100); border-radius: 2px; padding: 0 1px; }
+
+    /* ===== CONFIRMATION MODAL ===== */
+    .confirm-scrim {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: 20;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .confirm-modal {
+      background: var(--color-surface); border-radius: var(--radius-xl);
+      width: 380px; box-shadow: var(--shadow-xl); overflow: hidden;
+    }
+    .confirm-modal__header {
+      padding: 16px 20px; display: flex; align-items: center; gap: 10px;
+      background: var(--color-primitive-50, #eff6ff); border-bottom: 1px solid var(--color-border);
+    }
+    .confirm-modal__header-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--color-action); color: var(--color-neutral-0);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .confirm-modal__header-text { font-size: 16px; font-weight: 700; color: var(--color-text); }
+    .confirm-modal__body { padding: 20px; }
+    .confirm-modal__change {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px; border-radius: var(--radius-md);
+      background: var(--color-neutral-50, #fafafa); margin-bottom: 16px;
+    }
+    .confirm-modal__change-from { font-size: 14px; color: var(--color-text-muted); text-decoration: line-through; }
+    .confirm-modal__change-arrow { color: var(--color-neutral-400); }
+    .confirm-modal__change-to { font-size: 14px; font-weight: 600; color: var(--color-text); }
+    .confirm-modal__note { font-size: 13px; color: var(--color-text-muted); margin-bottom: 12px; line-height: 1.5; }
+    .confirm-modal__checkbox { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--color-text); }
+    .confirm-modal__checkbox input { width: 16px; height: 16px; accent-color: var(--color-brand); margin-top: 1px; }
+    .confirm-modal__footer {
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+      padding: 12px 20px; border-top: 1px solid var(--color-border);
+    }
+    .confirm-modal__cancel { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); background: var(--color-surface); font-size: 14px; font-weight: 500; color: var(--color-text-muted); cursor: pointer; font-family: var(--font-family); }
+    .confirm-modal__confirm { padding: 8px 16px; border-radius: var(--radius-sm); border: none; background: var(--color-action); font-size: 14px; font-weight: 600; color: var(--color-neutral-0); cursor: pointer; font-family: var(--font-family); }
+
+    /* ===== SUCCESS TOAST ===== */
+    .success-toast {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 20px;
+      background: var(--color-success-600, #16a34a); color: var(--color-neutral-0);
+      border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+      font-size: 14px; font-weight: 500; z-index: 30;
+    }
+    .success-toast__icon { display: flex; }
+    .success-toast__undo {
+      margin-left: 8px; padding: 4px 10px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.4); background: transparent;
+      color: var(--color-neutral-0); font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: var(--font-family);
+    }
+
+    /* ===== EDIT HISTORY PANEL ===== */
+    .edit-history {
+      margin-top: 12px; padding: 10px; border-radius: var(--radius-md);
+      border: 1px solid var(--color-border); background: var(--color-neutral-50, #fafafa);
+    }
+    .edit-history__title {
+      font-size: 11px; font-weight: 600; color: var(--color-text-muted);
+      text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .edit-history__entry {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 6px 0; border-top: 1px solid var(--color-border);
+      font-size: 12px;
+    }
+    .edit-history__entry:first-of-type { border-top: none; }
+    .edit-history__change { color: var(--color-text); }
+    .edit-history__change-from { text-decoration: line-through; color: var(--color-text-muted); }
+    .edit-history__change-to { font-weight: 600; color: var(--color-text); }
+    .edit-history__meta { color: var(--color-neutral-400); font-size: 11px; }
+
+    /* ===== NO PRODUCT ASSIGNED STATE ===== */
+    .product-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px 12px; text-align: center; gap: 8px;
+    }
+    .product-empty__icon { font-size: 32px; color: var(--color-neutral-300); }
+    .product-empty__text { font-size: 13px; color: var(--color-text-muted); }
+    .product-empty__action { font-size: 13px; font-weight: 500; color: var(--color-action); text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+
+    /* Updated product highlight */
+    .app-detail__product--updated .app-detail__product-name {
+      color: var(--color-success-600, #16a34a);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="flow-canvas">
+
+    <!-- ==================== FRAME 1: Default State ==================== -->
+    <div class="flow-frame">
+      <div class="flow-frame__label">1. Default State</div>
+      <div class="flow-frame__step">User views application detail &middot; "Edit mapping" link visible</div>
+      <div class="viewport">
+        <div class="viewport__map"></div>
+        <div class="map-controls">
+          <button class="map-controls__info">i</button>
+          <button class="map-controls__share">Share</button>
+        </div>
+        <div class="app-detail">
+          <div class="app-detail__header">
+            <div class="app-detail__title-row">
+              <h2 class="app-detail__title">Home South</h2>
+              <button class="app-detail__copy-btn"><span class="material-symbols-outlined" style="font-size:18px;">content_copy</span></button>
+            </div>
+            <div class="app-detail__subtitle">
+              Madison County &nbsp;
+              <a href="#" style="color:var(--color-action); text-decoration:none;">Brian Rinderer</a>
+              <span class="app-detail__subtitle-star"><span class="material-symbols-outlined" style="font-size:16px;">star</span></span>
+            </div>
+            <div class="app-detail__meta">
+              <strong style="color:var(--color-text);">38.7 ac</strong>
+              <span class="app-detail__meta-sep">|</span>
+              <span class="app-detail__type-badge app-detail__type-badge--liquid">
+                <span class="material-symbols-outlined" style="font-size:12px;">water_drop</span> Liquid
+              </span>
+              <span class="app-detail__meta-sep">|</span>
+              <span style="color:var(--color-brand);">Crop unknown</span>
+              <span class="app-detail__meta-sep">|</span>
+              GDD: <span style="color:var(--color-warning-600);">N/A</span>
+            </div>
+            <div class="app-detail__flight-row">
+              <span class="material-symbols-outlined" style="font-size:16px; margin-right:4px;">flight</span>
+              3/3, 3:43 PM
+              <span class="app-detail__flight-sep">|</span>
+              <span class="app-detail__flight-gdd">Event GDD: N/A</span>
+              <span class="app-detail__flight-sep">|</span>
+              <span class="app-detail__flight-id">XCJQ7UWX7
+                <button class="app-detail__copy-btn"><span class="material-symbols-outlined" style="font-size:16px;">content_copy</span></button>
+              </span>
+            </div>
+          </div>
+          <div class="app-detail__body">
+            <div class="app-detail__col-left">
+              <div class="app-detail__col-left-title">Application</div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Area Worked</div><div class="app-detail__stat-value">41.4 ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Rate</div><div class="app-detail__stat-value">140 lb/ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Total Applied</div><div class="app-detail__stat-value">5,798.2 lb</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Speed</div><div class="app-detail__stat-value">11.5 mi/hr</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Planned Rate</div><div class="app-detail__stat-value">139.5 lb/ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Total Distance</div><div class="app-detail__stat-value">19,205.3 ft</div></div>
+            </div>
+            <div class="app-detail__col-right">
+              <div class="app-detail__col-right-header">
+                <div class="app-detail__col-right-title">Products</div>
+                <button class="app-detail__layers-btn"><span class="material-symbols-outlined" style="font-size:20px;">language</span></button>
+              </div>
+              <div class="app-detail__product">
+                <div class="app-detail__product-name">
+                  Burndown
+                  <span class="app-detail__product-mapping">(Dicamba)</span>
+                  <a class="app-detail__product-edit" href="#">Edit mapping</a>
+                </div>
+                <div class="app-detail__product-stats">
+                  <div><div class="app-detail__product-stat-label">Total Area</div><div class="app-detail__product-stat-value">41.4 ac</div></div>
+                  <div><div class="app-detail__product-stat-label">Total Applied</div><div class="app-detail__product-stat-value">5,774.7 lb</div></div>
+                  <div><div class="app-detail__product-stat-label">Average Rate</div><div class="app-detail__product-stat-value">139.5 lb/ac</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== FRAME 2: Edit Product — Typeahead Search ==================== -->
+    <div class="flow-frame">
+      <div class="flow-frame__label">2. Edit Product — Search &amp; Select</div>
+      <div class="flow-frame__step">Typeahead search &middot; Filtered by application type (Liquid) &middot; Category chips</div>
+      <div class="viewport">
+        <div class="viewport__map"></div>
+        <div class="map-controls">
+          <button class="map-controls__info">i</button>
+          <button class="map-controls__share">Share</button>
+        </div>
+        <div class="app-detail">
+          <div class="app-detail__header">
+            <div class="app-detail__title-row">
+              <h2 class="app-detail__title">Home South</h2>
+              <button class="app-detail__copy-btn"><span class="material-symbols-outlined" style="font-size:18px;">content_copy</span></button>
+            </div>
+            <div class="app-detail__subtitle">
+              Madison County &nbsp;
+              <a href="#" style="color:var(--color-action); text-decoration:none;">Brian Rinderer</a>
+              <span class="app-detail__subtitle-star"><span class="material-symbols-outlined" style="font-size:16px;">star</span></span>
+            </div>
+            <div class="app-detail__meta">
+              <strong style="color:var(--color-text);">38.7 ac</strong>
+              <span class="app-detail__meta-sep">|</span>
+              <span class="app-detail__type-badge app-detail__type-badge--liquid">
+                <span class="material-symbols-outlined" style="font-size:12px;">water_drop</span> Liquid
+              </span>
+              <span class="app-detail__meta-sep">|</span>
+              <span style="color:var(--color-brand);">Crop unknown</span>
+              <span class="app-detail__meta-sep">|</span>
+              GDD: <span style="color:var(--color-warning-600);">N/A</span>
+            </div>
+            <div class="app-detail__flight-row">
+              <span class="material-symbols-outlined" style="font-size:16px; margin-right:4px;">flight</span>
+              3/3, 3:43 PM
+              <span class="app-detail__flight-sep">|</span>
+              <span class="app-detail__flight-gdd">Event GDD: N/A</span>
+              <span class="app-detail__flight-sep">|</span>
+              <span class="app-detail__flight-id">XCJQ7UWX7
+                <button class="app-detail__copy-btn"><span class="material-symbols-outlined" style="font-size:16px;">content_copy</span></button>
+              </span>
+            </div>
+          </div>
+          <div class="app-detail__body">
+            <div class="app-detail__col-left">
+              <div class="app-detail__col-left-title">Application</div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Area Worked</div><div class="app-detail__stat-value">41.4 ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Rate</div><div class="app-detail__stat-value">140 lb/ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Total Applied</div><div class="app-detail__stat-value">5,798.2 lb</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Speed</div><div class="app-detail__stat-value">11.5 mi/hr</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Planned Rate</div><div class="app-detail__stat-value">139.5 lb/ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Total Distance</div><div class="app-detail__stat-value">19,205.3 ft</div></div>
+            </div>
+            <div class="app-detail__col-right">
+              <div class="app-detail__col-right-header">
+                <div class="app-detail__col-right-title">Products</div>
+                <button class="app-detail__layers-btn"><span class="material-symbols-outlined" style="font-size:20px;">language</span></button>
+              </div>
+
+              <div class="app-detail__product">
+                <div class="app-detail__product-name">
+                  Burndown
+                  <span class="app-detail__product-mapping">(Dicamba)</span>
+                </div>
+
+                <!-- EDIT DROPDOWN OPEN -->
+                <div class="product-edit-dropdown">
+                  <div class="product-edit-dropdown__search">
+                    <span class="product-edit-dropdown__search-icon"><span class="material-symbols-outlined" style="font-size:18px;">search</span></span>
+                    <input type="text" placeholder="Search products..." value="gly" />
+                  </div>
+                  <div class="product-edit-dropdown__filter-row">
+                    <span>Filter:</span>
+                    <span class="product-edit-dropdown__filter-chip product-edit-dropdown__filter-chip--active">All</span>
+                    <span class="product-edit-dropdown__filter-chip">Herbicide</span>
+                    <span class="product-edit-dropdown__filter-chip">Fertilizer</span>
+                    <span class="product-edit-dropdown__filter-chip">Other</span>
+                  </div>
+                  <div class="product-edit-dropdown__list">
+                    <button class="product-edit-dropdown__item product-edit-dropdown__item--highlighted">
+                      <span><span class="product-edit-dropdown__item-name"><span class="typeahead-match">Gly</span>phosate 4L</span> <span class="product-edit-dropdown__item-category">Herbicide</span></span>
+                    </button>
+                    <button class="product-edit-dropdown__item">
+                      <span><span class="product-edit-dropdown__item-name"><span class="typeahead-match">Gly</span>Star Plus</span> <span class="product-edit-dropdown__item-category">Herbicide</span></span>
+                    </button>
+                    <button class="product-edit-dropdown__item">
+                      <span><span class="product-edit-dropdown__item-name"><span class="typeahead-match">Gly</span>phomax</span> <span class="product-edit-dropdown__item-category">Herbicide</span></span>
+                    </button>
+                    <button class="product-edit-dropdown__item">
+                      <span><span class="product-edit-dropdown__item-name">Cornerstone Plus (<span class="typeahead-match">Gly</span>)</span> <span class="product-edit-dropdown__item-category">Herbicide</span></span>
+                    </button>
+                  </div>
+                  <div class="product-edit-dropdown__footer">
+                    <button class="product-edit-dropdown__cancel">Cancel</button>
+                    <button class="product-edit-dropdown__save" disabled>Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== FRAME 3: Confirm Change ==================== -->
+    <div class="flow-frame">
+      <div class="flow-frame__label">3. Confirm Product Change</div>
+      <div class="flow-frame__step">Previous vs updated product &middot; Optional bulk update across versions</div>
+      <div class="viewport">
+        <div class="viewport__map"></div>
+        <div class="map-controls">
+          <button class="map-controls__info">i</button>
+          <button class="map-controls__share">Share</button>
+        </div>
+        <div class="app-detail" style="opacity:0.4; pointer-events:none;">
+          <div class="app-detail__header">
+            <div class="app-detail__title-row"><h2 class="app-detail__title">Home South</h2></div>
+          </div>
+        </div>
+
+        <!-- Confirmation modal -->
+        <div class="confirm-scrim">
+          <div class="confirm-modal">
+            <div class="confirm-modal__header">
+              <div class="confirm-modal__header-icon">
+                <span class="material-symbols-outlined" style="font-size:20px;">swap_horiz</span>
+              </div>
+              <div class="confirm-modal__header-text">Confirm product change</div>
+            </div>
+            <div class="confirm-modal__body">
+              <div class="confirm-modal__change">
+                <span class="confirm-modal__change-from">Dicamba</span>
+                <span class="confirm-modal__change-arrow"><span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span></span>
+                <span class="confirm-modal__change-to">Glyphosate 4L</span>
+              </div>
+              <div class="confirm-modal__note">
+                This will update the product mapping for <strong>Burndown</strong> on this application. The change will be logged and reflected in analytics.
+              </div>
+              <label class="confirm-modal__checkbox">
+                <input type="checkbox" />
+                Apply to all versions of this application (3 total)
+              </label>
+            </div>
+            <div class="confirm-modal__footer">
+              <button class="confirm-modal__cancel">Cancel</button>
+              <button class="confirm-modal__confirm">Confirm change</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== FRAME 4: Success + Edit History ==================== -->
+    <div class="flow-frame">
+      <div class="flow-frame__label">4. Success — Updated + Audit Trail</div>
+      <div class="flow-frame__step">Toast confirmation &middot; Edit history log with user, timestamp, previous value</div>
+      <div class="viewport">
+        <div class="viewport__map"></div>
+        <div class="map-controls">
+          <button class="map-controls__info">i</button>
+          <button class="map-controls__share">Share</button>
+        </div>
+        <div class="app-detail">
+          <div class="app-detail__header">
+            <div class="app-detail__title-row">
+              <h2 class="app-detail__title">Home South</h2>
+              <button class="app-detail__copy-btn"><span class="material-symbols-outlined" style="font-size:18px;">content_copy</span></button>
+            </div>
+            <div class="app-detail__subtitle">
+              Madison County &nbsp;
+              <a href="#" style="color:var(--color-action); text-decoration:none;">Brian Rinderer</a>
+              <span class="app-detail__subtitle-star"><span class="material-symbols-outlined" style="font-size:16px;">star</span></span>
+            </div>
+            <div class="app-detail__meta">
+              <strong style="color:var(--color-text);">38.7 ac</strong>
+              <span class="app-detail__meta-sep">|</span>
+              <span class="app-detail__type-badge app-detail__type-badge--liquid">
+                <span class="material-symbols-outlined" style="font-size:12px;">water_drop</span> Liquid
+              </span>
+              <span class="app-detail__meta-sep">|</span>
+              <span style="color:var(--color-brand);">Crop unknown</span>
+              <span class="app-detail__meta-sep">|</span>
+              GDD: <span style="color:var(--color-warning-600);">N/A</span>
+            </div>
+            <div class="app-detail__flight-row">
+              <span class="material-symbols-outlined" style="font-size:16px; margin-right:4px;">flight</span>
+              3/3, 3:43 PM
+              <span class="app-detail__flight-sep">|</span>
+              <span class="app-detail__flight-gdd">Event GDD: N/A</span>
+              <span class="app-detail__flight-sep">|</span>
+              <span class="app-detail__flight-id">XCJQ7UWX7
+                <button class="app-detail__copy-btn"><span class="material-symbols-outlined" style="font-size:16px;">content_copy</span></button>
+              </span>
+            </div>
+          </div>
+          <div class="app-detail__body">
+            <div class="app-detail__col-left">
+              <div class="app-detail__col-left-title">Application</div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Area Worked</div><div class="app-detail__stat-value">41.4 ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Rate</div><div class="app-detail__stat-value">140 lb/ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Total Applied</div><div class="app-detail__stat-value">5,798.2 lb</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Speed</div><div class="app-detail__stat-value">11.5 mi/hr</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Planned Rate</div><div class="app-detail__stat-value">139.5 lb/ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Total Distance</div><div class="app-detail__stat-value">19,205.3 ft</div></div>
+            </div>
+            <div class="app-detail__col-right">
+              <div class="app-detail__col-right-header">
+                <div class="app-detail__col-right-title">Products</div>
+                <button class="app-detail__layers-btn"><span class="material-symbols-outlined" style="font-size:20px;">language</span></button>
+              </div>
+              <div class="app-detail__product app-detail__product--updated">
+                <div class="app-detail__product-name">
+                  Burndown
+                  <span class="app-detail__product-mapping" style="color:var(--color-success-600);">(Glyphosate 4L)</span>
+                  <a class="app-detail__product-edit" href="#">Edit mapping</a>
+                </div>
+                <div class="app-detail__product-stats">
+                  <div><div class="app-detail__product-stat-label">Total Area</div><div class="app-detail__product-stat-value">41.4 ac</div></div>
+                  <div><div class="app-detail__product-stat-label">Total Applied</div><div class="app-detail__product-stat-value">5,774.7 lb</div></div>
+                  <div><div class="app-detail__product-stat-label">Average Rate</div><div class="app-detail__product-stat-value">139.5 lb/ac</div></div>
+                </div>
+
+                <!-- Edit history audit trail -->
+                <div class="edit-history">
+                  <div class="edit-history__title">
+                    <span class="material-symbols-outlined" style="font-size:14px;">history</span>
+                    Edit History
+                  </div>
+                  <div class="edit-history__entry">
+                    <div class="edit-history__change">
+                      <span class="edit-history__change-from">Dicamba</span>
+                      &nbsp;&rarr;&nbsp;
+                      <span class="edit-history__change-to">Glyphosate 4L</span>
+                    </div>
+                    <div class="edit-history__meta">conner schmidt &middot; Mar 31, 2026 2:14 PM</div>
+                  </div>
+                  <div class="edit-history__entry">
+                    <div class="edit-history__change">
+                      <span class="edit-history__change-from">Unassigned</span>
+                      &nbsp;&rarr;&nbsp;
+                      <span class="edit-history__change-to">Dicamba</span>
+                    </div>
+                    <div class="edit-history__meta">system (ingestion) &middot; Mar 3, 2026 3:43 PM</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Success toast -->
+        <div class="success-toast">
+          <span class="success-toast__icon"><span class="material-symbols-outlined" style="font-size:20px;">check_circle</span></span>
+          Product updated to Glyphosate 4L
+          <button class="success-toast__undo">Undo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== FRAME 5: Edge Case — No Product Assigned ==================== -->
+    <div class="flow-frame">
+      <div class="flow-frame__label">5. Edge Case — No Product Assigned</div>
+      <div class="flow-frame__step">Empty state &middot; "Assign product" CTA &middot; Dry application type variant</div>
+      <div class="viewport">
+        <div class="viewport__map"></div>
+        <div class="map-controls">
+          <button class="map-controls__info">i</button>
+          <button class="map-controls__share">Share</button>
+        </div>
+        <div class="app-detail">
+          <div class="app-detail__header">
+            <div class="app-detail__title-row">
+              <h2 class="app-detail__title">North 40</h2>
+              <button class="app-detail__copy-btn"><span class="material-symbols-outlined" style="font-size:18px;">content_copy</span></button>
+            </div>
+            <div class="app-detail__subtitle">
+              Clark County &nbsp;
+              <a href="#" style="color:var(--color-action); text-decoration:none;">Mike Thompson</a>
+              <span class="app-detail__subtitle-star"><span class="material-symbols-outlined" style="font-size:16px;">star_border</span></span>
+            </div>
+            <div class="app-detail__meta">
+              <strong style="color:var(--color-text);">62.1 ac</strong>
+              <span class="app-detail__meta-sep">|</span>
+              <span class="app-detail__type-badge app-detail__type-badge--dry">
+                <span class="material-symbols-outlined" style="font-size:12px;">grain</span> Dry
+              </span>
+              <span class="app-detail__meta-sep">|</span>
+              <span style="color:var(--color-brand);">Corn</span>
+              <span class="app-detail__meta-sep">|</span>
+              GDD: <span style="color:var(--color-warning-600);">1,240</span>
+            </div>
+            <div class="app-detail__flight-row">
+              <span class="material-symbols-outlined" style="font-size:16px; margin-right:4px;">flight</span>
+              3/15, 10:22 AM
+              <span class="app-detail__flight-sep">|</span>
+              <span class="app-detail__flight-gdd">Event GDD: 842</span>
+              <span class="app-detail__flight-sep">|</span>
+              <span class="app-detail__flight-id">ABCD1234X
+                <button class="app-detail__copy-btn"><span class="material-symbols-outlined" style="font-size:16px;">content_copy</span></button>
+              </span>
+            </div>
+          </div>
+          <div class="app-detail__body">
+            <div class="app-detail__col-left">
+              <div class="app-detail__col-left-title">Application</div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Area Worked</div><div class="app-detail__stat-value">63.8 ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Rate</div><div class="app-detail__stat-value">200 lb/ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Total Applied</div><div class="app-detail__stat-value">12,760 lb</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Speed</div><div class="app-detail__stat-value">8.2 mi/hr</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Average Planned Rate</div><div class="app-detail__stat-value">195 lb/ac</div></div>
+              <div class="app-detail__stat"><div class="app-detail__stat-label">Total Distance</div><div class="app-detail__stat-value">24,100 ft</div></div>
+            </div>
+            <div class="app-detail__col-right">
+              <div class="app-detail__col-right-header">
+                <div class="app-detail__col-right-title">Products</div>
+                <button class="app-detail__layers-btn"><span class="material-symbols-outlined" style="font-size:20px;">language</span></button>
+              </div>
+              <div class="app-detail__product">
+                <div class="app-detail__product-name">Spreader Pass 1</div>
+                <div class="product-empty">
+                  <span class="material-symbols-outlined product-empty__icon">inventory_2</span>
+                  <span class="product-empty__text">No product assigned</span>
+                  <a class="product-empty__action" href="#">
+                    <span class="material-symbols-outlined" style="font-size:16px;">add</span>
+                    Assign product
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

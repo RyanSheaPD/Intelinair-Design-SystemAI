@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8765/pages/field-application-detail.html)",
+      "Bash(open \"http://localhost:8765/pages/field-application-detail.html#figmacapture=247a1851-a49b-48eb-9ce6-49fbdef7106f&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F247a1851-a49b-48eb-9ce6-49fbdef7106f%2Fsubmit&figmadelay=3000\")",
+      "Bash(kill 22175)",
+      "Bash(open \"http://localhost:8765/pages/field-application-detail.html#figmacapture=4b52769e-f1bf-4a7d-b484-f10c58cb28d7&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F4b52769e-f1bf-4a7d-b484-f10c58cb28d7%2Fsubmit&figmadelay=3000\")",
+      "Bash(kill 22272)",
+      "Bash(open \"http://localhost:8765/pages/field-application-detail.html#figmacapture=2f25fc96-2aea-4e5b-93cb-032e899daeb3&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F2f25fc96-2aea-4e5b-93cb-032e899daeb3%2Fsubmit&figmadelay=3000\")",
+      "Bash(kill 25143)",
+      "Bash(open \"https://www.figma.com/design/hTNjssBboJZuckTJdu2ppJ/Yield-Calibration?m=dev\")",
+      "Bash(xargs kill:*)",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration.html#figmacapture=69b785a2-401a-4a2e-8f35-f7b920e12d29&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F69b785a2-401a-4a2e-8f35-f7b920e12d29%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration.html?figmademo=intro#figmacapture=dd4f0a8b-328a-4ee6-9b41-5d869dcf34c8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fdd4f0a8b-328a-4ee6-9b41-5d869dcf34c8%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration.html?figmademo=step1#figmacapture=9cac1a11-dc73-48de-9098-2a576625cbcd&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F9cac1a11-dc73-48de-9098-2a576625cbcd%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration.html?figmademo=step2#figmacapture=f188ff0c-c35c-4d6b-b39f-264e1976b9c6&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Ff188ff0c-c35c-4d6b-b39f-264e1976b9c6%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration.html?figmademo=step3#figmacapture=771878c7-0b8a-417d-a280-23757efea0c7&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F771878c7-0b8a-417d-a280-23757efea0c7%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration.html?figmademo=step4#figmacapture=ac96781a-e5a9-4115-8c23-fb926a5e9ed4&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fac96781a-e5a9-4115-8c23-fb926a5e9ed4%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration-modals-export.html#figmacapture=8732f3af-50ba-4b22-bfed-7035a4977cf9&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F8732f3af-50ba-4b22-bfed-7035a4977cf9%2Fsubmit&figmadelay=8000\")",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration-modals-export.html#figmacapture=97427354-4501-411f-b8d5-42f171536655&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F97427354-4501-411f-b8d5-42f171536655%2Fsubmit&figmadelay=3000\")",
+      "Bash(ps -p 25457 -o command=)",
+      "Read(//proc/25457/**)",
+      "Bash(open \"http://localhost:3000/pages/yield-calibration-modals-export.html#figmacapture=c01e3f76-b463-4d33-ba58-d19b668fc436&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fc01e3f76-b463-4d33-ba58-d19b668fc436%2Fsubmit&figmadelay=4000\")",
+      "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=default#figmacapture=411e9f9f-028c-49b1-9e45-b6938b4fd919&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F411e9f9f-028c-49b1-9e45-b6938b4fd919%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=confirm-flight#figmacapture=fd88a827-c330-4a53-b6d6-b603661df93c&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Ffd88a827-c330-4a53-b6d6-b603661df93c%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=confirm-reprocess#figmacapture=7909f6c4-7e5d-41c7-b035-10c48f027834&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F7909f6c4-7e5d-41c7-b035-10c48f027834%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=processing#figmacapture=6f99ef32-9abe-4b91-8889-c49c51946b05&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F6f99ef32-9abe-4b91-8889-c49c51946b05%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=notifications#figmacapture=95dbc6ef-e73b-4dd7-80b8-800a711f0722&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F95dbc6ef-e73b-4dd7-80b8-800a711f0722%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=notifications#figmacapture=774b4bf8-50b0-4691-9cbf-877515a323c6&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F774b4bf8-50b0-4691-9cbf-877515a323c6%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3000/pages/home-dashboard.html#figmacapture=3574d92c-4969-4ea4-8f92-a3d12fb60455&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F3574d92c-4969-4ea4-8f92-a3d12fb60455%2Fsubmit&figmadelay=3000\")",
+      "Read(//temp/readonly/**)"
+    ],
+    "additionalDirectories": [
+      "/Users/rsintelinair/Documents/Intelinair Design SystemAI copy/pages"
+    ]
+  }
+}
