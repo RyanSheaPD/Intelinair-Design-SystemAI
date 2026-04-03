@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Season Long Region Report — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/empty-state.css" />
+  <link rel="stylesheet" href="../components/checkbox.css" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
+
+    /* ═══ SHELL ═══ */
+    .page-shell { display: flex; height: 100vh; }
+    .page-shell__side { flex-shrink: 0; width: var(--nav-width); height: 100%; z-index: 10; }
+    .page-shell__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; }
+
+    /* ═══ PAGE CONTENT AREA ═══ */
+    .rr-page {
+      flex: 1; overflow-y: auto;
+      background: var(--color-background);
+      display: flex; flex-direction: column;
+    }
+
+    /* ═══ A. HEADER AREA ═══ */
+    .rr-page-header {
+      padding: 20px 32px 0;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .rr-page-header__top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px; margin-bottom: 12px;
+    }
+    .rr-page-header__title-group { display: flex; flex-direction: column; gap: 4px; }
+    .rr-page-header__title {
+      font-size: 22px; font-weight: 700; color: var(--color-text);
+      margin: 0; display: flex; align-items: center; gap: 8px;
+    }
+    .rr-page-header__field-name {
+      font-size: 15px; font-weight: 600; color: var(--color-text); margin: 0;
+    }
+    .rr-page-header__meta {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 13px; color: var(--color-text-muted); margin: 0;
+    }
+    .rr-page-header__meta a { color: var(--color-primitive-500); text-decoration: none; font-weight: 500; }
+    .rr-page-header__meta a:hover { text-decoration: underline; }
+    .rr-page-header__sep { color: var(--color-neutral-300); }
+    .rr-page-header__crop { color: var(--color-primitive-500); font-weight: 600; display: inline-flex; align-items: center; gap: 3px; }
+    .rr-page-header__crop .material-symbols-outlined { font-size: 14px; }
+    .rr-page-header__gdd { color: #d97706; font-weight: 600; }
+    .rr-page-header__actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    /* Tabs in header */
+    .rr-page-tabs {
+      display: flex; gap: 0; padding: 0;
+    }
+    .rr-page-tab {
+      padding: 10px 20px; font-size: 15px; font-weight: 500;
+      color: var(--color-text-muted); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      background: none; border-top: none; border-left: none; border-right: none;
+      font-family: var(--font-family);
+    }
+    .rr-page-tab:hover { color: var(--color-text); }
+    .rr-page-tab--active { color: var(--color-primitive-500); border-bottom-color: var(--color-primitive-500); font-weight: 600; }
+
+    /* ═══ B. ZONES PANEL ═══ */
+    .rr-zones-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 32px;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      flex-wrap: wrap; flex-shrink: 0;
+    }
+    .rr-zones-bar__label {
+      font-size: 12px; font-weight: 700; color: var(--color-text-muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-right: 4px;
+    }
+
+    /* Zone pills — all states */
+    .zone-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 32px; padding: 0 14px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 999px; background: #fff;
+      font-family: var(--font-family); font-size: 13px; font-weight: 600;
+      color: var(--color-text); cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .zone-pill__dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    /* Hover */
+    .zone-pill:hover { background: var(--color-neutral-50); border-color: var(--color-neutral-400); }
+    /* Selected */
+    .zone-pill--selected {
+      background: var(--color-primitive-500); border-color: var(--color-primitive-500); color: #fff;
+      box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+    }
+    .zone-pill--selected .zone-pill__dot { border: 2px solid rgba(255,255,255,0.5); transform: scale(1.15); }
+    .zone-pill--selected:hover { background: var(--color-primitive-600); border-color: var(--color-primitive-600); }
+    /* Multi-selected (secondary) */
+    .zone-pill--multi {
+      border-color: var(--color-primitive-300); background: var(--color-primitive-100); color: var(--color-primitive-700);
+    }
+    .zone-pill--multi:hover { background: var(--color-primitive-200); }
+    /* Focus */
+    .zone-pill:focus-visible {
+      outline: none; box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-primitive-500);
+    }
+    .zone-pill__check {
+      width: 14px; height: 14px; display: none;
+    }
+    .zone-pill--selected .zone-pill__check,
+    .zone-pill--multi .zone-pill__check { display: inline-flex; }
+    .zone-pill--selected .zone-pill__check svg,
+    .zone-pill--multi .zone-pill__check svg { width: 14px; height: 14px; }
+
+    .rr-zones-bar__add {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 13px; font-weight: 600; color: var(--color-primitive-500);
+      background: none; border: none; cursor: pointer; font-family: var(--font-family);
+      margin-left: auto;
+    }
+    .rr-zones-bar__add:hover { text-decoration: underline; }
+    .rr-zones-bar__add .material-symbols-outlined { font-size: 16px; }
+
+    /* ═══ C. METRIC SELECTOR ═══ */
+    .rr-metric-bar {
+      display: flex; gap: 0; overflow-x: auto;
+      padding: 0 32px;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .metric-card {
+      flex-shrink: 0; padding: 12px 18px;
+      border-right: 1px solid var(--color-border);
+      cursor: pointer; min-width: 120px;
+      transition: background 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+    .metric-card:last-child { border-right: none; }
+    .metric-card:hover { background: var(--color-neutral-50); }
+    .metric-card--active {
+      background: var(--color-primitive-500); color: #fff;
+    }
+    .metric-card--active::after {
+      content: ''; position: absolute; bottom: -1px; left: 16px; right: 16px;
+      height: 3px; background: var(--color-primitive-500); border-radius: 3px 3px 0 0;
+    }
+    .metric-card__label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+      color: var(--color-text-muted); margin: 0 0 6px; white-space: nowrap;
+    }
+    .metric-card--active .metric-card__label { color: rgba(255,255,255,0.7); }
+    .metric-card__values { display: flex; gap: 14px; }
+    .metric-card__col { display: flex; flex-direction: column; gap: 1px; }
+    .metric-card__col-head { font-size: 10px; font-weight: 500; color: var(--color-text-muted); }
+    .metric-card--active .metric-card__col-head { color: rgba(255,255,255,0.55); }
+    .metric-card__col-val { font-size: 14px; font-weight: 700; color: var(--color-text); white-space: nowrap; }
+    .metric-card--active .metric-card__col-val { color: #fff; }
+    /* Chart type badge */
+    .metric-card__chart-type {
+      position: absolute; top: 6px; right: 8px;
+      font-size: 9px; font-weight: 600; color: var(--color-neutral-400);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .metric-card--active .metric-card__chart-type { color: rgba(255,255,255,0.4); }
+
+    /* ═══ D. MAIN CONTENT — Chart + Thumbnail ═══ */
+    .rr-content {
+      flex: 1; display: flex; gap: 0;
+      padding: 0; min-height: 0; overflow: hidden;
+    }
+    .rr-chart-panel {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column;
+      padding: 20px 24px 24px 32px;
+      overflow-y: auto;
+    }
+    .rr-chart-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .rr-chart-title {
+      font-size: 16px; font-weight: 700; color: var(--color-text); margin: 0;
+    }
+    .rr-chart-subtitle {
+      font-size: 12px; color: var(--color-text-muted); margin: 0;
+    }
+    .rr-chart-baseline {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--color-neutral-500); font-weight: 500;
+    }
+    .rr-chart-baseline__line {
+      width: 28px; height: 0; border-top: 2px dashed var(--color-neutral-400);
+    }
+    .rr-chart-container {
+      width: 100%; height: 320px; margin-bottom: 12px;
+    }
+    .rr-chart-container .highcharts-root,
+    .rr-chart-container .highcharts-container text { font-family: var(--font-family) !important; }
+
+    /* Legend */
+    .rr-legend {
+      display: flex; gap: 16px; flex-wrap: wrap; padding: 4px 0;
+    }
+    .rr-legend__item {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--color-text-muted); cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .rr-legend__item:hover { opacity: 0.7; }
+    .rr-legend__item--dim { opacity: 0.35; }
+    .rr-legend__swatch { width: 16px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+    .rr-legend__swatch--dashed { border-top: 2px dashed; background: none !important; height: 0; }
+
+    /* ═══ E. THUMBNAIL MAP PREVIEW ═══ */
+    .rr-thumbnail-panel {
+      flex-shrink: 0; width: 260px;
+      border-left: 1px solid var(--color-border);
+      background: var(--color-surface);
+      display: flex; flex-direction: column;
+      padding: 20px;
+      gap: 12px;
+    }
+    .rr-thumbnail__label {
+      font-size: 12px; font-weight: 700; color: var(--color-text-muted);
+      text-transform: uppercase; letter-spacing: 0.05em; margin: 0;
+    }
+    .rr-thumbnail__map {
+      flex: 1; min-height: 180px;
+      border-radius: 10px; overflow: hidden;
+      background: linear-gradient(145deg, #3a5a3a 0%, #4a6a3a 30%, #5a7a4a 60%, #2a4a2a 100%);
+      position: relative;
+    }
+    /* Simulated zone shapes inside thumbnail */
+    .rr-thumbnail__zone {
+      position: absolute;
+      border-radius: 4px;
+      transition: opacity 0.2s, box-shadow 0.2s;
+    }
+    .rr-thumbnail__zone--dim { opacity: 0.3; }
+    .rr-thumbnail__zone--highlight {
+      box-shadow: 0 0 0 2px #fff, 0 0 12px rgba(255,255,255,0.4);
+      opacity: 1;
+    }
+    .rr-thumbnail__zone-label {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+      font-size: 10px; font-weight: 700; color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+      white-space: nowrap;
+    }
+    .rr-thumbnail__stats {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .rr-thumbnail__stat-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--color-text-muted);
+    }
+    .rr-thumbnail__stat-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .rr-thumbnail__stat-name { flex: 1; font-weight: 500; }
+    .rr-thumbnail__stat-acres { font-weight: 700; color: var(--color-text); }
+
+    /* ═══ EMPTY STATE ═══ */
+    .rr-empty {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 48px 24px;
+      flex: 1;
+    }
+    .rr-empty__icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--color-neutral-100);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .rr-empty__icon .material-symbols-outlined { font-size: 28px; color: var(--color-neutral-400); }
+    .rr-empty__title {
+      font-size: 16px; font-weight: 700; color: var(--color-text);
+      margin: 0 0 6px;
+    }
+    .rr-empty__message {
+      font-size: 14px; color: var(--color-text-muted);
+      margin: 0; max-width: 320px; line-height: 1.5;
+    }
+
+    /* ═══ DEMO STATE SWITCHER ═══ */
+    .demo-switcher {
+      position: fixed; bottom: 16px; right: 16px; z-index: 100;
+      background: var(--color-neutral-800); color: #fff;
+      border-radius: 12px; padding: 12px 16px;
+      display: flex; flex-direction: column; gap: 6px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      font-size: 12px;
+    }
+    .demo-switcher__title { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-neutral-400); margin-bottom: 2px; }
+    .demo-switcher__btn {
+      background: none; border: 1px solid var(--color-neutral-600);
+      color: #fff; padding: 5px 12px; border-radius: 6px;
+      font-family: var(--font-family); font-size: 12px; font-weight: 500;
+      cursor: pointer; text-align: left;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .demo-switcher__btn:hover { background: var(--color-neutral-700); }
+    .demo-switcher__btn--active { background: var(--color-primitive-600); border-color: var(--color-primitive-500); }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+
+    <!-- NAV -->
+    <aside class="page-shell__side">
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span><span class="nav__label">Home</span></a>
+        <a href="#" class="nav__item"><span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span><span class="nav__label">Growers</span></a>
+        <a href="#" class="nav__item"><span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span><span class="nav__label">Fields</span></a>
+        <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span><span class="nav__label">Scout</span></a>
+        <a href="#" class="nav__item"><span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span><span class="nav__label">Weather</span></a>
+        <a href="#" class="nav__item"><span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">monitoring</span></span><span class="nav__label">Analyze</span></a>
+        <a href="#" class="nav__item"><span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span><span class="nav__label">Settings</span></a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="page-shell__main">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="header__left">
+          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+          <a href="#" class="btn btn--secondary btn--sm" style="margin-left:12px;"><span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span> Back</a>
+        </div>
+        <div class="header__center">
+          <div class="header__search-wrap">
+            <span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <input type="search" class="header__search" placeholder="Search" />
+          </div>
+        </div>
+        <div class="header__right">
+          <span class="header__user-name">Caleb Wieber</span>
+          <span class="header__avatar">CW</span>
+        </div>
+      </header>
+
+      <!-- ═══ REGION REPORT PAGE ═══ -->
+      <div class="rr-page">
+
+        <!-- A. PAGE HEADER -->
+        <div class="rr-page-header">
+          <div class="rr-page-header__top">
+            <div class="rr-page-header__title-group">
+              <h1 class="rr-page-header__title">
+                <span class="material-symbols-outlined" style="font-size:22px;color:var(--color-text-muted);">analytics</span>
+                Seasonal Analysis
+              </h1>
+              <p class="rr-page-header__field-name">Home 4 South Dahlia's24</p>
+              <p class="rr-page-header__meta">
+                South Shop, <a href="#">Campbell Farms</a>
+                <span class="rr-page-header__sep">|</span>
+                664.9 ac
+                <span class="rr-page-header__sep">|</span>
+                <span class="rr-page-header__crop"><span class="material-symbols-outlined">water_drop</span> Corn</span>
+                <span class="rr-page-header__sep">|</span>
+                <span class="rr-page-header__gdd">GDD: 153</span>
+              </p>
+            </div>
+            <div class="rr-page-header__actions">
+              <button class="btn btn--secondary btn--sm">
+                <span class="material-symbols-outlined" style="font-size:16px;">download</span>
+                Export
+              </button>
+            </div>
+          </div>
+          <div class="rr-page-tabs" role="tablist">
+            <button class="rr-page-tab rr-page-tab--active" role="tab" aria-selected="true">Zones</button>
+            <button class="rr-page-tab" role="tab" aria-selected="false">Machine data</button>
+            <button class="rr-page-tab" role="tab" aria-selected="false">Summary</button>
+          </div>
+        </div>
+
+        <!-- B. ZONES BAR -->
+        <div class="rr-zones-bar" id="zones-bar">
+          <span class="rr-zones-bar__label">Zones</span>
+          <button class="zone-pill zone-pill--selected" data-zone="z1" data-color="#f59e0b">
+            <span class="zone-pill__dot" style="background:#f59e0b;"></span>
+            Zone 1
+            <span class="zone-pill__check"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <button class="zone-pill zone-pill--multi" data-zone="z2" data-color="#3b82f6">
+            <span class="zone-pill__dot" style="background:#3b82f6;"></span>
+            Zone 2
+            <span class="zone-pill__check"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <button class="zone-pill" data-zone="z3" data-color="#22c55e">
+            <span class="zone-pill__dot" style="background:#22c55e;"></span>
+            Zone 3
+            <span class="zone-pill__check"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <button class="zone-pill" data-zone="z4" data-color="#06b6d4">
+            <span class="zone-pill__dot" style="background:#06b6d4;"></span>
+            Zone 4
+            <span class="zone-pill__check"><svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <button class="rr-zones-bar__add"><span class="material-symbols-outlined">add</span> Add manual zone</button>
+        </div>
+
+        <!-- C. METRIC SELECTOR -->
+        <div class="rr-metric-bar" id="metric-bar">
+          <div class="metric-card metric-card--active" data-metric="ndvi" data-chart="line">
+            <span class="metric-card__chart-type">line</span>
+            <p class="metric-card__label">Average NDVI</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">0.74</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">0.96</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Base</span><span class="metric-card__col-val">0.85</span></div>
+            </div>
+          </div>
+          <div class="metric-card" data-metric="yield" data-chart="line">
+            <span class="metric-card__chart-type">line</span>
+            <p class="metric-card__label">Yield Forecast</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">198</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">192</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Base</span><span class="metric-card__col-val">195</span></div>
+            </div>
+          </div>
+          <div class="metric-card" data-metric="nutrient" data-chart="line">
+            <span class="metric-card__chart-type">line</span>
+            <p class="metric-card__label">Nutrient Deficiency</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">5 ac</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">5 ac</span></div>
+            </div>
+          </div>
+          <div class="metric-card" data-metric="planting" data-chart="bar">
+            <span class="metric-card__chart-type">bar</span>
+            <p class="metric-card__label">Planting Population</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">31k</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">34.5k</span></div>
+            </div>
+          </div>
+          <div class="metric-card" data-metric="dryyield" data-chart="bar">
+            <span class="metric-card__chart-type">bar</span>
+            <p class="metric-card__label">Dry Yield</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">192</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">188</span></div>
+            </div>
+          </div>
+          <div class="metric-card" data-metric="emergence" data-chart="grouped">
+            <span class="metric-card__chart-type">grouped</span>
+            <p class="metric-card__label">Emergence</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">28K</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">28K</span></div>
+            </div>
+          </div>
+          <div class="metric-card" data-metric="disease" data-chart="grouped">
+            <span class="metric-card__chart-type">grouped</span>
+            <p class="metric-card__label">Disease</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">0.84</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">0.89</span></div>
+            </div>
+          </div>
+          <div class="metric-card" data-metric="weeds" data-chart="grouped">
+            <span class="metric-card__chart-type">grouped</span>
+            <p class="metric-card__label">Weeds</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">5 ac</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">55 ac</span></div>
+            </div>
+          </div>
+          <div class="metric-card" data-metric="staygreen" data-chart="grouped">
+            <span class="metric-card__chart-type">grouped</span>
+            <p class="metric-card__label">Stay Green</p>
+            <div class="metric-card__values">
+              <div class="metric-card__col"><span class="metric-card__col-head">Z1</span><span class="metric-card__col-val">—</span></div>
+              <div class="metric-card__col"><span class="metric-card__col-head">Z2</span><span class="metric-card__col-val">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- D. MAIN CONTENT: Chart + E. Thumbnail -->
+        <div class="rr-content" id="rr-content">
+          <div class="rr-chart-panel" id="chart-panel">
+            <div class="rr-chart-header">
+              <div>
+                <h2 class="rr-chart-title" id="chart-title">Average NDVI</h2>
+                <p class="rr-chart-subtitle" id="chart-subtitle">Compare Regions — Season 2024</p>
+              </div>
+              <span class="rr-chart-baseline">
+                <span class="rr-chart-baseline__line"></span>
+                Field Baseline
+              </span>
+            </div>
+            <div class="rr-chart-container" id="rr-chart"></div>
+            <div class="rr-legend" id="rr-legend"></div>
+          </div>
+
+          <!-- E. THUMBNAIL -->
+          <div class="rr-thumbnail-panel">
+            <p class="rr-thumbnail__label">Field Preview</p>
+            <div class="rr-thumbnail__map" id="thumb-map">
+              <div class="rr-thumbnail__zone rr-thumbnail__zone--highlight" id="thumb-z1" style="background:rgba(245,158,11,0.5);left:15%;top:10%;width:35%;height:20%;">
+                <span class="rr-thumbnail__zone-label">Z1 · 8.2 ac</span>
+              </div>
+              <div class="rr-thumbnail__zone" id="thumb-z2" style="background:rgba(59,130,246,0.5);left:50%;top:15%;width:35%;height:25%;">
+                <span class="rr-thumbnail__zone-label">Z2 · 12.1 ac</span>
+              </div>
+              <div class="rr-thumbnail__zone rr-thumbnail__zone--dim" id="thumb-z3" style="background:rgba(34,197,94,0.5);left:20%;top:40%;width:30%;height:25%;">
+                <span class="rr-thumbnail__zone-label">Z3 · 6.4 ac</span>
+              </div>
+              <div class="rr-thumbnail__zone rr-thumbnail__zone--dim" id="thumb-z4" style="background:rgba(6,182,212,0.5);left:45%;top:55%;width:40%;height:30%;">
+                <span class="rr-thumbnail__zone-label">Z4 · 16.4 ac</span>
+              </div>
+            </div>
+            <div class="rr-thumbnail__stats">
+              <div class="rr-thumbnail__stat-row">
+                <span class="rr-thumbnail__stat-dot" style="background:#f59e0b;"></span>
+                <span class="rr-thumbnail__stat-name">Zone 1</span>
+                <span class="rr-thumbnail__stat-acres">8.2 ac</span>
+              </div>
+              <div class="rr-thumbnail__stat-row">
+                <span class="rr-thumbnail__stat-dot" style="background:#3b82f6;"></span>
+                <span class="rr-thumbnail__stat-name">Zone 2</span>
+                <span class="rr-thumbnail__stat-acres">12.1 ac</span>
+              </div>
+              <div class="rr-thumbnail__stat-row" style="opacity:0.4;">
+                <span class="rr-thumbnail__stat-dot" style="background:#22c55e;"></span>
+                <span class="rr-thumbnail__stat-name">Zone 3</span>
+                <span class="rr-thumbnail__stat-acres">6.4 ac</span>
+              </div>
+              <div class="rr-thumbnail__stat-row" style="opacity:0.4;">
+                <span class="rr-thumbnail__stat-dot" style="background:#06b6d4;"></span>
+                <span class="rr-thumbnail__stat-name">Zone 4</span>
+                <span class="rr-thumbnail__stat-acres">16.4 ac</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state (hidden by default) -->
+        <div class="rr-content" id="rr-empty-state" style="display:none;">
+          <div class="rr-chart-panel">
+            <div class="rr-chart-header">
+              <div>
+                <h2 class="rr-chart-title">Stay Green</h2>
+                <p class="rr-chart-subtitle">Compare Regions — Season 2024</p>
+              </div>
+              <span class="rr-chart-baseline"><span class="rr-chart-baseline__line"></span> Field Baseline</span>
+            </div>
+            <div class="rr-empty">
+              <div class="rr-empty__icon"><span class="material-symbols-outlined">show_chart</span></div>
+              <p class="rr-empty__title">No data available for this metric yet</p>
+              <p class="rr-empty__message">Stay Green data will appear here once late-season imagery has been processed for this field.</p>
+            </div>
+          </div>
+          <div class="rr-thumbnail-panel">
+            <p class="rr-thumbnail__label">Field Preview</p>
+            <div class="rr-thumbnail__map">
+              <div class="rr-thumbnail__zone rr-thumbnail__zone--dim" style="background:rgba(245,158,11,0.25);left:15%;top:10%;width:35%;height:20%;"></div>
+              <div class="rr-thumbnail__zone rr-thumbnail__zone--dim" style="background:rgba(59,130,246,0.25);left:50%;top:15%;width:35%;height:25%;"></div>
+              <div class="rr-thumbnail__zone rr-thumbnail__zone--dim" style="background:rgba(34,197,94,0.25);left:20%;top:40%;width:30%;height:25%;"></div>
+              <div class="rr-thumbnail__zone rr-thumbnail__zone--dim" style="background:rgba(6,182,212,0.25);left:45%;top:55%;width:40%;height:30%;"></div>
+            </div>
+            <div class="rr-thumbnail__stats">
+              <div class="rr-thumbnail__stat-row" style="opacity:0.4;"><span class="rr-thumbnail__stat-dot" style="background:#f59e0b;"></span><span class="rr-thumbnail__stat-name">Zone 1</span><span class="rr-thumbnail__stat-acres">8.2 ac</span></div>
+              <div class="rr-thumbnail__stat-row" style="opacity:0.4;"><span class="rr-thumbnail__stat-dot" style="background:#3b82f6;"></span><span class="rr-thumbnail__stat-name">Zone 2</span><span class="rr-thumbnail__stat-acres">12.1 ac</span></div>
+              <div class="rr-thumbnail__stat-row" style="opacity:0.4;"><span class="rr-thumbnail__stat-dot" style="background:#22c55e;"></span><span class="rr-thumbnail__stat-name">Zone 3</span><span class="rr-thumbnail__stat-acres">6.4 ac</span></div>
+              <div class="rr-thumbnail__stat-row" style="opacity:0.4;"><span class="rr-thumbnail__stat-dot" style="background:#06b6d4;"></span><span class="rr-thumbnail__stat-name">Zone 4</span><span class="rr-thumbnail__stat-acres">16.4 ac</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /rr-page -->
+    </div><!-- /page-shell__main -->
+  </div><!-- /page-shell -->
+
+  <!-- Demo state switcher -->
+  <div class="demo-switcher" id="demo-switcher">
+    <span class="demo-switcher__title">Demo States</span>
+    <button class="demo-switcher__btn demo-switcher__btn--active" data-state="default">Default (NDVI line)</button>
+    <button class="demo-switcher__btn" data-state="bar">Simple bar (Planting Pop)</button>
+    <button class="demo-switcher__btn" data-state="grouped">Grouped bar (Emergence)</button>
+    <button class="demo-switcher__btn" data-state="empty">Empty state (Stay Green)</button>
+  </div>
+
+  <script>
+  (function () {
+    /* ── Zone colors ── */
+    var ZONE_COLORS = { z1: '#f59e0b', z2: '#3b82f6', z3: '#22c55e', z4: '#06b6d4' };
+    var BASELINE_COLOR = '#a3a3a3';
+    var chart = null;
+
+    /* ── Chart data per metric ── */
+    var DATES = ['May 5<br>(V5)', 'May 16<br>(V7)', 'Jun 1<br>(V10)', 'Jun 13<br>(V16)', 'Jul 1<br>(VT)', 'Jul 18<br>(R1)', 'Aug 5<br>(R2)'];
+    var CAPTURE_DATES = ['May 20', 'Jun 15', 'Jul 10'];
+
+    var DATA = {
+      ndvi: {
+        type: 'line', label: 'Average NDVI', unit: '',
+        dates: DATES,
+        z1: [0.35, 0.52, 0.68, 0.78, 0.82, 0.76, 0.74],
+        z2: [0.38, 0.56, 0.75, 0.88, 0.96, 0.94, 0.90],
+        z3: [0.30, 0.48, 0.62, 0.72, 0.78, 0.73, 0.70],
+        z4: [0.32, 0.50, 0.64, 0.74, 0.80, 0.75, 0.72],
+        baseline: [0.34, 0.52, 0.67, 0.78, 0.85, 0.82, 0.80]
+      },
+      yield: {
+        type: 'line', label: 'Yield Forecast', unit: ' bu/ac',
+        dates: DATES,
+        z1: [110, 150, 170, 185, 195, 198, 198],
+        z2: [105, 142, 162, 178, 188, 192, 192],
+        z3: [100, 135, 155, 170, 180, 182, 180],
+        z4: [95, 128, 148, 162, 172, 175, 174],
+        baseline: [103, 140, 160, 175, 185, 188, 186]
+      },
+      nutrient: {
+        type: 'line', label: 'Nutrient Deficiency', unit: ' ac',
+        dates: DATES,
+        z1: [0.5, 1.2, 2.8, 4.0, 5.0, 4.8, 4.5],
+        z2: [0.3, 0.8, 1.5, 2.5, 3.8, 5.0, 5.2],
+        z3: [0.8, 1.8, 3.5, 5.2, 6.8, 7.0, 6.5],
+        z4: [0.6, 1.4, 2.2, 3.2, 4.5, 4.2, 4.0],
+        baseline: [0.5, 1.2, 2.5, 3.8, 5.0, 5.2, 5.0]
+      },
+      planting: {
+        type: 'bar', label: 'Planting Population', unit: 'k',
+        z1: 31, z2: 34.5, z3: 29.8, z4: 32.2, baseline: 32
+      },
+      dryyield: {
+        type: 'bar', label: 'Dry Yield', unit: ' bu/ac',
+        z1: 192, z2: 188, z3: 178, z4: 182, baseline: 185
+      },
+      emergence: {
+        type: 'grouped', label: 'Emergence', unit: 'K',
+        dates: CAPTURE_DATES,
+        z1: [22, 27, 28], z2: [24, 28, 28], z3: [20, 25, 26], z4: [21, 26, 27], baseline: [22, 26.5, 27]
+      },
+      disease: {
+        type: 'grouped', label: 'Disease', unit: ' ac',
+        dates: CAPTURE_DATES,
+        z1: [0.2, 0.55, 0.84], z2: [0.15, 0.5, 0.89], z3: [0.3, 0.7, 1.1], z4: [0.25, 0.6, 0.95], baseline: [0.22, 0.58, 0.92]
+      },
+      weeds: {
+        type: 'grouped', label: 'Weeds', unit: ' ac',
+        dates: CAPTURE_DATES,
+        z1: [1, 3, 5], z2: [8, 25, 55], z3: [2, 6, 12], z4: [3, 10, 22], baseline: [3.5, 11, 24]
+      },
+      staygreen: { type: 'empty', label: 'Stay Green' }
+    };
+
+    /* ── State ── */
+    var selectedZones = ['z1', 'z2'];
+    var primaryZone = 'z1';
+    var activeMetric = 'ndvi';
+
+    /* ── Render chart ── */
+    function renderChart() {
+      var d = DATA[activeMetric];
+      if (!d || d.type === 'empty') { showEmpty(); return; }
+      showChart();
+      document.getElementById('chart-title').textContent = d.label;
+      if (chart) { chart.destroy(); chart = null; }
+
+      if (d.type === 'line') renderLineChart(d);
+      else if (d.type === 'bar') renderBarChart(d);
+      else if (d.type === 'grouped') renderGroupedBarChart(d);
+
+      renderLegend(d);
+    }
+
+    function showChart() {
+      document.getElementById('rr-content').style.display = '';
+      document.getElementById('rr-empty-state').style.display = 'none';
+    }
+    function showEmpty() {
+      document.getElementById('rr-content').style.display = 'none';
+      document.getElementById('rr-empty-state').style.display = '';
+    }
+
+    function makeSeries(d, zone) {
+      var isSelected = selectedZones.indexOf(zone) >= 0;
+      var isPrimary = zone === primaryZone;
+      return {
+        name: zone.toUpperCase().replace('Z', 'Zone '),
+        data: d[zone],
+        color: ZONE_COLORS[zone],
+        lineWidth: isPrimary ? 3.5 : (isSelected ? 2.5 : 1.2),
+        opacity: isSelected ? 1 : 0.25,
+        dashStyle: isSelected ? 'Solid' : 'ShortDot',
+        marker: { enabled: isPrimary, radius: isPrimary ? 4 : 0 },
+        zIndex: isPrimary ? 10 : (isSelected ? 5 : 1)
+      };
+    }
+
+    function renderLineChart(d) {
+      var series = ['z1','z2','z3','z4'].map(function(z) { return makeSeries(d, z); });
+      series.push({
+        name: 'Field Baseline', data: d.baseline, color: BASELINE_COLOR,
+        lineWidth: 1.5, dashStyle: 'Dash', marker: { enabled: false }, zIndex: 0
+      });
+      chart = Highcharts.chart('rr-chart', {
+        chart: { type: 'spline', height: 320, backgroundColor: 'transparent', spacing: [10,10,5,10] },
+        title: { text: null }, credits: { enabled: false }, legend: { enabled: false },
+        tooltip: { shared: true, valueSuffix: d.unit, style: { fontFamily: 'Figtree, sans-serif' },
+          headerFormat: '<span style="font-size:12px;font-weight:600">{point.key}</span><br/>' },
+        xAxis: { categories: d.dates, lineColor: '#e5e5e5', tickLength: 0,
+          labels: { style: { fontSize: '11px', color: '#737373' }, useHTML: true } },
+        yAxis: { title: { text: null }, gridLineColor: '#f0f0f0',
+          labels: { style: { fontSize: '11px', color: '#737373' } } },
+        plotOptions: { spline: { marker: { symbol: 'circle' } } },
+        series: series
+      });
+    }
+
+    function renderBarChart(d) {
+      var zones = ['z1','z2','z3','z4'];
+      var cats = zones.map(function(z){ return z.toUpperCase().replace('Z','Zone '); });
+      cats.push('Baseline');
+      var vals = zones.map(function(z){ return d[z]; });
+      vals.push(d.baseline);
+      var colors = zones.map(function(z){
+        return selectedZones.indexOf(z) >= 0 ? ZONE_COLORS[z] : '#e5e5e5';
+      });
+      colors.push(BASELINE_COLOR);
+
+      chart = Highcharts.chart('rr-chart', {
+        chart: { type: 'column', height: 320, backgroundColor: 'transparent', spacing: [10,10,5,10] },
+        title: { text: null }, credits: { enabled: false }, legend: { enabled: false },
+        tooltip: { valueSuffix: d.unit, style: { fontFamily: 'Figtree, sans-serif' } },
+        xAxis: { categories: cats, lineColor: '#e5e5e5', tickLength: 0,
+          labels: { style: { fontSize: '12px', color: '#404040', fontWeight: '600' } } },
+        yAxis: { title: { text: null }, gridLineColor: '#f0f0f0',
+          labels: { style: { fontSize: '11px', color: '#737373' } },
+          plotLines: [{ value: d.baseline, color: BASELINE_COLOR, dashStyle: 'Dash', width: 1.5, zIndex: 5,
+            label: { text: 'Baseline ' + d.baseline + d.unit, align: 'right', style: { fontSize: '10px', color: '#a3a3a3' } } }] },
+        plotOptions: { column: { borderRadius: 4, borderWidth: 0, pointPadding: 0.15, groupPadding: 0.2,
+          colorByPoint: true, colors: colors } },
+        series: [{ name: d.label, data: vals }]
+      });
+    }
+
+    function renderGroupedBarChart(d) {
+      var series = ['z1','z2','z3','z4'].map(function(z) {
+        var isSelected = selectedZones.indexOf(z) >= 0;
+        return {
+          name: z.toUpperCase().replace('Z','Zone '),
+          data: d[z], color: isSelected ? ZONE_COLORS[z] : '#e5e5e5',
+          opacity: isSelected ? 1 : 0.35
+        };
+      });
+      series.push({ name: 'Baseline', data: d.baseline, color: BASELINE_COLOR, type: 'spline',
+        dashStyle: 'Dash', lineWidth: 1.5, marker: { enabled: false } });
+
+      chart = Highcharts.chart('rr-chart', {
+        chart: { type: 'column', height: 320, backgroundColor: 'transparent', spacing: [10,10,5,10] },
+        title: { text: null }, credits: { enabled: false }, legend: { enabled: false },
+        tooltip: { shared: true, valueSuffix: d.unit, style: { fontFamily: 'Figtree, sans-serif' } },
+        xAxis: { categories: d.dates, lineColor: '#e5e5e5', tickLength: 0,
+          labels: { style: { fontSize: '12px', color: '#404040', fontWeight: '600' } } },
+        yAxis: { title: { text: null }, gridLineColor: '#f0f0f0',
+          labels: { style: { fontSize: '11px', color: '#737373' } } },
+        plotOptions: { column: { borderRadius: 3, borderWidth: 0, groupPadding: 0.2, pointPadding: 0.05 } },
+        series: series
+      });
+    }
+
+    /* ── Legend ── */
+    function renderLegend(d) {
+      var el = document.getElementById('rr-legend');
+      var html = '';
+      ['z1','z2','z3','z4'].forEach(function(z) {
+        var isSelected = selectedZones.indexOf(z) >= 0;
+        html += '<span class="rr-legend__item' + (isSelected ? '' : ' rr-legend__item--dim') + '">' +
+          '<span class="rr-legend__swatch" style="background:' + ZONE_COLORS[z] + ';"></span>' +
+          z.toUpperCase().replace('Z','Zone ') + '</span>';
+      });
+      html += '<span class="rr-legend__item"><span class="rr-legend__swatch rr-legend__swatch--dashed" style="border-color:' + BASELINE_COLOR + ';"></span>Field Baseline</span>';
+      el.innerHTML = html;
+    }
+
+    /* ── Thumbnail highlighting ── */
+    function updateThumbnail() {
+      ['z1','z2','z3','z4'].forEach(function(z) {
+        var el = document.getElementById('thumb-' + z);
+        if (!el) return;
+        el.classList.remove('rr-thumbnail__zone--highlight', 'rr-thumbnail__zone--dim');
+        if (z === primaryZone) el.classList.add('rr-thumbnail__zone--highlight');
+        else if (selectedZones.indexOf(z) < 0) el.classList.add('rr-thumbnail__zone--dim');
+      });
+      var rows = document.querySelectorAll('.rr-thumbnail__stat-row');
+      var zones = ['z1','z2','z3','z4'];
+      rows.forEach(function(row, i) {
+        row.style.opacity = selectedZones.indexOf(zones[i]) >= 0 ? '1' : '0.4';
+      });
+    }
+
+    /* ── Zone pill clicks ── */
+    document.querySelectorAll('.zone-pill').forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        var z = pill.getAttribute('data-zone');
+        var idx = selectedZones.indexOf(z);
+        if (idx >= 0 && selectedZones.length > 1) {
+          selectedZones.splice(idx, 1);
+          if (primaryZone === z) primaryZone = selectedZones[0];
+        } else if (idx < 0) {
+          selectedZones.push(z);
+        }
+        if (selectedZones.indexOf(z) >= 0) primaryZone = z;
+        updateZonePills();
+        updateThumbnail();
+        renderChart();
+      });
+    });
+
+    function updateZonePills() {
+      document.querySelectorAll('.zone-pill').forEach(function(pill) {
+        var z = pill.getAttribute('data-zone');
+        pill.classList.remove('zone-pill--selected', 'zone-pill--multi');
+        if (z === primaryZone) pill.classList.add('zone-pill--selected');
+        else if (selectedZones.indexOf(z) >= 0) pill.classList.add('zone-pill--multi');
+      });
+    }
+
+    /* ── Metric card clicks ── */
+    document.querySelectorAll('.metric-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.metric-card').forEach(function(c) { c.classList.remove('metric-card--active'); });
+        card.classList.add('metric-card--active');
+        activeMetric = card.getAttribute('data-metric');
+        renderChart();
+      });
+    });
+
+    /* ── Demo state switcher ── */
+    document.querySelectorAll('.demo-switcher__btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.demo-switcher__btn').forEach(function(b) { b.classList.remove('demo-switcher__btn--active'); });
+        btn.classList.add('demo-switcher__btn--active');
+        var state = btn.getAttribute('data-state');
+        var metricMap = { 'default': 'ndvi', 'bar': 'planting', 'grouped': 'emergence', 'empty': 'staygreen' };
+        var m = metricMap[state];
+        document.querySelectorAll('.metric-card').forEach(function(c) {
+          c.classList.toggle('metric-card--active', c.getAttribute('data-metric') === m);
+        });
+        activeMetric = m;
+        renderChart();
+      });
+    });
+
+    /* ── Init ── */
+    renderChart();
+    updateThumbnail();
+  })();
+  </script>
+</body>
+</html>

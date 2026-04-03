@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiField Trials — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Design tokens -->
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+
+  <!-- Components -->
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/checkbox.css" />
+  <link rel="stylesheet" href="../components/dropdown.css" />
+  <link rel="stylesheet" href="../components/menu.css" />
+  <link rel="stylesheet" href="../components/modal.css" />
+  <link rel="stylesheet" href="../components/data-table.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/counter-badge.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/empty-state.css" />
+  <link rel="stylesheet" href="../components/alert.css" />
+  <link rel="stylesheet" href="../components/loading.css" />
+  <link rel="stylesheet" href="../components/progress.css" />
+  <link rel="stylesheet" href="../components/view-switcher.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
+
+    /* Standard layout shell */
+    .page-shell { display: flex; height: 100vh; }
+    .page-shell__side { flex-shrink: 0; width: var(--nav-width); height: 100%; z-index: 10; }
+    .page-shell__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; }
+
+    /* Page toolbar */
+    .page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-m); padding: var(--spacing-m) var(--spacing-l); border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; }
+    .page-toolbar__title { font-size: var(--font-size-18); font-weight: 600; color: var(--color-text); margin: 0; white-space: nowrap; }
+    .page-toolbar__controls { display: flex; align-items: center; gap: var(--spacing-s); flex-wrap: wrap; }
+    .page-toolbar__divider { width: 1px; height: 24px; background: var(--color-border); flex-shrink: 0; }
+
+    /* Neutral pill/btn */
+    .filter-pill--neutral { --filter-pill-bg: var(--color-neutral-100); --filter-pill-bg-hover: var(--color-neutral-200); --filter-pill-text: var(--color-neutral-700); --filter-pill-text-hover: var(--color-neutral-900); }
+    .btn--neutral { background: var(--color-neutral-800); color: var(--color-neutral-0); }
+    .btn--neutral:hover:not(:disabled) { filter: brightness(1.15); }
+
+    /* Tab bar */
+    .page-tabs { display: flex; align-items: stretch; border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; overflow-x: auto; }
+    .page-tabs .tabs { justify-content: flex-start; flex: 1; padding-top: var(--spacing-l); }
+    .page-tabs__right { display: flex; align-items: center; padding-right: var(--spacing-l); flex-shrink: 0; font-size: var(--font-size-12); color: var(--color-text-muted); }
+
+    /* Summary bar */
+    .summary-bar { display: flex; align-items: center; padding: 10px 20px; background: var(--color-surface-muted); flex-shrink: 0; }
+    .summary-bar__stats { display: flex; align-items: center; gap: 0; margin: 0 auto; }
+    .summary-bar__item { display: flex; flex-direction: column; align-items: center; padding: 0 40px; }
+    .summary-bar__value { font-size: 18px; font-weight: 700; color: var(--color-text); line-height: 1.2; }
+    .summary-bar__label { font-size: 12px; color: var(--color-text-muted); }
+    .summary-bar__divider { width: 1px; height: 32px; background: var(--color-border); flex-shrink: 0; }
+
+    /* Table header bar */
+    .table-header-bar { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid var(--color-border); background: var(--color-neutral-100); flex-shrink: 0; font-size: 12px; font-weight: 400; color: var(--color-text-muted); gap: 0; }
+    .table-header-bar__col { padding: 0 12px; white-space: nowrap; border-right: 1px solid var(--color-border); }
+    .table-header-bar__col:last-child { border-right: none; }
+    .table-header-bar__col--sortable { cursor: pointer; }
+    .table-header-bar__col--active { color: var(--color-text); font-weight: 500; }
+    .table-header-bar__sort-icon { display: inline-flex; vertical-align: middle; margin-left: 2px; }
+
+    /* Data rows */
+    .data-row { display: flex; align-items: center; padding: 0 20px; min-height: 50px; border-bottom: 1px solid var(--color-border); background: var(--color-surface); font-size: 13px; color: var(--color-text); }
+    .data-row:hover { background: var(--color-neutral-50, #fafafa); }
+    .data-row__cell { padding: 8px 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-right: 1px solid var(--color-border); }
+    .data-row__cell:last-child { border-right: none; }
+
+    /* Checkbox column — hidden by default, shown on row hover */
+    .table-header-bar__col[data-col="checkbox"],
+    .data-row__cell[data-col="checkbox"] { opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
+    .data-row:hover .data-row__cell[data-col="checkbox"],
+    .data-row__cell[data-col="checkbox"].is-checked,
+    .table-header-bar:hover .table-header-bar__col[data-col="checkbox"],
+    .table-header-bar__col[data-col="checkbox"].is-checked { opacity: 1; pointer-events: auto; }
+
+    .page-content { flex: 1; overflow-y: auto; padding: 0; background: var(--color-background); }
+
+    /* View panels */
+    .view-panel { display: none; }
+    .view-panel--active { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+    /* ===== TRIAL STATUS BADGES ===== */
+    .trial-status { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--radius-pill, 20px); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; border: 1px solid; }
+    .trial-status--active { color: var(--color-success-700); border-color: var(--color-success-300); background: var(--color-success-50, #f0fdf4); }
+    .trial-status--draft { color: var(--color-neutral-600); border-color: var(--color-neutral-300); background: var(--color-neutral-100); }
+    .trial-status--excluded { color: var(--color-warning-700); border-color: var(--color-warning-300); background: var(--color-warning-50, #fffbeb); }
+    .trial-status--complete { color: var(--color-primitive-700); border-color: var(--color-primitive-300); background: var(--color-primitive-100); }
+
+    /* Zone type pills */
+    .zone-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--radius-pill, 20px); font-size: 11px; font-weight: 600; }
+    .zone-pill--control { color: var(--color-primitive-700); background: var(--color-primitive-100); }
+    .zone-pill--treatment { color: #c2410c; background: #fff7ed; }
+
+    /* ===== WIZARD ===== */
+    .wizard-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+    .wizard-overlay--active { display: flex; }
+
+    .wizard { background: var(--color-surface); border-radius: var(--radius-xl); width: 640px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+    .wizard__header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 0; }
+    .wizard__title { font-size: 18px; font-weight: 700; color: var(--color-text); }
+    .wizard__close { background: none; border: none; cursor: pointer; color: var(--color-text-muted); padding: 4px; }
+    .wizard__close:hover { color: var(--color-text); }
+
+    /* Stepper */
+    .wizard__stepper { display: flex; align-items: center; gap: 0; padding: 20px 24px; }
+    .wizard__step { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--color-text-muted); }
+    .wizard__step--active { color: var(--color-brand); }
+    .wizard__step--complete { color: var(--color-success-600); }
+    .wizard__step-num { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--color-neutral-300); font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .wizard__step--active .wizard__step-num { border-color: var(--color-brand); background: var(--color-brand); color: var(--color-neutral-0); }
+    .wizard__step--complete .wizard__step-num { border-color: var(--color-success-500); background: var(--color-success-500); color: var(--color-neutral-0); }
+    .wizard__step-connector { flex: 1; height: 2px; background: var(--color-neutral-200); margin: 0 8px; min-width: 20px; }
+    .wizard__step-connector--complete { background: var(--color-success-500); }
+
+    .wizard__body { flex: 1; overflow-y: auto; padding: 0 24px 24px; }
+    .wizard__footer { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-top: 1px solid var(--color-border); }
+    .wizard__footer-left { display: flex; gap: 8px; }
+
+    /* Form fields */
+    .form-group { margin-bottom: 20px; }
+    .form-group__label { display: block; font-size: 13px; font-weight: 600; color: var(--color-text); margin-bottom: 6px; }
+    .form-group__label--required::after { content: " *"; color: var(--color-danger-500); }
+    .form-group__hint { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; }
+    .form-group__error { font-size: 12px; color: var(--color-danger-600); margin-top: 4px; display: none; }
+    .form-group--error .form-group__error { display: block; }
+    .form-group--error .input { border-color: var(--color-danger-500); }
+
+    .form-select { width: 100%; height: 40px; padding: 0 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 14px; font-family: var(--font-family); color: var(--color-text); background: var(--color-surface); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+    .form-select:focus { outline: none; border-color: var(--color-brand); box-shadow: 0 0 0 2px rgba(var(--color-brand-rgb), 0.15); }
+    .form-select--placeholder { color: var(--color-text-muted); }
+
+    .form-search-select { position: relative; }
+    .form-search-select__input { width: 100%; }
+    .form-search-select__dropdown { position: absolute; top: 100%; left: 0; right: 0; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; z-index: 10; display: none; }
+    .form-search-select__dropdown--open { display: block; }
+    .form-search-select__option { padding: 8px 12px; font-size: 13px; cursor: pointer; }
+    .form-search-select__option:hover { background: var(--color-primitive-100); }
+    .form-search-select__option--selected { background: var(--color-primitive-100); color: var(--color-primitive-700); font-weight: 500; }
+
+    /* Zone drawing placeholder */
+    .zone-canvas { width: 100%; height: 240px; background: var(--color-neutral-100); border: 2px dashed var(--color-neutral-300); border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--color-text-muted); font-size: 13px; }
+    .zone-canvas__icon { font-size: 40px; color: var(--color-neutral-400); }
+    .zone-canvas--has-zones { border-style: solid; border-color: var(--color-border); background: var(--color-surface); padding: 16px; align-items: stretch; justify-content: flex-start; }
+
+    .zone-list { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 12px; }
+    .zone-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 13px; }
+    .zone-item__color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .zone-item__color--control { background: var(--color-primitive-500); }
+    .zone-item__color--treatment { background: #f97316; }
+    .zone-item__name { font-weight: 500; flex: 1; }
+    .zone-item__acres { color: var(--color-text-muted); font-size: 12px; }
+    .zone-item__remove { background: none; border: none; cursor: pointer; color: var(--color-text-muted); padding: 2px; }
+    .zone-item__remove:hover { color: var(--color-danger-600); }
+
+    /* Zone drawing tools */
+    .zone-tools { display: flex; gap: 6px; margin-bottom: 12px; }
+    .zone-tool-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); font-size: 12px; font-weight: 500; color: var(--color-text); cursor: pointer; font-family: var(--font-family); }
+    .zone-tool-btn:hover { background: var(--color-neutral-100); }
+    .zone-tool-btn--active { border-color: var(--color-brand); background: var(--color-brand-100); color: var(--color-brand-700); }
+
+    /* Metadata form grid */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* ===== TRIAL DETAIL VIEW ===== */
+    .trial-detail { padding: var(--spacing-l); max-width: 960px; }
+    .trial-detail__back { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 500; color: var(--color-action); text-decoration: none; margin-bottom: 16px; cursor: pointer; }
+    .trial-detail__back:hover { text-decoration: underline; }
+    .trial-detail__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+    .trial-detail__title { font-size: 24px; font-weight: 700; color: var(--color-text); margin: 0 0 4px; }
+    .trial-detail__subtitle { font-size: 14px; color: var(--color-text-muted); }
+    .trial-detail__actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    .trial-detail__meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .trial-detail__meta-card { padding: 16px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); }
+    .trial-detail__meta-label { font-size: 12px; color: var(--color-text-muted); margin-bottom: 4px; }
+    .trial-detail__meta-value { font-size: 16px; font-weight: 600; color: var(--color-text); }
+
+    .trial-detail__section { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: 24px; margin-bottom: 20px; }
+    .trial-detail__section-title { font-size: 16px; font-weight: 600; color: var(--color-text); margin: 0 0 16px; }
+
+    /* Zone map placeholder */
+    .zone-map-preview { width: 100%; height: 200px; background: var(--color-neutral-100); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 13px; margin-bottom: 16px; }
+
+    .zone-summary { display: flex; gap: 12px; }
+    .zone-summary__item { flex: 1; padding: 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); display: flex; align-items: center; gap: 10px; }
+    .zone-summary__color { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
+    .zone-summary__color--control { background: var(--color-primitive-500); }
+    .zone-summary__color--treatment { background: #f97316; }
+    .zone-summary__label { font-size: 13px; font-weight: 500; }
+    .zone-summary__acres { font-size: 12px; color: var(--color-text-muted); }
+
+    /* Exclude section */
+    .exclude-section { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: var(--color-warning-50, #fffbeb); border: 1px solid var(--color-warning-300); border-radius: var(--radius-sm); }
+    .exclude-section__text { font-size: 13px; color: var(--color-warning-700); }
+    .exclude-section__reason { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; }
+
+    /* Export modal */
+    .export-options { display: flex; flex-direction: column; gap: 12px; }
+    .export-option { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); cursor: pointer; }
+    .export-option:hover { background: var(--color-neutral-50, #fafafa); border-color: var(--color-brand-300); }
+    .export-option--selected { border-color: var(--color-brand); background: var(--color-brand-100); }
+    .export-option__icon { font-size: 24px; color: var(--color-text-muted); }
+    .export-option--selected .export-option__icon { color: var(--color-brand); }
+    .export-option__label { font-size: 14px; font-weight: 500; }
+    .export-option__desc { font-size: 12px; color: var(--color-text-muted); }
+
+    /* Validation banner */
+    .validation-banner { display: none; align-items: center; gap: 8px; padding: 10px 16px; background: var(--color-danger-50, #fef2f2); border-bottom: 1px solid var(--color-danger-200); font-size: 13px; color: var(--color-danger-700); flex-shrink: 0; }
+    .validation-banner--visible { display: flex; }
+    .validation-banner__icon { font-size: 18px; flex-shrink: 0; }
+
+    /* Success banner */
+    .success-banner { display: none; align-items: center; gap: 8px; padding: 10px 16px; background: var(--color-success-50, #f0fdf4); border-bottom: 1px solid var(--color-success-200); font-size: 13px; color: var(--color-success-700); flex-shrink: 0; }
+    .success-banner--visible { display: flex; }
+  </style>
+</head>
+<body>
+
+  <div class="page-shell">
+
+    <!-- SIDEBAR NAV -->
+    <aside class="page-shell__side">
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
+          <span class="nav__label">Home</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
+          <span class="nav__label">Growers</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="#" class="nav__item" aria-current="page">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+          <span class="nav__label">Scout</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
+          <span class="nav__label">Weather</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">coronavirus</span></span>
+          <span class="nav__label">Disease</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">folder_shared</span></span>
+          <span class="nav__label">Groups</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+          <span class="nav__label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN COLUMN -->
+    <div class="page-shell__main">
+
+      <!-- HEADER -->
+      <header class="header">
+        <div class="header__left">
+          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+        </div>
+        <div class="header__center">
+          <div class="header__search-wrap">
+            <span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <input type="search" class="header__search" placeholder="Search fields, growers..." />
+          </div>
+        </div>
+        <div class="header__right">
+          <span class="header__user-name">Sample User</span>
+          <span class="header__avatar" aria-label="User avatar">SU</span>
+        </div>
+      </header>
+
+      <!-- PAGE TOOLBAR -->
+      <div class="page-toolbar">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <h1 class="page-toolbar__title">MiField Trials</h1>
+          <span style="font-size:12px; color:var(--color-text-muted); padding:2px 8px; background:var(--color-primitive-100); border-radius:var(--radius-pill,20px); font-weight:500; color:var(--color-primitive-700);">Virtual Scout</span>
+        </div>
+        <div class="page-toolbar__controls">
+          <button class="filter-pill filter-pill--neutral">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span>
+            Favorite fields
+          </button>
+          <button class="filter-pill filter-pill--neutral">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span>
+            Favorite growers
+          </button>
+          <span class="page-toolbar__divider"></span>
+          <button class="filter-pill filter-pill--neutral">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span>
+            Advanced filters
+          </button>
+          <span class="page-toolbar__divider"></span>
+          <button class="filter-pill filter-pill--neutral">
+            <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">dashboard_customize</span></span>
+            Customize table
+          </button>
+          <span class="page-toolbar__divider"></span>
+          <div class="view-switcher view-switcher--with-collapse" id="view-switcher">
+            <button class="view-switcher__trigger" onclick="toggleViewSwitcher()">
+              <span class="material-symbols-outlined" id="vs-icon">view_list</span>
+              <span class="view-switcher__label" id="vs-label">List view</span>
+              <span class="material-symbols-outlined view-switcher__caret">expand_more</span>
+            </button>
+            <button class="view-switcher__collapse" aria-label="Collapse panel">
+              <span class="material-symbols-outlined">expand_less</span>
+            </button>
+            <div class="view-switcher__menu">
+              <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')">
+                <span class="material-symbols-outlined">view_list</span> List view
+              </button>
+              <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')">
+                <span class="material-symbols-outlined">grid_view</span> Thumbnail view
+              </button>
+              <button class="view-switcher__option" onclick="setView('map','map','Map view')">
+                <span class="material-symbols-outlined">map</span> Map view
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB BAR -->
+      <div class="page-tabs">
+        <div class="tabs" role="tablist">
+          <button class="tabs__item" role="tab" aria-selected="true" onclick="switchTab(this, 'all')">
+            <span class="tabs__icon-wrap">
+              <span class="tabs__icon tabs__icon--badge"><span class="material-symbols-outlined" style="font-size:20px;">science</span></span>
+              <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">5</span>
+            </span>
+            <span class="tabs__label">All Trials</span>
+            <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+          </button>
+          <button class="tabs__item" role="tab" aria-selected="false" onclick="switchTab(this, 'yield')">
+            <span class="tabs__icon-wrap">
+              <span class="tabs__icon tabs__icon--badge"><span class="material-symbols-outlined" style="font-size:20px;">eco</span></span>
+              <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">2</span>
+            </span>
+            <span class="tabs__label">Yield Enhancement</span>
+            <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+          </button>
+          <button class="tabs__item" role="tab" aria-selected="false" onclick="switchTab(this, 'pest')">
+            <span class="tabs__icon-wrap">
+              <span class="tabs__icon tabs__icon--badge"><span class="material-symbols-outlined" style="font-size:20px;">bug_report</span></span>
+              <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">2</span>
+            </span>
+            <span class="tabs__label">Pest Management</span>
+            <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+          </button>
+          <button class="tabs__item" role="tab" aria-selected="false" onclick="switchTab(this, 'fertility')">
+            <span class="tabs__icon-wrap">
+              <span class="tabs__icon tabs__icon--badge"><span class="material-symbols-outlined" style="font-size:20px;">water_drop</span></span>
+              <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">1</span>
+            </span>
+            <span class="tabs__label">Fertility</span>
+            <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+          </button>
+        </div>
+        <div class="page-tabs__right">5 trials across 4 fields</div>
+      </div>
+
+      <!-- SUCCESS BANNER (hidden by default) -->
+      <div class="success-banner" id="success-banner">
+        <span class="material-symbols-outlined" style="font-size:18px;">check_circle</span>
+        <span id="success-message">Trial saved successfully.</span>
+        <button onclick="document.getElementById('success-banner').classList.remove('success-banner--visible')" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--color-success-700);"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
+      </div>
+
+      <!-- ========== VIEW: TRIAL LIST ========== -->
+      <div class="view-panel view-panel--active" id="view-list">
+
+        <!-- Summary bar -->
+        <div class="summary-bar">
+          <div class="summary-bar__stats">
+            <div class="summary-bar__item">
+              <span class="summary-bar__value">5</span>
+              <span class="summary-bar__label">Total trials</span>
+            </div>
+            <span class="summary-bar__divider"></span>
+            <div class="summary-bar__item">
+              <span class="summary-bar__value">4</span>
+              <span class="summary-bar__label">Active</span>
+            </div>
+            <span class="summary-bar__divider"></span>
+            <div class="summary-bar__item">
+              <span class="summary-bar__value">1</span>
+              <span class="summary-bar__label">Excluded</span>
+            </div>
+            <span class="summary-bar__divider"></span>
+            <div class="summary-bar__item">
+              <span class="summary-bar__value">3</span>
+              <span class="summary-bar__label">Protocols</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table header -->
+        <div class="table-header-bar">
+          <span class="table-header-bar__col" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" id="select-all" onchange="toggleSelectAll(this)" /></span>
+          <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 13%;">Field <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+          <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 11%;">Farm <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+          <span class="table-header-bar__col table-header-bar__col--sortable" style="flex:0 0 11%;">Grower <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">unfold_more</span></span></span>
+          <span class="table-header-bar__col" style="flex:0 0 9%;">Trial ID</span>
+          <span class="table-header-bar__col table-header-bar__col--sortable table-header-bar__col--active" style="flex:0 0 12%;">Protocol <span class="table-header-bar__sort-icon"><span class="material-symbols-outlined" style="font-size:14px;">arrow_downward</span></span></span>
+          <span class="table-header-bar__col" style="flex:0 0 6%;">Crop</span>
+          <span class="table-header-bar__col" style="flex:0 0 9%;">Zones</span>
+          <span class="table-header-bar__col" style="flex:0 0 10%;">Crop Specialist</span>
+          <span class="table-header-bar__col" style="flex:0 0 6%;">Status</span>
+          <span class="table-header-bar__col" style="flex:1;border-right:none;">Actions</span>
+        </div>
+
+        <!-- Scrollable content -->
+        <main class="page-content">
+          <!-- Trial Row 1 -->
+          <div class="data-row" data-protocol="yield">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-success-500);vertical-align:middle;margin-right:4px;">science</span>
+              Willow Creek South
+            </span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Davidson Home</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Davidson Ag Partners</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-001</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Yield Enhancement</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
+              <span class="zone-pill zone-pill--control">1 Ctrl</span>
+              <span class="zone-pill zone-pill--treatment">2 Trt</span>
+            </span>
+            <span class="data-row__cell" style="flex:0 0 10%;">Sarah Mitchell</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--active">Active</span></span>
+            <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
+              <a href="#" onclick="showTrialDetail('TRL-2026-001'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
+              <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
+            </span>
+          </div>
+
+          <!-- Trial Row 2 -->
+          <div class="data-row" data-protocol="pest">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-success-500);vertical-align:middle;margin-right:4px;">science</span>
+              Hawkins Quarter
+            </span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Davidson Home</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Davidson Ag Partners</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-002</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Pest Management</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
+              <span class="zone-pill zone-pill--control">1 Ctrl</span>
+              <span class="zone-pill zone-pill--treatment">1 Trt</span>
+            </span>
+            <span class="data-row__cell" style="flex:0 0 10%;">James Thornton</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--active">Active</span></span>
+            <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
+              <a href="#" onclick="showTrialDetail('TRL-2026-002'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
+              <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
+            </span>
+          </div>
+
+          <!-- Trial Row 3 -->
+          <div class="data-row" data-protocol="yield">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-success-500);vertical-align:middle;margin-right:4px;">science</span>
+              Bottoms East
+            </span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Thornton South</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">James Thornton</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-003</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Yield Enhancement</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Soybeans</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
+              <span class="zone-pill zone-pill--control">1 Ctrl</span>
+              <span class="zone-pill zone-pill--treatment">3 Trt</span>
+            </span>
+            <span class="data-row__cell" style="flex:0 0 10%;">Sarah Mitchell</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--active">Active</span></span>
+            <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
+              <a href="#" onclick="showTrialDetail('TRL-2026-003'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
+              <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
+            </span>
+          </div>
+
+          <!-- Trial Row 4 — Excluded -->
+          <div class="data-row" data-protocol="pest" style="background:var(--color-warning-50, #fffbeb);">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-warning-500);vertical-align:middle;margin-right:4px;">science</span>
+              Sunflower Bend 22
+            </span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell North</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell Farm</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-004</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Pest Management</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
+              <span class="zone-pill zone-pill--control">1 Ctrl</span>
+              <span class="zone-pill zone-pill--treatment">1 Trt</span>
+            </span>
+            <span class="data-row__cell" style="flex:0 0 10%;">James Thornton</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--excluded">Excluded</span></span>
+            <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
+              <a href="#" onclick="showTrialDetail('TRL-2026-004'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
+              <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
+            </span>
+          </div>
+
+          <!-- Trial Row 5 -->
+          <div class="data-row" data-protocol="fertility">
+            <span class="data-row__cell" style="flex:0 0 4%;" data-col="checkbox"><input type="checkbox" class="checkbox" onchange="toggleRowCheckbox(this)" /></span>
+            <span class="data-row__cell" style="flex:0 0 13%; font-weight:500;">
+              <span class="material-symbols-outlined" style="font-size:16px;color:var(--color-success-500);vertical-align:middle;margin-right:4px;">science</span>
+              Prairie View
+            </span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell North</span>
+            <span class="data-row__cell" style="flex:0 0 11%;">Mitchell Farm</span>
+            <span class="data-row__cell" style="flex:0 0 9%; font-family:monospace; font-size:12px; color:var(--color-text-muted);">TRL-2026-005</span>
+            <span class="data-row__cell" style="flex:0 0 12%;">Fertility</span>
+            <span class="data-row__cell" style="flex:0 0 6%; color:var(--color-brand);">Corn</span>
+            <span class="data-row__cell" style="flex:0 0 9%;">
+              <span class="zone-pill zone-pill--control">1 Ctrl</span>
+              <span class="zone-pill zone-pill--treatment">2 Trt</span>
+            </span>
+            <span class="data-row__cell" style="flex:0 0 10%;">Lisa Chen</span>
+            <span class="data-row__cell" style="flex:0 0 6%;"><span class="trial-status trial-status--active">Active</span></span>
+            <span class="data-row__cell" style="flex:1;border-right:none; display:flex; align-items:center; gap:8px;">
+              <a href="#" onclick="showTrialDetail('TRL-2026-005'); return false;" style="color:var(--color-action); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">visibility</span> View</a>
+              <a href="#" style="color:var(--color-text-muted); text-decoration:none; font-size:12px; display:flex; align-items:center; gap:2px;"><span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit</a>
+            </span>
+          </div>
+
+        </main>
+      </div><!-- /view-list -->
+
+      <!-- ========== VIEW: TRIAL DETAIL ========== -->
+      <div class="view-panel" id="view-detail">
+        <main class="page-content" style="padding:0; overflow-y:auto;">
+          <div class="trial-detail">
+
+            <a class="trial-detail__back" onclick="showListView(); return false;">
+              <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
+              Back to all trials
+            </a>
+
+            <div class="trial-detail__header">
+              <div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+                  <h2 class="trial-detail__title" id="detail-title">Willow Creek South</h2>
+                  <span class="trial-status trial-status--active" id="detail-status">Active</span>
+                </div>
+                <div class="trial-detail__subtitle">
+                  <span id="detail-id" style="font-family:monospace;">TRL-2026-001</span> &middot;
+                  <span id="detail-protocol">Yield Enhancement</span> &middot;
+                  Assigned to <strong id="detail-specialist">Sarah Mitchell</strong>
+                </div>
+              </div>
+              <div class="trial-detail__actions">
+                <button class="btn" style="padding:6px 14px;" onclick="openExportModal()">
+                  <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">download</span></span>
+                  Export
+                </button>
+                <button class="btn btn--brand" style="padding:6px 14px;">
+                  <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">edit</span></span>
+                  Edit Trial
+                </button>
+              </div>
+            </div>
+
+            <!-- Meta cards -->
+            <div class="trial-detail__meta">
+              <div class="trial-detail__meta-card">
+                <div class="trial-detail__meta-label">Crop Type</div>
+                <div class="trial-detail__meta-value" id="detail-crop">Corn</div>
+              </div>
+              <div class="trial-detail__meta-card">
+                <div class="trial-detail__meta-label">Planting Date</div>
+                <div class="trial-detail__meta-value">Apr 15, 2026</div>
+              </div>
+              <div class="trial-detail__meta-card">
+                <div class="trial-detail__meta-label">Seed Brand / Hybrid</div>
+                <div class="trial-detail__meta-value">Pioneer P1185</div>
+              </div>
+              <div class="trial-detail__meta-card">
+                <div class="trial-detail__meta-label">Population</div>
+                <div class="trial-detail__meta-value">34,000/ac</div>
+              </div>
+            </div>
+
+            <!-- Zone section -->
+            <div class="trial-detail__section">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                <h3 class="trial-detail__section-title" style="margin:0;">Trial Zones</h3>
+                <a href="#" style="font-size:13px; color:var(--color-action); text-decoration:none; display:flex; align-items:center; gap:4px;">
+                  <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span> View in field context
+                </a>
+              </div>
+
+              <div class="zone-map-preview">
+                <span class="material-symbols-outlined" style="font-size:32px; margin-right:8px;">map</span>
+                Zone geometry preview (satellite imagery + drawn polygons)
+              </div>
+
+              <div class="zone-summary">
+                <div class="zone-summary__item">
+                  <span class="zone-summary__color zone-summary__color--control"></span>
+                  <div>
+                    <div class="zone-summary__label">Control Zone</div>
+                    <div class="zone-summary__acres">42.3 acres</div>
+                  </div>
+                </div>
+                <div class="zone-summary__item">
+                  <span class="zone-summary__color zone-summary__color--treatment"></span>
+                  <div>
+                    <div class="zone-summary__label">Treatment A</div>
+                    <div class="zone-summary__acres">48.1 acres</div>
+                  </div>
+                </div>
+                <div class="zone-summary__item">
+                  <span class="zone-summary__color zone-summary__color--treatment"></span>
+                  <div>
+                    <div class="zone-summary__label">Treatment B</div>
+                    <div class="zone-summary__acres">51.6 acres</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Metadata section -->
+            <div class="trial-detail__section">
+              <h3 class="trial-detail__section-title">Trial Metadata</h3>
+              <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                <tr>
+                  <td style="padding:8px 12px; color:var(--color-text-muted); width:180px; border-bottom:1px solid var(--color-border);">State</td>
+                  <td style="padding:8px 12px; border-bottom:1px solid var(--color-border);">Illinois</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px; color:var(--color-text-muted); border-bottom:1px solid var(--color-border);">Harvest Date</td>
+                  <td style="padding:8px 12px; border-bottom:1px solid var(--color-border);">--</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px; color:var(--color-text-muted); border-bottom:1px solid var(--color-border);">Product Details</td>
+                  <td style="padding:8px 12px; border-bottom:1px solid var(--color-border);">Acuron GT (pre-emergent herbicide)</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px; color:var(--color-text-muted); border-bottom:1px solid var(--color-border);">Soil Data</td>
+                  <td style="padding:8px 12px; border-bottom:1px solid var(--color-border);"><span style="color:var(--color-text-muted); font-style:italic;">Not available</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 12px; color:var(--color-text-muted);">Field Link</td>
+                  <td style="padding:8px 12px;"><a href="#" style="color:var(--color-action); text-decoration:none;">Willow Creek South — Davidson Ag Partners</a></td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- Exclude from reporting -->
+            <div class="trial-detail__section" id="detail-exclude-section" style="display:none;">
+              <h3 class="trial-detail__section-title">Reporting Exclusion</h3>
+              <div class="exclude-section">
+                <span class="material-symbols-outlined" style="font-size:20px; color:var(--color-warning-600);">warning</span>
+                <div>
+                  <div class="exclude-section__text">This trial is excluded from analytics reporting.</div>
+                  <div class="exclude-section__reason">Reason: Severe hail damage on June 3 compromised all zones.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+      </div><!-- /view-detail -->
+
+    </div><!-- /.page-shell__main -->
+  </div><!-- /.page-shell -->
+
+  <!-- ========== TRIAL CREATION WIZARD ========== -->
+  <div class="wizard-overlay" id="wizard-overlay" onclick="if(event.target===this)closeWizard()">
+    <div class="wizard">
+      <div class="wizard__header">
+        <h2 class="wizard__title">Create New Trial</h2>
+        <button class="wizard__close" onclick="closeWizard()">
+          <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+        </button>
+      </div>
+
+      <!-- Stepper -->
+      <div class="wizard__stepper">
+        <div class="wizard__step wizard__step--active" id="step-ind-1">
+          <span class="wizard__step-num">1</span>
+          <span>Protocol</span>
+        </div>
+        <div class="wizard__step-connector" id="conn-1-2"></div>
+        <div class="wizard__step" id="step-ind-2">
+          <span class="wizard__step-num">2</span>
+          <span>Zones</span>
+        </div>
+        <div class="wizard__step-connector" id="conn-2-3"></div>
+        <div class="wizard__step" id="step-ind-3">
+          <span class="wizard__step-num">3</span>
+          <span>Assignment</span>
+        </div>
+        <div class="wizard__step-connector" id="conn-3-4"></div>
+        <div class="wizard__step" id="step-ind-4">
+          <span class="wizard__step-num">4</span>
+          <span>Details</span>
+        </div>
+      </div>
+
+      <!-- Validation banner inside wizard -->
+      <div class="validation-banner" id="wizard-validation">
+        <span class="material-symbols-outlined validation-banner__icon">error</span>
+        <span id="wizard-validation-msg">Please complete required fields.</span>
+      </div>
+
+      <!-- Step 1: Protocol Selection -->
+      <div class="wizard__body" id="wizard-step-1">
+        <div class="form-group">
+          <label class="form-group__label form-group__label--required">Protocol</label>
+          <select class="form-select" id="protocol-select" onchange="validateStep1()">
+            <option value="" disabled selected class="form-select--placeholder">Select a protocol...</option>
+            <option value="yield">Yield Enhancement</option>
+            <option value="pest">Pest Management</option>
+            <option value="fertility">Fertility</option>
+            <option value="seed-treatment">Seed Treatment</option>
+            <option value="biologicals">Biologicals</option>
+            <option value="other">Other</option>
+          </select>
+          <div class="form-group__hint">Protocol defines the trial structure and expectations. This cannot be changed after saving.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-group__label form-group__label--required">Field</label>
+          <div class="form-search-select">
+            <input type="text" class="input form-search-select__input" id="field-search" placeholder="Search fields..." autocomplete="off" onfocus="document.getElementById('field-dropdown').classList.add('form-search-select__dropdown--open')" onblur="setTimeout(()=>document.getElementById('field-dropdown').classList.remove('form-search-select__dropdown--open'),200)" />
+            <div class="form-search-select__dropdown" id="field-dropdown">
+              <div class="form-search-select__option" onclick="selectField('Willow Creek South')">Willow Creek South — Davidson Ag Partners</div>
+              <div class="form-search-select__option" onclick="selectField('Hawkins Quarter')">Hawkins Quarter — Davidson Ag Partners</div>
+              <div class="form-search-select__option" onclick="selectField('Bottoms East')">Bottoms East — James Thornton</div>
+              <div class="form-search-select__option" onclick="selectField('Sunflower Bend 22')">Sunflower Bend 22 — Mitchell Farm</div>
+              <div class="form-search-select__option" onclick="selectField('Prairie View')">Prairie View — Mitchell Farm</div>
+              <div class="form-search-select__option" onclick="selectField('North 40')">North 40 — Davidson Ag Partners</div>
+            </div>
+          </div>
+          <div class="form-group__hint">Select the field where this trial will be conducted.</div>
+        </div>
+      </div>
+
+      <!-- Step 2: Zone Drawing -->
+      <div class="wizard__body" id="wizard-step-2" style="display:none;">
+        <p style="font-size:13px; color:var(--color-text-muted); margin-bottom:16px;">Draw at least 1 control zone and 1 treatment zone on the field. Use the tools below to define zone boundaries.</p>
+
+        <div class="zone-tools">
+          <button class="zone-tool-btn zone-tool-btn--active" onclick="setZoneTool(this, 'draw')">
+            <span class="material-symbols-outlined" style="font-size:16px;">draw</span> Draw Polygon
+          </button>
+          <button class="zone-tool-btn" onclick="setZoneTool(this, 'select')">
+            <span class="material-symbols-outlined" style="font-size:16px;">select_all</span> Select
+          </button>
+          <button class="zone-tool-btn" onclick="setZoneTool(this, 'delete')">
+            <span class="material-symbols-outlined" style="font-size:16px;">delete</span> Delete
+          </button>
+        </div>
+
+        <!-- Zone canvas (placeholder for map interaction) -->
+        <div class="zone-canvas zone-canvas--has-zones" id="zone-canvas">
+          <div style="width:100%; height:160px; background:var(--color-neutral-100); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; color:var(--color-text-muted); font-size:12px;">
+            <span class="material-symbols-outlined" style="font-size:32px; margin-right:8px; color:var(--color-neutral-400);">satellite_alt</span>
+            Satellite imagery canvas — draw zones here
+          </div>
+
+          <div class="zone-list" id="zone-list">
+            <div class="zone-item">
+              <span class="zone-item__color zone-item__color--control"></span>
+              <span class="zone-item__name">Control Zone 1</span>
+              <span class="zone-pill zone-pill--control" style="font-size:10px;">Control</span>
+              <span class="zone-item__acres">42.3 ac</span>
+              <button class="zone-item__remove"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
+            </div>
+            <div class="zone-item">
+              <span class="zone-item__color zone-item__color--treatment"></span>
+              <span class="zone-item__name">Treatment A</span>
+              <span class="zone-pill zone-pill--treatment" style="font-size:10px;">Treatment</span>
+              <span class="zone-item__acres">48.1 ac</span>
+              <button class="zone-item__remove"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn" style="padding:6px 12px; font-size:12px;" onclick="addZone('control')">
+            <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">add</span></span>
+            Add Control Zone
+          </button>
+          <button class="btn" style="padding:6px 12px; font-size:12px;" onclick="addZone('treatment')">
+            <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">add</span></span>
+            Add Treatment Zone
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Crop Specialist Assignment -->
+      <div class="wizard__body" id="wizard-step-3" style="display:none;">
+        <div class="form-group">
+          <label class="form-group__label form-group__label--required">Crop Specialist</label>
+          <div class="form-search-select">
+            <input type="text" class="input form-search-select__input" id="specialist-search" placeholder="Search by name or email..." autocomplete="off" onfocus="document.getElementById('specialist-dropdown').classList.add('form-search-select__dropdown--open')" onblur="setTimeout(()=>document.getElementById('specialist-dropdown').classList.remove('form-search-select__dropdown--open'),200)" />
+            <div class="form-search-select__dropdown" id="specialist-dropdown">
+              <div class="form-search-select__option" onclick="selectSpecialist('Sarah Mitchell')">
+                <div style="font-weight:500;">Sarah Mitchell</div>
+                <div style="font-size:11px; color:var(--color-text-muted);">Crop Specialist &middot; IL, IN, IA</div>
+              </div>
+              <div class="form-search-select__option" onclick="selectSpecialist('James Thornton')">
+                <div style="font-weight:500;">James Thornton</div>
+                <div style="font-size:11px; color:var(--color-text-muted);">Crop Specialist &middot; MO, KS</div>
+              </div>
+              <div class="form-search-select__option" onclick="selectSpecialist('Lisa Chen')">
+                <div style="font-weight:500;">Lisa Chen</div>
+                <div style="font-size:11px; color:var(--color-text-muted);">Senior Crop Specialist &middot; IL, WI</div>
+              </div>
+              <div class="form-search-select__option" onclick="selectSpecialist('Mark Rodriguez')">
+                <div style="font-weight:500;">Mark Rodriguez</div>
+                <div style="font-size:11px; color:var(--color-text-muted);">Crop Specialist &middot; OH, MI</div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group__hint">Only users with the Crop Specialist role and access to the selected field are shown.</div>
+        </div>
+
+        <div class="form-group" style="margin-top:24px;">
+          <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+            <input type="checkbox" class="checkbox" id="exclude-checkbox" onchange="toggleExcludeReason()" />
+            <div>
+              <span style="font-size:13px; font-weight:600; color:var(--color-text);">Exclude from reporting</span>
+              <div style="font-size:12px; color:var(--color-text-muted); margin-top:2px;">Trial will be retained in the system and count toward certification, but excluded from analytics.</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="form-group" id="exclude-reason-group" style="display:none;">
+          <label class="form-group__label">Exclusion Reason</label>
+          <textarea class="input" id="exclude-reason" rows="3" placeholder="Describe why this trial should be excluded..." style="width:100%; resize:vertical; font-family:var(--font-family);"></textarea>
+        </div>
+      </div>
+
+      <!-- Step 4: Trial Details (Metadata) -->
+      <div class="wizard__body" id="wizard-step-4" style="display:none;">
+        <p style="font-size:13px; color:var(--color-text-muted); margin-bottom:20px;">Complete trial metadata. These fields are included in all exports.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-group__label">Crop Type</label>
+            <select class="form-select" id="crop-type">
+              <option value="" disabled selected>Select crop...</option>
+              <option value="corn">Corn</option>
+              <option value="soybeans">Soybeans</option>
+              <option value="wheat">Wheat</option>
+              <option value="cotton">Cotton</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-group__label">State</label>
+            <select class="form-select" id="state-select">
+              <option value="" disabled selected>Select state...</option>
+              <option value="IL">Illinois</option>
+              <option value="IN">Indiana</option>
+              <option value="IA">Iowa</option>
+              <option value="MO">Missouri</option>
+              <option value="OH">Ohio</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-group__label">Planting Date</label>
+            <input type="date" class="input" id="planting-date" style="width:100%;" />
+          </div>
+          <div class="form-group">
+            <label class="form-group__label">Harvest Date</label>
+            <input type="date" class="input" id="harvest-date" style="width:100%;" />
+          </div>
+          <div class="form-group">
+            <label class="form-group__label">Population</label>
+            <input type="text" class="input" id="population" placeholder="e.g. 34,000/ac" style="width:100%;" />
+          </div>
+          <div class="form-group">
+            <label class="form-group__label">Seed Brand</label>
+            <input type="text" class="input" id="seed-brand" placeholder="e.g. Pioneer" style="width:100%;" />
+          </div>
+          <div class="form-group">
+            <label class="form-group__label">Hybrid</label>
+            <input type="text" class="input" id="hybrid" placeholder="e.g. P1185" style="width:100%;" />
+          </div>
+          <div class="form-group">
+            <label class="form-group__label">Product Details</label>
+            <input type="text" class="input" id="product-details" placeholder="e.g. Acuron GT" style="width:100%;" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="wizard__footer">
+        <div class="wizard__footer-left">
+          <button class="btn" id="wizard-back-btn" style="padding:6px 14px; display:none;" onclick="wizardBack()">Back</button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" style="padding:6px 14px;" onclick="closeWizard()">Cancel</button>
+          <button class="btn btn--brand" id="wizard-next-btn" style="padding:6px 14px;" onclick="wizardNext()">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== EXPORT MODAL ========== -->
+  <div class="wizard-overlay" id="export-overlay" onclick="if(event.target===this)closeExportModal()">
+    <div class="wizard" style="width:480px;">
+      <div class="wizard__header">
+        <h2 class="wizard__title">Export Trial Data</h2>
+        <button class="wizard__close" onclick="closeExportModal()">
+          <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+        </button>
+      </div>
+      <div class="wizard__body" style="padding-top:20px;">
+        <p style="font-size:13px; color:var(--color-text-muted); margin-bottom:16px;">Export includes: Trial ID, crop type, state, planting/harvest dates, protocol, population, seed brand, hybrid, product details, crop specialist, and field link.</p>
+
+        <div class="export-options">
+          <div class="export-option export-option--selected" onclick="selectExportFormat(this)">
+            <span class="material-symbols-outlined export-option__icon">table_view</span>
+            <div>
+              <div class="export-option__label">CSV (.csv)</div>
+              <div class="export-option__desc">Comma-separated values, compatible with all tools</div>
+            </div>
+          </div>
+          <div class="export-option" onclick="selectExportFormat(this)">
+            <span class="material-symbols-outlined export-option__icon">grid_on</span>
+            <div>
+              <div class="export-option__label">Excel (.xlsx)</div>
+              <div class="export-option__desc">Formatted spreadsheet with hyperlinks to fields</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+            <input type="checkbox" class="checkbox" checked />
+            Include excluded trials (marked separately)
+          </label>
+        </div>
+        <div style="margin-top:8px;">
+          <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer;">
+            <input type="checkbox" class="checkbox" />
+            Include soil data (if available)
+          </label>
+        </div>
+      </div>
+      <div class="wizard__footer">
+        <div></div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn" style="padding:6px 14px;" onclick="closeExportModal()">Cancel</button>
+          <button class="btn btn--brand" style="padding:6px 14px;" onclick="doExport()">
+            <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">download</span></span>
+            Export
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== VIEW SWITCHING ===== */
+    function showListView() {
+      document.getElementById('view-list').classList.add('view-panel--active');
+      document.getElementById('view-detail').classList.remove('view-panel--active');
+    }
+
+    function showTrialDetail(trialId) {
+      document.getElementById('view-list').classList.remove('view-panel--active');
+      document.getElementById('view-detail').classList.add('view-panel--active');
+
+      // Show exclude section for TRL-2026-004
+      var excludeSection = document.getElementById('detail-exclude-section');
+      if (trialId === 'TRL-2026-004') {
+        excludeSection.style.display = 'block';
+        document.getElementById('detail-title').textContent = 'Sunflower Bend 22';
+        document.getElementById('detail-id').textContent = trialId;
+        document.getElementById('detail-protocol').textContent = 'Pest Management';
+        document.getElementById('detail-specialist').textContent = 'James Thornton';
+        document.getElementById('detail-status').className = 'trial-status trial-status--excluded';
+        document.getElementById('detail-status').textContent = 'Excluded';
+      } else {
+        excludeSection.style.display = 'none';
+        document.getElementById('detail-status').className = 'trial-status trial-status--active';
+        document.getElementById('detail-status').textContent = 'Active';
+      }
+    }
+
+    /* ===== TAB SWITCHING ===== */
+    function switchTab(el, protocol) {
+      document.querySelectorAll('.tabs__item').forEach(function(t) { t.setAttribute('aria-selected', 'false'); });
+      el.setAttribute('aria-selected', 'true');
+      // Filter rows
+      document.querySelectorAll('.data-row').forEach(function(row) {
+        if (protocol === 'all' || row.dataset.protocol === protocol) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    /* ===== WIZARD ===== */
+    var currentStep = 1;
+    var totalSteps = 4;
+
+    function openWizard() {
+      currentStep = 1;
+      updateWizardUI();
+      document.getElementById('wizard-overlay').classList.add('wizard-overlay--active');
+    }
+
+    function closeWizard() {
+      document.getElementById('wizard-overlay').classList.remove('wizard-overlay--active');
+      hideValidation();
+    }
+
+    function wizardNext() {
+      if (!validateCurrentStep()) return;
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateWizardUI();
+      } else {
+        // Save trial
+        saveTrial();
+      }
+    }
+
+    function wizardBack() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateWizardUI();
+        hideValidation();
+      }
+    }
+
+    function updateWizardUI() {
+      // Show/hide steps
+      for (var i = 1; i <= totalSteps; i++) {
+        var stepBody = document.getElementById('wizard-step-' + i);
+        stepBody.style.display = i === currentStep ? '' : 'none';
+
+        var stepInd = document.getElementById('step-ind-' + i);
+        stepInd.className = 'wizard__step';
+        if (i < currentStep) stepInd.classList.add('wizard__step--complete');
+        if (i === currentStep) stepInd.classList.add('wizard__step--active');
+      }
+
+      // Connectors
+      for (var j = 1; j < totalSteps; j++) {
+        var conn = document.getElementById('conn-' + j + '-' + (j + 1));
+        if (conn) {
+          conn.className = 'wizard__step-connector';
+          if (j < currentStep) conn.classList.add('wizard__step-connector--complete');
+        }
+      }
+
+      // Back button
+      document.getElementById('wizard-back-btn').style.display = currentStep > 1 ? '' : 'none';
+
+      // Next button label
+      var nextBtn = document.getElementById('wizard-next-btn');
+      nextBtn.textContent = currentStep === totalSteps ? 'Save Trial' : 'Next';
+    }
+
+    function validateCurrentStep() {
+      if (currentStep === 1) {
+        var protocol = document.getElementById('protocol-select').value;
+        var field = document.getElementById('field-search').value;
+        if (!protocol) {
+          showValidation('Protocol is required. Select a protocol to continue.');
+          return false;
+        }
+        if (!field) {
+          showValidation('Field is required. Search and select a field.');
+          return false;
+        }
+      }
+      if (currentStep === 3) {
+        var specialist = document.getElementById('specialist-search').value;
+        if (!specialist) {
+          showValidation('Crop specialist assignment is required before saving.');
+          return false;
+        }
+      }
+      hideValidation();
+      return true;
+    }
+
+    function showValidation(msg) {
+      var banner = document.getElementById('wizard-validation');
+      document.getElementById('wizard-validation-msg').textContent = msg;
+      banner.classList.add('validation-banner--visible');
+    }
+
+    function hideValidation() {
+      document.getElementById('wizard-validation').classList.remove('validation-banner--visible');
+    }
+
+    function validateStep1() { hideValidation(); }
+
+    function saveTrial() {
+      closeWizard();
+      var banner = document.getElementById('success-banner');
+      document.getElementById('success-message').textContent = 'Trial TRL-2026-006 created successfully. Assigned to ' + (document.getElementById('specialist-search').value || 'specialist') + '.';
+      banner.classList.add('success-banner--visible');
+      setTimeout(function() { banner.classList.remove('success-banner--visible'); }, 5000);
+    }
+
+    /* ===== FIELD / SPECIALIST SELECT ===== */
+    function selectField(name) {
+      document.getElementById('field-search').value = name;
+    }
+
+    function selectSpecialist(name) {
+      document.getElementById('specialist-search').value = name;
+    }
+
+    /* ===== ZONE TOOLS ===== */
+    function setZoneTool(el, tool) {
+      document.querySelectorAll('.zone-tool-btn').forEach(function(b) { b.classList.remove('zone-tool-btn--active'); });
+      el.classList.add('zone-tool-btn--active');
+    }
+
+    var zoneCounter = { control: 1, treatment: 1 };
+    function addZone(type) {
+      var list = document.getElementById('zone-list');
+      var isControl = type === 'control';
+      zoneCounter[type]++;
+      var label = isControl ? 'Control Zone ' + zoneCounter[type] : 'Treatment ' + String.fromCharCode(64 + zoneCounter[type]);
+      var colorClass = isControl ? 'zone-item__color--control' : 'zone-item__color--treatment';
+      var pillClass = isControl ? 'zone-pill--control' : 'zone-pill--treatment';
+      var html = '<div class="zone-item">' +
+        '<span class="zone-item__color ' + colorClass + '"></span>' +
+        '<span class="zone-item__name">' + label + '</span>' +
+        '<span class="zone-pill ' + pillClass + '" style="font-size:10px;">' + (isControl ? 'Control' : 'Treatment') + '</span>' +
+        '<span class="zone-item__acres">-- ac</span>' +
+        '<button class="zone-item__remove" onclick="this.parentElement.remove()"><span class="material-symbols-outlined" style="font-size:16px;">close</span></button>' +
+        '</div>';
+      list.insertAdjacentHTML('beforeend', html);
+    }
+
+    /* ===== EXCLUDE TOGGLE ===== */
+    function toggleExcludeReason() {
+      var checked = document.getElementById('exclude-checkbox').checked;
+      document.getElementById('exclude-reason-group').style.display = checked ? '' : 'none';
+    }
+
+    /* ===== EXPORT MODAL ===== */
+    function openExportModal() {
+      document.getElementById('export-overlay').classList.add('wizard-overlay--active');
+    }
+
+    function closeExportModal() {
+      document.getElementById('export-overlay').classList.remove('wizard-overlay--active');
+    }
+
+    function selectExportFormat(el) {
+      document.querySelectorAll('.export-option').forEach(function(o) { o.classList.remove('export-option--selected'); });
+      el.classList.add('export-option--selected');
+    }
+
+    function doExport() {
+      closeExportModal();
+      var banner = document.getElementById('success-banner');
+      document.getElementById('success-message').textContent = 'Export complete. 5 trials exported.';
+      banner.classList.add('success-banner--visible');
+      setTimeout(function() { banner.classList.remove('success-banner--visible'); }, 5000);
+    }
+
+    function filterByProtocol(protocol) {
+      switchTab(document.querySelector('.tabs__item[aria-selected="true"]'), protocol);
+    }
+
+    /* ===== VIEW SWITCHER ===== */
+    function toggleViewSwitcher() {
+      document.getElementById('view-switcher').classList.toggle('view-switcher--open');
+    }
+    function setView(view, icon, label) {
+      document.getElementById('vs-icon').textContent = icon;
+      document.getElementById('vs-label').textContent = label;
+      document.querySelectorAll('.view-switcher__option').forEach(function(o) { o.classList.remove('view-switcher__option--active'); });
+      event.currentTarget.classList.add('view-switcher__option--active');
+      document.getElementById('view-switcher').classList.remove('view-switcher--open');
+    }
+    document.addEventListener('click', function(e) {
+      var vs = document.getElementById('view-switcher');
+      if (vs && !vs.contains(e.target)) vs.classList.remove('view-switcher--open');
+    });
+
+    /* ===== CHECKBOX VISIBILITY ===== */
+    function toggleRowCheckbox(cb) {
+      var cell = cb.closest('[data-col="checkbox"]');
+      if (cb.checked) {
+        cell.classList.add('is-checked');
+      } else {
+        cell.classList.remove('is-checked');
+      }
+      updateSelectAllState();
+    }
+
+    function toggleSelectAll(cb) {
+      var headerCol = cb.closest('[data-col="checkbox"]');
+      var rowCells = document.querySelectorAll('.data-row .data-row__cell[data-col="checkbox"]');
+      rowCells.forEach(function(cell) {
+        var rowCb = cell.querySelector('.checkbox');
+        rowCb.checked = cb.checked;
+        if (cb.checked) {
+          cell.classList.add('is-checked');
+        } else {
+          cell.classList.remove('is-checked');
+        }
+      });
+      if (cb.checked) {
+        headerCol.classList.add('is-checked');
+      } else {
+        headerCol.classList.remove('is-checked');
+      }
+    }
+
+    function updateSelectAllState() {
+      var all = document.querySelectorAll('.data-row .data-row__cell[data-col="checkbox"] .checkbox');
+      var checked = document.querySelectorAll('.data-row .data-row__cell[data-col="checkbox"] .checkbox:checked');
+      var selectAll = document.getElementById('select-all');
+      var headerCol = selectAll.closest('[data-col="checkbox"]');
+      selectAll.checked = all.length > 0 && checked.length === all.length;
+      selectAll.indeterminate = checked.length > 0 && checked.length < all.length;
+      if (checked.length > 0) {
+        headerCol.classList.add('is-checked');
+      } else {
+        headerCol.classList.remove('is-checked');
+      }
+    }
+  </script>
+
+</body>
+</html>

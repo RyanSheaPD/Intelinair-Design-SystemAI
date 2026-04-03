@@ -1,0 +1,3766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgMRI — Yield Calibration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <script>
+    (function () {
+      try {
+        var q = new URLSearchParams(window.location.search).get('figmademo');
+        var h = window.location.hash || '';
+        if (q || /figmacapture=/.test(h)) document.documentElement.classList.add('figma-capture-mode');
+      } catch (e) {}
+    })();
+  </script>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js"></script>
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/radio.css" />
+  <link rel="stylesheet" href="../components/checkbox.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/alert.css" />
+  <link rel="stylesheet" href="../components/modal.css" />
+  <link rel="stylesheet" href="../components/activity-chicklet.css" />
+  <link rel="stylesheet" href="../components/map-overlay-controls.css" />
+  <style>
+    /*
+     * Figma html-to-design often snapshots before CSS transitions finish, so the overlay
+     * and side sheet can appear fully transparent or width 0. Disable motion in capture mode.
+     */
+    html.figma-capture-mode .modal-overlay[aria-hidden="false"],
+    html.figma-capture-mode .modal-overlay[aria-hidden="false"].modal-overlay--open {
+      opacity: 1 !important;
+      transition: none !important;
+    }
+    html.figma-capture-mode .modal-overlay[aria-hidden="false"] .modal,
+    html.figma-capture-mode .modal-overlay[aria-hidden="false"].modal-overlay--open .modal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    html.figma-capture-mode .calibration-side-sheet--push {
+      transition: none !important;
+    }
+    html.figma-capture-mode .calibration-side-sheet--push.calibration-side-sheet--open {
+      width: min(440px, 100%) !important;
+      max-width: min(440px, 100%) !important;
+      min-width: 0 !important;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-family-web);
+      background: var(--color-neutral-50);
+      color: var(--color-text);
+    }
+
+    /* ── App Shell ── */
+    .app-shell { display: flex; height: 100vh; overflow: hidden; }
+    .app-nav { flex-shrink: 0; height: 100vh; overflow-y: auto; overflow-x: hidden; }
+    .app-nav .nav { height: 100%; min-height: 100vh; }
+    .app-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── Field context row (below design-system header) ── */
+    .yield-cal-subbar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      padding: 10px 20px;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      min-height: 48px;
+    }
+
+    .yield-cal-subbar__field {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .yield-cal-subbar__meta {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .yield-cal-subbar__meta-sep {
+      color: var(--color-neutral-300);
+    }
+
+    .yield-cal-subbar__spacer {
+      flex: 1;
+      min-width: 8px;
+    }
+
+    .btn-hist {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border);
+      background: #fff;
+      font-family: var(--font-family-web);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+    }
+
+    .btn-hist .material-symbols-outlined { font-size: 16px; }
+
+    .top-bar__layout {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      padding: 4px 6px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-neutral-50);
+    }
+
+    .top-bar__layout-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-muted);
+      padding-right: 4px;
+    }
+
+    .top-bar__layout-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+    }
+
+    .top-bar__layout-btn:hover {
+      background: var(--color-neutral-100);
+      color: var(--color-text);
+    }
+
+    .top-bar__layout-btn--active {
+      background: #fff;
+      border-color: var(--color-border);
+      color: var(--color-text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .yield-cal-subbar__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .top-bar__figma {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+    }
+
+    .top-bar__figma:hover {
+      background: var(--color-neutral-100);
+      color: var(--color-text);
+      border-color: var(--color-border);
+    }
+
+    .top-bar__figma .material-symbols-outlined { font-size: 18px; }
+
+    /* Map + optional docked calibration sheet (pushes map — AGMRI-style) */
+    .field-workspace {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ── Map stage (fills remaining width beside sheet) ── */
+    .map-stage {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* Basemap covers entire pane so the flights strip sits over the same imagery */
+    .map-pane {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      min-height: 0;
+      background-color: #1a2332;
+      background-image: url('../assets/yield-calibration-map-bg.png');
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .map-placeholder {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 0;
+      position: relative;
+      z-index: 1;
+      padding: 16px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+    }
+
+    /* ── Calibration modal (design-system modal.css) ── */
+    .calibration-modal-overlay {
+      --modal-backdrop: rgba(15, 23, 42, 0.2);
+    }
+
+    .calibration-modal-overlay:not(.modal-overlay--harvest) .modal {
+      max-width: min(720px, 96vw);
+      width: 100%;
+      max-height: min(90vh, 900px);
+      background: #fff;
+    }
+
+    .calibration-modal-overlay.modal-overlay--harvest {
+      --modal-backdrop: rgba(15, 23, 42, 0.16);
+    }
+
+    .calibration-modal-overlay.modal-overlay--harvest .calibration-modal {
+      width: 450px;
+      max-width: min(450px, 96vw);
+      height: 532px;
+      max-height: min(532px, 92vh);
+      min-height: 0;
+      box-sizing: border-box;
+    }
+
+    /* Side sheet + wizard: overlay only covers map column; sheet strip stays clear */
+    .calibration-modal-overlay.calibration-modal-overlay--sheet-wizard-open {
+      transition: right 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Intro = pages/harvest-details-modal.html structure (see modal.css .modal--harvest-detail) */
+    .calibration-modal--intro.modal--harvest-detail {
+      position: relative;
+    }
+
+    .calibration-modal__heading .modal__title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .calibration-modal__subtitle {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--color-text-muted);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .calibration-modal__body {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background: #fff;
+    }
+
+    .calibration-modal__body .steps {
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .calibration-modal__body .cal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    /* Harvest intro: design-system modal (harvest-details-modal.html) + dismiss control */
+    .calibration-modal--intro .modal__header {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 5;
+      justify-content: flex-end;
+      align-items: flex-start;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .calibration-modal--intro .modal__close {
+      pointer-events: auto;
+      color: var(--color-neutral-600);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--color-neutral-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .calibration-modal--intro .calibration-modal__heading {
+      display: none;
+    }
+
+    .calibration-modal--intro .modal__body.calibration-modal__body {
+      padding: 0;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      background: transparent;
+    }
+
+    .calibration-modal--intro .modal-harvest__header {
+      padding-right: 48px;
+    }
+
+    #harvestDetailIntro {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .calibration-modal--intro #harvestDetailIntro {
+      flex: 1 1 auto;
+    }
+
+    .calibration-modal--wizard #harvestDetailIntro {
+      flex: 0 0 auto;
+    }
+
+    .calibration-modal--wizard .modal-harvest__body {
+      display: none;
+    }
+
+    .harvest-wizard-peek {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+      margin: 0 var(--spacing-l) var(--spacing-s);
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--color-text-muted);
+      background: var(--color-neutral-100);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+
+    .harvest-wizard-peek__label {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .harvest-wizard-peek__scope {
+      font-weight: 600;
+      color: var(--color-action);
+    }
+
+    .harvest-wizard-peek__combines {
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .harvest-wizard-peek__sep {
+      color: var(--color-neutral-400);
+    }
+
+    .calibration-modal--wizard .modal__body.calibration-modal__body {
+      overflow: hidden;
+    }
+
+    .calibration-modal--wizard #calibrationWizard {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calibration-modal--wizard #calibrationWizard .cal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .calibration-flow-shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .calibration-modal--intro .calibration-flow-shell {
+      flex: 0 0 auto;
+    }
+
+    .calibration-modal--wizard .calibration-flow-shell {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    /* Side sheet (layout: sheet) — docked right; width animates so map shrinks (push layout) */
+    .calibration-side-sheet--push {
+      flex: 0 0 auto;
+      width: 0;
+      max-width: 0;
+      min-width: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-self: stretch;
+      min-height: 0;
+      z-index: 2;
+      pointer-events: none;
+      transition:
+        width 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        max-width 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .calibration-side-sheet--push.calibration-side-sheet--open {
+      width: min(440px, 100%);
+      max-width: min(440px, 100%);
+      pointer-events: auto;
+    }
+
+    .calibration-side-sheet--push .calibration-side-sheet__scrim {
+      display: none;
+    }
+
+    .calibration-side-sheet--push .calibration-side-sheet__panel {
+      position: relative;
+      top: auto;
+      right: auto;
+      bottom: auto;
+      left: auto;
+      flex: 1 1 auto;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      height: 100%;
+      transform: none;
+      transition: none;
+      border-radius: 0;
+      border-left: 1px solid var(--color-border);
+      box-shadow: -8px 0 28px rgba(0, 0, 0, 0.1);
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Fallback: overlay sheet (fixed) — not used on this page */
+    .calibration-side-sheet:not(.calibration-side-sheet--push) {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .calibration-side-sheet:not(.calibration-side-sheet--push).calibration-side-sheet--open {
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .calibration-side-sheet:not(.calibration-side-sheet--push) .calibration-side-sheet__scrim {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.25);
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+
+    .calibration-side-sheet:not(.calibration-side-sheet--push).calibration-side-sheet--open .calibration-side-sheet__scrim {
+      opacity: 1;
+    }
+
+    .calibration-side-sheet:not(.calibration-side-sheet--push) .calibration-side-sheet__panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(440px, 100vw);
+      max-width: 100%;
+      background: var(--color-surface);
+      box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .calibration-side-sheet:not(.calibration-side-sheet--push).calibration-side-sheet--open .calibration-side-sheet__panel {
+      transform: translateX(0);
+    }
+
+    .calibration-side-sheet__header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-m);
+      padding: var(--spacing-m) var(--spacing-l);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .calibration-side-sheet__title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .calibration-side-sheet__close {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .calibration-side-sheet__close:hover {
+      background: var(--color-neutral-100);
+      color: var(--color-text);
+    }
+
+    .calibration-side-sheet__body {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .calibration-side-sheet__body .calibration-flow-shell {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    .calibration-side-sheet__body #calibrationWizard {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .calibration-side-sheet__body #calibrationWizard .cal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .calibration-side-sheet__body .cal-footer {
+      flex-shrink: 0;
+      border-top: 1px solid var(--color-border);
+      margin: 0;
+    }
+
+    .calibration-modal--intro.modal--harvest-detail .modal__footer {
+      background: var(--color-surface);
+      border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+    }
+
+    /* Hit target / rounded frame; imagery is on .map-pane behind this layer */
+    .yield-map {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 0;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    /* Flights strip — fixed to bottom of map pane */
+    .map-pane > .activity-timeline.flights-list-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 4;
+      margin: 0;
+      width: 100%;
+      pointer-events: auto;
+    }
+
+    /* ── Activity timeline bar ── */
+    .activity-timeline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--color-border);
+      font-family: var(--font-family);
+    }
+
+    .activity-timeline__label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .activity-timeline__track {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      overflow-x: auto;
+      flex: 1;
+    }
+
+    .activity-timeline__item {
+      flex-shrink: 0;
+    }
+
+    .activity-timeline__action {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      border-radius: 50%;
+    }
+    .activity-timeline__action:hover {
+      background: var(--color-neutral-100);
+    }
+
+    /* Activity chicklet buttons */
+    .activity-chicklet {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 4px 6px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      font-family: var(--font-family);
+      min-width: 48px;
+    }
+    .activity-chicklet:hover {
+      background: var(--color-neutral-100);
+    }
+
+    .activity-chicklet__icon-wrap {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--color-neutral-100);
+      position: relative;
+    }
+
+    .activity-chicklet__icon {
+      font-size: 18px;
+      color: var(--color-text-muted);
+    }
+
+    .activity-chicklet__badge {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      font-size: 8px;
+      font-weight: 700;
+      background: var(--color-error, #cd0e13);
+      color: #fff;
+      padding: 1px 4px;
+      border-radius: 6px;
+      line-height: 1.2;
+    }
+
+    .activity-chicklet__date {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    /* Chicklet type colors */
+    .activity-chicklet--planting .activity-chicklet__icon-wrap { background: var(--color-neutral-100); }
+    .activity-chicklet--planting .activity-chicklet__icon { color: var(--color-neutral-600); }
+
+    .activity-chicklet--seeding .activity-chicklet__icon-wrap { background: var(--color-neutral-100); }
+    .activity-chicklet--seeding .activity-chicklet__icon { color: var(--color-neutral-600); }
+
+    .activity-chicklet--application .activity-chicklet__icon-wrap { background: var(--color-neutral-100); }
+    .activity-chicklet--application .activity-chicklet__icon { color: var(--color-neutral-600); }
+
+    .activity-chicklet--satellite .activity-chicklet__icon-wrap { background: #fde8e8; }
+    .activity-chicklet--satellite .activity-chicklet__icon { color: var(--color-error, #cd0e13); }
+
+    .activity-chicklet--flight .activity-chicklet__icon-wrap { background: var(--color-neutral-100); }
+    .activity-chicklet--flight .activity-chicklet__icon { color: var(--color-neutral-600); }
+
+    .activity-chicklet--harvest .activity-chicklet__icon-wrap { background: var(--color-neutral-100); }
+    .activity-chicklet--harvest .activity-chicklet__icon { color: var(--color-neutral-600); }
+
+    /* Selected chicklet */
+    .activity-chicklet--selected .activity-chicklet__icon-wrap {
+      background: var(--color-neutral-800);
+    }
+    .activity-chicklet--selected .activity-chicklet__icon {
+      color: #fff;
+    }
+    .activity-chicklet--selected .activity-chicklet__date {
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    /* ── Map top controls (Share + info) — flush right ── */
+    .map-top-controls {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .map-info-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+    }
+    .map-info-btn:hover { background: rgba(0, 0, 0, 0.8); }
+    .map-info-btn__glyph { display: flex; }
+
+    .map-share-group {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .map-share-group__share {
+      padding: 8px 20px;
+      border: none;
+      background: var(--color-action);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font-family);
+      cursor: pointer;
+    }
+    .map-share-group__share:hover { opacity: 0.9; }
+
+    .map-share-group__more {
+      padding: 8px 10px;
+      border: none;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .map-share-group__more:hover { background: rgba(0, 0, 0, 0.8); }
+
+    /* ── Map tool stack (zoom, compass, etc.) — flush right ── */
+    .map-tool-stack {
+      position: absolute;
+      top: 50%;
+      right: 16px;
+      transform: translateY(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .map-tool-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.15s;
+    }
+    .map-tool-btn:hover {
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+    }
+    .map-tool-btn .material-symbols-outlined {
+      font-size: 22px;
+    }
+
+    .map-tool-btn--compass {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+    }
+    .map-tool-btn--compass:hover {
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    /* Dry yield legend — parity with AGMRI .field-tile-legends-information (map tile) */
+    .yield-scale-panel.field-tile-legends-information {
+      position: absolute;
+      pointer-events: auto;
+      top: 182px;
+      left: 20px;
+      bottom: auto;
+      right: auto;
+      z-index: 2;
+      width: 155px;
+      padding: 10px 8px 8px;
+      border-radius: var(--radius-lg);
+      background: var(--glass-surface-bg-strong);
+      border: 1px solid var(--glass-border-hairline);
+      backdrop-filter: var(--glass-backdrop-blur);
+      -webkit-backdrop-filter: var(--glass-backdrop-blur);
+      box-shadow: var(--shadow-md), inset 0 1px 0 var(--glass-border-light);
+      font-family: var(--font-family-web, 'Figtree', sans-serif);
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--color-text);
+      box-sizing: border-box;
+    }
+
+    .yield-scale-panel__header {
+      margin-bottom: 6px;
+    }
+
+    .yield-scale-panel__title {
+      display: block;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 17px;
+      letter-spacing: normal;
+      margin-bottom: 4px;
+    }
+
+    .yield-scale-panel__columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .yield-scale-panel__columns span:last-child {
+      text-align: right;
+    }
+
+    .yield-scale-panel__chart-row {
+      display: flex;
+      gap: 6px;
+      align-items: stretch;
+      min-height: 176px;
+    }
+
+    .yield-scale-panel__ticks {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+      width: 24px;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--color-text-muted);
+      text-align: right;
+      padding: 2px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .yield-scale-panel__stack-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    }
+
+    .yield-scale-panel__stack {
+      display: flex;
+      flex-direction: column-reverse;
+      flex: 1;
+      min-height: 176px;
+    }
+
+    .yield-scale-panel__seg {
+      flex: 1 1 0;
+      min-height: 2px;
+    }
+
+    .yield-scale-panel__seg--c1 { flex: 3 1 0; background: #5e1410; }
+    .yield-scale-panel__seg--c2 { flex: 8 1 0; background: #d73027; }
+    .yield-scale-panel__seg--c3 { flex: 14 1 0; background: #fc8d59; }
+    .yield-scale-panel__seg--c4 { flex: 18 1 0; background: #fee08b; }
+    .yield-scale-panel__seg--c5 { flex: 22 1 0; background: #d9ef8b; }
+    .yield-scale-panel__seg--c6 { flex: 16 1 0; background: #78c355; }
+    .yield-scale-panel__seg--c7 { flex: 12 1 0; background: #1a9850; }
+
+    .yield-scale-panel__area-markers {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      flex-shrink: 0;
+      width: 18px;
+      font-size: 8px;
+      font-weight: 400;
+      color: var(--color-text-muted);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .yield-scale-panel__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .yield-scale-panel__avg-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 6px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .yield-scale-panel__avg-badge strong {
+      font-weight: 600;
+      margin-left: 2px;
+    }
+
+    .yield-scale-panel__avg-acres {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--color-text);
+    }
+
+    .yield-scale-panel__mode {
+      margin-top: 6px;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    .yield-scale-panel__mode span {
+      font-weight: 400;
+      color: var(--color-text);
+    }
+
+    .nav__grow {
+      flex: 1;
+      min-height: 12px;
+      width: 100%;
+    }
+
+    .nav__icon .material-symbols-outlined {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    /* Combine overlay badges */
+    .map-combine-badge,
+    .map-badge {
+      position: absolute;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .map-combine-badge__dot,
+    .map-badge__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* Step indicator */
+    .steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 0 24px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .step__number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      border: 2px solid var(--color-neutral-300);
+      color: var(--color-neutral-400);
+      background: none;
+      transition: all 0.2s;
+    }
+
+    .step__label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .step--active .step__number {
+      border-color: var(--color-brand);
+      background: var(--color-brand);
+      color: #fff;
+    }
+
+    .step--active .step__label {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    .step--done .step__number {
+      border-color: var(--color-success);
+      background: var(--color-success);
+      color: #fff;
+    }
+
+    .step--done .step__label { color: var(--color-text-muted); }
+
+    .step__line {
+      flex: 1;
+      height: 2px;
+      background: var(--color-neutral-200);
+      margin: 0 12px;
+      min-width: 16px;
+    }
+
+    .step__line--done { background: var(--color-success); }
+
+    .cal-body {
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Footer actions (paired with modal__footer) */
+    .cal-footer {
+      padding: 0;
+      margin: 0;
+      border: none;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cal-footer__secondary {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      font-family: var(--font-family-web);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: var(--radius-pill);
+    }
+
+    .cal-footer__secondary:hover { background: var(--color-neutral-100); }
+    .cal-footer__secondary .material-symbols-outlined { font-size: 16px; }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-family-web);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: var(--radius-pill);
+    }
+
+    .btn-back:hover { background: var(--color-neutral-100); }
+    .btn-back .material-symbols-outlined { font-size: 16px; }
+
+    /* ═══════════════════════════════════════════
+       STEP 1: COMBINE OVERVIEW & SCOPE
+       ═══════════════════════════════════════════ */
+
+    .field-summary {
+      background: var(--color-neutral-50);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .field-summary__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .field-summary__item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .field-summary__value {
+      font-size: 22px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .field-summary__label {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      font-weight: 600;
+    }
+
+    .field-summary__sep {
+      width: 1px;
+      height: 32px;
+      background: var(--color-border);
+      margin: 0 8px;
+    }
+
+    /* Section labels */
+    .cal-section-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cal-section-label .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--color-text-muted);
+    }
+
+    /* Combine cards */
+    .combine-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .combine-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .combine-card:hover {
+      border-color: var(--color-border-strong);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .combine-card--selected {
+      border-color: var(--color-brand);
+      box-shadow: 0 0 0 3px rgba(var(--color-brand-rgb), 0.12);
+    }
+
+    .combine-card__color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .combine-card__info { flex: 1; min-width: 0; }
+
+    .combine-card__name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .combine-card__meta {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      display: flex;
+      gap: 10px;
+    }
+
+    .combine-card__stats {
+      display: flex;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .combine-card__stat {
+      text-align: right;
+    }
+
+    .combine-card__stat-value {
+      font-size: 15px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .combine-card__stat-label {
+      font-size: 10px;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .combine-card__check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--color-neutral-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+
+    .combine-card--selected .combine-card__check {
+      border-color: var(--color-brand);
+      background: var(--color-brand);
+    }
+
+    .combine-card__check .material-symbols-outlined {
+      font-size: 14px;
+      color: #fff;
+      opacity: 0;
+    }
+
+    .combine-card--selected .combine-card__check .material-symbols-outlined {
+      opacity: 1;
+    }
+
+    .combine-card--disabled {
+      cursor: default;
+      opacity: 0.92;
+    }
+
+    .combine-card--disabled:hover {
+      border-color: var(--color-border);
+      box-shadow: none;
+    }
+
+    .cal-step-error {
+      display: block;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(220, 38, 38, 0.08);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      color: var(--color-danger);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .cal-step-error[hidden] { display: none !important; }
+
+    .adjust-panel[hidden] { display: none !important; }
+
+    /* Scope selection */
+    .scope-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .scope-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .scope-option:hover {
+      border-color: var(--color-border-strong);
+    }
+
+    .scope-option--selected {
+      border-color: var(--color-brand);
+      background: rgba(var(--color-brand-rgb), 0.03);
+    }
+
+    .scope-option__radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--color-neutral-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      transition: border-color 0.15s;
+    }
+
+    .scope-option--selected .scope-option__radio {
+      border-color: var(--color-brand);
+    }
+
+    .scope-option__radio-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-brand);
+      transform: scale(0);
+      transition: transform 0.15s;
+    }
+
+    .scope-option--selected .scope-option__radio-dot {
+      transform: scale(1);
+    }
+
+    .scope-option__content { flex: 1; }
+
+    .scope-option__title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .scope-option__desc {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       STEP 2: ADJUSTMENT METHOD
+       ═══════════════════════════════════════════ */
+
+    .method-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .method-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .method-card:hover { border-color: var(--color-border-strong); }
+
+    .method-card--selected {
+      border-color: var(--color-brand);
+      background: rgba(var(--color-brand-rgb), 0.03);
+    }
+
+    .method-card__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--color-primitive-100);
+      color: var(--color-primitive-700);
+    }
+
+    .method-card__icon .material-symbols-outlined { font-size: 18px; }
+
+    .method-card__content { flex: 1; }
+
+    .method-card__title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .method-card__desc {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+
+    /* Adjustment input area */
+    .adjust-input-area {
+      background: var(--color-neutral-50);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+
+    .adjust-input-area__title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .adjust-input-area__desc {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+    }
+
+    .adjust-input-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .adjust-input-row .input-group { flex: 1; }
+
+    .adjust-input-row .input {
+      font-size: 20px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      height: 48px;
+    }
+
+    .adjust-unit {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      padding-bottom: 14px;
+      white-space: nowrap;
+    }
+
+    /* Inline calculation preview */
+    .calc-preview {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .calc-row__label { color: var(--color-text-muted); }
+
+    .calc-row__value {
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .calc-row--result {
+      padding-top: 10px;
+      border-top: 1px dashed var(--color-border);
+      font-size: 14px;
+    }
+
+    .calc-row--result .calc-row__label {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .calc-row--result .calc-row__value {
+      color: var(--color-brand);
+      font-weight: 700;
+    }
+
+    /* ═══════════════════════════════════════════
+       STEP 3: PREVIEW & CONFIRM
+       ═══════════════════════════════════════════ */
+
+    .preview-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: var(--radius-lg);
+      background: var(--color-primitive-100);
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--color-primitive-700);
+    }
+
+    .preview-banner .material-symbols-outlined { font-size: 18px; }
+
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .preview-table th {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 0 0 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .preview-table th:last-child { text-align: right; }
+
+    .preview-table td {
+      font-size: 13px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--color-neutral-100);
+      vertical-align: middle;
+    }
+
+    .preview-table td:last-child { text-align: right; }
+
+    .preview-table__name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .preview-table__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 3px;
+    }
+
+    .preview-table__old {
+      color: var(--color-text-muted);
+      text-decoration: line-through;
+    }
+
+    .preview-table__arrow {
+      color: var(--color-neutral-400);
+      margin: 0 6px;
+    }
+
+    .preview-table__new { font-weight: 700; }
+
+    .preview-table__tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      margin-left: 6px;
+    }
+
+    .preview-table__tag--adjusted {
+      background: var(--color-primitive-100);
+      color: var(--color-primitive-700);
+    }
+
+    .preview-table__tag--unchanged {
+      background: var(--color-neutral-100);
+      color: var(--color-text-muted);
+    }
+
+    .preview-table tfoot td {
+      font-weight: 700;
+      border-top: 2px solid var(--color-neutral-300);
+      border-bottom: none;
+      padding-top: 14px;
+    }
+
+    /* Field average comparison */
+    .field-avg-compare {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 20px;
+      background: var(--color-neutral-50);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      margin-bottom: 20px;
+    }
+
+    .field-avg__block { text-align: center; }
+
+    .field-avg__label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .field-avg__value {
+      font-size: 28px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .field-avg__unit {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-left: 2px;
+    }
+
+    .field-avg__arrow {
+      font-size: 24px;
+      color: var(--color-neutral-400);
+    }
+
+    .field-avg__value--new { color: var(--color-brand); }
+
+    .field-avg__delta {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .field-avg__delta--up { color: var(--color-success); }
+    .field-avg__delta--down { color: var(--color-danger); }
+
+    /* Affected systems list */
+    .affected-list {
+      margin-bottom: 20px;
+    }
+
+    .affected-list__title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 10px;
+    }
+
+    .affected-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--color-text);
+    }
+
+    .affected-item .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--color-warning);
+    }
+
+    /* Confirmation checkbox */
+    .confirm-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 16px;
+      background: var(--color-warning-100);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      font-family: var(--font-family-web);
+    }
+
+    .confirm-check__box {
+      width: 18px;
+      height: 18px;
+      border-radius: 2px;
+      border: 2px solid var(--color-neutral-400);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .confirm-check__box .material-symbols-outlined {
+      font-size: 14px;
+      color: #fff;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .confirm-check--accepted .confirm-check__box {
+      border-color: var(--color-brand);
+      background: var(--color-brand);
+    }
+
+    .confirm-check--accepted .confirm-check__box .material-symbols-outlined {
+      opacity: 1;
+    }
+
+    .confirm-check__text {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ═══════════════════════════════════════════
+       STEP 4: CALIBRATION APPLIED
+       ═══════════════════════════════════════════ */
+
+    .success-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 32px 20px;
+    }
+
+    .success-state__icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--color-success-100);
+      color: var(--color-success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .success-state__icon .material-symbols-outlined { font-size: 32px; }
+
+    .success-state__title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .success-state__desc {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+      max-width: 320px;
+      margin-bottom: 24px;
+    }
+
+    .audit-card {
+      width: 100%;
+      background: var(--color-neutral-50);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      text-align: left;
+    }
+
+    .audit-card__title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 12px;
+    }
+
+    .audit-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .audit-row__label { color: var(--color-text-muted); }
+    .audit-row__value { font-weight: 500; }
+
+    /* ═══════════════════════════════════════════
+       STEP VISIBILITY (show/hide via JS)
+       ═══════════════════════════════════════════ */
+
+    .cal-step { display: none; }
+    .cal-step--active { display: block; }
+
+    /* ═══════════════════════════════════════════
+       UTILITY
+       ═══════════════════════════════════════════ */
+
+    .mt-8 { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-24 { margin-bottom: 24px; }
+    .text-muted { color: var(--color-text-muted); }
+    .text-brand { color: var(--color-brand); }
+    .text-success { color: var(--color-success); }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- ═══════ NAV SIDEBAR (design-system nav — AGMRI-style rail) ═══════ -->
+    <aside class="app-nav">
+      <nav class="nav" role="navigation" aria-label="Main">
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">home</span></div>
+          <div class="nav__label">Home</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">smart_toy</span></div>
+          <div class="nav__label">AI Chat</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">agriculture</span></div>
+          <div class="nav__label">Growers</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">groups</span></div>
+          <div class="nav__label">Groups</div>
+        </a>
+        <a href="#" class="nav__item nav__item--active" aria-current="page">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">grid_view</span></div>
+          <div class="nav__label">Fields</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">travel_explore</span></div>
+          <div class="nav__label">Scout</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">partly_cloudy_day</span></div>
+          <div class="nav__label">Weather</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">monitoring</span></div>
+          <div class="nav__label">Analyze</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">bug_report</span></div>
+          <div class="nav__label">Disease</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span></div>
+          <div class="nav__label">Library</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span></div>
+          <div class="nav__label">Crop plan</div>
+        </a>
+        <div class="nav__grow" aria-hidden="true"></div>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">settings</span></div>
+          <div class="nav__label">Settings</div>
+        </a>
+        <a href="#" class="nav__item">
+          <div class="nav__icon"><span class="material-symbols-outlined" aria-hidden="true">cable</span></div>
+          <div class="nav__label">Machine data</div>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- ═══════ MAIN ═══════ -->
+    <main class="app-main">
+
+      <header class="header" role="banner">
+        <div class="header__left">
+          <a href="#" class="header__logo" aria-label="AgMRI home">
+            <img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" />
+          </a>
+          <button type="button" class="btn btn--secondary header__back" aria-label="Go back" onclick="history.back(); return false;">
+            <span class="btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 12H5M12 19l-7-7 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            Back
+          </button>
+        </div>
+        <div class="header__center">
+          <div class="header__search-wrap">
+            <span class="header__search-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.35-4.35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <input type="search" class="header__search" placeholder="Search" aria-label="Search" />
+          </div>
+        </div>
+        <div class="header__right">
+          <button type="button" class="header__notifications-btn" aria-label="Filters" title="Filters">
+            <span class="material-symbols-outlined" style="font-size:22px;">filter_list</span>
+          </button>
+          <span class="header__user-name">Caleb Wieber</span>
+          <div class="header__avatar" aria-hidden="true">CW</div>
+          <div class="header__notifications">
+            <button type="button" class="header__notifications-btn" aria-label="Notifications">
+              <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="header__notifications-badge">564</span>
+            </button>
+          </div>
+          <div class="header__flag-wrap">
+            <button type="button" class="header__flag-btn" aria-label="Language or region">
+              <span class="header__flag-btn-inner">
+                <span class="header__flag-display">🇺🇸</span>
+                <span class="header__flag-arrow"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M7 10l5 6 5-6H7z" fill="currentColor"/></svg></span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="yield-cal-subbar">
+        <span class="yield-cal-subbar__field" id="topBarFieldName">1703-Simp Mansion Rd W 160</span>
+        <div class="yield-cal-subbar__meta">
+          <span class="yield-cal-subbar__meta-sep">|</span>
+          <span>100 acres</span>
+          <span class="yield-cal-subbar__meta-sep">&middot;</span>
+          <span>Corn</span>
+          <span class="yield-cal-subbar__meta-sep">&middot;</span>
+          <span>Harvest 2025</span>
+        </div>
+        <div class="yield-cal-subbar__spacer"></div>
+        <div class="top-bar__layout" role="group" aria-label="Calibration UI layout (demo)">
+          <span class="top-bar__layout-label">Calibration UI</span>
+          <button type="button" class="top-bar__layout-btn top-bar__layout-btn--active" data-cal-layout="combined" id="calLayoutCombined">
+            Combined
+          </button>
+          <button type="button" class="top-bar__layout-btn" data-cal-layout="sheet" id="calLayoutSheet">
+            Side sheet
+          </button>
+        </div>
+        <div class="yield-cal-subbar__actions">
+          <a
+            class="top-bar__figma"
+            href="https://www.figma.com/design/hTNjssBboJZuckTJdu2ppJ/Yield-Calibration?node-id=14-3&m=dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Yield Calibration — Figma source"
+          >
+            <span class="material-symbols-outlined">open_in_new</span>
+            Figma
+          </a>
+          <button type="button" class="btn-hist">
+            <span class="material-symbols-outlined">history</span>
+            Calibration History
+          </button>
+        </div>
+      </div>
+
+      <!-- Map shares a row with the calibration side sheet; sheet mode expands in-flow and shrinks the map (AGMRI-style). -->
+      <div class="field-workspace">
+      <div class="map-stage">
+        <div class="map-pane" role="img" aria-label="Field map with dry yield overlay">
+          <div class="map-placeholder">
+            <div class="yield-map" aria-hidden="true"></div>
+
+            <div class="map-top-controls" role="toolbar" aria-label="Map sharing and calibration">
+              <button
+                type="button"
+                class="map-info-btn"
+                id="openCalibrationModal"
+                aria-label="Open yield calibration"
+                title="Calibrate yield"
+              >
+                <span class="map-info-btn__glyph" aria-hidden="true">
+                  <span class="material-symbols-outlined">info</span>
+                </span>
+              </button>
+              <div class="map-share-group">
+                <button type="button" class="map-share-group__share">Share</button>
+                <button type="button" class="map-share-group__more" aria-label="More options" title="More options">
+                  <span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="map-tool-stack" role="toolbar" aria-label="Map tools">
+              <button type="button" class="map-tool-btn" aria-label="Zoom in" title="Zoom in">
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              </button>
+              <button type="button" class="map-tool-btn" aria-label="Zoom out" title="Zoom out">
+                <span class="material-symbols-outlined" aria-hidden="true">remove</span>
+              </button>
+              <button type="button" class="map-tool-btn map-tool-btn--compass" aria-label="Compass" title="Rotate north">
+                <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+              </button>
+              <button type="button" class="map-tool-btn" aria-label="Measure distance" title="Measure">
+                <span class="material-symbols-outlined" aria-hidden="true">straighten</span>
+              </button>
+              <button type="button" class="map-tool-btn" aria-label="Fullscreen map" title="Fullscreen">
+                <span class="material-symbols-outlined" aria-hidden="true">open_in_full</span>
+              </button>
+            </div>
+
+            <aside class="yield-scale-panel field-tile-legends-information" aria-label="Dry yield legend and scale">
+              <div class="yield-scale-panel__header">
+                <span class="yield-scale-panel__title">Dry Yield</span>
+                <div class="yield-scale-panel__columns">
+                  <span>bu/ac</span>
+                  <span>Area</span>
+                </div>
+              </div>
+              <div class="yield-scale-panel__chart-row">
+                <div class="yield-scale-panel__ticks" aria-hidden="true">
+                  <span>338</span>
+                  <span>254</span>
+                  <span>169</span>
+                  <span>85</span>
+                  <span>0</span>
+                </div>
+                <div class="yield-scale-panel__stack-wrap">
+                  <div class="yield-scale-panel__stack">
+                    <div class="yield-scale-panel__seg yield-scale-panel__seg--c1"></div>
+                    <div class="yield-scale-panel__seg yield-scale-panel__seg--c2"></div>
+                    <div class="yield-scale-panel__seg yield-scale-panel__seg--c3"></div>
+                    <div class="yield-scale-panel__seg yield-scale-panel__seg--c4"></div>
+                    <div class="yield-scale-panel__seg yield-scale-panel__seg--c5"></div>
+                    <div class="yield-scale-panel__seg yield-scale-panel__seg--c6"></div>
+                    <div class="yield-scale-panel__seg yield-scale-panel__seg--c7"></div>
+                  </div>
+                </div>
+                <div class="yield-scale-panel__area-markers" aria-hidden="true">
+                  <span>2</span>
+                  <span>8</span>
+                  <span>14</span>
+                  <span>21</span>
+                  <span>35</span>
+                </div>
+              </div>
+              <div class="yield-scale-panel__footer">
+                <span class="yield-scale-panel__avg-badge">Avg. <strong id="mapLegendAvgValue">277</strong></span>
+                <span class="yield-scale-panel__avg-acres"><span id="mapLegendAvgAcres">35</span> ac</span>
+              </div>
+              <p class="yield-scale-panel__mode">Map layer: <span id="mapLegendSuffix">bu/ac</span></p>
+            </aside>
+
+            <div id="mapBadge1" class="map-badge map-combine-badge" style="top: 25%; left: 12%;">
+              <div class="map-badge__dot map-combine-badge__dot" style="background: #3b82f6;"></div>
+              <span id="mapBadge1Text">Combine 1 — X9 1100</span>
+            </div>
+            <div id="mapBadge2" class="map-badge map-combine-badge" style="top: 55%; right: 12%;">
+              <div id="mapBadge2Dot" class="map-badge__dot map-combine-badge__dot" style="background: #22c55e;"></div>
+              <span id="mapBadge2Text">S790</span>
+            </div>
+
+          </div>
+
+          <nav class="activity-timeline flights-list-container" aria-label="2025 field activity timeline">
+            <span class="activity-timeline__label">2025 All activities</span>
+            <ul class="activity-timeline__track" role="list">
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--planting" aria-label="Planting Apr 15">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">agriculture</span>
+                  </span>
+                  <span class="activity-chicklet__date">Apr 15</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--seeding" aria-label="Seeding Apr 16">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">grass</span>
+                  </span>
+                  <span class="activity-chicklet__date">Apr 16</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--application" aria-label="Application Apr 17">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">opacity</span>
+                  </span>
+                  <span class="activity-chicklet__date">Apr 17</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--satellite" aria-label="Satellite Apr 27">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">satellite_alt</span>
+                    <span class="activity-chicklet__badge">10M</span>
+                  </span>
+                  <span class="activity-chicklet__date">Apr 27</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--flight" aria-label="Aerial May 4">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">flight</span>
+                  </span>
+                  <span class="activity-chicklet__date">May 4</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--flight" aria-label="Aerial May 18">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">flight_takeoff</span>
+                  </span>
+                  <span class="activity-chicklet__date">May 18</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--flight" aria-label="Aerial Jun 15">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">airlines</span>
+                  </span>
+                  <span class="activity-chicklet__date">Jun 15</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--flight" aria-label="Aerial Aug 3">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">flight</span>
+                  </span>
+                  <span class="activity-chicklet__date">Aug 3</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--flight" aria-label="Aerial Sep 3">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">flight</span>
+                  </span>
+                  <span class="activity-chicklet__date">Sep 3</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--harvest activity-chicklet--selected" aria-current="true" aria-label="Harvest Oct 11, selected">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">agriculture</span>
+                  </span>
+                  <span class="activity-chicklet__date">Oct 11</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--planting" aria-label="Tillage Oct 15">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">front_loader</span>
+                  </span>
+                  <span class="activity-chicklet__date">Oct 15</span>
+                </button>
+              </li>
+              <li class="activity-timeline__item">
+                <button type="button" class="activity-chicklet activity-chicklet--application" aria-label="Application Nov 6">
+                  <span class="activity-chicklet__icon-wrap">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">water_drop</span>
+                  </span>
+                  <span class="activity-chicklet__date">Nov 6</span>
+                </button>
+              </li>
+            </ul>
+            <button type="button" class="activity-timeline__action" aria-label="Search or expand activities" title="View activities">
+              <span class="material-symbols-outlined" aria-hidden="true">travel_explore</span>
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <div
+        class="calibration-side-sheet calibration-side-sheet--push"
+        id="calibrationSideSheet"
+        aria-hidden="true"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="calibrationSheetTitle"
+      >
+        <div class="calibration-side-sheet__scrim" id="calibrationSheetScrim" aria-hidden="true"></div>
+        <aside class="calibration-side-sheet__panel">
+          <div class="calibration-side-sheet__header">
+            <h2 class="calibration-side-sheet__title" id="calibrationSheetTitle">Yield Calibration</h2>
+            <button type="button" class="calibration-side-sheet__close" id="calibrationSheetClose" aria-label="Close calibration">
+              <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div class="calibration-side-sheet__body" id="calibrationSideSheetBody"></div>
+        </aside>
+      </div>
+      </div><!-- /.field-workspace -->
+
+    </main>
+  </div>
+
+  <!-- Workflow uses components/modal.css: overlay centers dialog over map (replaces persistent side panel). -->
+  <div
+    class="modal-overlay calibration-modal-overlay modal-overlay--harvest"
+    id="calibrationModal"
+    aria-hidden="true"
+    aria-modal="true"
+    role="dialog"
+    aria-labelledby="harvestFieldTitle"
+  >
+    <div
+      class="modal calibration-modal calibration-modal--intro modal--harvest-detail"
+      id="calibrationModalPanel"
+      aria-live="polite"
+    >
+      <div class="modal__header">
+        <div class="calibration-modal__heading">
+          <h2 class="modal__title" id="calibrationModalTitle">Yield Calibration</h2>
+          <p class="calibration-modal__subtitle">Reconcile harvest data with validated weight</p>
+        </div>
+        <button type="button" class="modal__close" id="calibrationModalClose" aria-label="Close">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="modal__body calibration-modal__body">
+        <!-- Same markup as pages/harvest-details-modal.html (+ ids for this page / aria) -->
+        <div id="harvestDetailIntro">
+          <div class="modal-harvest__header">
+            <div class="modal-harvest__title-row">
+              <h2 class="modal-harvest__title" id="harvestFieldTitle">1703-Simp Mansion Rd W 160</h2>
+              <button type="button" class="modal-harvest__icon-btn modal-harvest__icon-btn--star" aria-label="Favorite field" title="Favorite">
+                <span class="material-symbols-outlined" aria-hidden="true">star</span>
+              </button>
+              <button type="button" class="modal-harvest__icon-btn js-copy" data-copy="1703-Simp Mansion Rd W 160" aria-label="Copy field name" title="Copy">
+                <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
+              </button>
+            </div>
+            <div class="modal-harvest__subrow modal-harvest__subrow--app">
+              <span class="modal-harvest__township" id="harvestTownship">New Berlin-PPlains</span>
+              <span class="modal-harvest__farm-group">
+                <span class="modal-harvest__farm" id="harvestGrower">Dowson Farms</span>
+                <button type="button" class="modal-harvest__icon-btn modal-harvest__icon-btn--star" aria-label="Favorite farm" title="Favorite">
+                  <span class="material-symbols-outlined" aria-hidden="true">star</span>
+                </button>
+              </span>
+            </div>
+            <p class="modal-harvest__notes" id="harvestFieldNotes">For review (Farm was updated)</p>
+            <div class="modal-harvest__summary modal-harvest__summary--app">
+              <span class="modal-harvest__total-acreage" id="harvestSummaryAcres">154.2 ac</span>
+              <span class="modal-harvest__summary-inline">
+                <span class="material-symbols-outlined" aria-hidden="true">grass</span>
+                <span id="harvestMoistureLabel">N/A</span>
+              </span>
+              <span class="modal-harvest__crop-tag" id="harvestCropLabel">Crop unknown</span>
+              <span class="modal-harvest__gdd">GDD: <span id="harvestGddLabel">N/A</span></span>
+            </div>
+            <div class="modal-harvest__status-bar modal-harvest__status-bar--app">
+              <div class="modal-harvest__status-left">
+                <span class="material-symbols-outlined" aria-hidden="true">agriculture</span>
+                <span id="harvestEventWhen">10/11, 11:57 AM</span>
+              </div>
+              <span class="modal-harvest__status-sep" aria-hidden="true"></span>
+              <span class="modal-harvest__status-gdd">Event GDD: <span id="harvestEventGdd">3674</span></span>
+              <span class="modal-harvest__status-sep" aria-hidden="true"></span>
+              <div class="modal-harvest__status-right">
+                <span id="harvestMachineId">E3IB2X77E</span>
+                <button type="button" class="modal-harvest__icon-btn js-copy" data-copy="E3IB2X77E" aria-label="Copy equipment ID" title="Copy">
+                  <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
+                </button>
+              </div>
+            </div>
+            <div class="harvest-wizard-peek" id="harvestWizardPeek" hidden>
+              <span class="harvest-wizard-peek__label">Calibration</span>
+              <span class="harvest-wizard-peek__scope" id="harvestWizardPeekScope"></span>
+              <span class="harvest-wizard-peek__sep" aria-hidden="true">·</span>
+              <span class="harvest-wizard-peek__combines" id="harvestWizardPeekCombines"></span>
+            </div>
+          </div>
+          <div class="modal-harvest__body glass">
+            <h3 class="modal-harvest__section-title">Harvest details</h3>
+            <div class="modal-harvest__grid">
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Area Worked</span>
+                <span class="modal-harvest__metric-value">153.6 ac</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Average Speed</span>
+                <span class="modal-harvest__metric-value">4.2 mi/hr</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Average Moisture</span>
+                <span class="modal-harvest__metric-value">14.3 percentage</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Total Distance</span>
+                <span class="modal-harvest__metric-value">69,270.9 m</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Total Dry Mass</span>
+                <span class="modal-harvest__metric-value">2,119,733.4 lb</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Total Wet Mass</span>
+                <span class="modal-harvest__metric-value">2,120,908.6 lb</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Total Dry Volume</span>
+                <span class="modal-harvest__metric-value">37,852.4 bu</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Total Wet Volume</span>
+                <span class="modal-harvest__metric-value">37,873.4 bu</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Average Dry Mass</span>
+                <span class="modal-harvest__metric-value">14,434.8 lb/ac</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Average Wet Mass</span>
+                <span class="modal-harvest__metric-value">14,442.6 lb/ac</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Average Dry Volume</span>
+                <span class="modal-harvest__metric-value">257.8 bu/ac</span>
+              </div>
+              <div class="modal-harvest__metric">
+                <span class="modal-harvest__metric-label">Average Wet Volume</span>
+                <span class="modal-harvest__metric-value">257.9 bu/ac</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="calibrationFlowShell" class="calibration-flow-shell">
+        <div id="calibrationWizard" hidden>
+          <div class="steps">
+            <div class="step step--active" data-step="1">
+              <div class="step__number">1</div>
+              <div class="step__label">Equipment</div>
+            </div>
+            <div class="step__line" data-line="1"></div>
+            <div class="step" data-step="2">
+              <div class="step__number">2</div>
+              <div class="step__label">Adjust</div>
+            </div>
+            <div class="step__line" data-line="2"></div>
+            <div class="step" data-step="3">
+              <div class="step__number">3</div>
+              <div class="step__label">Review</div>
+            </div>
+            <div class="step__line" data-line="3"></div>
+            <div class="step" data-step="4">
+              <div class="step__number">4</div>
+              <div class="step__label">Done</div>
+            </div>
+          </div>
+
+          <!-- ═══════ STEP 1: Combines & Scope ═══════ -->
+          <div class="cal-body">
+            <div class="cal-step cal-step--active" id="step1">
+
+              <!-- Field summary -->
+              <div class="field-summary">
+                <div class="field-summary__row">
+                  <div class="field-summary__item">
+                    <div class="field-summary__value" id="summaryAcres">—</div>
+                    <div class="field-summary__label">Total Acres</div>
+                  </div>
+                  <div class="field-summary__sep"></div>
+                  <div class="field-summary__item">
+                    <div class="field-summary__value" id="summaryRawBu">—</div>
+                    <div class="field-summary__label">Raw Bushels</div>
+                  </div>
+                  <div class="field-summary__sep"></div>
+                  <div class="field-summary__item">
+                    <div class="field-summary__value" id="summaryAvg">—</div>
+                    <div class="field-summary__label">Avg bu/ac</div>
+                  </div>
+                  <div class="field-summary__sep"></div>
+                  <div class="field-summary__item">
+                    <div class="field-summary__value" id="summaryCombines">—</div>
+                    <div class="field-summary__label">Combines</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Detected Combines -->
+              <div class="cal-section-label">
+                <span class="material-symbols-outlined">agriculture</span>
+                Detected Combines
+              </div>
+
+              <div class="combine-list" id="combineList"></div>
+
+              <!-- Calibration Scope -->
+              <div class="cal-section-label">
+                <span class="material-symbols-outlined">tune</span>
+                Calibration Scope
+              </div>
+
+              <div class="scope-options">
+                <div class="scope-option" data-scope="entire" role="button" tabindex="0">
+                  <div class="scope-option__radio">
+                    <div class="scope-option__radio-dot"></div>
+                  </div>
+                  <div class="scope-option__content">
+                    <div class="scope-option__title">Entire Field</div>
+                    <div class="scope-option__desc">Apply a single calibration factor across all yield data. Use when all machines had similar calibration error.</div>
+                  </div>
+                </div>
+                <div class="scope-option scope-option--selected" data-scope="specific" role="button" tabindex="0">
+                  <div class="scope-option__radio">
+                    <div class="scope-option__radio-dot"></div>
+                  </div>
+                  <div class="scope-option__content">
+                    <div class="scope-option__title">Specific Combines</div>
+                    <div class="scope-option__desc">Calibrate only selected machines. Accurate combine data stays untouched.</div>
+                  </div>
+                </div>
+              </div>
+
+              <p id="step1Error" class="cal-step-error" role="alert" hidden></p>
+
+            </div>
+
+            <!-- ═══════ STEP 2: Adjustment Method ═══════ -->
+            <div class="cal-step" id="step2">
+
+              <div class="cal-section-label">
+                <span class="material-symbols-outlined">calculate</span>
+                Adjustment Method
+              </div>
+
+              <div class="method-cards" id="methodCards"></div>
+
+              <p id="step2Error" class="cal-step-error" role="alert" hidden></p>
+
+              <div class="adjust-panel" data-adjust-panel="weight">
+                <div class="adjust-input-area">
+                  <div class="adjust-input-area__title">Enter validated total</div>
+                  <p class="adjust-input-area__desc" id="adjustContextDesc"></p>
+                  <div class="adjust-input-row">
+                    <div class="input-group">
+                      <label class="input__title" for="validatedWeightInput">Total harvested weight</label>
+                      <input class="input" type="text" id="validatedWeightInput" inputmode="decimal" autocomplete="off" placeholder="e.g. 28600" />
+                    </div>
+                    <div class="adjust-unit">bushels</div>
+                  </div>
+                  <div class="calc-preview" id="step2CalcPreviewWeight"></div>
+                </div>
+              </div>
+
+              <div class="adjust-panel" data-adjust-panel="percent" hidden>
+                <div class="adjust-input-area">
+                  <div class="adjust-input-area__title">Percentage adjustment</div>
+                  <p class="adjust-input-area__desc">Applied to yield (bu/ac) for combines in scope. Positive increases yield; negative decreases.</p>
+                  <div class="adjust-input-row">
+                    <div class="input-group">
+                      <label class="input__title" for="percentAdjustInput">Adjustment</label>
+                      <input class="input" type="text" id="percentAdjustInput" inputmode="decimal" autocomplete="off" placeholder="e.g. 5" />
+                    </div>
+                    <div class="adjust-unit">%</div>
+                  </div>
+                  <div class="calc-preview" id="step2CalcPreviewPercent"></div>
+                </div>
+              </div>
+
+              <div class="adjust-panel" data-adjust-panel="targetAvg" hidden>
+                <div class="adjust-input-area">
+                  <div class="adjust-input-area__title">Target field average</div>
+                  <p class="adjust-input-area__desc">Known or desired field-average yield after calibration. Bushels are scaled for combines in scope so the field total matches this average.</p>
+                  <div class="adjust-input-row">
+                    <div class="input-group">
+                      <label class="input__title" for="targetAvgInput">Target average</label>
+                      <input class="input" type="text" id="targetAvgInput" inputmode="decimal" autocomplete="off" placeholder="e.g. 286" />
+                    </div>
+                    <div class="adjust-unit">bu/ac</div>
+                  </div>
+                  <div class="calc-preview" id="step2CalcPreviewTarget"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ═══════ STEP 3: Preview & Confirm ═══════ -->
+            <div class="cal-step" id="step3">
+
+              <div class="preview-banner">
+                <span class="material-symbols-outlined">info</span>
+                Review the projected changes before applying calibration.
+              </div>
+
+              <!-- Field average comparison -->
+              <div class="field-avg-compare">
+                <div class="field-avg__block">
+                  <div class="field-avg__label">Current Avg</div>
+                  <div>
+                    <span class="field-avg__value" id="previewCurrAvg">—</span>
+                    <span class="field-avg__unit">bu/ac</span>
+                  </div>
+                </div>
+                <div class="field-avg__arrow">&rarr;</div>
+                <div class="field-avg__block">
+                  <div class="field-avg__label">Projected Avg</div>
+                  <div>
+                    <span class="field-avg__value field-avg__value--new" id="previewNewAvg">—</span>
+                    <span class="field-avg__unit">bu/ac</span>
+                  </div>
+                  <div class="field-avg__delta" id="previewDeltaPct"></div>
+                </div>
+              </div>
+
+              <table class="preview-table">
+                <thead>
+                  <tr>
+                    <th>Combine</th>
+                    <th>Acres</th>
+                    <th>Yield (bu/ac)</th>
+                    <th>Bushels</th>
+                  </tr>
+                </thead>
+                <tbody id="previewTableBody"></tbody>
+                <tfoot>
+                  <tr>
+                    <td>Field Total</td>
+                    <td id="previewFootAcres">100</td>
+                    <td><strong id="previewFootAvg">— bu/ac</strong></td>
+                    <td><strong id="previewFootBu">—</strong></td>
+                  </tr>
+                </tfoot>
+              </table>
+
+              <!-- Affected systems -->
+              <div class="affected-list">
+                <div class="affected-list__title">This calibration will update</div>
+                <div class="affected-item">
+                  <span class="material-symbols-outlined">map</span>
+                  Spatial yield map (pixel-level values)
+                </div>
+                <div class="affected-item">
+                  <span class="material-symbols-outlined">bar_chart</span>
+                  Yield averages &amp; analytics
+                </div>
+                <div class="affected-item">
+                  <span class="material-symbols-outlined">assessment</span>
+                  Farm, grower &amp; regional rollups
+                </div>
+                <div class="affected-item">
+                  <span class="material-symbols-outlined">smart_toy</span>
+                  AI assistant yield references
+                </div>
+              </div>
+
+              <!-- Confirmation (Figma Yield Calibration — toggle to enable Apply) -->
+              <button type="button" class="confirm-check" id="confirmCheckBtn" aria-pressed="false">
+                <div class="confirm-check__box" aria-hidden="true">
+                  <span class="material-symbols-outlined">check</span>
+                </div>
+                <div class="confirm-check__text">
+                  I understand this calibration will permanently adjust yield values for the selected combine(s) and all downstream analytics.
+                </div>
+              </button>
+
+            </div>
+
+            <!-- ═══════ STEP 4: Done ═══════ -->
+            <div class="cal-step" id="step4">
+              <div class="success-state">
+                <div class="success-state__icon">
+                  <span class="material-symbols-outlined">check_circle</span>
+                </div>
+                <div class="success-state__title">Calibration Applied</div>
+                <div class="success-state__desc" id="successStateDesc"></div>
+
+                <div class="audit-card">
+                  <div class="audit-card__title">Calibration Record</div>
+                  <div class="audit-row">
+                    <span class="audit-row__label">Field</span>
+                    <span class="audit-row__value" id="auditFieldName">—</span>
+                  </div>
+                  <div class="audit-row">
+                    <span class="audit-row__label">Scope</span>
+                    <span class="audit-row__value" id="auditScope">—</span>
+                  </div>
+                  <div class="audit-row">
+                    <span class="audit-row__label">Method</span>
+                    <span class="audit-row__value" id="auditMethod">—</span>
+                  </div>
+                  <div class="audit-row">
+                    <span class="audit-row__label">Input summary</span>
+                    <span class="audit-row__value" id="auditInputSummary">—</span>
+                  </div>
+                  <div class="audit-row">
+                    <span class="audit-row__label">Calibration factor</span>
+                    <span class="audit-row__value" id="auditFactor">—</span>
+                  </div>
+                  <div class="audit-row">
+                    <span class="audit-row__label">New field avg</span>
+                    <span class="audit-row__value" id="auditNewAvg">—</span>
+                  </div>
+                  <div class="audit-row">
+                    <span class="audit-row__label">Applied by</span>
+                    <span class="audit-row__value" id="auditUser">—</span>
+                  </div>
+                  <div class="audit-row">
+                    <span class="audit-row__label">Timestamp</span>
+                    <span class="audit-row__value" id="auditTimestamp">—</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /cal-body -->
+
+        </div><!-- /calibrationWizard -->
+        </div><!-- /calibrationFlowShell -->
+
+      </div><!-- /modal__body -->
+
+      <div class="modal__footer modal__footer--between cal-footer" id="calFooter">
+        <button type="button" class="btn-back cal-footer__secondary" id="backBtn" style="visibility: hidden;">
+          <span class="material-symbols-outlined">arrow_back</span>
+          Back
+        </button>
+        <button type="button" class="btn" id="nextBtn">
+          Continue
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const figmaDemoParam = new URLSearchParams(window.location.search).get('figmademo');
+
+      const field = {
+        name: 'Smith Farms 80',
+        acres: 100,
+        crop: 'Corn',
+        season: 'Harvest 2025',
+      };
+
+      const combines = [
+        { id: 'x9', shortName: 'X9 1100', displayName: '2023 X9 1100', machineId: 'JD-4821', acres: 60, yield: 250, bushels: 15000, color: '#3b82f6' },
+        { id: 's790', shortName: 'S790', displayName: '2021 S790', machineId: 'JD-3150', acres: 40, yield: 300, bushels: 12000, color: '#22c55e' },
+      ];
+
+      let scopeMode = 'specific';
+      let selectedCombineIds = new Set(['x9']);
+      let adjustmentMethod = 'weight';
+      let calibrationSnapshot = null;
+
+      let currentStep = 1;
+      const totalSteps = 4;
+      let confirmAccepted = false;
+
+      /** 'intro' = harvest detail card (production panel). 'wizard' = calibration steps. */
+      let calibrationPhase = 'intro';
+
+      /** 'combined' = harvest + wizard in one modal. 'sheet' = harvest modal, then slide-in sheet for wizard. */
+      let calibrationLayout =
+        localStorage.getItem('yieldCalLayout') === 'sheet' ? 'sheet' : 'combined';
+
+      function placeWizardAndFooter(host) {
+        const shell = document.getElementById('calibrationFlowShell');
+        const footer = document.getElementById('calFooter');
+        const modalPanel = document.getElementById('calibrationModalPanel');
+        const modalBody = modalPanel?.querySelector('.calibration-modal__body');
+        const sheetBody = document.getElementById('calibrationSideSheetBody');
+        const intro = document.getElementById('harvestDetailIntro');
+        if (!shell || !footer || !modalBody || !modalPanel || !sheetBody || !intro) return;
+        if (host === 'sheet') {
+          sheetBody.appendChild(shell);
+          sheetBody.appendChild(footer);
+        } else {
+          intro.insertAdjacentElement('afterend', shell);
+          modalPanel.appendChild(footer);
+        }
+      }
+
+      function syncWizardPlacement() {
+        if (calibrationLayout === 'sheet' && calibrationPhase === 'wizard') {
+          placeWizardAndFooter('sheet');
+        } else {
+          placeWizardAndFooter('modal');
+        }
+      }
+
+      function setCalibrationSheetOpen(open) {
+        const sheet = document.getElementById('calibrationSideSheet');
+        sheet?.classList.toggle('calibration-side-sheet--open', open);
+        sheet?.setAttribute('aria-hidden', open ? 'false' : 'true');
+      }
+
+      function syncCalibrationLayoutToggleUI() {
+        document.querySelectorAll('[data-cal-layout]').forEach((btn) => {
+          btn.classList.toggle('top-bar__layout-btn--active', btn.dataset.calLayout === calibrationLayout);
+        });
+      }
+
+      function syncCalibrationPhaseUI() {
+        const panel = document.getElementById('calibrationModalPanel');
+        const intro = document.getElementById('harvestDetailIntro');
+        const wiz = document.getElementById('calibrationWizard');
+        const overlay = document.getElementById('calibrationModal');
+        const peek = document.getElementById('harvestWizardPeek');
+        if (calibrationPhase === 'intro') {
+          panel?.classList.add('calibration-modal--intro', 'modal--harvest-detail');
+          panel?.classList.remove('calibration-modal--wizard');
+          overlay?.classList.add('modal-overlay--harvest');
+          if (intro) intro.hidden = false;
+          if (wiz) wiz.hidden = true;
+          peek?.setAttribute('hidden', '');
+          overlay?.setAttribute('aria-labelledby', 'harvestFieldTitle');
+        } else {
+          panel?.classList.remove('calibration-modal--intro', 'modal--harvest-detail');
+          panel?.classList.add('calibration-modal--wizard');
+          overlay?.classList.remove('modal-overlay--harvest');
+          if (intro) intro.hidden = false;
+          if (wiz) wiz.hidden = false;
+          peek?.removeAttribute('hidden');
+          overlay?.setAttribute('aria-labelledby', 'calibrationModalTitle');
+          refreshHarvestWizardPeek();
+        }
+        syncWizardPlacement();
+      }
+
+      function resetToHarvestIntro() {
+        calibrationPhase = 'intro';
+        currentStep = 1;
+        confirmAccepted = false;
+        const confirmBtn = document.getElementById('confirmCheckBtn');
+        if (confirmBtn) {
+          confirmBtn.classList.remove('confirm-check--accepted');
+          confirmBtn.setAttribute('aria-pressed', 'false');
+        }
+        setCalibrationSheetOpen(false);
+        syncCalibrationPhaseUI();
+        updateUI();
+      }
+
+      function clearCalibrationModalSheetInset() {
+        const modal = document.getElementById('calibrationModal');
+        modal?.classList.remove('calibration-modal-overlay--sheet-wizard-open');
+        modal?.style.removeProperty('right');
+      }
+
+      function syncCalibrationModalSheetInset() {
+        const modal = document.getElementById('calibrationModal');
+        const sheet = document.getElementById('calibrationSideSheet');
+        if (!modal || !sheet) return;
+        const active =
+          calibrationLayout === 'sheet' &&
+          calibrationPhase === 'wizard' &&
+          sheet.classList.contains('calibration-side-sheet--open');
+        if (active) {
+          modal.classList.add('calibration-modal-overlay--sheet-wizard-open');
+          const w = Math.round(sheet.getBoundingClientRect().width);
+          modal.style.right = w > 1 ? `${w}px` : '';
+        } else {
+          clearCalibrationModalSheetInset();
+        }
+      }
+
+      /** Sheet layout: leave wizard and return to map without reopening the modal overlay. */
+      function exitCalibrationSheetToMap() {
+        clearCalibrationModalSheetInset();
+        resetToHarvestIntro();
+        const modal = document.getElementById('calibrationModal');
+        modal?.classList.remove('modal-overlay--open');
+        modal?.setAttribute('aria-hidden', 'true');
+        syncModalScrollLock();
+      }
+
+      const checkMarkHtml =
+        '<span class="material-symbols-outlined" style="font-size:14px;line-height:1;">check</span>';
+
+      const methodLabels = {
+        weight: 'Total harvested weight',
+        percent: 'Percentage adjustment',
+        targetAvg: 'Target field average',
+      };
+
+      function parseNum(str) {
+        if (str == null || str === '') return NaN;
+        if (typeof str === 'number') return str;
+        const n = parseFloat(String(str).replace(/,/g, '').trim());
+        return Number.isFinite(n) ? n : NaN;
+      }
+
+      function formatInt(n) {
+        return Math.round(n).toLocaleString('en-US');
+      }
+
+      function formatBuAc(n) {
+        return (Math.round(n * 10) / 10).toLocaleString('en-US');
+      }
+
+      function rawTotalBushels() {
+        return combines.reduce((s, c) => s + c.bushels, 0);
+      }
+
+      function getCalibrationResult() {
+        const rawTotal = rawTotalBushels();
+        const selectedSet =
+          scopeMode === 'entire' ? new Set(combines.map((c) => c.id)) : new Set(selectedCombineIds);
+
+        if (scopeMode === 'specific' && selectedSet.size === 0) {
+          return { valid: false, error: 'Select at least one combine, or choose Entire Field.' };
+        }
+
+        const rows = combines.map((c) => ({
+          id: c.id,
+          shortName: c.shortName,
+          displayName: c.displayName,
+          acres: c.acres,
+          rawYield: c.yield,
+          rawBushels: c.bushels,
+          color: c.color,
+          newYield: c.yield,
+          newBushels: c.bushels,
+          adjusted: false,
+        }));
+
+        const sumOthersBushels = rows.filter((o) => !selectedSet.has(o.id)).reduce((s, o) => s + o.rawBushels, 0);
+        const sumSelRaw = rows.filter((o) => selectedSet.has(o.id)).reduce((s, o) => s + o.rawBushels, 0);
+
+        if (adjustmentMethod === 'weight') {
+          const V = parseNum(document.getElementById('validatedWeightInput')?.value);
+          if (!Number.isFinite(V) || V <= 0) {
+            return { valid: false, error: 'Enter a valid total harvested weight (bushels).' };
+          }
+          if (scopeMode === 'specific') {
+            if (V + 1e-6 < sumOthersBushels) {
+              return {
+                valid: false,
+                error: 'Validated total is less than bushels from combines left unchanged.',
+              };
+            }
+            const targetSel = V - sumOthersBushels;
+            if (targetSel <= 0) {
+              return { valid: false, error: 'Target bushels for selected combines must be positive.' };
+            }
+            const f = targetSel / sumSelRaw;
+            rows.forEach((o) => {
+              if (selectedSet.has(o.id)) {
+                o.newBushels = Math.round(o.rawBushels * f);
+                o.newYield = o.newBushels / o.acres;
+                o.adjusted = true;
+              }
+            });
+          } else {
+            const f = V / rawTotal;
+            rows.forEach((o) => {
+              o.newBushels = Math.round(o.rawBushels * f);
+              o.newYield = o.newBushels / o.acres;
+              o.adjusted = true;
+            });
+          }
+        } else if (adjustmentMethod === 'percent') {
+          const p = parseNum(document.getElementById('percentAdjustInput')?.value);
+          if (!Number.isFinite(p)) {
+            return { valid: false, error: 'Enter a valid percentage adjustment.' };
+          }
+          const mult = 1 + p / 100;
+          rows.forEach((o) => {
+            if (selectedSet.has(o.id)) {
+              o.newYield = o.rawYield * mult;
+              o.newBushels = Math.round(o.newYield * o.acres);
+              o.newYield = o.newBushels / o.acres;
+              o.adjusted = true;
+            }
+          });
+        } else if (adjustmentMethod === 'targetAvg') {
+          const T = parseNum(document.getElementById('targetAvgInput')?.value);
+          if (!Number.isFinite(T) || T <= 0) {
+            return { valid: false, error: 'Enter a valid target field average (bu/ac).' };
+          }
+          const targetTotal = T * field.acres;
+          if (scopeMode === 'specific') {
+            if (targetTotal + 1e-6 < sumOthersBushels) {
+              return {
+                valid: false,
+                error: 'Target average implies a total below unchanged combines.',
+              };
+            }
+            const targetSel = targetTotal - sumOthersBushels;
+            const f = targetSel / sumSelRaw;
+            rows.forEach((o) => {
+              if (selectedSet.has(o.id)) {
+                o.newBushels = Math.round(o.rawBushels * f);
+                o.newYield = o.newBushels / o.acres;
+                o.adjusted = true;
+              }
+            });
+          } else {
+            const f = targetTotal / rawTotal;
+            rows.forEach((o) => {
+              o.newBushels = Math.round(o.rawBushels * f);
+              o.newYield = o.newBushels / o.acres;
+              o.adjusted = true;
+            });
+          }
+        }
+
+        const newTotal = rows.reduce((s, o) => s + o.newBushels, 0);
+        const rawAvg = rawTotal / field.acres;
+        const newAvg = newTotal / field.acres;
+
+        let displayFactor = newTotal / rawTotal;
+        if (
+          (adjustmentMethod === 'weight' || adjustmentMethod === 'targetAvg') &&
+          scopeMode === 'specific' &&
+          selectedSet.size === 1
+        ) {
+          const sid = [...selectedSet][0];
+          const one = rows.find((r) => r.id === sid);
+          if (one) displayFactor = one.newBushels / one.rawBushels;
+        } else if (adjustmentMethod === 'percent' && selectedSet.size > 0) {
+          const sid = [...selectedSet][0];
+          const one = rows.find((r) => r.id === sid);
+          if (one) displayFactor = one.newYield / one.rawYield;
+        }
+
+        const pctChange = rawAvg !== 0 ? ((newAvg - rawAvg) / rawAvg) * 100 : 0;
+
+        return {
+          valid: true,
+          rows,
+          rawTotal,
+          newTotal,
+          rawAvg,
+          newAvg,
+          displayFactor,
+          pctChange,
+          selectedIds: [...selectedSet],
+        };
+      }
+
+      function refreshHarvestWizardPeek() {
+        const scopeEl = document.getElementById('harvestWizardPeekScope');
+        const combEl = document.getElementById('harvestWizardPeekCombines');
+        if (!scopeEl || !combEl || calibrationPhase !== 'wizard') return;
+        scopeEl.textContent = scopeMode === 'entire' ? 'Entire field' : 'Specific combines';
+        if (scopeMode === 'entire') {
+          combEl.textContent =
+            combines.length === 1 ? combines[0].shortName : `All ${combines.length} combines`;
+        } else {
+          const names = combines.filter((c) => selectedCombineIds.has(c.id)).map((c) => c.shortName);
+          combEl.textContent = names.length ? names.join(', ') : 'Select combine(s) in step 1';
+        }
+      }
+
+      function refreshFieldSummary() {
+        const raw = rawTotalBushels();
+        const avg = raw / field.acres;
+        const elA = document.getElementById('summaryAcres');
+        const elB = document.getElementById('summaryRawBu');
+        const elAvg = document.getElementById('summaryAvg');
+        const elC = document.getElementById('summaryCombines');
+        if (elA) elA.textContent = String(field.acres);
+        if (elB) elB.textContent = formatInt(raw);
+        if (elAvg) elAvg.textContent = formatBuAc(avg);
+        if (elC) elC.textContent = String(combines.length);
+        refreshHarvestWizardPeek();
+      }
+
+      function renderCombineList() {
+        const host = document.getElementById('combineList');
+        if (!host) return;
+        host.innerHTML = combines
+          .map(
+            (c) => `
+          <div class="combine-card ${selectedCombineIds.has(c.id) || scopeMode === 'entire' ? 'combine-card--selected' : ''} ${scopeMode === 'entire' ? 'combine-card--disabled' : ''}"
+               data-combine-id="${c.id}" role="button" tabindex="0" aria-pressed="${selectedCombineIds.has(c.id) || scopeMode === 'entire'}">
+            <div class="combine-card__color" style="background:${c.color}"></div>
+            <div class="combine-card__info">
+              <div class="combine-card__name">${c.displayName}</div>
+              <div class="combine-card__meta"><span>Machine ID: ${c.machineId}</span></div>
+            </div>
+            <div class="combine-card__stats">
+              <div class="combine-card__stat"><div class="combine-card__stat-value">${c.acres}</div><div class="combine-card__stat-label">Acres</div></div>
+              <div class="combine-card__stat"><div class="combine-card__stat-value">${c.yield}</div><div class="combine-card__stat-label">bu/ac</div></div>
+              <div class="combine-card__stat"><div class="combine-card__stat-value">${formatInt(c.bushels)}</div><div class="combine-card__stat-label">Bushels</div></div>
+            </div>
+            <div class="combine-card__check"><span class="material-symbols-outlined">check</span></div>
+          </div>`
+          )
+          .join('');
+
+        host.querySelectorAll('.combine-card').forEach((card) => {
+          const id = card.dataset.combineId;
+          card.addEventListener('click', () => toggleCombine(id));
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleCombine(id);
+            }
+          });
+        });
+      }
+
+      function toggleCombine(id) {
+        if (scopeMode === 'entire') return;
+        if (selectedCombineIds.has(id)) {
+          if (selectedCombineIds.size <= 1) return;
+          selectedCombineIds.delete(id);
+        } else {
+          selectedCombineIds.add(id);
+        }
+        renderCombineList();
+        refreshFieldSummary();
+        refreshStep2UI();
+        document.getElementById('step1Error').hidden = true;
+      }
+
+      function renderMethodCards() {
+        const host = document.getElementById('methodCards');
+        if (!host) return;
+        host.innerHTML = ['weight', 'percent', 'targetAvg']
+          .map((m) => {
+            const sel = m === adjustmentMethod ? 'method-card method-card--selected' : 'method-card';
+            const titles = {
+              weight: 'Total Harvested Weight',
+              percent: 'Percentage Adjustment',
+              targetAvg: 'Set Target Average',
+            };
+            const descs = {
+              weight: 'Enter validated total bushels from scale tickets or elevator receipts.',
+              percent: 'Increase or decrease yield by a percentage for combines in scope.',
+              targetAvg: 'Enter the known field-average yield (bu/ac); bushels scale to match.',
+            };
+            const icons = { weight: 'scale', percent: 'percent', targetAvg: 'edit' };
+            return `<div class="${sel}" data-method="${m}" role="button" tabindex="0">
+              <div class="method-card__icon"><span class="material-symbols-outlined">${icons[m]}</span></div>
+              <div class="method-card__content">
+                <div class="method-card__title">${titles[m]}</div>
+                <div class="method-card__desc">${descs[m]}</div>
+              </div>
+            </div>`;
+          })
+          .join('');
+
+        host.querySelectorAll('.method-card').forEach((card) => {
+          const m = card.dataset.method;
+          card.addEventListener('click', () => selectMethod(m));
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectMethod(m);
+            }
+          });
+        });
+      }
+
+      function selectMethod(method) {
+        adjustmentMethod = method;
+        renderMethodCards();
+        document.querySelectorAll('.adjust-panel').forEach((p) => {
+          p.hidden = p.dataset.adjustPanel !== adjustmentMethod;
+        });
+        document.getElementById('step2Error').hidden = true;
+        refreshStep2UI();
+      }
+
+      function setScope(mode) {
+        scopeMode = mode;
+        document.querySelectorAll('.scope-option').forEach((o) => {
+          o.classList.toggle('scope-option--selected', o.dataset.scope === mode);
+        });
+        if (mode === 'entire') {
+          selectedCombineIds = new Set(combines.map((c) => c.id));
+        }
+        renderCombineList();
+        refreshFieldSummary();
+        document.getElementById('step1Error').hidden = true;
+        refreshStep2UI();
+      }
+
+      function selectedLabels() {
+        const set =
+          scopeMode === 'entire' ? new Set(combines.map((c) => c.id)) : selectedCombineIds;
+        return combines.filter((c) => set.has(c.id)).map((c) => c.displayName);
+      }
+
+      function refreshStep2UI() {
+        const desc = document.getElementById('adjustContextDesc');
+        const raw = rawTotalBushels();
+        const labels = selectedLabels();
+        if (desc) {
+          if (scopeMode === 'entire') {
+            desc.innerHTML = `Calibrating <strong>all combines</strong> on this field (${formatInt(raw)} bu raw total).`;
+          } else {
+            desc.innerHTML = `Calibrating <strong>${labels.join(', ')}</strong>. Other combines stay at raw bushels unless you select them above.`;
+          }
+        }
+
+        const res = getCalibrationResult();
+        calibrationSnapshot = res.valid ? res : calibrationSnapshot;
+
+        const elW = document.getElementById('step2CalcPreviewWeight');
+        const elP = document.getElementById('step2CalcPreviewPercent');
+        const elT = document.getElementById('step2CalcPreviewTarget');
+        if (elW) elW.innerHTML = buildWeightPreviewHtml(res);
+        if (elP) elP.innerHTML = buildPercentPreviewHtml(res);
+        if (elT) elT.innerHTML = buildTargetPreviewHtml(res);
+      }
+
+      function buildWeightPreviewHtml(res) {
+        if (!res.valid) {
+          return `<div class="calc-row"><span class="calc-row__label">${res.error || 'Check inputs'}</span></div>`;
+        }
+        const others = res.rows.filter((r) => !r.adjusted);
+        const adj = res.rows.filter((r) => r.adjusted);
+        const lines = [
+          ['Raw total (all combines)', `${formatInt(res.rawTotal)} bu`],
+          ...others.map((o) => [`${o.shortName} bushels (unchanged)`, `${formatInt(o.rawBushels)} bu`]),
+          ...adj.map((o) => [
+            `${o.shortName} target bushels`,
+            `${formatInt(o.newBushels)} bu`,
+          ]),
+        ];
+        const delta = res.newTotal - res.rawTotal;
+        const dStr = (delta >= 0 ? '+' : '') + formatInt(delta) + ' bu';
+        const dClass = delta >= 0 ? 'text-success' : 'text-muted';
+        lines.push([`Difference vs raw total`, `<span class="${dClass}">${dStr}</span>`]);
+        const fac = res.displayFactor;
+        return (
+          lines
+            .map(
+              ([a, b]) =>
+                `<div class="calc-row"><span class="calc-row__label">${a}</span><span class="calc-row__value">${b}</span></div>`
+            )
+            .join('') +
+          `<div class="calc-row calc-row--result"><span class="calc-row__label">Calibration factor</span><span class="calc-row__value">${fac.toFixed(3)}×</span></div>`
+        );
+      }
+
+      function buildPercentPreviewHtml(res) {
+        if (!res.valid) {
+          return `<div class="calc-row"><span class="calc-row__label">${res.error || 'Check inputs'}</span></div>`;
+        }
+        return res.rows
+          .map((r) => {
+            if (!r.adjusted) {
+              return `<div class="calc-row"><span class="calc-row__label">${r.shortName} (unchanged)</span><span class="calc-row__value">${formatBuAc(r.rawYield)} bu/ac</span></div>`;
+            }
+            return `<div class="calc-row"><span class="calc-row__label">${r.shortName}</span><span class="calc-row__value">${formatBuAc(r.rawYield)} → ${formatBuAc(r.newYield)} bu/ac</span></div>`;
+          })
+          .join('');
+      }
+
+      function buildTargetPreviewHtml(res) {
+        if (!res.valid) {
+          return `<div class="calc-row"><span class="calc-row__label">${res.error || 'Check inputs'}</span></div>`;
+        }
+        return `
+          <div class="calc-row"><span class="calc-row__label">Raw field avg</span><span class="calc-row__value">${formatBuAc(res.rawAvg)} bu/ac</span></div>
+          <div class="calc-row"><span class="calc-row__label">Target field avg</span><span class="calc-row__value">${formatBuAc(parseNum(document.getElementById('targetAvgInput').value) || res.newAvg)} bu/ac</span></div>
+          <div class="calc-row calc-row--result"><span class="calc-row__label">Projected field avg (rounded)</span><span class="calc-row__value">${formatBuAc(res.newAvg)} bu/ac</span></div>`;
+      }
+
+      function renderPreviewStep3() {
+        const res = getCalibrationResult();
+        if (!res.valid) return;
+
+        document.getElementById('previewCurrAvg').textContent = formatBuAc(res.rawAvg);
+        document.getElementById('previewNewAvg').textContent = formatBuAc(res.newAvg);
+        const dEl = document.getElementById('previewDeltaPct');
+        const p = res.pctChange;
+        if (Math.abs(p) < 0.05) {
+          dEl.textContent = '—';
+          dEl.className = 'field-avg__delta';
+        } else {
+          dEl.textContent = (p >= 0 ? '+' : '') + p.toFixed(1) + '%';
+          dEl.className = 'field-avg__delta ' + (p >= 0 ? 'field-avg__delta--up' : 'field-avg__delta--down');
+        }
+
+        const body = document.getElementById('previewTableBody');
+        body.innerHTML = res.rows
+          .map((r) => {
+            const tag = r.adjusted
+              ? '<span class="preview-table__tag preview-table__tag--adjusted">Adjusted</span>'
+              : '<span class="preview-table__tag preview-table__tag--unchanged">Unchanged</span>';
+            const yCell = r.adjusted
+              ? `<span class="preview-table__old">${formatBuAc(r.rawYield)}</span><span class="preview-table__arrow">→</span><span class="preview-table__new">${formatBuAc(r.newYield)}</span>`
+              : `<span style="font-weight:500;">${formatBuAc(r.rawYield)}</span>`;
+            const bCell = r.adjusted
+              ? `<span class="preview-table__old">${formatInt(r.rawBushels)}</span><span class="preview-table__arrow">→</span><span class="preview-table__new">${formatInt(r.newBushels)}</span>`
+              : `<span style="font-weight:500;">${formatInt(r.rawBushels)}</span>`;
+            return `<tr>
+              <td><div class="preview-table__name"><div class="preview-table__dot" style="background:${r.color}"></div>${r.shortName} ${tag}</div></td>
+              <td>${r.acres}</td>
+              <td>${yCell}</td>
+              <td>${bCell}</td>
+            </tr>`;
+          })
+          .join('');
+
+        document.getElementById('previewFootAcres').textContent = String(field.acres);
+        document.getElementById('previewFootAvg').textContent = `${formatBuAc(res.newAvg)} bu/ac`;
+        document.getElementById('previewFootBu').textContent = formatInt(res.newTotal);
+      }
+
+      function stampAudit() {
+        const res = getCalibrationResult();
+        if (!res.valid) return;
+
+        document.getElementById('auditFieldName').textContent = field.name;
+
+        const scopeText =
+          scopeMode === 'entire'
+            ? 'Entire field (all combines)'
+            : `Specific: ${res.rows.filter((r) => r.adjusted).map((r) => r.shortName).join(', ') || '—'}`;
+        document.getElementById('auditScope').textContent = scopeText;
+        document.getElementById('auditMethod').textContent = methodLabels[adjustmentMethod];
+
+        let inputSummary = '—';
+        if (adjustmentMethod === 'weight') {
+          inputSummary = `${formatInt(parseNum(document.getElementById('validatedWeightInput').value))} bu validated total`;
+        } else if (adjustmentMethod === 'percent') {
+          inputSummary = `${parseNum(document.getElementById('percentAdjustInput').value)}% adjustment`;
+        } else {
+          inputSummary = `${formatBuAc(parseNum(document.getElementById('targetAvgInput').value))} bu/ac target avg`;
+        }
+        document.getElementById('auditInputSummary').textContent = inputSummary;
+
+        document.getElementById('auditFactor').textContent = `${res.displayFactor.toFixed(3)}×`;
+        document.getElementById('auditNewAvg').textContent = `${formatBuAc(res.newAvg)} bu/ac`;
+
+        const names = res.rows.filter((r) => r.adjusted).map((r) => r.shortName);
+        document.getElementById('successStateDesc').textContent =
+          names.length === 0
+            ? 'Calibration applied to the field.'
+            : `Yield data for ${names.join(', ')} has been updated. Analytics now reflect the adjustment.`;
+
+        document.getElementById('auditUser').textContent =
+          (typeof localStorage !== 'undefined' && localStorage.getItem('agmri.displayName')) || 'Current user';
+        document.getElementById('auditTimestamp').textContent = new Date().toLocaleString(undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        });
+      }
+
+      function updateMapChrome() {
+        const suffix = document.getElementById('mapLegendSuffix');
+        const b1 = document.getElementById('mapBadge1');
+        const b2 = document.getElementById('mapBadge2');
+        const b1Text = document.getElementById('mapBadge1Text');
+        const b2Text = document.getElementById('mapBadge2Text');
+        const dot1 = document.querySelector('#mapBadge1 .map-badge__dot');
+        const dot2 = document.getElementById('mapBadge2Dot');
+        if (!suffix || !b1 || !b2) return;
+
+        const sel =
+          scopeMode === 'entire' ? combines : combines.filter((c) => selectedCombineIds.has(c.id));
+
+        if (currentStep <= 2) {
+          suffix.textContent = 'bu/ac';
+          if (sel[0]) {
+            if (dot1) dot1.style.background = sel[0].color;
+            if (b1Text) {
+              b1Text.textContent =
+                currentStep === 2 && sel.length === 1
+                  ? `${sel[0].shortName} — Calibrating`
+                  : sel[0].shortName;
+            }
+          }
+          const showBoth = sel.length >= 2 && !(currentStep === 2 && sel.length === 1);
+          if (showBoth && sel[1]) {
+            b1.style.display = 'flex';
+            b2.style.display = 'flex';
+            if (dot2) dot2.style.background = sel[1].color;
+            if (b2Text) b2Text.textContent = sel[1].shortName;
+          } else {
+            b1.style.display = 'flex';
+            b2.style.display = 'none';
+          }
+        } else if (currentStep === 3) {
+          suffix.textContent = 'bu/ac — Projected';
+          b1.style.display = 'none';
+          b2.style.display = 'none';
+        } else {
+          suffix.textContent = 'bu/ac — Calibrated';
+          b1.style.display = 'none';
+          b2.style.display = 'none';
+        }
+
+      }
+
+      function validateStep1() {
+        const err = document.getElementById('step1Error');
+        if (scopeMode === 'specific' && selectedCombineIds.size === 0) {
+          err.textContent = 'Select at least one combine, or choose Entire Field.';
+          err.hidden = false;
+          return false;
+        }
+        err.hidden = true;
+        return true;
+      }
+
+      function validateStep2() {
+        const err = document.getElementById('step2Error');
+        const res = getCalibrationResult();
+        if (!res.valid) {
+          err.textContent = res.error;
+          err.hidden = false;
+          return false;
+        }
+        err.hidden = true;
+        calibrationSnapshot = res;
+        return true;
+      }
+
+      function updateUI() {
+        const backBtn = document.getElementById('backBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const confirmBtn = document.getElementById('confirmCheckBtn');
+
+        if (currentStep !== 3 && confirmBtn) {
+          confirmAccepted = false;
+          confirmBtn.classList.remove('confirm-check--accepted');
+          confirmBtn.setAttribute('aria-pressed', 'false');
+        }
+
+        if (calibrationPhase === 'intro') {
+          backBtn.style.visibility = 'hidden';
+          nextBtn.textContent = 'Calibrate yield';
+          nextBtn.className = 'btn';
+          nextBtn.disabled = false;
+          nextBtn.style.opacity = '1';
+          updateMapChrome();
+          return;
+        }
+
+        document.querySelectorAll('.cal-step').forEach((el, i) => {
+          el.classList.toggle('cal-step--active', i + 1 === currentStep);
+        });
+
+        document.querySelectorAll('.step[data-step]').forEach((el) => {
+          const s = parseInt(el.dataset.step, 10);
+          const numEl = el.querySelector('.step__number');
+          el.classList.remove('step--active', 'step--done');
+
+          if (s < currentStep) {
+            el.classList.add('step--done');
+            if (numEl) numEl.innerHTML = checkMarkHtml;
+          } else if (s === currentStep) {
+            el.classList.add('step--active');
+            if (numEl) {
+              if (s === 4) numEl.innerHTML = checkMarkHtml;
+              else numEl.textContent = String(s);
+            }
+          } else if (numEl) {
+            numEl.textContent = String(s);
+          }
+        });
+
+        document.querySelectorAll('.step__line[data-line]').forEach((el) => {
+          const i = parseInt(el.dataset.line, 10);
+          el.classList.toggle('step__line--done', currentStep > i);
+        });
+
+        if (currentStep === 2) refreshStep2UI();
+        if (currentStep === 3) renderPreviewStep3();
+
+        backBtn.style.visibility = currentStep >= 4 ? 'hidden' : 'visible';
+
+        if (currentStep === 3) {
+          nextBtn.textContent = 'Apply Calibration';
+          nextBtn.className = 'btn';
+          nextBtn.disabled = !confirmAccepted;
+          nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+        } else if (currentStep === 4) {
+          nextBtn.textContent = 'Return to Field';
+          nextBtn.className = 'btn btn--secondary';
+          nextBtn.disabled = false;
+          nextBtn.style.opacity = '1';
+        } else {
+          nextBtn.textContent = 'Continue';
+          nextBtn.className = 'btn';
+          nextBtn.disabled = false;
+          nextBtn.style.opacity = '1';
+        }
+
+        updateMapChrome();
+        refreshHarvestWizardPeek();
+      }
+
+      function goNext() {
+        if (calibrationPhase === 'intro') {
+          calibrationPhase = 'wizard';
+          syncCalibrationPhaseUI();
+          if (calibrationLayout === 'sheet') {
+            setCalibrationSheetOpen(true);
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => syncCalibrationModalSheetInset());
+            });
+          }
+          updateUI();
+          syncModalScrollLock();
+          return;
+        }
+
+        if (currentStep === 1) {
+          if (!validateStep1()) return;
+        } else if (currentStep === 2) {
+          if (!validateStep2()) return;
+        } else if (currentStep === 3) {
+          stampAudit();
+        }
+
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateUI();
+        } else {
+          alert('Returning to field view…');
+        }
+      }
+
+      function prevStep() {
+        if (calibrationPhase === 'wizard' && currentStep === 1) {
+          calibrationPhase = 'intro';
+          if (calibrationLayout === 'sheet') {
+            setCalibrationSheetOpen(false);
+            clearCalibrationModalSheetInset();
+            syncCalibrationPhaseUI();
+            updateUI();
+            syncModalScrollLock();
+          } else {
+            syncCalibrationPhaseUI();
+            updateUI();
+            syncModalScrollLock();
+          }
+          return;
+        }
+        if (currentStep > 1) {
+          currentStep--;
+          updateUI();
+        }
+      }
+
+      document.getElementById('nextBtn')?.addEventListener('click', goNext);
+      document.getElementById('backBtn')?.addEventListener('click', prevStep);
+
+      document.querySelectorAll('.scope-option').forEach((o) => {
+        o.addEventListener('click', () => setScope(o.dataset.scope));
+        o.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setScope(o.dataset.scope);
+          }
+        });
+      });
+
+      document.getElementById('confirmCheckBtn')?.addEventListener('click', function () {
+        confirmAccepted = !confirmAccepted;
+        this.classList.toggle('confirm-check--accepted', confirmAccepted);
+        this.setAttribute('aria-pressed', confirmAccepted ? 'true' : 'false');
+        if (currentStep === 3) {
+          const nextBtn = document.getElementById('nextBtn');
+          nextBtn.disabled = !confirmAccepted;
+          nextBtn.style.opacity = confirmAccepted ? '1' : '0.5';
+        }
+      });
+
+      ['validatedWeightInput', 'percentAdjustInput', 'targetAvgInput'].forEach((id) => {
+        document.getElementById(id)?.addEventListener('input', refreshStep2UI);
+      });
+
+      document.getElementById('validatedWeightInput').value = '28600';
+      document.getElementById('percentAdjustInput').value = '6.67';
+      document.getElementById('targetAvgInput').value = '286';
+
+      renderCombineList();
+      refreshFieldSummary();
+      renderMethodCards();
+      document.querySelectorAll('.adjust-panel').forEach((p) => {
+        p.hidden = p.dataset.adjustPanel !== adjustmentMethod;
+      });
+      refreshStep2UI();
+      syncCalibrationPhaseUI();
+      updateUI();
+
+      const calibrationModal = document.getElementById('calibrationModal');
+      const calibrationSideSheet = document.getElementById('calibrationSideSheet');
+      const calibrationModalClose = document.getElementById('calibrationModalClose');
+      const openCalibrationModalBtn = document.getElementById('openCalibrationModal');
+
+      function syncModalScrollLock() {
+        const modalOpen =
+          calibrationModal &&
+          calibrationModal.getAttribute('aria-hidden') === 'false' &&
+          calibrationModal.classList.contains('modal-overlay--open');
+        const sheetOpen =
+          calibrationSideSheet &&
+          calibrationSideSheet.classList.contains('calibration-side-sheet--open');
+        const lock = !!(modalOpen || sheetOpen);
+        document.documentElement.classList.toggle('modal-overlay-open', lock);
+        document.body.classList.toggle('modal-overlay-open', lock);
+      }
+
+      function setCalibrationModalOpen(open, opts) {
+        if (!calibrationModal) return;
+        if (!open) clearCalibrationModalSheetInset();
+        if (open) {
+          calibrationModal.setAttribute('aria-hidden', 'false');
+          calibrationModal.classList.add('modal-overlay--open');
+        } else {
+          calibrationModal.classList.remove('modal-overlay--open');
+          calibrationModal.setAttribute('aria-hidden', 'true');
+        }
+        if (open && !opts?.skipReset) resetToHarvestIntro();
+        syncModalScrollLock();
+      }
+
+      function applyFigmaDemo(raw) {
+        if (!raw || typeof raw !== 'string') return;
+        const key = raw.trim().toLowerCase();
+        if (key === 'map' || key === 'closed') {
+          resetToHarvestIntro();
+          setCalibrationSheetOpen(false);
+          clearCalibrationModalSheetInset();
+          setCalibrationModalOpen(false);
+          updateUI();
+          syncModalScrollLock();
+          return;
+        }
+
+        let layout = 'combined';
+        let phase = 'intro';
+        let step = 1;
+        let sheetOpen = false;
+
+        if (key === 'intro') {
+          layout = 'combined';
+          phase = 'intro';
+        } else if (key === 'intro-sheet' || key === 'sheet-intro') {
+          layout = 'sheet';
+          phase = 'intro';
+        } else {
+          let m = key.match(/^step([1-4])$/);
+          if (m) {
+            layout = 'combined';
+            phase = 'wizard';
+            step = parseInt(m[1], 10);
+          } else {
+            m = key.match(/^sheet-step([1-4])$/);
+            if (m) {
+              layout = 'sheet';
+              phase = 'wizard';
+              sheetOpen = true;
+              step = parseInt(m[1], 10);
+            } else {
+              return;
+            }
+          }
+        }
+
+        calibrationLayout = layout;
+        syncCalibrationLayoutToggleUI();
+
+        if (phase === 'wizard') {
+          calibrationPhase = 'wizard';
+          currentStep = step;
+          if (step === 3) {
+            confirmAccepted = true;
+            const cb = document.getElementById('confirmCheckBtn');
+            if (cb) {
+              cb.classList.add('confirm-check--accepted');
+              cb.setAttribute('aria-pressed', 'true');
+            }
+          } else {
+            confirmAccepted = false;
+            const cb = document.getElementById('confirmCheckBtn');
+            if (cb) {
+              cb.classList.remove('confirm-check--accepted');
+              cb.setAttribute('aria-pressed', 'false');
+            }
+          }
+        } else {
+          calibrationPhase = 'intro';
+          currentStep = 1;
+          confirmAccepted = false;
+          const cb = document.getElementById('confirmCheckBtn');
+          if (cb) {
+            cb.classList.remove('confirm-check--accepted');
+            cb.setAttribute('aria-pressed', 'false');
+          }
+        }
+
+        syncCalibrationPhaseUI();
+        setCalibrationSheetOpen(sheetOpen);
+
+        setCalibrationModalOpen(true, { skipReset: true });
+
+        if (sheetOpen && calibrationLayout === 'sheet') {
+          syncCalibrationModalSheetInset();
+          requestAnimationFrame(() => {
+            syncCalibrationModalSheetInset();
+            requestAnimationFrame(() => syncCalibrationModalSheetInset());
+          });
+        }
+
+        updateUI();
+
+        if (calibrationPhase === 'wizard' && currentStep === 4) {
+          const res = getCalibrationResult();
+          if (res.valid) stampAudit();
+        }
+
+        syncModalScrollLock();
+      }
+
+      openCalibrationModalBtn?.addEventListener('click', () => setCalibrationModalOpen(true));
+      calibrationModalClose?.addEventListener('click', () => setCalibrationModalOpen(false));
+
+      document.getElementById('harvestDetailIntro')?.addEventListener('click', function (e) {
+        const btn = e.target.closest('.js-copy');
+        if (!btn || !this.contains(btn)) return;
+        const text = btn.getAttribute('data-copy');
+        if (!text || !navigator.clipboard) return;
+        navigator.clipboard.writeText(text);
+      });
+
+      calibrationModal?.addEventListener('click', (e) => {
+        if (e.target !== calibrationModal) return;
+        if (calibrationLayout === 'sheet' && calibrationPhase === 'wizard') {
+          exitCalibrationSheetToMap();
+        } else {
+          setCalibrationModalOpen(false);
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (
+          calibrationSideSheet?.classList.contains('calibration-side-sheet--open') &&
+          calibrationLayout === 'sheet' &&
+          calibrationPhase === 'wizard'
+        ) {
+          e.preventDefault();
+          exitCalibrationSheetToMap();
+          return;
+        }
+        if (calibrationModal?.getAttribute('aria-hidden') === 'false') {
+          setCalibrationModalOpen(false);
+        }
+      });
+
+      document.querySelectorAll('[data-cal-layout]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (calibrationPhase !== 'intro') return;
+          const next = btn.dataset.calLayout;
+          if (next !== 'combined' && next !== 'sheet') return;
+          calibrationLayout = next;
+          localStorage.setItem('yieldCalLayout', next);
+          syncCalibrationLayoutToggleUI();
+          syncWizardPlacement();
+        });
+      });
+
+      document.getElementById('calibrationSheetClose')?.addEventListener('click', () => {
+        exitCalibrationSheetToMap();
+      });
+
+      document.getElementById('calibrationSheetScrim')?.addEventListener('click', () => {
+        exitCalibrationSheetToMap();
+      });
+
+      if (calibrationSideSheet && typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(() => syncCalibrationModalSheetInset()).observe(calibrationSideSheet);
+      }
+      window.addEventListener('resize', () => syncCalibrationModalSheetInset());
+
+      syncCalibrationLayoutToggleUI();
+      syncModalScrollLock();
+      applyFigmaDemo(figmaDemoParam);
+    })();
+  </script>
+</body>
+</html>
