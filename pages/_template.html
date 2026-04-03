@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Title — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Design tokens -->
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+
+  <!-- Components -->
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/checkbox.css" />
+  <link rel="stylesheet" href="../components/radio.css" />
+  <link rel="stylesheet" href="../components/switch.css" />
+  <link rel="stylesheet" href="../components/loading.css" />
+  <link rel="stylesheet" href="../components/progress.css" />
+  <link rel="stylesheet" href="../components/data-table.css" />
+  <link rel="stylesheet" href="../components/dropdown.css" />
+  <link rel="stylesheet" href="../components/menu.css" />
+  <link rel="stylesheet" href="../components/modal.css" />
+  <link rel="stylesheet" href="../components/field-card.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/counter-badge.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/alert.css" />
+  <link rel="stylesheet" href="../components/advanced-filter.css" />
+  <link rel="stylesheet" href="../components/bottom-sheet.css" />
+  <link rel="stylesheet" href="../components/empty-state.css" />
+  <link rel="stylesheet" href="../components/triangle-icons.css" />
+  <link rel="stylesheet" href="../components/view-switcher.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
+
+    /* Standard layout shell */
+    .page-shell {
+      display: flex;
+      height: 100vh;
+    }
+    .page-shell__side {
+      flex-shrink: 0;
+      width: var(--nav-width);
+      height: 100%;
+      z-index: 10;
+    }
+    .page-shell__main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100%;
+    }
+
+    /* Page toolbar */
+    .page-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-m);
+      padding: var(--spacing-m) var(--spacing-l);
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+      flex-shrink: 0;
+    }
+    .page-toolbar__title {
+      font-size: var(--font-size-18);
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 0;
+      white-space: nowrap;
+    }
+    .page-toolbar__controls {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-s);
+      flex-wrap: wrap;
+    }
+    .page-toolbar__divider {
+      width: 1px;
+      height: 24px;
+      background: var(--color-border);
+      flex-shrink: 0;
+    }
+    .page-toolbar__collapse {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .page-toolbar__collapse:hover { background: var(--color-surface-muted); }
+    .page-toolbar__collapse svg { width: 16px; height: 16px; }
+
+    /* Neutral filter pill & button overrides */
+    .filter-pill--neutral {
+      --filter-pill-bg: var(--color-neutral-100);
+      --filter-pill-bg-hover: var(--color-neutral-200);
+      --filter-pill-bg-active: var(--color-neutral-500);
+      --filter-pill-text: var(--color-neutral-700);
+      --filter-pill-text-hover: var(--color-neutral-900);
+      --filter-pill-text-active: var(--color-neutral-0);
+    }
+    .btn--neutral {
+      background: var(--color-neutral-800);
+      color: var(--color-neutral-0);
+    }
+    .btn--neutral:hover:not(:disabled) { filter: brightness(1.15); }
+    .btn--neutral:active:not(:disabled) { filter: brightness(0.9); }
+
+    /* Tab bar */
+    .page-tabs {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+    .page-tabs .tabs {
+      justify-content: flex-start;
+      flex: 1;
+      padding-top: var(--spacing-l);
+    }
+    .page-tabs__right {
+      display: flex;
+      align-items: center;
+      padding-right: var(--spacing-l);
+      flex-shrink: 0;
+      font-size: var(--font-size-12);
+      color: var(--color-text-muted);
+    }
+
+    /* Content area */
+    .page-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-l);
+      background: var(--color-background);
+    }
+
+    /* ===== THUMBNAIL VIEW ===== */
+    .thumb-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-s) 0;
+      margin-bottom: var(--spacing-m);
+      gap: var(--spacing-m);
+    }
+    .thumb-bar__left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-s);
+    }
+    .thumb-bar__right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .thumb-bar__search {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .thumb-bar__search .input {
+      padding-right: 36px;
+    }
+    .thumb-bar__search-btn {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--color-primitive-500);
+      color: var(--color-neutral-0);
+      border: none;
+      border-radius: var(--radius-sm);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .thumb-bar__search-btn:hover { filter: brightness(1.1); }
+    .thumb-bar__sort-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-left: var(--spacing-s);
+    }
+    .thumb-bar__sort-dir {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--color-text-muted);
+    }
+    .thumb-bar__sort-dir:hover { background: var(--color-neutral-100); }
+    .thumb-bar__aerial-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-success-500);
+      flex-shrink: 0;
+    }
+
+    /* Card grid — always 2 across */
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-l);
+    }
+
+    /* N/A muted value */
+    .field-card__meta-na { color: var(--color-neutral-400); }
+
+    /* Card with side image layout */
+    .thumb-card__layout {
+      display: flex;
+      gap: 0;
+    }
+    .thumb-card__image {
+      flex-shrink: 0;
+      width: 320px;
+      height: 270px;
+      padding: var(--spacing-m);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumb-card__image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .thumb-card__image--empty {
+      width: 320px;
+      height: 270px;
+    }
+
+    /* ═══ HOME DASHBOARD ═══ */
+    .dashboard-scroll {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      background: linear-gradient(180deg, rgba(34,80,30,0.08) 0%, var(--color-background) 400px);
+    }
+    .hero {
+      position: relative; padding: 40px 32px 32px; min-height: 220px; overflow: hidden;
+    }
+    .hero__bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: linear-gradient(135deg, #c5ddb8 0%, #8cb87a 40%, #5a8a42 100%);
+    }
+    .hero__bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.1) 100%);
+    }
+    .hero__content {
+      position: relative; z-index: 1;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .hero__date { font-size: 15px; font-weight: 600; color: rgba(0,0,0,0.6); margin-bottom: 4px; }
+    .hero__title { font-size: 42px; font-weight: 800; color: var(--color-text); line-height: 1.1; margin-bottom: 4px; letter-spacing: -0.02em; }
+    .hero__org { font-size: 15px; font-weight: 500; color: rgba(0,0,0,0.55); }
+    .hero__stats { display: flex; align-items: center; }
+    .hero__stat { text-align: center; padding: 0 24px; border-right: 1px solid rgba(0,0,0,0.12); }
+    .hero__stat:last-child { border-right: none; }
+    .hero__stat-value { font-size: 36px; font-weight: 800; color: var(--color-text); line-height: 1.1; letter-spacing: -0.02em; }
+    .hero__stat-label { font-size: 13px; font-weight: 600; color: var(--color-primitive-600); margin-top: 2px; }
+
+    .dash-grid { display: flex; flex-direction: column; gap: 20px; padding: 24px 32px 48px; }
+    .dash-row { display: grid; gap: 20px; }
+    .dash-row--2 { grid-template-columns: 1fr 1fr; }
+    .dash-row--1 { grid-template-columns: 1fr; }
+
+    .dash-card {
+      background: var(--color-surface); border-radius: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
+      overflow: hidden; display: flex; flex-direction: column;
+    }
+    .dash-card__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 24px 14px; flex-shrink: 0;
+      border-bottom: 1px solid var(--color-border); gap: 12px;
+    }
+    .dash-card__title {
+      font-size: 16px; font-weight: 700; color: var(--color-text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dash-card__title .material-symbols-outlined { font-size: 20px; color: var(--color-text-muted); }
+    .dash-card__actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .dash-card__body { flex: 1; padding: 20px 24px 24px; min-height: 0; }
+
+    .dash-link { font-size: 13px; font-weight: 600; color: var(--color-primitive-600); text-decoration: none; cursor: pointer; white-space: nowrap; }
+    .dash-link:hover { text-decoration: underline; }
+    .dash-sep { color: var(--color-neutral-300); margin: 0 4px; }
+    .dash-tabs { display: flex; align-items: center; font-size: 13px; font-weight: 600; }
+    .dash-tabs__item { padding: 4px 12px; color: var(--color-text-muted); cursor: pointer; border-right: 1px solid var(--color-neutral-200); }
+    .dash-tabs__item:last-child { border-right: none; }
+    .dash-tabs__item--active { color: var(--color-primitive-600); }
+
+    .crop-pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .crop-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--color-border); background: #fff; color: var(--color-text);
+      font-family: var(--font-family);
+    }
+    .crop-pill--active { background: var(--color-primitive-600); color: #fff; border-color: var(--color-primitive-600); }
+    .crop-pill .material-symbols-outlined { font-size: 16px; }
+    .crop-bar-chart__row { display: flex; align-items: stretch; min-height: 120px; padding-top: 8px; }
+    .crop-bar-chart__col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; padding: 0 4px; }
+    .crop-bar-chart__bar { width: 100%; border-radius: 4px 4px 0 0; background: #d4edda; }
+    .crop-bar-chart__val { font-size: 11px; font-weight: 600; color: var(--color-text-muted); }
+    .crop-bar-chart__stage { font-size: 10px; color: var(--color-text-muted); text-align: center; margin-top: 4px; border-top: 1px solid var(--color-border); padding-top: 4px; width: 100%; }
+
+    .home-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; padding: 40px 20px; text-align: center; color: var(--color-text-muted);
+    }
+    .home-empty__icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .home-empty__icon--bell { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
+    .home-empty__icon--bell .material-symbols-outlined { font-size: 36px; color: #3b82f6; }
+    .home-empty__icon--field { background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%); }
+    .home-empty__icon--field .material-symbols-outlined { font-size: 36px; color: #2563eb; }
+    .home-empty__icon--scout { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); }
+    .home-empty__icon--scout .material-symbols-outlined { font-size: 36px; color: #6366f1; }
+    .home-empty__text { font-size: 14px; font-weight: 500; }
+
+    .weather-grid { display: flex; align-items: stretch; }
+    .weather-current {
+      flex-shrink: 0; width: 180px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 4px; padding: 16px;
+      border-right: 1px solid var(--color-border);
+    }
+    .weather-current__icon { font-size: 40px; color: #64748b; }
+    .weather-current__temp-row { display: flex; align-items: flex-start; gap: 2px; }
+    .weather-current__lo { font-size: 14px; color: var(--color-text-muted); margin-right: 4px; align-self: flex-end; margin-bottom: 8px; }
+    .weather-current__temp { font-size: 48px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; }
+    .weather-current__unit { font-size: 14px; font-weight: 600; color: var(--color-text-muted); }
+    .weather-current__hi { font-size: 14px; color: var(--color-text-muted); margin-left: 4px; align-self: flex-start; margin-top: 4px; }
+    .weather-current__detail { font-size: 12px; color: var(--color-text-muted); display: flex; align-items: center; gap: 4px; }
+    .weather-current__detail .material-symbols-outlined { font-size: 14px; }
+
+    .weather-forecast { flex: 1; display: flex; min-width: 0; border-right: 1px solid var(--color-border); }
+    .weather-day {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 2px; padding: 12px 8px;
+      border-right: 1px solid var(--color-neutral-100); min-width: 0;
+    }
+    .weather-day:last-child { border-right: none; }
+    .weather-day__name { font-size: 12px; font-weight: 600; color: var(--color-text-muted); }
+    .weather-day__temps { display: flex; align-items: baseline; gap: 2px; }
+    .weather-day__hi { font-size: 20px; font-weight: 800; }
+    .weather-day__lo { font-size: 13px; color: var(--color-text-muted); font-weight: 500; }
+    .weather-day__icon .material-symbols-outlined { font-size: 22px; color: #64748b; }
+    .weather-day__wind { font-size: 11px; color: var(--color-text-muted); text-align: center; }
+    .weather-day__wind-speed { font-size: 16px; font-weight: 700; color: var(--color-text); display: block; }
+    .weather-day__precip { font-size: 11px; color: #3b82f6; display: flex; align-items: center; gap: 3px; }
+    .weather-day__precip .material-symbols-outlined { font-size: 12px; }
+
+    .weather-precip {
+      flex-shrink: 0; width: 320px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px; padding: 12px 16px;
+    }
+    .precip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; width: 100%; }
+    .precip-col { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 6px; }
+    .precip-col--last { background: var(--color-neutral-50); border-radius: 8px 0 0 8px; }
+    .precip-col--next { background: #e8f4fd; }
+    .precip-col__sub { display: flex; gap: 0; width: 100%; }
+    .precip-col__sub-item { flex: 1; text-align: center; font-size: 10px; color: var(--color-text-muted); }
+    .precip-col__sub-val { font-size: 14px; font-weight: 700; display: block; }
+    .precip-col--next .precip-col__sub-val { color: var(--color-primitive-600); }
+    .precip-col__label { font-size: 11px; font-weight: 600; color: var(--color-text-muted); }
+    .weather-gdd { font-size: 13px; color: var(--color-text-muted); text-align: center; }
+    .weather-gdd__value { font-size: 28px; font-weight: 800; color: #16a34a; display: block; }
+
+    .donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 20px 0; }
+    .donut { position: relative; width: 160px; height: 160px; }
+    .donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .donut__center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .donut__center-label { font-size: 12px; color: var(--color-text-muted); }
+    .donut__center-value { font-size: 32px; font-weight: 800; line-height: 1.1; }
+    .donut-legend { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .donut-legend__item { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; color: var(--color-text-muted); }
+    .donut-legend__dot { width: 10px; height: 10px; border-radius: 3px; }
+
+    .filter-pill--fav {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border); background: #fff;
+      font-size: 13px; font-weight: 600; color: var(--color-text);
+      cursor: pointer; font-family: var(--font-family);
+    }
+    .filter-pill--fav .material-symbols-outlined { font-size: 16px; color: #f59e0b; }
+    .crop-type-filter { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text-muted); }
+    .crop-type-filter__value { font-weight: 600; color: var(--color-primitive-600); cursor: pointer; }
+    .crop-type-filter .material-symbols-outlined { font-size: 16px; color: var(--color-primitive-600); }
+  </style>
+</head>
+<body>
+
+  <div class="page-shell">
+
+    <!-- SIDEBAR NAV -->
+    <aside class="page-shell__side">
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#" class="nav__item" data-page="home" aria-current="page" onclick="navigateTo(this); return false;">
+          <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
+          <span class="nav__label">Home</span>
+        </a>
+        <a href="#" class="nav__item" data-page="growers" onclick="navigateTo(this); return false;">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
+          <span class="nav__label">Growers</span>
+        </a>
+        <a href="#" class="nav__item" data-page="fields" onclick="navigateTo(this); return false;">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="#" class="nav__item" data-page="scout" onclick="navigateTo(this); return false;">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+          <span class="nav__label">Scout</span>
+        </a>
+        <a href="#" class="nav__item" data-page="weather" onclick="navigateTo(this); return false;">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
+          <span class="nav__label">Weather</span>
+        </a>
+        <a href="#" class="nav__item" data-page="disease" onclick="navigateTo(this); return false;">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">coronavirus</span></span>
+          <span class="nav__label">Disease</span>
+        </a>
+        <a href="#" class="nav__item" data-page="groups" onclick="navigateTo(this); return false;">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">folder_shared</span></span>
+          <span class="nav__label">Groups</span>
+        </a>
+        <a href="#" class="nav__item" data-page="settings" onclick="navigateTo(this); return false;">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+          <span class="nav__label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN COLUMN -->
+    <div class="page-shell__main">
+
+      <!-- HEADER -->
+      <header class="header">
+        <div class="header__left">
+          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+        </div>
+        <div class="header__center">
+          <div class="header__search-wrap">
+            <span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <input type="search" class="header__search" placeholder="Search fields, growers..." />
+          </div>
+        </div>
+        <div class="header__right">
+          <span class="header__user-name">Sample User</span>
+          <span class="header__avatar" aria-label="User avatar">SU</span>
+        </div>
+      </header>
+
+      <!-- ========== PAGE-SPECIFIC TOOLBAR + TABS ========== -->
+      <!-- Each page section includes its own toolbar and optional tab bar -->
+
+      <!-- FIELDS PAGE -->
+      <div class="page-section" data-page-section="fields" style="display:none;">
+        <div class="page-toolbar">
+          <h1 class="page-toolbar__title">Fields</h1>
+          <div class="page-toolbar__controls">
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-danger-500);">notifications</span></span> Alerts only</button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral" onclick="openAdvancedFilters()"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">dashboard_customize</span></span> Customize table</button>
+            <span class="page-toolbar__divider"></span>
+            <div class="view-switcher view-switcher--with-collapse" id="view-switcher">
+              <button class="view-switcher__trigger" onclick="toggleViewSwitcher()"><span class="material-symbols-outlined" id="vs-icon">view_list</span><span class="view-switcher__label" id="vs-label">List view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+              <button class="view-switcher__collapse" aria-label="Collapse"><span class="material-symbols-outlined">expand_less</span></button>
+              <div class="view-switcher__menu" id="view-switcher-menu">
+                <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')"><span class="material-symbols-outlined">view_list</span> List view</button>
+                <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+                <button class="view-switcher__option" onclick="setView('map','map','Map view')"><span class="material-symbols-outlined">map</span> Map view</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="page-tabs">
+          <div class="tabs" role="tablist">
+            <button class="tabs__item" role="tab" aria-selected="true"><span class="tabs__icon-wrap"><span class="tabs__icon tabs__icon--badge"><img src="../assets/icons/scouting/all.svg" alt="All" /></span><span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">12</span></span><span class="tabs__label">All</span><span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISEASE PAGE -->
+      <div class="page-section" data-page-section="disease" style="display:none;">
+        <div class="page-toolbar">
+          <h1 class="page-toolbar__title">Disease</h1>
+          <div class="page-toolbar__controls">
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">settings</span></span> Affected only <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span></button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral" onclick="openAdvancedFilters()"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+            <span class="page-toolbar__divider"></span>
+            <div class="view-switcher view-switcher--with-collapse" id="view-switcher-disease">
+              <button class="view-switcher__trigger" onclick="toggleViewSwitcherById('view-switcher-disease')"><span class="material-symbols-outlined">view_list</span><span class="view-switcher__label">List view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+              <button class="view-switcher__collapse"><span class="material-symbols-outlined">expand_less</span></button>
+              <div class="view-switcher__menu">
+                <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')"><span class="material-symbols-outlined">view_list</span> List view</button>
+                <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+                <button class="view-switcher__option" onclick="setView('map','map','Map view')"><span class="material-symbols-outlined">map</span> Map view</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="page-tabs">
+          <div class="tabs" role="tablist">
+            <button class="tabs__item" role="tab" aria-selected="true">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="../assets/icons/scouting/all.svg" alt="All" /></span>
+                <span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">6</span>
+              </span>
+              <span class="tabs__label">All</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="../assets/icons/scouting/tar-spot.svg" alt="Tar spot" /></span>
+                <span class="counter-badge counter-badge--danger" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">3</span>
+              </span>
+              <span class="tabs__label">Tar spot</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="../assets/icons/scouting/corn-blight.png" alt="Blight" /></span>
+                <span class="counter-badge counter-badge--warning" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">2</span>
+              </span>
+              <span class="tabs__label">Blight</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="../assets/icons/scouting/corn-gls.png" alt="GLS" /></span>
+                <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">2</span>
+              </span>
+              <span class="tabs__label">GLS</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="../assets/icons/scouting/corn-sorust.png" alt="Southern rust" /></span>
+                <span class="counter-badge counter-badge--danger" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">1</span>
+              </span>
+              <span class="tabs__label">Southern rust</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="../assets/icons/scouting/septoria-brown-spot.svg" alt="FLS" /></span>
+                <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">1</span>
+              </span>
+              <span class="tabs__label">FLS</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button class="tabs__item" role="tab" aria-selected="false">
+              <span class="tabs__icon-wrap">
+                <span class="tabs__icon tabs__icon--badge"><img src="../assets/icons/scouting/target-leaf-spot.svg" alt="Target spot" /></span>
+                <span class="counter-badge counter-badge--info" style="font-size:10px;min-width:18px;height:16px;padding:0 4px;">0</span>
+              </span>
+              <span class="tabs__label">Target spot</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCOUT PAGE -->
+      <div class="page-section" data-page-section="scout" style="display:none;">
+        <div class="page-toolbar">
+          <h1 class="page-toolbar__title">Scout</h1>
+          <div class="page-toolbar__controls">
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral" onclick="openAdvancedFilters()"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+            <span class="page-toolbar__divider"></span>
+            <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">dashboard_customize</span></span> Customize table</button>
+            <span class="page-toolbar__divider"></span>
+            <div class="view-switcher view-switcher--with-collapse" id="view-switcher-scout">
+              <button class="view-switcher__trigger" onclick="toggleViewSwitcherById('view-switcher-scout')"><span class="material-symbols-outlined">view_list</span><span class="view-switcher__label">List view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+              <button class="view-switcher__collapse"><span class="material-symbols-outlined">expand_less</span></button>
+              <div class="view-switcher__menu">
+                <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')"><span class="material-symbols-outlined">view_list</span> List view</button>
+                <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+                <button class="view-switcher__option" onclick="setView('map','map','Map view')"><span class="material-symbols-outlined">map</span> Map view</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOME / GROWERS / WEATHER / GROUPS / SETTINGS (generic placeholder pages) -->
+      <!-- HOME has no toolbar — the dashboard hero replaces it -->
+      <div class="page-section" data-page-section="home"></div>
+      <div class="page-section" data-page-section="growers" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Growers</h1><div class="page-toolbar__controls">
+          <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+          <span class="page-toolbar__divider"></span>
+          <button class="filter-pill filter-pill--neutral" onclick="openAdvancedFilters()"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+        </div></div>
+      </div>
+      <div class="page-section" data-page-section="weather" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Weather</h1><div class="page-toolbar__controls">
+          <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+          <span class="page-toolbar__divider"></span>
+          <div class="view-switcher view-switcher--with-collapse" id="view-switcher-weather">
+            <button class="view-switcher__trigger" onclick="toggleViewSwitcherById('view-switcher-weather')"><span class="material-symbols-outlined">view_list</span><span class="view-switcher__label">List view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+            <button class="view-switcher__collapse"><span class="material-symbols-outlined">expand_less</span></button>
+            <div class="view-switcher__menu">
+              <button class="view-switcher__option view-switcher__option--active" onclick="setView('list','view_list','List view')"><span class="material-symbols-outlined">view_list</span> List view</button>
+              <button class="view-switcher__option" onclick="setView('thumbnail','grid_view','Thumbnail view')"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+              <button class="view-switcher__option" onclick="setView('map','map','Map view')"><span class="material-symbols-outlined">map</span> Map view</button>
+            </div>
+          </div>
+        </div></div>
+      </div>
+      <div class="page-section" data-page-section="groups" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Groups</h1><div class="page-toolbar__controls"></div></div>
+      </div>
+      <div class="page-section" data-page-section="settings" style="display:none;">
+        <div class="page-toolbar"><h1 class="page-toolbar__title">Settings</h1><div class="page-toolbar__controls"></div></div>
+      </div>
+
+      <!-- CONTENT AREA: LIST VIEW (default) -->
+      <main class="page-content" id="content-list" style="padding:0;display:none;">
+        <!-- Table header -->
+        <div style="display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid var(--color-border); background:var(--color-neutral-100); font-size:12px; font-weight:400; color:var(--color-text-muted);">
+          <span style="flex:0 0 18%; padding:0 12px; border-right:1px solid var(--color-border);">Field</span>
+          <span style="flex:0 0 12%; padding:0 12px; border-right:1px solid var(--color-border);">Farm</span>
+          <span style="flex:0 0 12%; padding:0 12px; border-right:1px solid var(--color-border);">Grower</span>
+          <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">Acres</span>
+          <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">Crop</span>
+          <span style="flex:0 0 10%; padding:0 12px; border-right:1px solid var(--color-border);">Last Flight</span>
+          <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">GDD</span>
+          <span style="flex:0 0 12%; padding:0 12px; border-right:1px solid var(--color-border);">Disease</span>
+          <span style="flex:1; padding:0 12px;">Status</span>
+        </div>
+        <!-- Clickable rows -->
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('Ridgeline North 40','Oakwood','Greenfield Ag','79.2','N/A','N/A')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">Ridgeline North 40</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Oakwood</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Greenfield Ag</span>
+          <span style="flex:0 0 8%; padding:8px 12px;">79.2</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">Unknown</span>
+          <span style="flex:0 0 10%; padding:8px 12px; color:var(--color-text-muted);">218 days ago</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">N/A</span>
+          <span style="flex:0 0 12%; padding:8px 12px; color:var(--color-text-muted);">--</span>
+          <span style="flex:1; padding:8px 12px; color:var(--color-success-600);">No issues</span>
+        </div>
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('Creekside 80','Home','J. Parker','102.4','N/A','N/A')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">Creekside 80</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Home</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">J. Parker</span>
+          <span style="flex:0 0 8%; padding:8px 12px;">102.4</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">Unknown</span>
+          <span style="flex:0 0 10%; padding:8px 12px; color:var(--color-text-muted);">N/A</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">N/A</span>
+          <span style="flex:0 0 12%; padding:8px 12px; color:var(--color-text-muted);">--</span>
+          <span style="flex:1; padding:8px 12px; color:var(--color-success-600);">No issues</span>
+        </div>
+        <div class="data-row" style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px; cursor:pointer;" onclick="showFieldDetail('Prairie Bend 12','Home','T. Brooks','88.1','Corn','1,245')">
+          <span style="flex:0 0 18%; padding:8px 12px; font-weight:500;">Prairie Bend 12</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">Home</span>
+          <span style="flex:0 0 12%; padding:8px 12px;">T. Brooks</span>
+          <span style="flex:0 0 8%; padding:8px 12px;">88.1</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-brand);">Corn</span>
+          <span style="flex:0 0 10%; padding:8px 12px;">Mar 15</span>
+          <span style="flex:0 0 8%; padding:8px 12px; color:var(--color-warning-600);">1,245</span>
+          <span style="flex:0 0 12%; padding:8px 12px; color:var(--color-text-muted);">--</span>
+          <span style="flex:1; padding:8px 12px; color:var(--color-success-600);">No issues</span>
+        </div>
+      </main>
+
+      <!-- CONTENT AREA: FIELD DETAIL / OVERVIEW (shown when a field is clicked) -->
+      <main class="page-content" id="content-field-detail" style="display:none;">
+
+        <!-- Back link -->
+        <a href="#" onclick="backToList(); return false;" style="display:inline-flex; align-items:center; gap:4px; font-size:14px; font-weight:500; color:var(--color-action); text-decoration:none; margin-bottom:16px;">
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
+          Back to fields
+        </a>
+
+        <!-- FIELD DETAIL HEADER -->
+        <div class="field-detail-header" id="field-detail-card">
+
+          <!-- Boundary thumbnail -->
+          <div class="field-detail-header__thumb">
+            <div class="field-detail-header__thumb-placeholder"></div>
+          </div>
+
+          <!-- Main content -->
+          <div class="field-detail-header__main">
+            <div class="field-detail-header__top">
+              <div class="field-detail-header__title-group">
+                <div class="field-detail-header__title-row">
+                  <h2 class="field-detail-header__title" id="fd-title">Ridgeline North 40</h2>
+                  <span class="field-detail-header__favorite">
+                    <span class="material-symbols-outlined" style="font-size:20px;">star_border</span>
+                    Add to favorite
+                  </span>
+                </div>
+                <div class="field-detail-header__subtitle" id="fd-subtitle">
+                  Oakwood, <a href="#">Greenfield Ag</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="field-detail-header__info" id="fd-info">
+              Farm Name: <span id="fd-farm">Oakwood</span>
+              <a href="#" class="field-detail-header__info-edit">
+                <span class="material-symbols-outlined" style="font-size:14px;">edit</span> Edit
+              </a><br />
+              Field Name: <span id="fd-field-name">Ridgeline North 40</span><br />
+              Reported Area: <span id="fd-reported-area">79.41</span><br />
+              <span class="field-detail-header__info-review">For review(Farm was updated)</span>
+            </div>
+
+            <div class="field-detail-header__meta-row">
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Area</span>
+                <span class="field-detail-header__meta-value" id="fd-area">79.2 ac</span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Planting date</span>
+                <span class="field-detail-header__meta-value field-detail-header__meta-value--na">
+                  <span class="material-symbols-outlined" style="font-size:14px;">agriculture</span> N/A
+                </span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label" style="color:var(--color-warning-600);">GDD</span>
+                <span class="field-detail-header__meta-value" id="fd-gdd">N/A</span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Growth stage</span>
+                <span class="field-detail-header__meta-value field-detail-header__meta-value--na">N/A</span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Crop</span>
+                <span class="field-detail-header__meta-value" id="fd-crop">
+                  <span class="field-detail-header__meta-value--warning">Crop unknown</span>
+                  <span class="field-detail-header__meta-value--action">+ Add</span>
+                </span>
+              </div>
+              <div class="field-detail-header__meta-col">
+                <span class="field-detail-header__meta-label">Hybrid / Variety</span>
+                <span class="field-detail-header__meta-value field-detail-header__meta-value--na">N/A</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div class="field-detail-header__right">
+            <div class="field-detail-header__right-row">
+              <div class="field-detail-header__right-item">
+                <span class="field-detail-header__right-label">Last scout</span>
+                <span class="field-detail-header__right-value">No scouts yet</span>
+              </div>
+              <div class="field-detail-header__right-item">
+                <span class="field-detail-header__right-label">Latest flight</span>
+                <span class="field-detail-header__right-value field-detail-header__right-value--link">
+                  <span class="material-symbols-outlined" style="font-size:14px;">close</span> 218 days ago
+                </span>
+              </div>
+            </div>
+            <div class="field-detail-header__tags">
+              <span class="field-detail-header__tags-label">Field tags</span>
+              <button class="field-detail-header__tag-btn">
+                <span class="material-symbols-outlined" style="font-size:14px;">edit</span> Add tag
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FIELD OVERVIEW CONTENT (below the detail header) -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-l); margin-top:var(--spacing-l);">
+
+          <!-- Imagery / Layers -->
+          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:20px;">
+            <h3 style="font-size:16px; font-weight:600; margin:0 0 12px;">Imagery Layers</h3>
+            <div style="width:100%; height:200px; background:var(--color-neutral-100); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; color:var(--color-text-muted); font-size:13px; margin-bottom:12px;">
+              <span class="material-symbols-outlined" style="font-size:32px; margin-right:8px; color:var(--color-neutral-400);">satellite_alt</span>
+              Satellite imagery with layer controls
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="filter-pill filter-pill--neutral" style="font-size:12px;">NDVI</button>
+              <button class="filter-pill filter-pill--neutral" style="font-size:12px;">True Color</button>
+              <button class="filter-pill filter-pill--neutral" style="font-size:12px;">Thermal</button>
+              <button class="filter-pill filter-pill--neutral" style="font-size:12px;">Emergence</button>
+            </div>
+          </div>
+
+          <!-- Scouting Pins -->
+          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <h3 style="font-size:16px; font-weight:600; margin:0;">Scouting</h3>
+              <button class="btn btn--brand" style="padding:4px 12px; font-size:12px;">
+                <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:14px;">add</span></span>
+                Add Pin
+              </button>
+            </div>
+            <div style="text-align:center; padding:32px 0; color:var(--color-text-muted); font-size:13px;">
+              <span class="material-symbols-outlined" style="font-size:36px; color:var(--color-neutral-300); display:block; margin-bottom:8px;">pin_drop</span>
+              No scouts yet. Create a scouting pin to begin.
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:20px;">
+            <h3 style="font-size:16px; font-weight:600; margin:0 0 12px;">Activity Timeline</h3>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div style="display:flex; gap:12px; font-size:13px;">
+                <span style="color:var(--color-text-muted); white-space:nowrap; min-width:80px;">218 days ago</span>
+                <span>Latest flight imagery captured</span>
+              </div>
+              <div style="display:flex; gap:12px; font-size:13px;">
+                <span style="color:var(--color-text-muted); white-space:nowrap; min-width:80px;">220 days ago</span>
+                <span>Farm name updated</span>
+              </div>
+              <div style="display:flex; gap:12px; font-size:13px;">
+                <span style="color:var(--color-text-muted); white-space:nowrap; min-width:80px;">365 days ago</span>
+                <span>Field enrolled in monitoring</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reports -->
+          <div style="background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-xl); padding:20px;">
+            <h3 style="font-size:16px; font-weight:600; margin:0 0 12px;">Reports</h3>
+            <div style="text-align:center; padding:32px 0; color:var(--color-text-muted); font-size:13px;">
+              <span class="material-symbols-outlined" style="font-size:36px; color:var(--color-neutral-300); display:block; margin-bottom:8px;">description</span>
+              No reports available for this field.
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- CONTENT AREA: THUMBNAIL VIEW -->
+      <main class="page-content" id="content-thumbnail" style="display:none;">
+
+        <!-- Thumbnail search/sort bar -->
+        <div class="thumb-bar">
+          <div class="thumb-bar__left">
+            <div class="thumb-bar__search">
+              <input type="search" class="input" placeholder="Search by field or farm name" style="width:240px; height:34px; font-size:13px;" />
+              <button class="thumb-bar__search-btn"><span class="material-symbols-outlined" style="font-size:18px;">search</span></button>
+            </div>
+            <span class="thumb-bar__sort-label">Sort by</span>
+            <button class="filter-pill filter-pill--neutral" style="height:30px; font-size:12px;">
+              Area affected
+              <span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">expand_more</span></span>
+            </button>
+            <button class="thumb-bar__sort-dir" aria-label="Sort direction">
+              <span class="material-symbols-outlined" style="font-size:18px;">sort</span>
+            </button>
+          </div>
+          <div class="thumb-bar__right">
+            <span class="thumb-bar__aerial-dot"></span>
+            <span style="font-size:13px; color:var(--color-text-muted);">Aerial</span>
+            <span class="material-symbols-outlined" style="font-size:14px; color:var(--color-text-muted);">expand_more</span>
+          </div>
+        </div>
+
+        <!-- Thumbnail card grid -->
+        <div class="thumb-grid">
+
+          <!-- Card 1: Creekside 80 (N/A data, no boundary image) -->
+          <div class="field-card">
+            <div class="thumb-card__layout">
+              <div class="field-card__body" style="flex:1;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('Creekside 80','Home','J. Parker','102.4','N/A','N/A'); return false;">Creekside 80</a>
+                </div>
+                <div class="field-card__subtitle">
+                  <span>Home</span>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">J. Parker</a>
+                </div>
+                <div class="field-card__meta">
+                  <span>102.4 ac</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">agriculture</span> N/A</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na">Crop unknown</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na">GDD: N/A</span>
+                </div>
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">eco</span> <span style="color:var(--color-text-muted);">Hybrid / Variety</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">flight</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta" style="flex-wrap:wrap; row-gap:4px;">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">trending_up</span> <span style="color:var(--color-text-muted);">Yield forecast</span> <span class="field-card__meta-na">N/A</span></span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> <span style="color:var(--color-text-muted);">Emergence</span> <span class="field-card__meta-na">N/A</span></span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">landscape</span> <span style="color:var(--color-text-muted);">Field potential</span> <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle; color:var(--color-neutral-400);">do_not_disturb_on</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <p class="field-card__status-msg" style="color:var(--color-success-600); font-size:12px;">No issues detected</p>
+                <hr class="field-card__divider" />
+              </div>
+              <div class="thumb-card__image thumb-card__image--empty"></div>
+            </div>
+            <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('Creekside 80','Home','J. Parker','102.4','N/A','N/A')">
+                <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
+                View field
+              </button>
+              <a href="#" class="field-card__action" style="flex:0;">Assign</a>
+            </div>
+          </div>
+
+          <!-- Card 2: Harvest Hill (N/A data, with boundary image) -->
+          <div class="field-card">
+            <div class="thumb-card__layout">
+              <div class="field-card__body" style="flex:1;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('Harvest Hill','Harvest Hill','J. Parker','70.7','N/A','N/A'); return false;">Harvest Hill</a>
+                </div>
+                <div class="field-card__subtitle">
+                  <span>Harvest Hill,</span>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">J. Parker</a>
+                </div>
+                <div class="field-card__meta">
+                  <span>70.7 ac</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">agriculture</span> N/A</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na">Crop unknown</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span class="field-card__meta-na">GDD: N/A</span>
+                </div>
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">eco</span> <span style="color:var(--color-text-muted);">Hybrid / Variety</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">flight</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta" style="flex-wrap:wrap; row-gap:4px;">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">trending_up</span> <span style="color:var(--color-text-muted);">Yield forecast</span> <span class="field-card__meta-na">N/A</span></span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> <span style="color:var(--color-text-muted);">Emergence</span> <span class="field-card__meta-na">N/A</span></span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">landscape</span> <span style="color:var(--color-text-muted);">Field potential</span> <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle; color:var(--color-neutral-400);">do_not_disturb_on</span> <span class="field-card__meta-na">N/A</span></span>
+                </div>
+                <hr class="field-card__divider" />
+                <p class="field-card__status-msg" style="color:var(--color-success-600); font-size:12px;">No issues detected</p>
+                <hr class="field-card__divider" />
+              </div>
+              <div class="thumb-card__image">
+                <img src="https://htb84o8eyb.execute-api.us-east-1.amazonaws.com/prod/boundary/7dfbd552-8e05-4d53-b12d-e828dbccb766?color=808082&step=10&size=[320,300]" alt="Field boundary" style="max-width:100%; max-height:100%; object-fit:contain;" />
+              </div>
+            </div>
+            <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('Harvest Hill','Harvest Hill','J. Parker','70.7','N/A','N/A')">
+                <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
+                View field
+              </button>
+              <a href="#" class="field-card__action" style="flex:0;">Assign</a>
+            </div>
+          </div>
+
+          <!-- Card 3: Prairie Bend 12 (with data populated) -->
+          <div class="field-card">
+            <div class="thumb-card__layout">
+              <div class="field-card__body" style="flex:1;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                  <a href="#" class="field-card__title" style="color:var(--color-action); text-decoration:none; font-size:20px; font-weight:700;" onclick="showFieldDetail('Prairie Bend 12','Home','T. Brooks','88.1','Corn','1,245'); return false;">Prairie Bend 12</a>
+                </div>
+                <div class="field-card__subtitle">
+                  <span>Home,</span>
+                  <a href="#" style="color:var(--color-action); text-decoration:none; font-size:14px;">T. Brooks</a>
+                </div>
+                <div class="field-card__meta">
+                  <span>88.1 ac</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">agriculture</span> Apr 12</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span style="color:var(--color-brand);">Corn</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span style="color:var(--color-warning-600);">GDD: 1,245</span>
+                </div>
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">eco</span> <span style="color:var(--color-text-muted);">Hybrid / Variety</span> P1185</span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">flight</span> Mar 15, 2026</span>
+                </div>
+                <hr class="field-card__divider" />
+                <div class="field-card__meta" style="flex-wrap:wrap; row-gap:4px;">
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">trending_up</span> <span style="color:var(--color-text-muted);">Yield forecast</span> 185 bu/ac</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> <span style="color:var(--color-text-muted);">Emergence</span> 94%</span>
+                  <span class="field-card__meta-sep">|</span>
+                  <span><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">landscape</span> <span style="color:var(--color-text-muted);">Field potential</span> <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle; color:var(--color-success-500);">check_circle</span> Good</span>
+                </div>
+                <hr class="field-card__divider" />
+                <p class="field-card__status-msg" style="color:var(--color-success-600); font-size:12px;">No issues detected</p>
+                <hr class="field-card__divider" />
+              </div>
+              <div class="thumb-card__image">
+                <img src="https://htb84o8eyb.execute-api.us-east-1.amazonaws.com/prod/boundary/7dfbd552-8e05-4d53-b12d-e828dbccb766?color=808082&step=10&size=[320,300]" alt="Field boundary" style="max-width:100%; max-height:100%; object-fit:contain;" />
+              </div>
+            </div>
+            <div class="field-card__actions" style="padding:var(--spacing-s) var(--spacing-l) var(--spacing-m); gap:var(--spacing-m);">
+              <button class="btn btn--brand" style="padding:6px 14px; font-size:14px; border-radius:var(--radius-pill,20px);" onclick="showFieldDetail('Prairie Bend 12','Home','T. Brooks','88.1','Corn','1,245')">
+                <span class="btn__icon"><span class="material-symbols-outlined" style="font-size:16px;">pageview</span></span>
+                View field
+              </button>
+              <a href="#" class="field-card__action" style="flex:0;">Assign</a>
+            </div>
+          </div>
+
+        </div><!-- /.thumb-grid -->
+      </main>
+
+      <!-- CONTENT AREA: MAP VIEW -->
+      <main class="page-content" id="content-map" style="display:none;">
+        <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); font-size:14px;">
+          <span class="material-symbols-outlined" style="font-size:48px; margin-right:12px; color:var(--color-neutral-300);">map</span>
+          Map view — satellite imagery with field boundary overlays
+        </div>
+      </main>
+
+      <!-- PAGE-SPECIFIC CONTENT PLACEHOLDERS (for non-Fields pages) -->
+      <main class="page-content page-content--placeholder" data-page-content="home" style="padding:0; flex-direction:column;">
+        <div class="dashboard-scroll">
+
+          <!-- HERO -->
+          <div class="hero">
+            <div class="hero__bg"></div>
+            <div class="hero__content">
+              <div>
+                <div class="hero__date">Apr 02</div>
+                <div class="hero__title">Hello Ryan</div>
+                <div class="hero__org">IntelinAir</div>
+              </div>
+              <div class="hero__stats">
+                <div class="hero__stat"><div class="hero__stat-value">1</div><div class="hero__stat-label">Growers</div></div>
+                <div class="hero__stat"><div class="hero__stat-value">0</div><div class="hero__stat-label">Alerts</div></div>
+                <div class="hero__stat"><div class="hero__stat-value">451</div><div class="hero__stat-label">Fields</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dash-grid">
+
+            <!-- Row 1: Crop growth + Alerts overview -->
+            <div class="dash-row dash-row--2">
+              <div class="dash-card">
+                <div class="dash-card__header">
+                  <div class="dash-card__title"><span class="material-symbols-outlined">potted_plant</span> Crop growth</div>
+                </div>
+                <div class="dash-card__body">
+                  <div class="crop-pills">
+                    <button class="crop-pill crop-pill--active"><span class="material-symbols-outlined">eco</span> Soybeans 59</button>
+                    <button class="crop-pill"><span class="material-symbols-outlined">spa</span> Clover 1</button>
+                    <button class="crop-pill"><span class="material-symbols-outlined">help_outline</span> Crop unknown 391</button>
+                  </div>
+                  <div class="crop-bar-chart">
+                    <div class="crop-bar-chart__row">
+                      <div class="crop-bar-chart__col"><div class="crop-bar-chart__val">59</div><div class="crop-bar-chart__bar" style="height:100%;"></div><div class="crop-bar-chart__stage">Pre-VE</div></div>
+                      <div class="crop-bar-chart__col"><div class="crop-bar-chart__val">0</div><div class="crop-bar-chart__bar" style="height:2px;"></div><div class="crop-bar-chart__stage">VE</div></div>
+                      <div class="crop-bar-chart__col"><div class="crop-bar-chart__val">0</div><div class="crop-bar-chart__bar" style="height:2px;"></div><div class="crop-bar-chart__stage">V1</div></div>
+                      <div class="crop-bar-chart__col"><div class="crop-bar-chart__val">0</div><div class="crop-bar-chart__bar" style="height:2px;"></div><div class="crop-bar-chart__stage">V2</div></div>
+                      <div class="crop-bar-chart__col"><div class="crop-bar-chart__val">0</div><div class="crop-bar-chart__bar" style="height:2px;"></div><div class="crop-bar-chart__stage">V3</div></div>
+                      <div class="crop-bar-chart__col"><div class="crop-bar-chart__val">0</div><div class="crop-bar-chart__bar" style="height:2px;"></div><div class="crop-bar-chart__stage">R1</div></div>
+                      <div class="crop-bar-chart__col"><div class="crop-bar-chart__val">0</div><div class="crop-bar-chart__bar" style="height:2px;"></div><div class="crop-bar-chart__stage">R3</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="dash-card">
+                <div class="dash-card__header">
+                  <div class="dash-card__title"><span class="material-symbols-outlined">notifications</span> Alerts overview</div>
+                </div>
+                <div class="dash-card__body">
+                  <div class="home-empty">
+                    <div class="home-empty__icon home-empty__icon--bell"><span class="material-symbols-outlined">notifications</span></div>
+                    <div class="home-empty__text">No alerts detected</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Weather -->
+            <div class="dash-row dash-row--1">
+              <div class="dash-card">
+                <div class="dash-card__header">
+                  <div class="dash-card__title"><span class="material-symbols-outlined">navigation</span> Weather</div>
+                  <div class="dash-card__actions">
+                    <span class="dash-link">Champaign, Illinois</span>
+                    <span class="dash-sep">|</span>
+                    <span class="dash-link" style="color:var(--color-text-muted);">Manage locations</span>
+                  </div>
+                </div>
+                <div class="dash-card__body" style="padding:0;">
+                  <div class="weather-grid">
+                    <div class="weather-current">
+                      <span class="material-symbols-outlined weather-current__icon">dark_mode</span>
+                      <div class="weather-current__temp-row">
+                        <span class="weather-current__lo">41</span>
+                        <span class="weather-current__temp">48</span>
+                        <span class="weather-current__unit">&deg;F</span>
+                        <span class="weather-current__hi">N/A</span>
+                      </div>
+                      <div class="weather-current__detail"><span class="material-symbols-outlined">air</span> 15 ENE</div>
+                      <div class="weather-current__detail" style="color:#94a3b8;">GDD: N/A</div>
+                      <div class="weather-current__detail" style="color:#3b82f6;"><span class="material-symbols-outlined" style="font-size:14px;color:#3b82f6;">water_drop</span> 0.12" | 60%</div>
+                    </div>
+                    <div class="weather-forecast">
+                      <div class="weather-day">
+                        <span class="weather-day__name">Thu</span>
+                        <div class="weather-day__temps"><span class="weather-day__hi">74</span><span class="weather-day__lo"> 55</span></div>
+                        <div class="weather-day__icon"><span class="material-symbols-outlined">partly_cloudy_day</span></div>
+                        <div class="weather-day__wind"><span class="weather-day__wind-speed">28</span>S</div>
+                        <div style="font-size:10px;color:#94a3b8;">GDD: 14</div>
+                        <div class="weather-day__precip"><span class="material-symbols-outlined">water_drop</span>0.21" | 67%</div>
+                      </div>
+                      <div class="weather-day">
+                        <span class="weather-day__name">Fri</span>
+                        <div class="weather-day__temps"><span class="weather-day__hi">76</span><span class="weather-day__lo"> 60</span></div>
+                        <div class="weather-day__icon"><span class="material-symbols-outlined">cloud</span></div>
+                        <div class="weather-day__wind"><span class="weather-day__wind-speed">15</span>SSW</div>
+                        <div style="font-size:10px;color:#94a3b8;">GDD: 18</div>
+                        <div class="weather-day__precip"><span class="material-symbols-outlined">water_drop</span>0.4" | 24%</div>
+                      </div>
+                      <div class="weather-day">
+                        <span class="weather-day__name">Sat</span>
+                        <div class="weather-day__temps"><span class="weather-day__hi">63</span><span class="weather-day__lo"> 36</span></div>
+                        <div class="weather-day__icon"><span class="material-symbols-outlined">cloud</span></div>
+                        <div class="weather-day__wind"><span class="weather-day__wind-speed">21</span>WSW</div>
+                        <div style="font-size:10px;color:#94a3b8;">GDD: 6</div>
+                        <div class="weather-day__precip"><span class="material-symbols-outlined">water_drop</span>0.44" | 86%</div>
+                      </div>
+                      <div class="weather-day">
+                        <span class="weather-day__name">Sun</span>
+                        <div class="weather-day__temps"><span class="weather-day__hi">55</span><span class="weather-day__lo"> 33</span></div>
+                        <div class="weather-day__icon"><span class="material-symbols-outlined">cloud</span></div>
+                        <div class="weather-day__wind"><span class="weather-day__wind-speed">17</span>WNW</div>
+                        <div style="font-size:10px;color:#94a3b8;">GDD: 2</div>
+                        <div class="weather-day__precip" style="color:#94a3b8;"><span class="material-symbols-outlined" style="color:#94a3b8;">water_drop</span>0" | 3%</div>
+                      </div>
+                      <div class="weather-day">
+                        <span class="weather-day__name">Mon</span>
+                        <div class="weather-day__temps"><span class="weather-day__hi">60</span><span class="weather-day__lo"> 33</span></div>
+                        <div class="weather-day__icon"><span class="material-symbols-outlined">cloud</span></div>
+                        <div class="weather-day__wind"><span class="weather-day__wind-speed">16</span>WNW</div>
+                        <div style="font-size:10px;color:#94a3b8;">GDD: 5</div>
+                        <div class="weather-day__precip" style="color:#94a3b8;"><span class="material-symbols-outlined" style="color:#94a3b8;">water_drop</span>0" | 5%</div>
+                      </div>
+                      <div class="weather-day" style="border-right:none;">
+                        <span class="weather-day__name">Tue</span>
+                        <div class="weather-day__temps"><span class="weather-day__hi">53</span><span class="weather-day__lo"> 39</span></div>
+                        <div class="weather-day__icon"><span class="material-symbols-outlined">cloud</span></div>
+                        <div class="weather-day__wind"><span class="weather-day__wind-speed">14</span>E</div>
+                        <div style="font-size:10px;color:#94a3b8;">GDD: 1</div>
+                        <div class="weather-day__precip" style="color:#94a3b8;"><span class="material-symbols-outlined" style="color:#94a3b8;">water_drop</span>0" | 7%</div>
+                      </div>
+                    </div>
+                    <div class="weather-precip">
+                      <div class="precip-grid">
+                        <div class="precip-col precip-col--last">
+                          <div class="precip-col__sub">
+                            <div class="precip-col__sub-item">48h<br /><span class="precip-col__sub-val">1.64"</span></div>
+                            <div class="precip-col__sub-item">24h<br /><span class="precip-col__sub-val">1.49"</span></div>
+                          </div>
+                          <div style="display:flex;gap:8px;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-text-muted);">water_drop</span><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-text-muted);">water_drop</span></div>
+                          <div class="precip-col__label">Last</div>
+                        </div>
+                        <div class="precip-col precip-col--next">
+                          <div class="precip-col__sub">
+                            <div class="precip-col__sub-item">24h<br /><span class="precip-col__sub-val">0.12"</span></div>
+                            <div class="precip-col__sub-item">48h<br /><span class="precip-col__sub-val">0.33"</span></div>
+                          </div>
+                          <div style="display:flex;gap:8px;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-primitive-600);">water_drop</span><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-primitive-600);">water_drop</span></div>
+                          <div class="precip-col__label">Next</div>
+                        </div>
+                        <div class="precip-col">
+                          <div class="precip-col__sub">
+                            <div class="precip-col__sub-item">2026<br /><span class="precip-col__sub-val">7.56"</span></div>
+                            <div class="precip-col__sub-item">2025<br /><span class="precip-col__sub-val">4.29"</span></div>
+                          </div>
+                          <div style="display:flex;gap:8px;"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-text-muted);">water_drop</span><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-text-muted);">water_drop</span></div>
+                          <div class="precip-col__label">Ytd (Jan 1)</div>
+                        </div>
+                      </div>
+                      <div class="weather-gdd"><span class="weather-gdd__value">46</span> Expected weekly GDD</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 3: Scouting + Fields outlook -->
+            <div class="dash-row dash-row--2">
+              <div class="dash-card">
+                <div class="dash-card__header">
+                  <div class="dash-card__title"><span class="material-symbols-outlined">bug_report</span> Scouting</div>
+                  <div class="dash-tabs">
+                    <span class="dash-tabs__item dash-tabs__item--active">Day</span>
+                    <span class="dash-tabs__item">Week</span>
+                    <span class="dash-tabs__item">Season</span>
+                  </div>
+                </div>
+                <div class="dash-card__body">
+                  <div class="home-empty">
+                    <div class="home-empty__icon home-empty__icon--scout"><span class="material-symbols-outlined">description</span></div>
+                    <div class="home-empty__text">No scouting reports</div>
+                  </div>
+                </div>
+              </div>
+              <div class="dash-card">
+                <div class="dash-card__header">
+                  <div class="dash-card__title"><span class="material-symbols-outlined">travel_explore</span> Fields outlook</div>
+                </div>
+                <div class="dash-card__body">
+                  <div class="donut-wrap">
+                    <div class="donut">
+                      <svg viewBox="0 0 160 160">
+                        <circle cx="80" cy="80" r="65" fill="none" stroke="#e5e7eb" stroke-width="16" />
+                        <circle cx="80" cy="80" r="65" fill="none" stroke="#d1d5db" stroke-width="16" stroke-dasharray="306.3" stroke-dashoffset="102.1" stroke-linecap="round" />
+                      </svg>
+                      <div class="donut__center">
+                        <span class="donut__center-label">Total</span>
+                        <span class="donut__center-value">451</span>
+                      </div>
+                    </div>
+                    <div class="donut-legend">
+                      <span class="donut-legend__item"><span class="donut-legend__dot" style="background:#d1d5db;"></span> 451 Unknown</span>
+                      <span class="donut-legend__item"><span class="donut-legend__dot" style="background:#4ade80;"></span> 0 Good</span>
+                      <span class="donut-legend__item"><span class="donut-legend__dot" style="background:#fbbf24;"></span> 0 Fair</span>
+                      <span class="donut-legend__item"><span class="donut-legend__dot" style="background:#f87171;"></span> 0 Low</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 4: Fields to watch -->
+            <div class="dash-row dash-row--1">
+              <div class="dash-card">
+                <div class="dash-card__header">
+                  <div class="dash-card__title"><span class="material-symbols-outlined">warning</span> Fields to watch</div>
+                  <div class="dash-card__actions">
+                    <div class="crop-type-filter">Crop types <span class="crop-type-filter__value">All crops</span> <span class="material-symbols-outlined">expand_more</span></div>
+                    <button class="filter-pill--fav"><span class="material-symbols-outlined">star</span> Favorite fields</button>
+                    <button class="filter-pill--fav"><span class="material-symbols-outlined">star</span> Favorite growers</button>
+                  </div>
+                </div>
+                <div class="dash-card__body" style="min-height:300px;">
+                  <div class="home-empty" style="padding:60px 20px;">
+                    <div class="home-empty__icon home-empty__icon--field"><span class="material-symbols-outlined">warning</span></div>
+                    <div class="home-empty__text">No fields</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /dash-grid -->
+        </div><!-- /dashboard-scroll -->
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="growers" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">group</span>
+          <span style="font-size:16px; font-weight:500;">Growers</span>
+          <span style="font-size:13px;">Manage grower accounts, assign fields, and view contact details.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="disease" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">coronavirus</span>
+          <span style="font-size:16px; font-weight:500;">Disease Detection</span>
+          <span style="font-size:13px;">Monitor disease pressure across fields. Filter by pathogen type.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="scout" style="display:none; padding:0; flex-direction:column;">
+
+        <!-- Sub-header: All scouting reports -->
+        <div style="padding:12px 20px; border-bottom:1px solid var(--color-border); background:var(--color-surface);">
+          <span style="font-size:16px; font-weight:600; color:var(--color-action); border-bottom:3px solid var(--color-action); padding-bottom:10px;">All scouting reports</span>
+        </div>
+
+        <!-- Category tabs with Figma badge icons -->
+        <div style="display:flex; align-items:flex-end; gap:16px; padding:16px 20px 0; background:var(--color-surface); border-bottom:1px solid var(--color-border); overflow-x:auto; flex-shrink:0;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; border-bottom:3px solid var(--color-action); min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/all.svg" alt="All" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--info" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">198</span></div>
+            <span style="font-size:11px; color:var(--color-action); font-weight:500;">All</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/weeds.svg" alt="Weeds" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--success" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">43</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Weeds</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/crop-health.svg" alt="Crop health" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--warning" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">33</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Crop health</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/stand-cnt.svg" alt="Stand Count" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--info" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">25</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Stand Count</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/other.svg" alt="Other" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--info" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">22</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Other</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/weed-escape.svg" alt="Weed Escape" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--warning" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">12</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Weed Escape</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/low-emergence.svg" alt="Low Emergence" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--danger" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">10</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Low Emergence</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/pests.svg" alt="Pests" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--danger" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">8</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Pests</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/fertility.svg" alt="Fertility" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--success" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">8</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Fertility</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/disease.svg" alt="Disease" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--danger" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">6</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Disease</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/replant.svg" alt="Replant" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--warning" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">7</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Replant</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/low-crop-health.svg" alt="Low Crop Health" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--danger" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">5</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Crop Health</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/harvest.svg" alt="Harvest" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--success" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">4</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Harvest</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px; padding-bottom:8px; min-width:60px;">
+            <div style="position:relative;"><img src="../assets/icons/scouting/yield-estimation.svg" alt="Yield Estim" style="width:40px; height:40px;" /><span class="counter-badge counter-badge--success" style="position:absolute; top:-4px; right:-8px; font-size:9px; min-width:16px; height:15px; padding:0 3px;">6</span></div>
+            <span style="font-size:11px; color:var(--color-text-muted);">Yield Estim</span>
+          </div>
+        </div>
+
+        <!-- Status filter pills -->
+        <div style="display:flex; align-items:center; gap:8px; padding:12px 20px; background:var(--color-surface); border-bottom:1px solid var(--color-border); flex-shrink:0;">
+          <span class="filter-pill filter-pill--neutral" style="font-size:12px;">Needs scouted <span class="counter-badge counter-badge--info" style="font-size:9px; min-width:16px; height:15px; padding:0 3px; margin-left:4px;">59</span></span>
+          <span class="filter-pill filter-pill--neutral" style="font-size:12px;">In progress <span class="counter-badge counter-badge--warning" style="font-size:9px; min-width:16px; height:15px; padding:0 3px; margin-left:4px;">45</span></span>
+          <span style="font-size:13px; font-weight:500; color:var(--color-success-600);">Approved <span style="font-weight:600;">127</span></span>
+          <span style="font-size:13px; color:var(--color-text-muted);">Pending review <span class="counter-badge counter-badge--neutral" style="font-size:9px; min-width:16px; height:15px; padding:0 3px; margin-left:2px; background:var(--color-warning-500); color:var(--color-neutral-0);">7</span></span>
+        </div>
+
+        <!-- Create combined PDF button -->
+        <div style="padding:12px 20px; flex-shrink:0;">
+          <button class="btn btn--brand" style="padding:8px 20px; font-size:14px; border-radius:var(--radius-pill,20px);">Create combined PDF</button>
+        </div>
+
+        <!-- Scouting reports table -->
+        <div style="flex:1; overflow-y:auto;">
+          <!-- Table header -->
+          <div style="display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid var(--color-border); background:var(--color-neutral-100); font-size:12px; font-weight:400; color:var(--color-text-muted); position:sticky; top:0; z-index:1;">
+            <span style="flex:0 0 14%; padding:0 12px; border-right:1px solid var(--color-border);">Field</span>
+            <span style="flex:0 0 9%; padding:0 12px; border-right:1px solid var(--color-border);">Farm</span>
+            <span style="flex:0 0 14%; padding:0 12px; border-right:1px solid var(--color-border);">Grower</span>
+            <span style="flex:0 0 7%; padding:0 12px; border-right:1px solid var(--color-border);">Area</span>
+            <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">Crop</span>
+            <span style="flex:0 0 5%; padding:0 12px; border-right:1px solid var(--color-border);">GDD</span>
+            <span style="flex:0 0 8%; padding:0 12px; border-right:1px solid var(--color-border);">Status</span>
+            <span style="flex:0 0 10%; padding:0 12px; border-right:1px solid var(--color-border);">Categories</span>
+            <span style="flex:0 0 11%; padding:0 12px; border-right:1px solid var(--color-border);">Created by</span>
+            <span style="flex:1; padding:0 12px; cursor:pointer;">Scout date <span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">arrow_downward</span></span>
+          </div>
+
+          <!-- Row 1 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">description</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Field A - Section 10</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Farm Alpha</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">GROWER ONE LLC.</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">129.8 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Soil Test 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">A. Vance</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/30</span>
+          </div>
+
+          <!-- Row 2 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">crop_square</span> <a href="#" style="color:var(--color-action); text-decoration:none;">West Block</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">All</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">J. SMITH FARMS</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">2 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-success-600); font-size:12px;">Other 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">H. Benton</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/29</span>
+          </div>
+
+          <!-- Row 3 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">eco</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Route 3</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Red Bud</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">M. FEHR</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">28.1 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Corn</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-success-600); font-size:12px;">Weeds 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">B. Parsons</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/27</span>
+          </div>
+
+          <!-- Row 4 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">landscape</span> <a href="#" style="color:var(--color-action); text-decoration:none;">West Plot</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Clifford</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">C.D. WEBER</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">20.7 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Winter Wheat</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Crop health 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">A. Ramos</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/27</span>
+          </div>
+
+          <!-- Row 5 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">home</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Home 1</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Home</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">D. &amp; M. Henderson</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">15.7 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Rye</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Crop health 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">A. Hunter</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/27</span>
+          </div>
+
+          <!-- Row 6 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">church</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Cemetery</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Cemetery</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">C.K. PARKER</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">8.5 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Wheat</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-success-600); font-size:12px;">Weeds 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">C. Sprung</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/26</span>
+          </div>
+
+          <!-- Row 7 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">water</span> <a href="#" style="color:var(--color-action); text-decoration:none;">Lake Section 72</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Dilling</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">G. Masters Inc</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">66.5 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Winter Wheat</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Crop health 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">S. Marsig</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/26</span>
+          </div>
+
+          <!-- Row 8 -->
+          <div style="display:flex; align-items:center; padding:0 20px; min-height:50px; border-bottom:1px solid var(--color-border); background:var(--color-surface); font-size:13px;">
+            <span style="flex:0 0 14%; padding:8px 12px; display:flex; align-items:center; gap:6px;"><span class="material-symbols-outlined" style="font-size:16px; color:var(--color-neutral-400);">north</span> <a href="#" style="color:var(--color-action); text-decoration:none;">North Section</a></span>
+            <span style="flex:0 0 9%; padding:8px 12px; border-left:1px solid var(--color-border);">Vics</span>
+            <span style="flex:0 0 14%; padding:8px 12px; border-left:1px solid var(--color-border);">B. WEBER</span>
+            <span style="flex:0 0 7%; padding:8px 12px; border-left:1px solid var(--color-border);">52.7 ac</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-brand);"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">spa</span> Alfalfa</span>
+            <span style="flex:0 0 5%; padding:8px 12px; border-left:1px solid var(--color-border);">N/A</span>
+            <span style="flex:0 0 8%; padding:8px 12px; border-left:1px solid var(--color-border); color:var(--color-success-600);">Approved</span>
+            <span style="flex:0 0 10%; padding:8px 12px; border-left:1px solid var(--color-border);"><span style="color:var(--color-action); font-size:12px;">Crop health 1</span></span>
+            <span style="flex:0 0 11%; padding:8px 12px; border-left:1px solid var(--color-border);">N. Weber</span>
+            <span style="flex:1; padding:8px 12px; border-left:1px solid var(--color-border);">3/26</span>
+          </div>
+
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="weather" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">cloud</span>
+          <span style="font-size:16px; font-weight:500;">Weather</span>
+          <span style="font-size:13px;">View forecasts, precipitation history, and GDD accumulation by field.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="groups" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">folder_shared</span>
+          <span style="font-size:16px; font-weight:500;">Groups</span>
+          <span style="font-size:13px;">Organize fields into groups for bulk actions and reporting.</span>
+        </div>
+      </main>
+      <main class="page-content page-content--placeholder" data-page-content="settings" style="display:none;">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
+          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">settings</span>
+          <span style="font-size:16px; font-weight:500;">Settings</span>
+          <span style="font-size:13px;">Account preferences, notification settings, and user management.</span>
+        </div>
+      </main>
+
+    </div><!-- /.page-shell__main -->
+
+  </div><!-- /.page-shell -->
+
+  <!-- ADVANCED FILTERS SIDE SHEET -->
+  <div class="advanced-filter-scrim" id="af-scrim" style="display:none;" onclick="closeAdvancedFilters()"></div>
+  <div class="advanced-filter" id="af-panel" style="display:none;">
+    <div class="advanced-filter__header">
+      <div class="advanced-filter__header-left">
+        <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
+        <span class="advanced-filter__title">Advanced filters</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:4px;">
+        <button class="advanced-filter__close" onclick="resetAdvancedFilters()" aria-label="Reset filters">
+          <span class="material-symbols-outlined" style="font-size:18px;">refresh</span>
+        </button>
+        <button class="advanced-filter__close" onclick="closeAdvancedFilters()" aria-label="Close">
+          <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div style="display:flex; border-bottom:1px solid var(--color-border); padding:0 20px; gap:0;">
+      <button class="af-tab" onclick="switchAfTab(this, 'crop-plan')" style="padding:12px 16px; font-size:14px; color:var(--color-text-muted); background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; font-family:var(--font-family);">Crop plan</button>
+      <button class="af-tab af-tab--active" onclick="switchAfTab(this, 'field-filters')" style="padding:12px 16px; font-size:14px; color:var(--color-action); background:none; border:none; border-bottom:2px solid var(--color-action); cursor:pointer; font-weight:500; font-family:var(--font-family);">Field filters</button>
+      <button class="af-tab" onclick="switchAfTab(this, 'crop-filter')" style="padding:12px 16px; font-size:14px; color:var(--color-text-muted); background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; font-family:var(--font-family);">Crop filter <span style="display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 4px; border-radius:50%; background:var(--color-primitive-500); color:var(--color-neutral-0); font-size:10px; font-weight:600; margin-left:4px;">4</span></button>
+    </div>
+
+    <!-- Scrollable body -->
+    <div class="advanced-filter__body">
+
+      <!-- Filter: Grower -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Filter by grower</span>
+        </div>
+        <select class="advanced-filter__select">
+          <option value="" disabled selected>Placeholder</option>
+          <option>J. Parker</option>
+          <option>T. Brooks</option>
+          <option>Valley Co-op</option>
+        </select>
+      </div>
+
+      <!-- Filter: Crop type (dropdown) -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Crop type</span>
+        </div>
+        <select class="advanced-filter__select">
+          <option value="" disabled selected>Placeholder</option>
+          <option>Corn</option>
+          <option>Soybeans</option>
+          <option>Wheat</option>
+        </select>
+      </div>
+
+      <!-- Filter: Crop type (second) -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Crop type</span>
+        </div>
+        <select class="advanced-filter__select">
+          <option value="" disabled selected>Placeholder</option>
+          <option>Corn</option>
+          <option>Soybeans</option>
+        </select>
+      </div>
+
+      <!-- Filter: Crop type (third) -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Crop type</span>
+        </div>
+        <select class="advanced-filter__select">
+          <option value="" disabled selected>Placeholder</option>
+          <option>Corn</option>
+          <option>Soybeans</option>
+        </select>
+      </div>
+
+      <!-- Filter: Range with slider -->
+      <div class="advanced-filter__item">
+        <div class="advanced-filter__item-header">
+          <span class="advanced-filter__item-label">Crop type</span>
+        </div>
+        <div class="advanced-filter__range-row">
+          <input type="text" class="advanced-filter__range-input" placeholder="Placeholder" />
+          <input type="text" class="advanced-filter__range-input" placeholder="Placeholder" />
+        </div>
+        <div class="advanced-filter__slider" style="margin-top:12px;">
+          <div class="advanced-filter__slider-track"></div>
+          <div class="advanced-filter__slider-fill" style="left:0; right:0;"></div>
+          <div class="advanced-filter__slider-thumb" style="left:0;"></div>
+          <div class="advanced-filter__slider-thumb" style="left:100%;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--color-text-muted); margin-top:4px;">
+          <span>1</span>
+          <span>15</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="advanced-filter__footer">
+      <button class="btn" style="padding:6px 16px;" onclick="closeAdvancedFilters()">Cancel</button>
+      <button class="btn btn--brand" style="padding:6px 16px;" onclick="closeAdvancedFilters()">Apply</button>
+    </div>
+  </div>
+
+  <script>
+    /* ===== PAGE NAVIGATION ===== */
+    var activePage = 'home';
+    var fieldsPages = ['fields']; // pages that use the list/thumbnail/map/detail content panels
+
+    function navigateTo(el) {
+      var page = el.dataset.page;
+
+      // Update nav active state
+      document.querySelectorAll('.nav__item').forEach(function(a) { a.removeAttribute('aria-current'); });
+      el.setAttribute('aria-current', 'page');
+
+      // Hide all page sections (toolbar + tabs)
+      document.querySelectorAll('.page-section').forEach(function(s) { s.style.display = 'none'; });
+      var section = document.querySelector('[data-page-section="' + page + '"]');
+      if (section) section.style.display = '';
+
+      // Hide all content panels
+      ['content-list', 'content-thumbnail', 'content-map', 'content-field-detail'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+      document.querySelectorAll('.page-content--placeholder').forEach(function(p) { p.style.display = 'none'; });
+
+      // Show appropriate content
+      if (fieldsPages.indexOf(page) > -1) {
+        // Fields page uses the full list/thumbnail/map/detail flow
+        currentViewMode = 'list';
+        document.getElementById('content-list').style.display = '';
+      } else {
+        // Other pages show their placeholder
+        var placeholder = document.querySelector('[data-page-content="' + page + '"]');
+        if (placeholder) placeholder.style.display = '';
+      }
+
+      activePage = page;
+    }
+
+    function toggleViewSwitcherById(id) {
+      document.getElementById(id).classList.toggle('view-switcher--open');
+    }
+
+    /* ===== VIEW SWITCHER ===== */
+    var currentViewMode = 'list'; // tracks which view the user was on before entering detail
+
+    function toggleViewSwitcher() {
+      document.getElementById('view-switcher').classList.toggle('view-switcher--open');
+    }
+
+    function hideAllPanels() {
+      ['content-list', 'content-thumbnail', 'content-map', 'content-field-detail'].forEach(function(id) {
+        document.getElementById(id).style.display = 'none';
+      });
+    }
+
+    function setView(view, icon, label) {
+      document.getElementById('vs-icon').textContent = icon;
+      document.getElementById('vs-label').textContent = label;
+      document.querySelectorAll('.view-switcher__option').forEach(function(o) { o.classList.remove('view-switcher__option--active'); });
+      event.currentTarget.classList.add('view-switcher__option--active');
+      document.getElementById('view-switcher').classList.remove('view-switcher--open');
+      currentViewMode = view;
+      hideAllPanels();
+      document.getElementById('content-' + view).style.display = '';
+    }
+
+    /* ===== FIELD DETAIL NAVIGATION ===== */
+    function showFieldDetail(name, farm, grower, area, crop, gdd) {
+      // Populate the detail card
+      document.getElementById('fd-title').textContent = name;
+      document.getElementById('fd-subtitle').innerHTML = farm + ', <a href="#">' + grower + '</a>';
+      document.getElementById('fd-farm').textContent = farm;
+      document.getElementById('fd-field-name').textContent = name;
+      document.getElementById('fd-reported-area').textContent = area;
+      document.getElementById('fd-area').textContent = area + ' ac';
+
+      if (crop && crop !== 'N/A') {
+        document.getElementById('fd-crop').innerHTML = '<span style="color:var(--color-brand);">' + crop + '</span>';
+      } else {
+        document.getElementById('fd-crop').innerHTML = '<span class="field-detail-header__meta-value--warning">Crop unknown</span> <span class="field-detail-header__meta-value--action">+ Add</span>';
+      }
+
+      if (gdd && gdd !== 'N/A') {
+        document.getElementById('fd-gdd').textContent = gdd;
+        document.getElementById('fd-gdd').className = 'field-detail-header__meta-value field-detail-header__meta-value--warning';
+      } else {
+        document.getElementById('fd-gdd').textContent = 'N/A';
+        document.getElementById('fd-gdd').className = 'field-detail-header__meta-value field-detail-header__meta-value--na';
+      }
+
+      // Show field detail, hide everything else
+      hideAllPanels();
+      document.getElementById('content-field-detail').style.display = '';
+    }
+
+    function backToList() {
+      hideAllPanels();
+      document.getElementById('content-' + currentViewMode).style.display = '';
+    }
+
+    /* ===== ADVANCED FILTERS ===== */
+    function openAdvancedFilters() {
+      document.getElementById('af-scrim').style.display = '';
+      document.getElementById('af-panel').style.display = '';
+    }
+    function closeAdvancedFilters() {
+      document.getElementById('af-scrim').style.display = 'none';
+      document.getElementById('af-panel').style.display = 'none';
+    }
+    function resetAdvancedFilters() {
+      document.querySelectorAll('.advanced-filter__select').forEach(function(s) { s.selectedIndex = 0; });
+      document.querySelectorAll('.advanced-filter__range-input').forEach(function(i) { i.value = ''; });
+    }
+    function switchAfTab(el, tab) {
+      document.querySelectorAll('.af-tab').forEach(function(t) {
+        t.style.color = 'var(--color-text-muted)';
+        t.style.borderBottom = '2px solid transparent';
+        t.style.fontWeight = '400';
+      });
+      el.style.color = 'var(--color-action)';
+      el.style.borderBottom = '2px solid var(--color-action)';
+      el.style.fontWeight = '500';
+    }
+
+    // Close all view switcher dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+      document.querySelectorAll('.view-switcher').forEach(function(vs) {
+        if (!vs.contains(e.target)) vs.classList.remove('view-switcher--open');
+      });
+    });
+  </script>
+
+</body>
+</html>
