@@ -1,0 +1,146 @@
+/**
+ * View Switcher — List / Thumbnail / Map toggle dropdown
+ * ─────────────────────────────────────────────────────────
+ * System rule: Pages that display fields or map data
+ * (Fields, Disease, Scout, Abiotic Stress, Trials, etc.)
+ * MUST include this view switcher in the page toolbar.
+ *
+ * Usage:
+ *   <div class="view-switcher">
+ *     <button class="view-switcher__trigger" onclick="toggleViewSwitcher()">
+ *       <span class="material-symbols-outlined">view_list</span>
+ *       <span class="view-switcher__label">List view</span>
+ *       <span class="material-symbols-outlined view-switcher__caret">expand_more</span>
+ *     </button>
+ *     <div class="view-switcher__menu" id="view-switcher-menu">
+ *       <button class="view-switcher__option view-switcher__option--active">
+ *         <span class="material-symbols-outlined">view_list</span> List view
+ *       </button>
+ *       <button class="view-switcher__option">
+ *         <span class="material-symbols-outlined">grid_view</span> Thumbnail view
+ *       </button>
+ *       <button class="view-switcher__option">
+ *         <span class="material-symbols-outlined">map</span> Map view
+ *       </button>
+ *     </div>
+ *   </div>
+ */
+
+.view-switcher {
+  position: relative;
+  display: inline-flex;
+}
+
+.view-switcher__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-pill, 20px);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-family);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+.view-switcher__trigger:hover {
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-900);
+}
+.view-switcher__trigger .material-symbols-outlined {
+  font-size: 16px;
+}
+.view-switcher__caret {
+  transition: transform 0.2s ease;
+}
+.view-switcher--open .view-switcher__caret {
+  transform: rotate(180deg);
+}
+
+.view-switcher__label {
+  pointer-events: none;
+}
+
+/* Dropdown menu */
+.view-switcher__menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 180px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 50;
+  padding: 4px 0;
+  flex-direction: column;
+}
+.view-switcher--open .view-switcher__menu {
+  display: flex;
+}
+
+.view-switcher__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 400;
+  font-family: var(--font-family);
+  color: var(--color-text);
+  cursor: pointer;
+  white-space: nowrap;
+  width: 100%;
+  text-align: left;
+}
+.view-switcher__option:hover {
+  background: var(--color-neutral-100);
+}
+.view-switcher__option .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--color-text-muted);
+}
+.view-switcher__option--active {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.view-switcher__option--active .material-symbols-outlined {
+  color: var(--color-brand);
+}
+
+/* Collapse toggle (chevron button next to view switcher) */
+.view-switcher__collapse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--color-neutral-200);
+  border-left: none;
+  border-radius: 0 var(--radius-pill, 20px) var(--radius-pill, 20px) 0;
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.view-switcher__collapse:hover {
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-900);
+}
+.view-switcher__collapse .material-symbols-outlined {
+  font-size: 16px;
+}
+
+/* When trigger is paired with collapse button, round only left side */
+.view-switcher--with-collapse .view-switcher__trigger {
+  border-radius: var(--radius-pill, 20px) 0 0 var(--radius-pill, 20px);
+  border-right: 1px solid var(--color-neutral-200);
+}

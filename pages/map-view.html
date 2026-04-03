@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<!--
+  Map View — default (AgMRI) brand.
+  Brand overrides:
+    Pivot Bio  → add class="theme-pb" to <html>, class="header--pb" to <header>, swap logo to pb-logo-header.svg
+    MyFS       → add class="theme-myfs" to <html>, class="header--myfs" to <header>, swap logo to myfs-logo.png
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fields — Map View — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Design tokens -->
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+
+  <!-- Components -->
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/checkbox.css" />
+  <link rel="stylesheet" href="../components/dropdown.css" />
+  <link rel="stylesheet" href="../components/menu.css" />
+  <link rel="stylesheet" href="../components/modal.css" />
+  <link rel="stylesheet" href="../components/data-table.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/counter-badge.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/alert.css" />
+  <link rel="stylesheet" href="../components/view-switcher.css" />
+  <link rel="stylesheet" href="../components/field-card.css" />
+  <link rel="stylesheet" href="../components/empty-state.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
+
+    /* Standard layout shell */
+    .page-shell { display: flex; height: 100vh; }
+    .page-shell__side { flex-shrink: 0; width: var(--nav-width); height: 100%; z-index: 10; }
+    .page-shell__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; }
+
+    /* Page toolbar */
+    .page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-m); padding: var(--spacing-m) var(--spacing-l); border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; }
+    .page-toolbar__title { font-size: var(--font-size-18); font-weight: 600; color: var(--color-text); margin: 0; white-space: nowrap; }
+    .page-toolbar__controls { display: flex; align-items: center; gap: var(--spacing-s); flex-wrap: wrap; }
+    .page-toolbar__divider { width: 1px; height: 24px; background: var(--color-border); flex-shrink: 0; }
+
+    /* Neutral pill */
+    .filter-pill--neutral { --filter-pill-bg: var(--color-neutral-100); --filter-pill-bg-hover: var(--color-neutral-200); --filter-pill-text: var(--color-neutral-700); --filter-pill-text-hover: var(--color-neutral-900); }
+
+    /* ===== MAP CONTAINER ===== */
+    .map-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: #e8e4d8;
+    }
+
+    /* Satellite-style base */
+    .map-canvas {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background:
+        radial-gradient(ellipse at 30% 40%, #5a7a3e 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, #6b8a4a 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 30%, #4a6832 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 70%, #7a9a58 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 25%, #5e7e40 0%, transparent 50%),
+        linear-gradient(135deg, #4a6832 0%, #6b8a4a 25%, #5a7a3e 50%, #7a9a58 75%, #4a6832 100%);
+    }
+
+    /* Road grid overlay */
+    .map-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(180,170,150,0.35) 0px, rgba(180,170,150,0.35) 2px, transparent 2px) 25% 0 / 25% 100%,
+        linear-gradient(to bottom, rgba(180,170,150,0.35) 0px, rgba(180,170,150,0.35) 2px, transparent 2px) 0 33% / 100% 33%;
+      pointer-events: none;
+    }
+
+    /* Field boundary polygons */
+    .map-field {
+      position: absolute;
+      border: 2.5px solid var(--color-brand-500);
+      background: rgba(var(--color-brand-rgb), 0.15);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .map-field:hover {
+      background: rgba(var(--color-brand-rgb), 0.3);
+      border-color: var(--color-brand-300);
+    }
+    .map-field--selected {
+      border-color: #fff;
+      background: rgba(var(--color-brand-rgb), 0.35);
+      box-shadow: 0 0 0 2px var(--color-brand-500), 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* Field label */
+    .map-field__label {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(0,0,0,0.6);
+      padding: 2px 6px;
+      border-radius: 3px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* Map controls (shared) */
+    .map-controls {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 10;
+    }
+    .map-controls__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(220,220,220,0.85);
+      color: var(--color-text);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: background 0.12s ease;
+    }
+    .map-controls__btn:hover { background: rgba(240,240,240,0.95); }
+    .map-controls__btn .material-symbols-outlined { font-size: 24px; }
+    .map-controls__info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(220,220,220,0.85);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+    }
+    /* Left controls — above timeline */
+    .map-controls--left {
+      bottom: 80px;
+      left: 16px;
+    }
+    .map-actions__share:hover { background: rgba(60,70,80,0.95); }
+
+    /* Right controls — vertically centered */
+    .map-controls--right {
+      top: 50%;
+      right: 16px;
+      transform: translateY(-50%);
+    }
+
+    /* Map legend */
+    .map-legend {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      padding: 12px 16px;
+      font-size: 12px;
+      z-index: 5;
+    }
+    .map-legend__title {
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 8px;
+    }
+    .map-legend__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .map-legend__item:last-child { margin-bottom: 0; }
+    .map-legend__swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .map-legend__label { color: var(--color-text-muted); }
+
+    /* ===== TIMELINE BAR (floating) ===== */
+    .timeline-bar {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 20px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      z-index: 10;
+      overflow-x: auto;
+    }
+    .timeline-bar__year {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-text);
+      flex-shrink: 0;
+    }
+    .timeline-bar__filter {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .timeline-bar__dates {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .timeline-bar__date {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 4px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      font-family: var(--font-family);
+    }
+    .timeline-bar__date:hover {
+      background: var(--color-neutral-100);
+    }
+    .timeline-bar__date--active {
+      background: var(--color-brand-500);
+      border-color: var(--color-brand-500);
+      color: #fff;
+    }
+    .timeline-bar__date--active:hover {
+      background: var(--color-brand-600);
+    }
+    .timeline-bar__date-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timeline-bar__date-icon .material-symbols-outlined {
+      font-size: 16px;
+    }
+    .timeline-bar__date--active .timeline-bar__date-icon .material-symbols-outlined {
+      color: #fff;
+    }
+    .timeline-bar__date-icon .material-symbols-outlined {
+      color: var(--color-success-500);
+    }
+    .timeline-bar__date--active .timeline-bar__date-icon .material-symbols-outlined {
+      color: #fff;
+    }
+    .timeline-bar__date--processing .timeline-bar__date-icon .material-symbols-outlined {
+      color: var(--color-brand-400);
+    }
+
+    /* Scale bar */
+    .map-scale {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      background: rgba(255,255,255,0.85);
+      padding: 4px 8px;
+      border-radius: 4px;
+      z-index: 5;
+    }
+    .map-scale__bar {
+      width: 60px;
+      height: 2px;
+      background: var(--color-text-muted);
+      position: relative;
+    }
+    .map-scale__bar::before,
+    .map-scale__bar::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 6px;
+      background: var(--color-text-muted);
+      top: -2px;
+    }
+    .map-scale__bar::before { left: 0; }
+    .map-scale__bar::after { right: 0; }
+
+    /* Top-right actions (always visible) */
+    .map-actions-topright {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    /* Map layer toggles (top-left) */
+    .map-layers {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      z-index: 10;
+      max-width: 220px;
+    }
+    .map-layers__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(220,220,220,0.85);
+      color: var(--color-text);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: background 0.15s ease;
+    }
+    .map-layers__btn:hover { background: rgba(240,240,240,0.95); }
+    .map-layers__btn .material-symbols-outlined { font-size: 28px; }
+    .map-layers__btn--imagery {
+      background: linear-gradient(135deg, #4a90d9 0%, #d4e84f 50%, #4a90d9 100%);
+      width: 64px;
+      height: 64px;
+    }
+    .map-layers__btn--imagery:hover { opacity: 0.9; }
+    .map-layers__btn--aerial {
+      background: #1a2a1a;
+      width: 56px;
+      height: 56px;
+    }
+    .map-layers__btn--aerial:hover { background: #2a3a2a; }
+    .map-layers__btn--aerial .material-symbols-outlined { color: #7dcea0; }
+
+    /* Trials panel — triggered by grid_view button */
+    .map-layers__actions-wrap {
+      position: relative;
+    }
+    .trials-panel {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: calc(100% + 12px);
+      width: 340px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      z-index: 20;
+      overflow: hidden;
+      font-family: var(--font-family);
+    }
+    .trials-panel--open { display: block; }
+
+    .trials-panel__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 10px;
+    }
+    .trials-panel__header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .trials-panel__checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 2px solid var(--color-brand-500, var(--color-primitive-500));
+      background: var(--color-brand-500, var(--color-primitive-500));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .trials-panel__checkbox .material-symbols-outlined { font-size: 16px; }
+    .trials-panel__title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .trials-panel__collapse {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+    }
+    .trials-panel__collapse .material-symbols-outlined { font-size: 22px; }
+
+    .trials-panel__list {
+      padding: 0 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .trials-panel__item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      background: var(--color-neutral-50, #f8f8f8);
+    }
+    .trials-panel__item-checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid var(--color-brand-500, var(--color-primitive-500));
+      background: var(--color-brand-500, var(--color-primitive-500));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .trials-panel__item-checkbox .material-symbols-outlined { font-size: 14px; }
+    .trials-panel__item-name {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .trials-panel__item-edit {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      padding: 0;
+    }
+    .trials-panel__item-edit .material-symbols-outlined { font-size: 18px; }
+    .trials-panel__item-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .trials-panel__add {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: calc(100% - 32px);
+      margin: 0 16px 14px;
+      padding: 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      background: var(--color-surface);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+      font-family: var(--font-family);
+      transition: background 0.12s ease;
+    }
+    .trials-panel__add:hover { background: var(--color-neutral-100); }
+  </style>
+</head>
+<body>
+
+  <div class="page-shell">
+
+    <!-- SIDEBAR NAV -->
+    <aside class="page-shell__side">
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
+          <span class="nav__label">Home</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
+          <span class="nav__label">Growers</span>
+        </a>
+        <a href="#" class="nav__item" aria-current="page">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+          <span class="nav__label">Scout</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
+          <span class="nav__label">Weather</span>
+        </a>
+        <div class="nav__spacer"></div>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+          <span class="nav__label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN COLUMN -->
+    <div class="page-shell__main">
+
+      <!-- HEADER (PB brand) -->
+      <!-- HEADER — add header--pb + swap logo src for Pivot Bio, header--myfs for MyFS -->
+      <header class="header">
+        <div class="header__left">
+          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+        </div>
+        <div class="header__center">
+          <div class="header__search-wrap">
+            <span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <input type="search" class="header__search" placeholder="Search fields, growers..." />
+          </div>
+        </div>
+        <div class="header__right">
+          <span class="header__user-name">Sample User</span>
+          <span class="header__avatar" aria-label="User avatar">SU</span>
+        </div>
+      </header>
+
+      <!-- TOOLBAR -->
+      <div class="page-toolbar">
+        <h1 class="page-toolbar__title">Fields</h1>
+        <div class="page-toolbar__controls">
+          <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-danger-500);">notifications</span></span> Alerts only</button>
+          <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite fields</button>
+          <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
+          <span class="page-toolbar__divider"></span>
+          <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
+          <span class="page-toolbar__divider"></span>
+          <div class="view-switcher view-switcher--with-collapse">
+            <button class="view-switcher__trigger"><span class="material-symbols-outlined">map</span><span class="view-switcher__label">Map view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
+            <div class="view-switcher__menu">
+              <button class="view-switcher__option"><span class="material-symbols-outlined">view_list</span> List view</button>
+              <button class="view-switcher__option"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
+              <button class="view-switcher__option view-switcher__option--active"><span class="material-symbols-outlined">map</span> Map view</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAP VIEW CONTENT -->
+      <div class="map-container">
+        <div class="map-canvas">
+
+          <!-- Field boundary polygons (positioned to simulate aerial view) -->
+          <div class="map-field map-field--selected" style="top:12%; left:8%; width:18%; height:22%;">
+            <span class="map-field__label">Ridgeline North 40</span>
+          </div>
+          <div class="map-field" style="top:10%; left:29%; width:14%; height:18%;">
+            <span class="map-field__label">Cedar Creek East</span>
+          </div>
+          <div class="map-field" style="top:8%; left:46%; width:20%; height:24%;">
+            <span class="map-field__label">Elk Prairie 160</span>
+          </div>
+          <div class="map-field" style="top:14%; left:70%; width:16%; height:20%;">
+            <span class="map-field__label">Hilltop Terrace</span>
+          </div>
+          <div class="map-field" style="top:40%; left:5%; width:22%; height:26%;">
+            <span class="map-field__label">Bottomland South</span>
+          </div>
+          <div class="map-field" style="top:36%; left:30%; width:16%; height:22%;">
+            <span class="map-field__label">Willow Bend 80</span>
+          </div>
+          <div class="map-field" style="top:38%; left:50%; width:24%; height:28%;">
+            <span class="map-field__label">Prairie View West</span>
+          </div>
+          <div class="map-field" style="top:42%; left:78%; width:15%; height:18%;">
+            <span class="map-field__label">Stone Fence</span>
+          </div>
+          <div class="map-field" style="top:72%; left:12%; width:20%; height:20%;">
+            <span class="map-field__label">River Bottom 120</span>
+          </div>
+          <div class="map-field" style="top:70%; left:36%; width:18%; height:22%;">
+            <span class="map-field__label">Hogback Ridge</span>
+          </div>
+          <div class="map-field" style="top:74%; left:58%; width:16%; height:18%;">
+            <span class="map-field__label">Indian Mound</span>
+          </div>
+
+        </div>
+
+        <!-- Top-right actions (info, share, more) -->
+        <div class="map-actions-topright">
+          <button class="map-actions__btn map-actions__btn--info"><span class="material-symbols-outlined">info</span></button>
+          <button class="map-actions__share">Share</button>
+          <button class="map-actions__btn"><span class="material-symbols-outlined">more_vert</span></button>
+        </div>
+
+        <!-- Layer toggles (top-left) -->
+        <div class="map-layers">
+          <button class="map-layers__btn"><span class="material-symbols-outlined">layers</span></button>
+          <button class="map-layers__btn map-layers__btn--imagery"></button>
+          <button class="map-layers__btn map-layers__btn--aerial"><span class="material-symbols-outlined">layers</span></button>
+          <div class="map-layers__actions-wrap">
+            <button class="map-layers__btn" onclick="toggleTrials()"><span class="material-symbols-outlined">grid_view</span></button>
+            <div class="trials-panel" id="trials-panel">
+              <div class="trials-panel__header">
+                <div class="trials-panel__header-left">
+                  <span class="trials-panel__checkbox"><span class="material-symbols-outlined">check</span></span>
+                  <span class="trials-panel__title">Trials</span>
+                </div>
+                <button class="trials-panel__collapse"><span class="material-symbols-outlined">expand_less</span></button>
+              </div>
+              <div class="trials-panel__list">
+                <div class="trials-panel__item">
+                  <span class="trials-panel__item-checkbox"><span class="material-symbols-outlined">check</span></span>
+                  <span class="trials-panel__item-name">26-ZEAMX-US700-IL-1214034-GROW</span>
+                  <button class="trials-panel__item-edit"><span class="material-symbols-outlined">edit</span></button>
+                  <span class="trials-panel__item-dot" style="background: var(--color-danger-500);"></span>
+                </div>
+              </div>
+              <button class="trials-panel__add">+ Add trial</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map controls (left side, above timeline) -->
+        <div class="map-controls map-controls--left">
+          <button class="map-controls__btn"><span class="material-symbols-outlined">sell</span></button>
+          <button class="map-controls__btn"><span class="material-symbols-outlined">layers</span></button>
+          <button class="map-controls__btn"><span class="material-symbols-outlined">my_location</span></button>
+          <button class="map-controls__btn"><span class="material-symbols-outlined">redo</span></button>
+          <span class="map-controls__info">12 zoom</span>
+          <span class="map-controls__info">3,000 ft</span>
+        </div>
+
+        <!-- Map controls (right side, centered) -->
+        <div class="map-controls map-controls--right">
+          <button class="map-controls__btn"><span class="material-symbols-outlined">add</span></button>
+          <button class="map-controls__btn"><span class="material-symbols-outlined">remove</span></button>
+          <button class="map-controls__btn"><span class="material-symbols-outlined">explore</span></button>
+          <button class="map-controls__btn"><span class="material-symbols-outlined">straighten</span></button>
+          <button class="map-controls__btn"><span class="material-symbols-outlined">fullscreen</span></button>
+        </div>
+
+
+
+        <!-- TIMELINE BAR (floating) -->
+        <div class="timeline-bar">
+          <span class="timeline-bar__year">2025</span>
+          <span class="timeline-bar__filter">All activities</span>
+          <div class="timeline-bar__dates">
+            <button class="timeline-bar__date">
+              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+              <span>May 8</span>
+            </button>
+            <button class="timeline-bar__date timeline-bar__date--active">
+              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+              <span>Aug 27</span>
+            </button>
+            <button class="timeline-bar__date timeline-bar__date--processing">
+              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">settings</span></span>
+              <span>Dec 16</span>
+            </button>
+            <button class="timeline-bar__date">
+              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+              <span>Dec 22</span>
+            </button>
+            <button class="timeline-bar__date">
+              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+              <span>Dec 24</span>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /.map-container -->
+
+    </div><!-- /.page-shell__main -->
+  </div><!-- /.page-shell -->
+
+  <script>
+    function toggleTrials() {
+      var panel = document.getElementById('trials-panel');
+      panel.classList.toggle('trials-panel--open');
+    }
+  </script>
+</body>
+</html>
