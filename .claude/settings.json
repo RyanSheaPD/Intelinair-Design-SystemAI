@@ -28,7 +28,8 @@
       "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=notifications#figmacapture=95dbc6ef-e73b-4dd7-80b8-800a711f0722&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F95dbc6ef-e73b-4dd7-80b8-800a711f0722%2Fsubmit&figmadelay=3000\")",
       "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=notifications#figmacapture=774b4bf8-50b0-4691-9cbf-877515a323c6&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F774b4bf8-50b0-4691-9cbf-877515a323c6%2Fsubmit&figmadelay=3000\")",
       "Bash(open \"http://localhost:3000/pages/home-dashboard.html#figmacapture=3574d92c-4969-4ea4-8f92-a3d12fb60455&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F3574d92c-4969-4ea4-8f92-a3d12fb60455%2Fsubmit&figmadelay=3000\")",
-      "Read(//temp/readonly/**)"
+      "Read(//temp/readonly/**)",
+      "WebSearch"
     ],
     "additionalDirectories": [
       "/Users/rsintelinair/Documents/Intelinair Design SystemAI copy/pages"

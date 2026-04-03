@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="../components/nav.css" />
   <link rel="stylesheet" href="../components/header.css" />
   <link rel="stylesheet" href="../components/empty-state.css" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -365,6 +366,164 @@
       font-weight: 600; color: var(--color-primitive-600); cursor: pointer;
     }
     .crop-type-filter .material-symbols-outlined { font-size: 16px; color: var(--color-primitive-600); }
+
+    /* ═══ YIELD FORECAST WIDGET ═══ */
+    .yield-widget {
+      --yw-primary: #3c84c7;
+      --yw-primary-100: #c5daee;
+      --yw-primary-400: #3677b3;
+      --yw-green: #42d379;
+      --yw-gray: #888;
+      --yw-muted: #98a2b2;
+      --yw-body: #26292e;
+      --yw-grid: #dde3ee;
+    }
+    .yield-widget__toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .yield-widget__select {
+      display: inline-flex;
+      align-items: center;
+      height: 30px;
+      padding: 0 28px 0 12px;
+      border: 1px solid var(--yw-primary-100);
+      border-radius: 10px;
+      background: #fff;
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(0,0,0,0.8);
+      cursor: pointer;
+      box-sizing: border-box;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234b5468' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+    .yield-widget__select:hover { border-color: var(--yw-primary-400); }
+    .yield-widget__select:focus {
+      outline: none;
+      border-color: var(--yw-primary);
+      box-shadow: 0 0 0 2px rgba(60,132,199,0.2);
+    }
+    .yield-widget__info-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      margin-left: auto;
+    }
+    .yield-widget__info-btn:hover { background: var(--color-neutral-100); color: var(--color-text); }
+    .yield-widget__info-btn svg {
+      width: 18px; height: 18px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .yield-widget__info-wrap { position: relative; display: inline-flex; }
+    .yield-widget__info-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 280px;
+      padding: 12px 14px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--color-text-muted);
+      z-index: 100;
+    }
+    .yield-widget__info-popover[aria-hidden="false"] { display: block; }
+    .yield-widget__info-popover ul { margin: 0; padding: 0 0 0 16px; list-style: disc; }
+    .yield-widget__info-popover li { margin-bottom: 6px; }
+    .yield-widget__info-popover li:last-child { margin-bottom: 0; }
+    .yield-widget__chart { height: 240px; }
+    .yield-widget__chart .highcharts-root,
+    .yield-widget__chart .highcharts-container text { font-family: var(--font-family) !important; }
+    .yield-widget__legend {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .yield-widget__legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #6e7b91;
+    }
+    .yield-widget__legend-swatch {
+      flex-shrink: 0;
+    }
+    .yield-widget__legend-swatch--actual {
+      width: 12px; height: 12px; background: var(--yw-grid);
+    }
+    .yield-widget__legend-swatch--forecast {
+      width: 12px; height: 2px; background: #4299e1;
+    }
+    .yield-widget__legend-swatch--yield {
+      width: 12px; height: 2px; background: var(--yw-green);
+    }
+    .yield-widget__stats {
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--color-border);
+      flex-wrap: wrap;
+    }
+    .yield-widget__stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .yield-widget__stat-label {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--yw-muted);
+    }
+    .yield-widget__stat-value {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--yw-body);
+      letter-spacing: -0.01em;
+    }
+    .yield-widget__trend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+    .yield-widget__trend-icon {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(66,211,121,0.1);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .yield-widget__trend-icon svg { width: 12px; height: 12px; }
+    .yield-widget__trend-value {
+      font-size: 14px; font-weight: 600; color: var(--yw-green);
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
@@ -484,6 +643,88 @@
 
         <!-- GRID -->
         <div class="dash-grid">
+
+          <!-- Row 0: Yield Forecast -->
+          <div class="dash-row dash-row--1">
+            <div class="dash-card yield-widget">
+              <div class="dash-card__header">
+                <div class="dash-card__title">
+                  <span class="material-symbols-outlined">monitoring</span>
+                  Yield forecast
+                </div>
+                <div class="dash-card__actions">
+                  <div class="yield-widget__toolbar">
+                    <select class="yield-widget__select" id="yw-crop" aria-label="Crop">
+                      <option value="corn" selected>Corn</option>
+                      <option value="soy">Soybeans</option>
+                    </select>
+                    <select class="yield-widget__select" id="yw-season" aria-label="Season">
+                      <option>In-Season</option>
+                      <option>Pre-Season</option>
+                      <option>Post-Season</option>
+                    </select>
+                    <select class="yield-widget__select" id="yw-hybrid" aria-label="Hybrid">
+                      <option>Hybrid</option>
+                      <option>All</option>
+                    </select>
+                  </div>
+                  <div class="yield-widget__info-wrap">
+                    <button type="button" class="yield-widget__info-btn" aria-label="More information" aria-expanded="false" aria-controls="yw-info-popover">
+                      <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="10" r="8" />
+                        <path d="M10 9 L10 14" />
+                        <circle cx="10" cy="6.5" r="0.75" fill="currentColor" stroke="none" />
+                      </svg>
+                    </button>
+                    <div class="yield-widget__info-popover" id="yw-info-popover" role="tooltip" aria-hidden="true">
+                      <ul>
+                        <li>Forecast can hide once enough fields report actual dry yield (starting at ~50%; threshold is company-specific).</li>
+                        <li>Headline yields are simple averages.</li>
+                        <li>Yield bucket drill-in: Analyze view, sorted by field, filtered to the selected bucket.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="dash-card__body">
+                <div class="yield-widget__chart" id="yw-chart"></div>
+                <div class="yield-widget__legend">
+                  <span class="yield-widget__legend-item">
+                    <span class="yield-widget__legend-swatch yield-widget__legend-swatch--actual"></span>Actual
+                  </span>
+                  <span class="yield-widget__legend-item">
+                    <span class="yield-widget__legend-swatch yield-widget__legend-swatch--forecast"></span>Forecast Avg Line
+                  </span>
+                  <span class="yield-widget__legend-item">
+                    <span class="yield-widget__legend-swatch yield-widget__legend-swatch--yield"></span>Actual Yield
+                  </span>
+                </div>
+                <div class="yield-widget__stats">
+                  <div class="yield-widget__stat">
+                    <p class="yield-widget__stat-label">Avg Forecast</p>
+                    <p class="yield-widget__stat-value" id="yw-forecast-val">225 bu/ac</p>
+                    <div class="yield-widget__trend">
+                      <span class="yield-widget__trend-icon">
+                        <svg viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M2 8.5L5.5 5L7.5 7L10 3.5" stroke="#42d379" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M7 3.5H10V6.5" stroke="#42d379" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </span>
+                      <span class="yield-widget__trend-value" id="yw-trend-val">1,613.03</span>
+                    </div>
+                  </div>
+                  <div class="yield-widget__stat">
+                    <p class="yield-widget__stat-label">Acres</p>
+                    <p class="yield-widget__stat-value" id="yw-acres-val">4,820</p>
+                  </div>
+                  <div class="yield-widget__stat">
+                    <p class="yield-widget__stat-label">Fields</p>
+                    <p class="yield-widget__stat-value" id="yw-fields-val">47</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <!-- Row 1: Crop growth + Alerts overview -->
           <div class="dash-row dash-row--2">
@@ -812,5 +1053,119 @@
     </div><!-- /page-shell__main -->
   </div><!-- /page-shell -->
 
+  <script>
+    (function () {
+      /* Yield chart data */
+      var cornData = {
+        forecast: '225 bu/ac', acres: '4,820', fields: '47', trend: '1,613.03',
+        categories: ['0-175', '', '175-200', '', '200-225', '', '225-250', '', '250+'],
+        line: [15, 18, 22, 20, 19, 28, 35, 34, 30, 27, 22, 16],
+        bars: [8, 10, 15, 14, 22, 30, 42, 38, 28, 18, 12, 6]
+      };
+      var soyData = {
+        forecast: '50 bu/ac', acres: '3,120', fields: '32', trend: '892.40',
+        categories: ['0-17', '', '17-33', '', '33-50', '', '50-67', '', '67-83', '', '83-100+'],
+        line: [8, 10, 14, 18, 24, 32, 38, 35, 26, 18, 10],
+        bars: [5, 7, 12, 16, 20, 28, 34, 30, 22, 14, 8]
+      };
+
+      var ywChart = null;
+      function renderChart(crop) {
+        var d = crop === 'soy' ? soyData : cornData;
+        var el = document.getElementById('yw-chart');
+        if (!el || typeof Highcharts === 'undefined') return;
+        if (ywChart) { ywChart.destroy(); ywChart = null; }
+        ywChart = Highcharts.chart('yw-chart', {
+          chart: { type: 'areaspline', height: 240, backgroundColor: 'transparent', spacing: [10, 10, 5, 10] },
+          title: { text: null },
+          credits: { enabled: false },
+          legend: { enabled: false },
+          tooltip: {
+            shared: true,
+            headerFormat: '<span style="font-size:12px;font-weight:600">{point.key}</span><br/>',
+            style: { fontFamily: 'Figtree, system-ui, sans-serif' }
+          },
+          xAxis: {
+            categories: d.categories,
+            lineColor: '#26292e', lineWidth: 1, tickLength: 0,
+            labels: { style: { fontSize: '12px', color: '#4b5468', fontFamily: 'Figtree, sans-serif' } },
+            title: { text: 'bu/ac', align: 'high', style: { fontSize: '14px', color: '#26292e', fontWeight: '500' } }
+          },
+          yAxis: {
+            title: { text: null },
+            min: 0, max: 45,
+            tickPositions: [0, 5, 15, 25, 35, 45],
+            gridLineColor: '#dde3ee', gridLineWidth: 1,
+            labels: { style: { fontSize: '12px', color: '#4b5468', fontFamily: 'Figtree, sans-serif' } }
+          },
+          plotOptions: {
+            areaspline: { marker: { enabled: false }, lineWidth: 2.5 },
+            column: { borderRadius: 2, borderWidth: 0, groupPadding: 0.15, pointPadding: 0.05 }
+          },
+          series: [
+            {
+              name: 'Actual',
+              type: 'column',
+              data: d.bars,
+              color: '#dde3ee',
+              tooltip: { valueSuffix: ' fields' }
+            },
+            {
+              name: 'Forecast Avg Line',
+              type: 'areaspline',
+              data: d.line,
+              color: '#4299e1',
+              fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(66,153,225,0.12)'], [1, 'rgba(66,153,225,0.01)']] },
+              tooltip: { valueSuffix: ' fields' }
+            }
+          ]
+        });
+        document.getElementById('yw-forecast-val').textContent = d.forecast;
+        document.getElementById('yw-acres-val').textContent = d.acres;
+        document.getElementById('yw-fields-val').textContent = d.fields;
+        document.getElementById('yw-trend-val').textContent = d.trend;
+      }
+
+      /* Init */
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { renderChart('corn'); });
+      } else {
+        renderChart('corn');
+      }
+
+      /* Crop switcher */
+      var cropSelect = document.getElementById('yw-crop');
+      if (cropSelect) {
+        cropSelect.addEventListener('change', function () {
+          renderChart(cropSelect.value);
+        });
+      }
+
+      /* Info popover toggle */
+      var infoBtn = document.querySelector('.yield-widget__info-btn');
+      var popover = document.getElementById('yw-info-popover');
+      if (infoBtn && popover) {
+        infoBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var open = popover.getAttribute('aria-hidden') === 'false';
+          popover.setAttribute('aria-hidden', open ? 'true' : 'false');
+          infoBtn.setAttribute('aria-expanded', open ? 'false' : 'true');
+        });
+        document.addEventListener('click', function (e) {
+          if (!popover.contains(e.target) && e.target !== infoBtn) {
+            popover.setAttribute('aria-hidden', 'true');
+            infoBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && popover.getAttribute('aria-hidden') === 'false') {
+            popover.setAttribute('aria-hidden', 'true');
+            infoBtn.setAttribute('aria-expanded', 'false');
+            infoBtn.focus();
+          }
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

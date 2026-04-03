@@ -61,6 +61,7 @@
       margin: 0 0 var(--spacing-m);
       padding: 0;
       color: var(--color-text);
+      font-family: var(--font-family-web), Figtree, sans-serif;
       letter-spacing: -0.02em;
     }
     .yield-card__crop-row {
@@ -197,8 +198,8 @@
       border-bottom: 1px solid #e0e0e0;
     }
     .yield-card__stat-block { padding-bottom: 0; }
-    .yield-card__stat-label { margin: 0 0 4px; color: #888888; font-weight: 500; }
-    .yield-card__stat-value { margin: 0; color: #000000; font-size: 2rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
+    .yield-card__stat-label { margin: 0 0 4px; color: #888888; font-family: var(--font-family-web), Figtree, sans-serif; font-size: 14px; font-weight: 500; }
+    .yield-card__stat-value { margin: 0; color: #000000; font-family: var(--font-family-web), Figtree, sans-serif; font-size: 2rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
     .yield-card__chart-wrap { margin-bottom: var(--spacing-l); }
     /* Legend (left) + % Acres / # Fields toggle (right) — same row as reference */
     .yield-card__chart-toolbar {
@@ -2385,6 +2386,84 @@
           }, 200);
         }, 300);
       }
+    })();
+
+    /* Figma export: Yield Widget chart */
+    (function () {
+      var el = document.getElementById('yield-figma-chart');
+      if (!el || typeof Highcharts === 'undefined') return;
+      try {
+        Highcharts.chart('yield-figma-chart', {
+          chart: { type: 'areaspline', height: 220, backgroundColor: 'transparent', spacing: [10, 0, 0, 0] },
+          title: { text: null },
+          credits: { enabled: false },
+          legend: { enabled: false },
+          tooltip: {
+            shared: true,
+            headerFormat: '<span style="font-size:12px;font-weight:600">{point.key}</span><br/>',
+            style: { fontFamily: 'Figtree, system-ui, sans-serif' }
+          },
+          xAxis: {
+            categories: ['0-175', '', '175-200', '', '200-225', '', '225-250', '', '250+'],
+            lineColor: '#26292e',
+            lineWidth: 1,
+            tickLength: 0,
+            labels: { style: { fontSize: '14px', color: '#4b5468', fontFamily: 'Lato, sans-serif', letterSpacing: '1px' } }
+          },
+          yAxis: {
+            title: { text: null },
+            min: 0,
+            max: 45,
+            tickPositions: [0, 5, 15, 25, 35, 45],
+            gridLineColor: '#dde3ee',
+            gridLineWidth: 1,
+            labels: { style: { fontSize: '14px', color: '#4b5468', fontFamily: 'Lato, sans-serif', letterSpacing: '1px' } }
+          },
+          plotOptions: {
+            areaspline: { marker: { enabled: false }, lineWidth: 2 },
+            column: { borderRadius: 0, borderWidth: 0, groupPadding: 0.15 }
+          },
+          series: [
+            {
+              name: 'Actual',
+              type: 'column',
+              data: [null, null, null, null, null, null, null, null, null],
+              color: '#dde3ee',
+              visible: false
+            },
+            {
+              name: 'Forecast Avg Line',
+              type: 'areaspline',
+              data: [15, 18, 22, 20, 19, 28, 35, 34, 30, 27, 22, 16],
+              color: '#4299e1',
+              fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(66,153,225,0.15)'], [1, 'rgba(66,153,225,0.01)']] }
+            }
+          ]
+        });
+      } catch (e) { /* chart init failed */ }
+    })();
+
+    /* Figma export: Yield score sparkline */
+    (function () {
+      var el = document.getElementById('yield-score-sparkline');
+      if (!el || typeof Highcharts === 'undefined') return;
+      try {
+        Highcharts.chart('yield-score-sparkline', {
+          chart: { type: 'areaspline', height: 65, backgroundColor: 'transparent', margin: [2, 0, 2, 0], spacing: [0, 0, 0, 0] },
+          title: { text: null },
+          credits: { enabled: false },
+          legend: { enabled: false },
+          tooltip: { enabled: false },
+          xAxis: { visible: false },
+          yAxis: { visible: false },
+          plotOptions: { areaspline: { marker: { enabled: false }, lineWidth: 1.5 } },
+          series: [{
+            data: [160, 170, 175, 180, 188, 195, 198, 202, 205, 208, 210],
+            color: '#4299e1',
+            fillColor: { linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 }, stops: [[0, 'rgba(66,153,225,0.12)'], [1, 'rgba(66,153,225,0.01)']] }
+          }]
+        });
+      } catch (e) { /* chart init failed */ }
     })();
   </script>
   <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>

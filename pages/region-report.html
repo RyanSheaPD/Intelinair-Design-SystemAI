@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Region Report — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Design tokens -->
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+
+  <!-- Components -->
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/input.css" />
+  <link rel="stylesheet" href="../components/checkbox.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/empty-state.css" />
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
+
+    /* ═══ SHELL ═══ */
+    .page-shell { display: flex; height: 100vh; }
+    .page-shell__side { flex-shrink: 0; width: var(--nav-width); height: 100%; z-index: 10; }
+    .page-shell__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; position: relative; }
+
+    /* ═══ MAP BACKGROUND ═══ */
+    .map-viewport {
+      position: absolute; inset: 0;
+      background: #2d3b2d url('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/static/-88.95,40.12,13,0/1440x900@2x?access_token=pk.placeholder') center/cover no-repeat;
+      z-index: 0;
+    }
+    .map-viewport::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.15) 100%);
+    }
+    /* Fallback satellite-like gradient */
+    .map-viewport--fallback {
+      background: linear-gradient(145deg, #3a5a3a 0%, #4a6a3a 20%, #5a7a4a 40%, #3a6a3a 60%, #2a4a2a 80%, #1a3a1a 100%);
+    }
+
+    /* ═══ MAP OVERLAY ZONES ═══ */
+    .map-zone-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      pointer-events: none;
+    }
+    .map-zone-overlay__band {
+      position: absolute;
+      left: 10%; right: 30%;
+      opacity: 0.45;
+      border: 2px dashed rgba(255,255,255,0.6);
+    }
+    .map-zone-overlay__band--blue { background: rgba(100,150,220,0.5); }
+    .map-zone-overlay__band--red { background: rgba(200,100,100,0.5); }
+    .map-zone-overlay__label {
+      position: absolute;
+      left: 50%; top: 50%; transform: translate(-50%,-50%);
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 13px; font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: auto;
+    }
+
+    /* ═══ ZONE CREATE BANNER ═══ */
+    .zone-create-banner {
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      z-index: 5;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 15px; font-weight: 500;
+      padding: 10px 32px;
+      border-radius: 0 0 10px 10px;
+      white-space: nowrap;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ═══ MAP CONTROLS (right side) ═══ */
+    .map-controls {
+      position: absolute;
+      right: 20px; top: 80px;
+      z-index: 5;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .map-controls__btn {
+      width: 40px; height: 40px;
+      border: none; border-radius: 50%;
+      background: var(--color-surface);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      color: var(--color-text-muted);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .map-controls__btn:hover { background: var(--color-neutral-100); color: var(--color-text); }
+    .map-controls__btn .material-symbols-outlined { font-size: 20px; }
+    .map-controls__btn--primary {
+      background: var(--color-primitive-500);
+      color: #fff;
+    }
+    .map-controls__btn--primary:hover { background: var(--color-primitive-600); color: #fff; }
+
+    /* Top-right action buttons */
+    .map-top-actions {
+      position: absolute;
+      right: 20px; top: 20px;
+      z-index: 5;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .map-top-actions__info {
+      width: 36px; height: 36px;
+      border: none; border-radius: 50%;
+      background: var(--color-primitive-500);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 18px; font-weight: 700;
+    }
+    .map-top-actions__share {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 18px;
+      border: none; border-radius: 8px;
+      background: var(--color-primitive-500);
+      color: #fff;
+      font-family: var(--font-family);
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+    }
+    .map-top-actions__share:hover { background: var(--color-primitive-600); }
+    .map-top-actions__more {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Map floating toggles (top-left) */
+    .map-layer-toggles {
+      position: absolute;
+      left: 16px; top: 16px;
+      z-index: 5;
+      display: flex; gap: 8px;
+    }
+    .map-layer-toggle {
+      width: 44px; height: 44px;
+      border: none; border-radius: 50%;
+      background: var(--color-surface);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      position: relative;
+    }
+    .map-layer-toggle:hover { background: var(--color-neutral-100); }
+    .map-layer-toggle .material-symbols-outlined { font-size: 22px; }
+    .map-layer-toggle__badge {
+      position: absolute; top: -4px; right: -4px;
+      background: #ef4444; color: #fff;
+      font-size: 9px; font-weight: 700;
+      padding: 1px 5px; border-radius: 10px;
+      line-height: 1.3;
+    }
+
+    /* Map bottom-left info */
+    .map-footer-info {
+      position: absolute;
+      left: 16px; bottom: 52px;
+      z-index: 5;
+      display: flex; flex-direction: column; gap: 4px;
+      font-size: 12px; color: rgba(255,255,255,0.7);
+      background: rgba(0,0,0,0.4);
+      padding: 6px 10px;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ═══ LAYER PANEL (floating, left) ═══ */
+    .layer-panel {
+      position: absolute;
+      left: 16px; top: 72px;
+      z-index: 6;
+      width: 300px;
+      background: var(--color-surface);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
+    }
+    .layer-panel__section {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .layer-panel__section--highlight {
+      border: 2px solid #d946ef;
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .layer-panel__section-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600; color: var(--color-text);
+    }
+    .layer-panel__row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; color: var(--color-text);
+      padding: 2px 0;
+    }
+    .layer-panel__row--indented { padding-left: 28px; }
+    .layer-panel__acres {
+      margin-left: auto;
+      font-size: 13px; color: var(--color-text-muted);
+      font-weight: 500;
+    }
+    .layer-panel__dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .layer-panel__checkbox {
+      width: 18px; height: 18px;
+      accent-color: var(--color-primitive-500);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ═══ ACTIVITY TIMELINE (bottom) ═══ */
+    .timeline-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 5;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      display: flex; align-items: center;
+      height: 48px;
+      padding: 0 16px;
+      gap: 4px;
+      overflow-x: auto;
+    }
+    .timeline-bar__year {
+      font-size: 13px; font-weight: 700; color: var(--color-text);
+      margin-right: 4px; white-space: nowrap;
+    }
+    .timeline-bar__filter {
+      font-size: 12px; color: var(--color-text-muted); font-weight: 500;
+      margin-right: 8px; white-space: nowrap;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .timeline-bar__filter .material-symbols-outlined { font-size: 14px; }
+    .timeline-bar__nav {
+      width: 24px; height: 24px;
+      border: none; border-radius: 4px;
+      background: transparent; color: var(--color-text-muted);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .timeline-bar__nav:hover { background: var(--color-neutral-100); }
+    .timeline-bar__item {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 1px; padding: 4px 8px; min-width: 48px;
+      cursor: pointer; border-radius: 6px;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .timeline-bar__item:hover { background: var(--color-neutral-100); }
+    .timeline-bar__item--active { background: var(--color-primitive-100); }
+    .timeline-bar__item--highlight .timeline-bar__date {
+      color: #ef4444; font-weight: 700;
+    }
+    .timeline-bar__icon {
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-text-muted);
+    }
+    .timeline-bar__icon .material-symbols-outlined { font-size: 18px; }
+    .timeline-bar__date {
+      font-size: 10px; font-weight: 600; color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    /* ═══ REGION REPORT PANEL ═══ */
+    .rr-panel {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      width: min(1020px, calc(100vw - 160px));
+      max-height: calc(100vh - 100px);
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .rr-panel__close {
+      position: absolute; right: 16px; top: 16px;
+      width: 32px; height: 32px;
+      border: none; border-radius: 8px;
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1;
+    }
+    .rr-panel__close:hover { background: var(--color-neutral-100); color: var(--color-text); }
+    .rr-panel__close .material-symbols-outlined { font-size: 22px; }
+
+    /* Header */
+    .rr-header {
+      padding: 20px 24px 0;
+    }
+    .rr-header__title {
+      font-size: 22px; font-weight: 700; color: var(--color-text);
+      margin: 0 0 8px;
+    }
+    .rr-header__field {
+      font-size: 15px; font-weight: 600; color: var(--color-text);
+      margin: 0 0 2px;
+    }
+    .rr-header__meta {
+      font-size: 13px; color: var(--color-text-muted);
+      margin: 0 0 2px;
+    }
+    .rr-header__meta a {
+      color: var(--color-primitive-500);
+      text-decoration: none; font-weight: 500;
+    }
+    .rr-header__meta a:hover { text-decoration: underline; }
+    .rr-header__detail {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 13px; color: var(--color-text-muted);
+      margin: 0;
+    }
+    .rr-header__detail-sep { color: var(--color-neutral-300); }
+    .rr-header__crop {
+      display: inline-flex; align-items: center; gap: 4px;
+      color: var(--color-primitive-500); font-weight: 600;
+    }
+    .rr-header__crop .material-symbols-outlined { font-size: 14px; }
+    .rr-header__gdd { color: #f59e0b; font-weight: 600; }
+
+    /* Tabs */
+    .rr-tabs {
+      display: flex; align-items: center; gap: 0;
+      padding: 0 24px;
+      margin-top: 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .rr-tabs__item {
+      padding: 10px 16px;
+      font-size: 15px; font-weight: 500;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .rr-tabs__item:hover { color: var(--color-text); }
+    .rr-tabs__item--active {
+      color: var(--color-primitive-500);
+      border-bottom-color: var(--color-primitive-500);
+      font-weight: 600;
+    }
+
+    /* Zone selector */
+    .rr-zones {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--color-border);
+      flex-wrap: wrap;
+    }
+    .rr-zone-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 30px; padding: 0 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill, 999px);
+      background: #fff;
+      font-family: var(--font-family);
+      font-size: 13px; font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .rr-zone-pill:hover { background: var(--color-neutral-50); }
+    .rr-zone-pill--active {
+      background: var(--color-primitive-500);
+      border-color: var(--color-primitive-500);
+      color: #fff;
+    }
+    .rr-zone-pill__dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .rr-zone-pill--active .rr-zone-pill__dot { border: 2px solid rgba(255,255,255,0.6); }
+    .rr-zone-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .rr-zones__add {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 13px; font-weight: 600;
+      color: var(--color-primitive-500);
+      background: none; border: none;
+      cursor: pointer; margin-left: auto;
+      font-family: var(--font-family);
+    }
+    .rr-zones__add:hover { text-decoration: underline; }
+    .rr-zones__add .material-symbols-outlined { font-size: 16px; }
+
+    /* Metric cards */
+    .rr-metrics {
+      display: flex; gap: 0;
+      padding: 0 24px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .rr-metric {
+      flex-shrink: 0;
+      padding: 12px 16px;
+      border-right: 1px solid var(--color-border);
+      cursor: pointer;
+      min-width: 110px;
+      transition: background 0.15s;
+    }
+    .rr-metric:last-child { border-right: none; }
+    .rr-metric:hover { background: var(--color-neutral-50); }
+    .rr-metric--active {
+      background: var(--color-primitive-500);
+      color: #fff;
+    }
+    .rr-metric__label {
+      font-size: 11px; font-weight: 600; color: var(--color-text-muted);
+      margin: 0 0 6px;
+      white-space: nowrap;
+    }
+    .rr-metric--active .rr-metric__label { color: rgba(255,255,255,0.75); }
+    .rr-metric__cols {
+      display: flex; gap: 12px;
+    }
+    .rr-metric__col {
+      display: flex; flex-direction: column; gap: 1px;
+    }
+    .rr-metric__col-head {
+      font-size: 10px; font-weight: 500; color: var(--color-text-muted);
+    }
+    .rr-metric--active .rr-metric__col-head { color: rgba(255,255,255,0.6); }
+    .rr-metric__col-val {
+      font-size: 14px; font-weight: 700; color: var(--color-text);
+    }
+    .rr-metric--active .rr-metric__col-val { color: #fff; }
+
+    /* Body — chart + map */
+    .rr-body {
+      flex: 1; overflow-y: auto;
+      padding: 16px 24px 24px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .rr-body__baseline {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--color-text-muted);
+    }
+    .rr-body__baseline-line {
+      width: 24px; height: 0;
+      border-top: 2px dashed var(--color-neutral-400);
+    }
+    .rr-chart-row {
+      display: flex; gap: 16px; align-items: stretch;
+    }
+    .rr-chart-area {
+      flex: 1; min-width: 0;
+      height: 260px;
+    }
+    .rr-chart-area .highcharts-root,
+    .rr-chart-area .highcharts-container text { font-family: var(--font-family) !important; }
+    .rr-zone-map {
+      flex-shrink: 0;
+      width: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #3a5a3a;
+      position: relative;
+    }
+    .rr-zone-map__placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.6);
+      font-size: 12px; font-weight: 500;
+    }
+    .rr-zone-map__placeholder .material-symbols-outlined { font-size: 32px; }
+    .rr-zone-map__label {
+      position: absolute;
+      left: 50%; top: 50%; transform: translate(-50%,-50%);
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 12px; font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    /* Chart legend */
+    .rr-legend {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      padding: 4px 0;
+    }
+    .rr-legend__item {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--color-text-muted);
+    }
+    .rr-legend__swatch {
+      width: 16px; height: 3px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-shell">
+
+    <!-- NAV -->
+    <aside class="page-shell__side">
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
+          <span class="nav__label">Home</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
+          <span class="nav__label">Growers</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group_add</span></span>
+          <span class="nav__label">Groups</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="#" class="nav__item" aria-current="page">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+          <span class="nav__label">Scout</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
+          <span class="nav__label">Weather</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">monitoring</span></span>
+          <span class="nav__label">Analyze</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">download</span></span>
+          <span class="nav__label">Connect fields</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+          <span class="nav__label">Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="page-shell__main">
+
+      <!-- Header -->
+      <header class="header" style="z-index:15;">
+        <div class="header__left">
+          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+          <a href="#" class="btn btn--secondary btn--sm" style="margin-left:12px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span>
+            Back
+          </a>
+        </div>
+        <div class="header__center">
+          <div class="header__search-wrap">
+            <span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <input type="search" class="header__search" placeholder="Search" />
+          </div>
+        </div>
+        <div class="header__right">
+          <span class="header__user-name">Caleb Wieber</span>
+          <span class="header__avatar" aria-label="User avatar">CW</span>
+          <button style="position:relative;background:none;border:none;cursor:pointer;color:var(--color-text-muted);padding:4px;" aria-label="Notifications">
+            <span class="material-symbols-outlined" style="font-size:22px;">notifications</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Map viewport -->
+      <div class="map-viewport map-viewport--fallback">
+        <!-- Simulated zone overlay bands -->
+        <div class="map-zone-overlay">
+          <div class="map-zone-overlay__band map-zone-overlay__band--blue" style="top:4%;height:14%;">
+            <span class="map-zone-overlay__label">VT Fungicide<br>47.5 ac</span>
+          </div>
+          <div class="map-zone-overlay__band map-zone-overlay__band--red" style="top:18%;height:14%;">
+            <span class="map-zone-overlay__label">VT & R2 Fungicide<br>104.5 ac</span>
+          </div>
+          <div class="map-zone-overlay__band map-zone-overlay__band--blue" style="top:32%;height:16%;">
+            <span class="map-zone-overlay__label">VT Fungicide<br>133.2 ac</span>
+          </div>
+          <div class="map-zone-overlay__band map-zone-overlay__band--red" style="top:48%;height:14%;">
+            <span class="map-zone-overlay__label">VT & R2 Fungicide<br>114 ac</span>
+          </div>
+          <div class="map-zone-overlay__band map-zone-overlay__band--blue" style="top:62%;height:14%;">
+            <span class="map-zone-overlay__label">VT Fungicide<br>148.7 ac</span>
+          </div>
+          <div class="map-zone-overlay__band map-zone-overlay__band--red" style="top:76%;height:12%;">
+            <span class="map-zone-overlay__label">VT & R2 Fungicide<br>67.1 ac</span>
+          </div>
+          <div class="map-zone-overlay__band map-zone-overlay__band--blue" style="top:88%;height:10%;">
+            <span class="map-zone-overlay__label">VT Fungicide<br>38.1 ac</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zone create banner -->
+      <div class="zone-create-banner" style="display:none;">Please select area to create zone</div>
+
+      <!-- Map layer toggles (top-left) -->
+      <div class="map-layer-toggles">
+        <button class="map-layer-toggle" aria-label="Layers">
+          <span class="material-symbols-outlined">layers</span>
+        </button>
+        <button class="map-layer-toggle" aria-label="Crop data">
+          <span class="material-symbols-outlined">eco</span>
+          <span class="map-layer-toggle__badge">00ac</span>
+        </button>
+      </div>
+
+      <!-- Top-right actions -->
+      <div class="map-top-actions">
+        <button class="map-top-actions__info" aria-label="Info">i</button>
+        <button class="map-top-actions__share">Share</button>
+        <button class="map-top-actions__more" aria-label="More options">
+          <span class="material-symbols-outlined" style="font-size:18px;">more_vert</span>
+        </button>
+      </div>
+
+      <!-- Right map controls -->
+      <div class="map-controls">
+        <button class="map-controls__btn" aria-label="Zoom in"><span class="material-symbols-outlined">add</span></button>
+        <button class="map-controls__btn" aria-label="Zoom out"><span class="material-symbols-outlined">remove</span></button>
+        <button class="map-controls__btn" aria-label="Compass"><span class="material-symbols-outlined">explore</span></button>
+        <button class="map-controls__btn" aria-label="Layers"><span class="material-symbols-outlined">grid_view</span></button>
+        <button class="map-controls__btn" aria-label="Fullscreen"><span class="material-symbols-outlined">fullscreen</span></button>
+      </div>
+
+      <!-- Layer panel (floating) -->
+      <div class="layer-panel" id="layer-panel" style="display:none;">
+        <div class="layer-panel__section">
+          <div class="layer-panel__row">
+            <input type="checkbox" class="layer-panel__checkbox" />
+            <span class="layer-panel__section-title">Crop health</span>
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" />
+            Good
+            <span class="layer-panel__acres">1.5 ac</span>
+            <span class="layer-panel__dot" style="background:#4ade80;"></span>
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" />
+            At Risk
+            <span class="layer-panel__acres">31.4 ac</span>
+            <span class="layer-panel__dot" style="background:#fbbf24;"></span>
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" />
+            Fair
+            <span class="layer-panel__acres">1.2 ac</span>
+            <span class="layer-panel__dot" style="background:#ef4444;"></span>
+          </div>
+        </div>
+
+        <div class="layer-panel__section">
+          <div class="layer-panel__row">
+            <input type="checkbox" class="layer-panel__checkbox" checked />
+            <span>Overlays</span>
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" checked />
+            1 ac&sup2; grid
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" checked />
+            Soil
+          </div>
+        </div>
+
+        <div class="layer-panel__section layer-panel__section--highlight">
+          <div class="layer-panel__row">
+            <input type="checkbox" class="layer-panel__checkbox" checked />
+            <span style="font-weight:600;">Biological Trial (4/11)</span>
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" checked />
+            Zone 1
+            <span class="layer-panel__acres">1.2 ac</span>
+            <span class="layer-panel__dot" style="background:#f59e0b;"></span>
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" checked />
+            Zone 2
+            <span class="layer-panel__acres">1.2 ac</span>
+            <span class="layer-panel__dot" style="background:#3b82f6;"></span>
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" checked />
+            Zone 3
+            <span class="layer-panel__acres">1.2 ac</span>
+            <span class="layer-panel__dot" style="background:#22c55e;"></span>
+          </div>
+          <div class="layer-panel__row layer-panel__row--indented">
+            <input type="checkbox" class="layer-panel__checkbox" checked />
+            Zone 4
+            <span class="layer-panel__acres">1.2 ac</span>
+            <span class="layer-panel__dot" style="background:#06b6d4;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map footer info -->
+      <div class="map-footer-info">
+        <span>13 zoom</span>
+        <span>1000 ft</span>
+      </div>
+
+      <!-- Activity timeline -->
+      <div class="timeline-bar">
+        <span class="timeline-bar__year">2024</span>
+        <span class="timeline-bar__filter">All activities <span class="material-symbols-outlined">expand_more</span></span>
+        <button class="timeline-bar__nav"><span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span></button>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+          <span class="timeline-bar__date">Jun 9</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">satellite_alt</span></span>
+          <span class="timeline-bar__date">Jun 12</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">satellite_alt</span></span>
+          <span class="timeline-bar__date">Jun 12</span>
+        </div>
+        <div class="timeline-bar__item timeline-bar__item--highlight">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">eco</span></span>
+          <span class="timeline-bar__date">Jun 16</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">agriculture</span></span>
+          <span class="timeline-bar__date">Jun 20</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">eco</span></span>
+          <span class="timeline-bar__date">Jun 27</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">bug_report</span></span>
+          <span class="timeline-bar__date">Jul 4</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">satellite_alt</span></span>
+          <span class="timeline-bar__date">Jul 6</span>
+        </div>
+        <div class="timeline-bar__item timeline-bar__item--active">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">satellite_alt</span></span>
+          <span class="timeline-bar__date">Jul 6</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+          <span class="timeline-bar__date">Jul 21</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">satellite_alt</span></span>
+          <span class="timeline-bar__date">Aug 3</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">satellite_alt</span></span>
+          <span class="timeline-bar__date">Aug 9</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">eco</span></span>
+          <span class="timeline-bar__date">Aug 22</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">eco</span></span>
+          <span class="timeline-bar__date">Aug 26</span>
+        </div>
+        <div class="timeline-bar__item timeline-bar__item--highlight">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">photo_camera</span></span>
+          <span class="timeline-bar__date">Sep 25</span>
+        </div>
+        <div class="timeline-bar__item timeline-bar__item--highlight">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">photo_camera</span></span>
+          <span class="timeline-bar__date">Sep 26</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">photo_camera</span></span>
+          <span class="timeline-bar__date">Oct 7</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">satellite_alt</span></span>
+          <span class="timeline-bar__date">Nov 26</span>
+        </div>
+        <div class="timeline-bar__item">
+          <span class="timeline-bar__icon"><span class="material-symbols-outlined">grid_view</span></span>
+          <span class="timeline-bar__date">Jan 5</span>
+        </div>
+      </div>
+
+      <!-- ═══ REGION REPORT PANEL ═══ -->
+      <div class="rr-panel" id="rr-panel">
+        <button class="rr-panel__close" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+
+        <!-- Header -->
+        <div class="rr-header">
+          <h1 class="rr-header__title">Region report tool</h1>
+          <p class="rr-header__field">Home 4 South Dahlia's24</p>
+          <p class="rr-header__meta">South Shop, <a href="#">Campbell farms.</a></p>
+          <p class="rr-header__detail">
+            664.9 ac
+            <span class="rr-header__detail-sep">|</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">ac_unit</span> 11/5
+            <span class="rr-header__detail-sep">|</span>
+            <span class="rr-header__crop"><span class="material-symbols-outlined">water_drop</span> Corn</span>
+            <span class="rr-header__detail-sep">|</span>
+            <span class="rr-header__gdd">GDD: 153</span>
+          </p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="rr-tabs" role="tablist">
+          <div class="rr-tabs__item rr-tabs__item--active" role="tab" aria-selected="true">Zones</div>
+          <div class="rr-tabs__item" role="tab" aria-selected="false">Machine data</div>
+          <div class="rr-tabs__item" role="tab" aria-selected="false">Summary</div>
+        </div>
+
+        <!-- Zone selector -->
+        <div class="rr-zones">
+          <button class="rr-zone-pill">
+            <span class="rr-zone-pill__dot" style="background:#f59e0b;"></span>
+            Zone 1
+          </button>
+          <button class="rr-zone-pill rr-zone-pill--active">
+            <span class="rr-zone-pill__dot" style="background:#3b82f6;"></span>
+            Zone 2
+          </button>
+          <button class="rr-zone-pill">
+            <span class="rr-zone-pill__dot" style="background:#22c55e;"></span>
+            Zone 3
+          </button>
+          <button class="rr-zone-pill">
+            <span class="rr-zone-pill__dot" style="background:#06b6d4;"></span>
+            Zone 4
+          </button>
+          <span class="rr-zone-avatar" style="background:#ef4444;">R</span>
+          <span class="rr-zone-avatar" style="background:#22c55e;">C</span>
+          <button class="rr-zones__add">
+            <span class="material-symbols-outlined">add</span>
+            Add manual zone
+          </button>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="rr-metrics">
+          <div class="rr-metric rr-metric--active">
+            <p class="rr-metric__label">Yield forecast</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">198 b/ac</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">192 b/ac</span>
+              </div>
+            </div>
+          </div>
+          <div class="rr-metric">
+            <p class="rr-metric__label">Planting population</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">31k</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">34.5k</span>
+              </div>
+            </div>
+          </div>
+          <div class="rr-metric">
+            <p class="rr-metric__label">Emergence</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">28K (90%)</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">28K (90%)</span>
+              </div>
+            </div>
+          </div>
+          <div class="rr-metric">
+            <p class="rr-metric__label">Weed acres</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">5 ac</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">55 ac</span>
+              </div>
+            </div>
+          </div>
+          <div class="rr-metric">
+            <p class="rr-metric__label">Average NDVI</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">0.74</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">0.96</span>
+              </div>
+            </div>
+          </div>
+          <div class="rr-metric">
+            <p class="rr-metric__label">Nutrient deficiency</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">5 ac | 0.75</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">5 ac | 0.75</span>
+              </div>
+            </div>
+          </div>
+          <div class="rr-metric">
+            <p class="rr-metric__label">Disease</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">0.84 ac</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">0.89 ac</span>
+              </div>
+            </div>
+          </div>
+          <div class="rr-metric">
+            <p class="rr-metric__label">Dry down</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">0.84 ac</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">0.89 ac</span>
+              </div>
+            </div>
+          </div>
+          <div class="rr-metric">
+            <p class="rr-metric__label">Dry yield</p>
+            <div class="rr-metric__cols">
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">In</span>
+                <span class="rr-metric__col-val">NA</span>
+              </div>
+              <div class="rr-metric__col">
+                <span class="rr-metric__col-head">Out</span>
+                <span class="rr-metric__col-val">192 b/</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Body: chart + zone map -->
+        <div class="rr-body">
+          <div class="rr-body__baseline">
+            <span class="rr-body__baseline-line"></span>
+            Field baseline
+          </div>
+          <div class="rr-chart-row">
+            <div class="rr-chart-area" id="rr-chart"></div>
+            <div class="rr-zone-map">
+              <div class="rr-zone-map__placeholder">
+                <span class="material-symbols-outlined">map</span>
+                Zone map
+              </div>
+              <span class="rr-zone-map__label">16.4 ac</span>
+            </div>
+          </div>
+          <div class="rr-legend">
+            <span class="rr-legend__item"><span class="rr-legend__swatch" style="background:#f59e0b;"></span> 255 bu/ac</span>
+            <span class="rr-legend__item"><span class="rr-legend__swatch" style="background:#3b82f6;"></span> 205 bu/ac</span>
+            <span class="rr-legend__item"><span class="rr-legend__swatch" style="background:#1e40af;"></span> 185 bu/ac</span>
+            <span class="rr-legend__item"><span class="rr-legend__swatch" style="background:#9ca3af;"></span> 150 bu/ac</span>
+            <span class="rr-legend__item"><span class="rr-legend__swatch" style="background:#22c55e;"></span> 90 bu/ac</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-shell__main -->
+  </div><!-- /page-shell -->
+
+  <script>
+    /* Region report chart */
+    (function () {
+      var el = document.getElementById('rr-chart');
+      if (!el || typeof Highcharts === 'undefined') return;
+
+      var dates = ['', 'May 5<br>(V5)', 'May 16<br>(V7)', 'June 1<br>(V10)', 'June 13<br>(V16)', 'Jul 1<br>(VT)', 'July 18<br>(R1)', 'August 5<br>(R2)'];
+
+      Highcharts.chart('rr-chart', {
+        chart: { type: 'spline', height: 260, backgroundColor: 'transparent', spacing: [10, 10, 5, 10] },
+        title: { text: null },
+        credits: { enabled: false },
+        legend: { enabled: false },
+        tooltip: {
+          shared: true,
+          headerFormat: '<span style="font-size:12px;font-weight:600">{point.key}</span><br/>',
+          valueSuffix: ' bu/ac',
+          style: { fontFamily: 'Figtree, system-ui, sans-serif' }
+        },
+        xAxis: {
+          categories: dates,
+          lineColor: '#dde3ee', lineWidth: 1, tickLength: 0,
+          labels: { style: { fontSize: '10px', color: '#737373', fontFamily: 'Figtree, sans-serif' }, useHTML: true }
+        },
+        yAxis: {
+          title: { text: 'bu/ac', style: { fontSize: '12px', color: '#737373' } },
+          min: 0, max: 300,
+          tickPositions: [0, 50, 100, 150, 200, 250, 300],
+          gridLineColor: '#f0f0f0', gridLineWidth: 1,
+          labels: { style: { fontSize: '11px', color: '#737373', fontFamily: 'Figtree, sans-serif' } }
+        },
+        plotOptions: {
+          spline: { marker: { enabled: false }, lineWidth: 2.5 }
+        },
+        series: [
+          { name: '255 bu/ac', data: [110, 150, 170, 200, 220, 255, 250, 245], color: '#f59e0b', dashStyle: 'Solid' },
+          { name: '205 bu/ac', data: [105, 140, 165, 195, 210, 235, 230, 225], color: '#3b82f6', dashStyle: 'Solid' },
+          { name: '185 bu/ac', data: [95, 130, 145, 165, 185, 200, 195, 190], color: '#1e40af', dashStyle: 'Solid' },
+          { name: '150 bu/ac', data: [80, 105, 115, 130, 145, 155, 150, 148], color: '#9ca3af', dashStyle: 'Solid' },
+          { name: '90 bu/ac',  data: [60, 70, 78, 88, 95, 100, 98, 95], color: '#22c55e', dashStyle: 'Solid' },
+          { name: 'Field baseline', data: [100, 125, 140, 160, 180, 195, 190, 185], color: '#a3a3a3', dashStyle: 'Dash', lineWidth: 1.5 }
+        ]
+      });
+    })();
+
+    /* Layer panel toggle */
+    (function () {
+      var layerBtn = document.querySelector('.map-layer-toggles .map-layer-toggle');
+      var panel = document.getElementById('layer-panel');
+      if (layerBtn && panel) {
+        layerBtn.addEventListener('click', function () {
+          panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+        });
+      }
+    })();
+
+    /* Close region report */
+    (function () {
+      var closeBtn = document.querySelector('.rr-panel__close');
+      var panel = document.getElementById('rr-panel');
+      if (closeBtn && panel) {
+        closeBtn.addEventListener('click', function () {
+          panel.style.display = 'none';
+        });
+      }
+    })();
+
+    /* Zone pill toggle */
+    (function () {
+      document.querySelectorAll('.rr-zone-pill').forEach(function (pill) {
+        pill.addEventListener('click', function () {
+          document.querySelectorAll('.rr-zone-pill').forEach(function (p) { p.classList.remove('rr-zone-pill--active'); });
+          pill.classList.add('rr-zone-pill--active');
+        });
+      });
+    })();
+
+    /* Metric card toggle */
+    (function () {
+      document.querySelectorAll('.rr-metric').forEach(function (card) {
+        card.addEventListener('click', function () {
+          document.querySelectorAll('.rr-metric').forEach(function (c) { c.classList.remove('rr-metric--active'); });
+          card.classList.add('rr-metric--active');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

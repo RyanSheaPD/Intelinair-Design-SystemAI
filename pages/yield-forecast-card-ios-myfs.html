@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Yield Forecast — MyFS iOS Home Widget</title>
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { height: 100%; }
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      background: #e5e5e5;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 20px;
+      overflow-y: auto;
+      height: auto;
+      min-height: 100%;
+    }
+
+    /* ═══ MYFS BRAND ═══ */
+    :root {
+      --myfs: #c41e3a;
+      --myfs-light: #fde8eb;
+      --myfs-dark: #9a1830;
+    }
+
+    /* ═══ iOS DEVICE FRAME ═══ */
+    .ios-frame {
+      width: 375px;
+      height: 812px;
+      background: linear-gradient(180deg, #f0f2f0 0%, #e8ece8 30%, #f0f2f0 100%);
+      border-radius: 44px;
+      box-shadow: 0 0 0 3px #1a1a1a, 0 0 0 6px #333, 0 20px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status bar */
+    .status-bar {
+      height: 54px;
+      padding: 14px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .status-bar__time { font-size: 15px; font-weight: 600; }
+    .status-bar__right { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; }
+
+    /* App header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 16px 12px;
+      flex-shrink: 0;
+    }
+    .app-header__logo {
+      height: 36px; width: auto;
+    }
+    .app-header__actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .app-header__btn {
+      width: 36px; height: 36px;
+      border: none; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative;
+    }
+    .app-header__btn--primary { background: var(--myfs); color: #fff; }
+    .app-header__btn--ghost { background: transparent; color: #3c3c43; }
+    .app-header__badge {
+      position: absolute; top: -4px; right: -6px;
+      background: var(--myfs); color: #fff;
+      font-size: 9px; font-weight: 700;
+      padding: 1px 5px; border-radius: 10px;
+      line-height: 1.3;
+    }
+    .material-symbols-outlined { font-size: 22px; }
+
+    /* Scrollable area */
+    .ios-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ═══ EXISTING CARDS ABOVE (simplified) ═══ */
+    .section-card {
+      background: #fff;
+      border-radius: 16px;
+      margin: 0 16px 12px;
+      padding: 16px;
+      min-height: 80px;
+    }
+    .section-card__title {
+      font-size: 17px; font-weight: 600; color: #1c1c1e;
+      margin-bottom: 12px;
+    }
+    .section-card__placeholder {
+      display: flex; gap: 10px;
+    }
+    .section-card__placeholder-block {
+      flex: 1; height: 80px;
+      background: #f2f2f7; border-radius: 10px;
+    }
+
+    /* Section header */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px 8px;
+    }
+    .section-header__title { font-size: 20px; font-weight: 700; color: #1c1c1e; }
+    .section-header__link {
+      font-size: 15px; font-weight: 400; color: var(--myfs);
+      display: flex; align-items: center; gap: 2px;
+      text-decoration: none;
+    }
+
+    /* Fields horizontal scroll */
+    .fields-scroll {
+      display: flex;
+      gap: 10px;
+      padding: 0 16px 12px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .fields-scroll::-webkit-scrollbar { display: none; }
+    .field-card-mini {
+      flex-shrink: 0;
+      width: 240px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 140px;
+    }
+    .field-card-mini__title {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 15px; font-weight: 600; color: #1c1c1e;
+      margin-bottom: 8px;
+    }
+    .field-card-mini__title .material-symbols-outlined { font-size: 18px; color: #8e8e93; }
+    .field-card-mini__subtitle {
+      font-size: 13px; color: #8e8e93; margin-bottom: 10px;
+    }
+    .field-card-mini__chart-placeholder {
+      height: 60px;
+      background: linear-gradient(90deg, rgba(196,30,58,0.08) 0%, rgba(196,30,58,0.03) 100%);
+      border-radius: 8px;
+      display: flex; align-items: flex-end; justify-content: center;
+      padding-bottom: 8px;
+      font-size: 12px; color: #aeaeb2;
+    }
+    .field-card-mini__empty {
+      font-size: 13px; color: #aeaeb2;
+      text-align: center; padding: 20px 0;
+    }
+
+    /* ═══ YIELD FORECAST WIDGET — fits between Fields and Messages ═══ */
+    .yield-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 6px;
+    }
+    .yield-section-header__title {
+      font-size: 20px; font-weight: 700; color: #1c1c1e;
+    }
+    .yield-section-header__link {
+      font-size: 15px; color: var(--myfs); text-decoration: none;
+      display: flex; align-items: center; gap: 2px;
+    }
+
+    .yield-widget {
+      background: #fff;
+      border-radius: 16px;
+      margin: 0 16px 4px;
+      overflow: hidden;
+    }
+
+    /* Crop toggle row */
+    .yw-crop-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 14px 0;
+      overflow-x: auto;
+    }
+    .yw-crop-row::-webkit-scrollbar { display: none; }
+    .yw-crop-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 15px;
+      border: none;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      background: #f2f2f7;
+      color: #3a3a3c;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .yw-crop-chip--active {
+      background: var(--myfs);
+      color: #fff;
+    }
+
+    /* Stats strip */
+    .yw-stats {
+      display: flex;
+      padding: 12px 14px 10px;
+      gap: 0;
+    }
+    .yw-stat {
+      flex: 1;
+    }
+    .yw-stat + .yw-stat {
+      border-left: 0.5px solid #e5e5ea;
+      padding-left: 14px;
+    }
+    .yw-stat__label {
+      font-size: 11px; font-weight: 500; color: #8e8e93;
+      margin-bottom: 1px;
+    }
+    .yw-stat__value {
+      font-size: 22px; font-weight: 700; color: #1c1c1e;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
+    }
+
+    /* Mini chart */
+    .yw-chart {
+      height: 120px;
+      padding: 0 4px;
+    }
+    .yw-chart .highcharts-root,
+    .yw-chart .highcharts-container text {
+      font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif !important;
+    }
+
+    /* Legend */
+    .yw-legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 4px 14px 10px;
+    }
+    .yw-legend__item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px; color: #8e8e93;
+    }
+    .yw-legend__swatch {
+      width: 10px; height: 2.5px; border-radius: 2px;
+    }
+
+    /* Footer stats under chart */
+    .yw-footer {
+      padding: 10px 14px 14px;
+      border-top: 0.5px solid #e5e5ea;
+    }
+    .yw-footer__company {
+      display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap;
+      font-size: 12px; color: #8e8e93; margin-bottom: 8px;
+    }
+    .yw-footer__company-label { font-weight: 600; color: #636366; }
+    .yw-footer__company-name { font-weight: 600; color: #1c1c1e; }
+    .yw-footer__badge {
+      font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+      color: #636366; background: #f2f2f7; padding: 2px 7px; border-radius: 999px;
+    }
+    .yw-footer__total {
+      display: flex; align-items: baseline; gap: 6px;
+      font-size: 12px; color: #8e8e93; margin-bottom: 8px;
+    }
+    .yw-footer__total-val { font-weight: 700; color: #1c1c1e; }
+    .yw-footer__cols {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .yw-footer__series {
+      padding: 8px 10px; border-radius: 8px; background: #f9f9f9;
+    }
+    .yw-footer__series--forecast { border-left: 3px solid #5AC8FA; }
+    .yw-footer__series--actual { border-left: 3px solid #8e8e93; }
+    .yw-footer__series-label {
+      font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+      color: #8e8e93; margin-bottom: 4px;
+    }
+    .yw-footer__series--forecast .yw-footer__series-label { color: #2eaadc; }
+    .yw-footer__item {
+      display: flex; align-items: baseline; gap: 4px;
+      font-size: 11px; margin-bottom: 2px;
+    }
+    .yw-footer__item:last-child { margin-bottom: 0; }
+    .yw-footer__item-label { color: #8e8e93; }
+    .yw-footer__item-val { font-weight: 700; color: #1c1c1e; font-size: 12px; }
+    .yw-footer__series--forecast .yw-footer__item-val { color: #2eaadc; }
+    .yw-footer__series--actual .yw-footer__item-val { color: #8e8e93; }
+    .yw-footer__update { font-size: 10px; color: #aeaeb2; }
+
+    /* Segmented control — compact */
+    .yw-segmented {
+      display: flex;
+      background: #e5e5ea;
+      border-radius: 7px;
+      padding: 2px;
+      margin: 0 14px;
+    }
+    .yw-segmented__item {
+      flex: 1;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px; font-weight: 500;
+      color: #1c1c1e;
+      border: none; border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .yw-segmented__item--active {
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 0 0 0.5px rgba(0,0,0,0.04);
+      font-weight: 600;
+    }
+
+    /* Scroll indicator dots */
+    .scroll-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 0 4px;
+    }
+    .scroll-dots__dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #d1d1d6;
+    }
+    .scroll-dots__dot--active { background: var(--myfs); }
+
+    /* ═══ MESSAGES SECTION ═══ */
+    .messages-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 8px;
+    }
+    .messages-header__title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 20px; font-weight: 700; color: #1c1c1e;
+    }
+    .messages-header__badge {
+      background: var(--myfs); color: #fff;
+      font-size: 12px; font-weight: 700;
+      padding: 2px 8px; border-radius: 10px;
+    }
+    .messages-header__link {
+      font-size: 15px; color: var(--myfs); text-decoration: none;
+      display: flex; align-items: center; gap: 2px;
+    }
+    .messages-avatars {
+      display: flex;
+      gap: 12px;
+      padding: 0 16px 16px;
+    }
+    .msg-avatar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 56px;
+    }
+    .msg-avatar__circle {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: #f2f2f7;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #3a3a3c;
+      position: relative;
+    }
+    .msg-avatar__badge {
+      position: absolute; top: -3px; right: -3px;
+      background: var(--myfs); color: #fff;
+      font-size: 10px; font-weight: 700;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #f0f2f0;
+    }
+    .msg-avatar__name {
+      font-size: 10px; font-weight: 500; color: #8e8e93;
+      text-align: center;
+      overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap; width: 100%;
+    }
+
+    /* ═══ BOTTOM TAB BAR ═══ */
+    .tab-bar {
+      height: 83px;
+      padding-bottom: 34px;
+      background: #fff;
+      border-top: 0.5px solid #c6c6c8;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding-top: 6px;
+      flex-shrink: 0;
+    }
+    .tab-bar__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      font-size: 10px; font-weight: 500;
+      color: #8e8e93;
+      background: none; border: none;
+      cursor: pointer; font-family: inherit;
+      position: relative;
+      min-width: 56px;
+    }
+    .tab-bar__item--active {
+      color: var(--myfs);
+    }
+    .tab-bar__item--active .tab-bar__bg {
+      position: absolute;
+      top: -6px;
+      width: 56px; height: 32px;
+      background: var(--myfs-light);
+      border-radius: 16px;
+      z-index: 0;
+    }
+    .tab-bar__item .material-symbols-outlined {
+      font-size: 24px;
+      position: relative; z-index: 1;
+    }
+    .tab-bar__label {
+      position: relative; z-index: 1;
+    }
+    .tab-bar__badge {
+      position: absolute;
+      top: -8px; right: 2px;
+      background: var(--myfs); color: #fff;
+      font-size: 9px; font-weight: 700;
+      padding: 1px 5px; border-radius: 10px;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ios-frame">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-bar__time">4:26</span>
+      <span class="status-bar__right">5G+ 68%</span>
+    </div>
+
+    <!-- App header -->
+    <div class="app-header">
+      <img class="app-header__logo" src="https://myfs-test.intelinair.dev/assets/myfs-theme/img/logo.png" alt="myFS Agronomy" onerror="this.outerHTML='<span style=&quot;font-size:18px;font-weight:800;color:#1c1c1e;&quot;>my<span style=&quot;color:#c41e3a;&quot;>FS</span> <span style=&quot;font-size:12px;font-weight:600;color:#8e8e93;letter-spacing:0.08em;&quot;>AGRONOMY</span></span>'" />
+      <div class="app-header__actions">
+        <button class="app-header__btn app-header__btn--primary" aria-label="Grid"><span class="material-symbols-outlined" style="font-size:20px;">grid_view</span></button>
+        <button class="app-header__btn app-header__btn--ghost" aria-label="Filter"><span class="material-symbols-outlined">tune</span></button>
+        <button class="app-header__btn app-header__btn--ghost" aria-label="Notifications" style="position:relative;">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="app-header__badge">99+</span>
+        </button>
+        <button class="app-header__btn app-header__btn--ghost" aria-label="Search"><span class="material-symbols-outlined">search</span></button>
+      </div>
+    </div>
+
+    <!-- Scroll area -->
+    <div class="ios-scroll">
+
+      <!-- Weather card (placeholder) -->
+      <div class="section-card">
+        <div class="section-card__title">Weather forecast</div>
+        <div class="section-card__placeholder">
+          <div class="section-card__placeholder-block"></div>
+          <div class="section-card__placeholder-block"></div>
+          <div class="section-card__placeholder-block"></div>
+          <div class="section-card__placeholder-block"></div>
+        </div>
+      </div>
+
+      <!-- Fields section -->
+      <div class="section-header">
+        <span class="section-header__title">Fields</span>
+        <a href="#" class="section-header__link">See all <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span></a>
+      </div>
+      <div class="fields-scroll">
+        <div class="field-card-mini">
+          <div class="field-card-mini__title"><span class="material-symbols-outlined">notifications</span> Top alerts</div>
+          <div class="field-card-mini__chart-placeholder" style="height:70px;background:linear-gradient(0deg,rgba(196,30,58,0.06) 0%, transparent 100%);">
+          </div>
+          <div class="field-card-mini__empty">No alerts</div>
+        </div>
+        <div class="field-card-mini">
+          <div class="field-card-mini__title"><span class="material-symbols-outlined">eco</span> Crop growth</div>
+          <div class="field-card-mini__subtitle">Crop type: Crop unknown</div>
+          <div class="field-card-mini__chart-placeholder" style="background:rgba(196,30,58,0.12);height:50px;"></div>
+        </div>
+      </div>
+
+      <!-- ═══ YIELD FORECAST WIDGET — inserted here ═══ -->
+      <div class="yield-section-header">
+        <span class="yield-section-header__title">Yield forecast</span>
+        <a href="#" class="yield-section-header__link">Details <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span></a>
+      </div>
+      <div class="yield-widget">
+        <div class="yw-crop-row">
+          <button class="yw-crop-chip" data-crop="corn">Corn 4,820</button>
+          <button class="yw-crop-chip yw-crop-chip--active" data-crop="soy">Soybeans 3,120</button>
+        </div>
+        <div class="yw-stats">
+          <div class="yw-stat">
+            <div class="yw-stat__label">Forecast</div>
+            <div class="yw-stat__value">50</div>
+          </div>
+          <div class="yw-stat">
+            <div class="yw-stat__label">Dry Yield</div>
+            <div class="yw-stat__value">48</div>
+          </div>
+        </div>
+        <div class="yw-segmented">
+          <button class="yw-segmented__item">% Acres</button>
+          <button class="yw-segmented__item yw-segmented__item--active"># Fields</button>
+        </div>
+        <div class="yw-chart" id="yw-chart"></div>
+        <div class="yw-legend">
+          <span class="yw-legend__item"><span class="yw-legend__swatch" style="background:#5AC8FA;"></span>Forecast</span>
+          <span class="yw-legend__item"><span class="yw-legend__swatch" style="background:#8e8e93;"></span>Actual</span>
+        </div>
+        <div class="yw-footer">
+          <div class="yw-footer__company">
+            <span class="yw-footer__company-label">Company</span>
+            <span class="yw-footer__company-name">Demo Growers LLC</span>
+            <span class="yw-footer__badge">Current selection</span>
+          </div>
+          <div class="yw-footer__total">
+            Total acres <span class="yw-footer__total-val">3,120</span>
+          </div>
+          <div class="yw-footer__cols">
+            <div class="yw-footer__series yw-footer__series--forecast">
+              <div class="yw-footer__series-label">Forecast</div>
+              <div class="yw-footer__item"><span class="yw-footer__item-label">Fields</span><span class="yw-footer__item-val">32</span></div>
+              <div class="yw-footer__item"><span class="yw-footer__item-label">Acres</span><span class="yw-footer__item-val">2,980</span></div>
+            </div>
+            <div class="yw-footer__series yw-footer__series--actual">
+              <div class="yw-footer__series-label">Actual</div>
+              <div class="yw-footer__item"><span class="yw-footer__item-label">Fields</span><span class="yw-footer__item-val">27</span></div>
+              <div class="yw-footer__item"><span class="yw-footer__item-label">Acres</span><span class="yw-footer__item-val">2,510</span></div>
+            </div>
+          </div>
+          <div class="yw-footer__update">Last Update 00/00/2026</div>
+        </div>
+      </div>
+      <div class="scroll-dots">
+        <span class="scroll-dots__dot"></span>
+        <span class="scroll-dots__dot scroll-dots__dot--active"></span>
+        <span class="scroll-dots__dot"></span>
+        <span class="scroll-dots__dot"></span>
+        <span class="scroll-dots__dot"></span>
+      </div>
+
+      <!-- Messages section -->
+      <div class="messages-header">
+        <span class="messages-header__title">Messages <span class="messages-header__badge">18</span></span>
+        <a href="#" class="messages-header__link">See all <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span></a>
+      </div>
+      <div class="messages-avatars">
+        <div class="msg-avatar">
+          <div class="msg-avatar__circle">DV<span class="msg-avatar__badge">3</span></div>
+          <span class="msg-avatar__name">David...</span>
+        </div>
+        <div class="msg-avatar">
+          <div class="msg-avatar__circle" style="font-size:11px;">KH<br>CM<span class="msg-avatar__badge">6</span></div>
+          <span class="msg-avatar__name">KATIE...</span>
+        </div>
+        <div class="msg-avatar">
+          <div class="msg-avatar__circle">GF<span class="msg-avatar__badge">4</span></div>
+          <span class="msg-avatar__name">GRAIN...</span>
+        </div>
+        <div class="msg-avatar">
+          <div class="msg-avatar__circle">FP<span class="msg-avatar__badge">5</span></div>
+          <span class="msg-avatar__name">FS Pre...</span>
+        </div>
+      </div>
+
+    </div><!-- /ios-scroll -->
+
+    <!-- Bottom tab bar -->
+    <div class="tab-bar">
+      <button class="tab-bar__item tab-bar__item--active">
+        <span class="tab-bar__bg"></span>
+        <span class="material-symbols-outlined">home</span>
+        <span class="tab-bar__badge">99+</span>
+        <span class="tab-bar__label">Home</span>
+      </button>
+      <button class="tab-bar__item">
+        <span class="material-symbols-outlined">light_mode</span>
+        <span class="tab-bar__label">Weather</span>
+      </button>
+      <button class="tab-bar__item">
+        <span class="material-symbols-outlined">eco</span>
+        <span class="tab-bar__label">Fields</span>
+      </button>
+      <button class="tab-bar__item">
+        <span class="material-symbols-outlined">chat_bubble</span>
+        <span class="tab-bar__badge" style="right:-2px;">18</span>
+        <span class="tab-bar__label">Messages</span>
+      </button>
+      <button class="tab-bar__item">
+        <span class="material-symbols-outlined">menu</span>
+        <span class="tab-bar__label">More</span>
+      </button>
+    </div>
+
+  </div><!-- /ios-frame -->
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script>
+    var cornData = {
+      categories: ['0', '175', '200', '225', '250', '275+'],
+      forecast: [48, 75, 88, 55, 80, 97, 98, 72, 40, 72],
+      actual:   [84, 92, 85, 62, 45, 65, 82, 78, 68, 38]
+    };
+    var soyData = {
+      categories: ['0-17', '17-33', '33-50', '50-67', '67-83', '83+'],
+      forecast: [15, 32, 55, 78, 62, 28],
+      actual:   [22, 40, 48, 65, 55, 20]
+    };
+    var ywChart = null;
+
+    function renderYwChart(crop) {
+      var d = crop === 'corn' ? cornData : soyData;
+      var el = document.getElementById('yw-chart');
+      if (!el || typeof Highcharts === 'undefined') return;
+      el.style.width = '100%';
+      el.style.height = '120px';
+      if (ywChart) { ywChart.destroy(); ywChart = null; }
+      ywChart = Highcharts.chart('yw-chart', {
+        chart: { type: 'column', height: 120, backgroundColor: 'transparent', spacing: [6, 4, 2, 4] },
+        title: { text: null },
+        credits: { enabled: false },
+        legend: { enabled: false },
+        tooltip: {
+          shared: true,
+          headerFormat: '<span style="font-size:11px;font-weight:600">{point.key} bu/ac</span><br/>',
+          pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>',
+          style: { fontFamily: '-apple-system, SF Pro Text, system-ui', fontSize: '11px' }
+        },
+        xAxis: {
+          categories: d.categories,
+          lineColor: '#e5e5ea', lineWidth: 0.5, tickLength: 0,
+          labels: { style: { fontSize: '9px', color: '#aeaeb2' } }
+        },
+        yAxis: {
+          title: { text: null },
+          min: 0, max: 100,
+          gridLineColor: '#f2f2f7', gridLineWidth: 0.5,
+          labels: { style: { fontSize: '9px', color: '#aeaeb2' } },
+          tickPositions: [0, 50, 100]
+        },
+        plotOptions: {
+          column: { borderRadius: 2, borderWidth: 0, groupPadding: 0.15, pointPadding: 0.05 }
+        },
+        series: [
+          { name: 'Forecast', data: d.forecast, color: '#5AC8FA' },
+          { name: 'Actual',   data: d.actual,   color: '#8e8e93' }
+        ]
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      renderYwChart('soy');
+    });
+
+    /* Crop chip toggle + chart switch */
+    document.querySelectorAll('.yw-crop-chip').forEach(function (c) {
+      c.addEventListener('click', function () {
+        document.querySelectorAll('.yw-crop-chip').forEach(function (cc) { cc.classList.remove('yw-crop-chip--active'); });
+        c.classList.add('yw-crop-chip--active');
+        var crop = c.getAttribute('data-crop');
+        var isCorn = crop === 'corn';
+        document.querySelector('.yw-stat:first-child .yw-stat__value').textContent = isCorn ? '210' : '50';
+        document.querySelector('.yw-stat:last-child .yw-stat__value').textContent = isCorn ? '198' : '48';
+        renderYwChart(crop);
+      });
+    });
+
+    /* Segmented toggle */
+    document.querySelectorAll('.yw-segmented__item').forEach(function (s) {
+      s.addEventListener('click', function () {
+        document.querySelectorAll('.yw-segmented__item').forEach(function (ss) { ss.classList.remove('yw-segmented__item--active'); });
+        s.classList.add('yw-segmented__item--active');
+      });
+    });
+  </script>
+</body>
+</html>

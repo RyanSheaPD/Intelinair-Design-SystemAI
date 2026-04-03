@@ -48,6 +48,23 @@
   --color-myfs-900: #6b0f1a;
   --color-myfs-rgb: 196, 30, 58;
 
+  /* PB / Pivot Bio (multi-brand) — dark navy slate */
+  --color-brand-pb: var(--color-pb-500);
+  --color-brand-pb-rgb: var(--color-pb-rgb);
+
+  /* PB color ramp (50–900) */
+  --color-pb-50:  #EAEBED;
+  --color-pb-100: #BFC4CA;
+  --color-pb-200: #959CA6;
+  --color-pb-300: #6B7582;
+  --color-pb-400: #404E5F;
+  --color-pb-500: #2B3A4D;
+  --color-pb-600: #273445;
+  --color-pb-700: #1E2936;
+  --color-pb-800: #161D27;
+  --color-pb-900: #0D1117;
+  --color-pb-rgb: 43, 58, 77;
+
   /* Primary alias */
   --color-primary: var(--color-brand);
   --color-primary-rgb: var(--color-brand-rgb);
@@ -135,6 +152,8 @@
   --color-text-on-brand: #fff;
   --color-text-on-brand-myfs: var(--color-text-on-myfs-500);
   --color-text-on-myfs-500: #fff;
+  --color-text-on-brand-pb: var(--color-text-on-pb-500);
+  --color-text-on-pb-500: #fff;
   --color-text-on-danger: #fff;
   --color-text-on-warning: #fff;
   --color-text-on-success: #fff;
@@ -149,6 +168,7 @@
   /* WCAG 2.1 AA — text on ramp-100 (unselected filter pills). ≥4.5:1 for normal text. */
   --color-text-on-primitive-100: #1e5a96;
   --color-text-on-brand-100: #1e5a96;
+  --color-text-on-pb-100: var(--color-pb-700);
   --color-text-on-success-100: var(--color-success-900);
   --color-text-on-warning-100: var(--color-warning-900);
   --color-text-on-danger-100: var(--color-danger-900);
@@ -371,4 +391,38 @@
 
   /* ----- Layout ----- */
   --layout-gap: 4px;
+}
+
+/* ═══ THEME: Pivot Bio (PB) ═══
+ * Apply .theme-pb to <html> or a page-shell wrapper to swap brand tokens.
+ * Nav becomes PB dark navy; header logo swaps to Pivot Bio.
+ * Primitive blue, semantic colors, and neutral ramp stay untouched.
+ */
+.theme-pb {
+  --color-brand-100: var(--color-pb-100);
+  --color-brand-200: var(--color-pb-200);
+  --color-brand-300: var(--color-pb-300);
+  --color-brand-400: var(--color-pb-400);
+  --color-brand-500: var(--color-pb-500);
+  --color-brand-600: var(--color-pb-600);
+  --color-brand-700: var(--color-pb-700);
+  --color-brand-800: var(--color-pb-800);
+  --color-brand-900: var(--color-pb-900);
+  --color-brand: var(--color-pb-500);
+  --color-brand-rgb: var(--color-pb-rgb);
+  --color-text-on-brand: var(--color-text-on-pb-500);
+  --color-text-on-brand-100: var(--color-text-on-pb-100);
+
+  /* Nav overrides — white on dark navy */
+  --nav-background: var(--color-pb-500);
+  --nav-text-active: var(--color-pb-500);
+  --nav-icon-active: var(--color-pb-500);
+
+  /* Mobile nav */
+  --nav-mobile-text-active: var(--color-pb-500);
+  --nav-mobile-icon-active: var(--color-pb-500);
+
+  /* Counter badge */
+  --counter-badge-bg: var(--color-pb-500);
+  --counter-badge-text: var(--color-text-on-pb-500);
 }
