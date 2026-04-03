@@ -29,7 +29,13 @@
       "Bash(open \"http://localhost:3000/pages/field-operations.html?figmademo=notifications#figmacapture=774b4bf8-50b0-4691-9cbf-877515a323c6&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F774b4bf8-50b0-4691-9cbf-877515a323c6%2Fsubmit&figmadelay=3000\")",
       "Bash(open \"http://localhost:3000/pages/home-dashboard.html#figmacapture=3574d92c-4969-4ea4-8f92-a3d12fb60455&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F3574d92c-4969-4ea4-8f92-a3d12fb60455%2Fsubmit&figmadelay=3000\")",
       "Read(//temp/readonly/**)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8090/pages/yield-forecast-card.html)",
+      "Bash(open \"http://localhost:8090/pages/yield-forecast-card.html#figmacapture=e8b59add-4740-4332-9f8d-e8231b1585be&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fe8b59add-4740-4332-9f8d-e8231b1585be%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:8090/pages/yield-forecast-card-ios-myfs.html#figmacapture=a52de26c-814f-44c6-a67a-4e17e11cedbd&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fa52de26c-814f-44c6-a67a-4e17e11cedbd%2Fsubmit&figmadelay=3000\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://myfs-test.intelinair.dev/assets/myfs-theme/img/logo.png\")",
+      "Bash(curl -s -o \"/Users/rsintelinair/Documents/Intelinair Design SystemAI/assets/icons/myfs-logo.png\" \"https://myfs-test.intelinair.dev/assets/myfs-theme/img/logo.png\")",
+      "Bash(open \"http://localhost:8090/pages/yield-forecast-card-ios-myfs.html#figmacapture=e5fc5e2a-0471-499c-b153-483a24e6dc54&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fe5fc5e2a-0471-499c-b153-483a24e6dc54%2Fsubmit&figmadelay=3000\")"
     ],
     "additionalDirectories": [
       "/Users/rsintelinair/Documents/Intelinair Design SystemAI copy/pages"

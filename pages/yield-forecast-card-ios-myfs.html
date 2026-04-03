@@ -248,14 +248,40 @@
       font-family: -apple-system, 'SF Pro Display', system-ui, sans-serif;
     }
 
-    /* Mini chart */
-    .yw-chart {
+    /* Bar chart — pure CSS, no Highcharts dependency */
+    .yw-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
       height: 120px;
-      padding: 0 4px;
+      padding: 8px 14px 0;
     }
-    .yw-chart .highcharts-root,
-    .yw-chart .highcharts-container text {
-      font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif !important;
+    .yw-bars__group {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 100%;
+    }
+    .yw-bars__bar {
+      flex: 1;
+      border-radius: 2px 2px 0 0;
+      min-height: 4px;
+      transition: height 0.3s ease;
+    }
+    .yw-bars__bar--forecast { background: var(--myfs, #c41e3a); }
+    .yw-bars__bar--actual { background: #aeaeb2; }
+    .yw-bars__labels {
+      display: flex;
+      justify-content: space-around;
+      padding: 4px 14px 6px;
+    }
+    .yw-bars__label {
+      flex: 1;
+      text-align: center;
+      font-size: 9px;
+      color: #aeaeb2;
+      font-weight: 500;
     }
 
     /* Legend */
@@ -302,13 +328,13 @@
     .yw-footer__series {
       padding: 8px 10px; border-radius: 8px; background: #f9f9f9;
     }
-    .yw-footer__series--forecast { border-left: 3px solid #5AC8FA; }
+    .yw-footer__series--forecast { border-left: 3px solid var(--myfs, #c41e3a); }
     .yw-footer__series--actual { border-left: 3px solid #8e8e93; }
     .yw-footer__series-label {
       font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
       color: #8e8e93; margin-bottom: 4px;
     }
-    .yw-footer__series--forecast .yw-footer__series-label { color: #2eaadc; }
+    .yw-footer__series--forecast .yw-footer__series-label { color: var(--myfs, #c41e3a); }
     .yw-footer__item {
       display: flex; align-items: baseline; gap: 4px;
       font-size: 11px; margin-bottom: 2px;
@@ -316,7 +342,7 @@
     .yw-footer__item:last-child { margin-bottom: 0; }
     .yw-footer__item-label { color: #8e8e93; }
     .yw-footer__item-val { font-weight: 700; color: #1c1c1e; font-size: 12px; }
-    .yw-footer__series--forecast .yw-footer__item-val { color: #2eaadc; }
+    .yw-footer__series--forecast .yw-footer__item-val { color: var(--myfs, #c41e3a); }
     .yw-footer__series--actual .yw-footer__item-val { color: #8e8e93; }
     .yw-footer__update { font-size: 10px; color: #aeaeb2; }
 
@@ -481,7 +507,7 @@
 
     <!-- App header -->
     <div class="app-header">
-      <img class="app-header__logo" src="https://myfs-test.intelinair.dev/assets/myfs-theme/img/logo.png" alt="myFS Agronomy" onerror="this.outerHTML='<span style=&quot;font-size:18px;font-weight:800;color:#1c1c1e;&quot;>my<span style=&quot;color:#c41e3a;&quot;>FS</span> <span style=&quot;font-size:12px;font-weight:600;color:#8e8e93;letter-spacing:0.08em;&quot;>AGRONOMY</span></span>'" />
+      <img class="app-header__logo" src="../assets/icons/myfs-logo.png" alt="myFS Agronomy" onerror="this.outerHTML='<span style=&quot;font-size:18px;font-weight:800;color:#1c1c1e;&quot;>my<span style=&quot;color:#c41e3a;&quot;>FS</span> <span style=&quot;font-size:12px;font-weight:600;color:#8e8e93;letter-spacing:0.08em;&quot;>AGRONOMY</span></span>'" />
       <div class="app-header__actions">
         <button class="app-header__btn app-header__btn--primary" aria-label="Grid"><span class="material-symbols-outlined" style="font-size:20px;">grid_view</span></button>
         <button class="app-header__btn app-header__btn--ghost" aria-label="Filter"><span class="material-symbols-outlined">tune</span></button>
@@ -533,26 +559,41 @@
       </div>
       <div class="yield-widget">
         <div class="yw-crop-row">
-          <button class="yw-crop-chip" data-crop="corn">Corn 4,820</button>
-          <button class="yw-crop-chip yw-crop-chip--active" data-crop="soy">Soybeans 3,120</button>
+          <button class="yw-crop-chip yw-crop-chip--active" data-crop="corn">Corn 4,820</button>
+          <button class="yw-crop-chip" data-crop="soy">Soybeans 3,120</button>
         </div>
         <div class="yw-stats">
           <div class="yw-stat">
             <div class="yw-stat__label">Forecast</div>
-            <div class="yw-stat__value">50</div>
+            <div class="yw-stat__value">210</div>
           </div>
           <div class="yw-stat">
             <div class="yw-stat__label">Dry Yield</div>
-            <div class="yw-stat__value">48</div>
+            <div class="yw-stat__value">198</div>
           </div>
         </div>
         <div class="yw-segmented">
           <button class="yw-segmented__item">% Acres</button>
           <button class="yw-segmented__item yw-segmented__item--active"># Fields</button>
         </div>
-        <div class="yw-chart" id="yw-chart"></div>
+        <div class="yw-bars" id="yw-bars">
+          <div class="yw-bars__group"><div class="yw-bars__bar yw-bars__bar--forecast" style="height:48%;"></div><div class="yw-bars__bar yw-bars__bar--actual" style="height:84%;"></div></div>
+          <div class="yw-bars__group"><div class="yw-bars__bar yw-bars__bar--forecast" style="height:75%;"></div><div class="yw-bars__bar yw-bars__bar--actual" style="height:92%;"></div></div>
+          <div class="yw-bars__group"><div class="yw-bars__bar yw-bars__bar--forecast" style="height:88%;"></div><div class="yw-bars__bar yw-bars__bar--actual" style="height:62%;"></div></div>
+          <div class="yw-bars__group"><div class="yw-bars__bar yw-bars__bar--forecast" style="height:55%;"></div><div class="yw-bars__bar yw-bars__bar--actual" style="height:45%;"></div></div>
+          <div class="yw-bars__group"><div class="yw-bars__bar yw-bars__bar--forecast" style="height:97%;"></div><div class="yw-bars__bar yw-bars__bar--actual" style="height:82%;"></div></div>
+          <div class="yw-bars__group"><div class="yw-bars__bar yw-bars__bar--forecast" style="height:72%;"></div><div class="yw-bars__bar yw-bars__bar--actual" style="height:38%;"></div></div>
+        </div>
+        <div class="yw-bars__labels" id="yw-labels">
+          <span class="yw-bars__label">0</span>
+          <span class="yw-bars__label">175</span>
+          <span class="yw-bars__label">200</span>
+          <span class="yw-bars__label">225</span>
+          <span class="yw-bars__label">250</span>
+          <span class="yw-bars__label">275+</span>
+        </div>
         <div class="yw-legend">
-          <span class="yw-legend__item"><span class="yw-legend__swatch" style="background:#5AC8FA;"></span>Forecast</span>
+          <span class="yw-legend__item"><span class="yw-legend__swatch" style="background:#c41e3a;"></span>Forecast</span>
           <span class="yw-legend__item"><span class="yw-legend__swatch" style="background:#8e8e93;"></span>Actual</span>
         </div>
         <div class="yw-footer">
@@ -642,65 +683,40 @@
 
   </div><!-- /ios-frame -->
 
-  <script src="https://code.highcharts.com/highcharts.js"></script>
   <script>
-    var cornData = {
-      categories: ['0', '175', '200', '225', '250', '275+'],
-      forecast: [48, 75, 88, 55, 80, 97, 98, 72, 40, 72],
-      actual:   [84, 92, 85, 62, 45, 65, 82, 78, 68, 38]
+    /* Corn / Soy bar data (percentage heights) */
+    var barData = {
+      corn: {
+        labels: ['0', '175', '200', '225', '250', '275+'],
+        forecast: [48, 75, 88, 55, 97, 72],
+        actual:   [84, 92, 62, 45, 82, 38]
+      },
+      soy: {
+        labels: ['0-17', '17-33', '33-50', '50-67', '67-83', '83+'],
+        forecast: [15, 32, 55, 78, 62, 28],
+        actual:   [22, 40, 48, 65, 55, 20]
+      }
     };
-    var soyData = {
-      categories: ['0-17', '17-33', '33-50', '50-67', '67-83', '83+'],
-      forecast: [15, 32, 55, 78, 62, 28],
-      actual:   [22, 40, 48, 65, 55, 20]
-    };
-    var ywChart = null;
 
-    function renderYwChart(crop) {
-      var d = crop === 'corn' ? cornData : soyData;
-      var el = document.getElementById('yw-chart');
-      if (!el || typeof Highcharts === 'undefined') return;
-      el.style.width = '100%';
-      el.style.height = '120px';
-      if (ywChart) { ywChart.destroy(); ywChart = null; }
-      ywChart = Highcharts.chart('yw-chart', {
-        chart: { type: 'column', height: 120, backgroundColor: 'transparent', spacing: [6, 4, 2, 4] },
-        title: { text: null },
-        credits: { enabled: false },
-        legend: { enabled: false },
-        tooltip: {
-          shared: true,
-          headerFormat: '<span style="font-size:11px;font-weight:600">{point.key} bu/ac</span><br/>',
-          pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: <b>{point.y}</b><br/>',
-          style: { fontFamily: '-apple-system, SF Pro Text, system-ui', fontSize: '11px' }
-        },
-        xAxis: {
-          categories: d.categories,
-          lineColor: '#e5e5ea', lineWidth: 0.5, tickLength: 0,
-          labels: { style: { fontSize: '9px', color: '#aeaeb2' } }
-        },
-        yAxis: {
-          title: { text: null },
-          min: 0, max: 100,
-          gridLineColor: '#f2f2f7', gridLineWidth: 0.5,
-          labels: { style: { fontSize: '9px', color: '#aeaeb2' } },
-          tickPositions: [0, 50, 100]
-        },
-        plotOptions: {
-          column: { borderRadius: 2, borderWidth: 0, groupPadding: 0.15, pointPadding: 0.05 }
-        },
-        series: [
-          { name: 'Forecast', data: d.forecast, color: '#5AC8FA' },
-          { name: 'Actual',   data: d.actual,   color: '#8e8e93' }
-        ]
-      });
+    function renderBars(crop) {
+      var d = barData[crop];
+      var barsEl = document.getElementById('yw-bars');
+      var labelsEl = document.getElementById('yw-labels');
+      if (!barsEl || !labelsEl) return;
+      var barsHtml = '';
+      var labelsHtml = '';
+      for (var i = 0; i < d.labels.length; i++) {
+        barsHtml += '<div class="yw-bars__group">' +
+          '<div class="yw-bars__bar yw-bars__bar--forecast" style="height:' + d.forecast[i] + '%;"></div>' +
+          '<div class="yw-bars__bar yw-bars__bar--actual" style="height:' + d.actual[i] + '%;"></div>' +
+          '</div>';
+        labelsHtml += '<span class="yw-bars__label">' + d.labels[i] + '</span>';
+      }
+      barsEl.innerHTML = barsHtml;
+      labelsEl.innerHTML = labelsHtml;
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-      renderYwChart('soy');
-    });
-
-    /* Crop chip toggle + chart switch */
+    /* Crop chip toggle */
     document.querySelectorAll('.yw-crop-chip').forEach(function (c) {
       c.addEventListener('click', function () {
         document.querySelectorAll('.yw-crop-chip').forEach(function (cc) { cc.classList.remove('yw-crop-chip--active'); });
@@ -709,7 +725,7 @@
         var isCorn = crop === 'corn';
         document.querySelector('.yw-stat:first-child .yw-stat__value').textContent = isCorn ? '210' : '50';
         document.querySelector('.yw-stat:last-child .yw-stat__value').textContent = isCorn ? '198' : '48';
-        renderYwChart(crop);
+        renderBars(crop);
       });
     });
 
@@ -721,5 +737,6 @@
       });
     });
   </script>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 </body>
 </html>
