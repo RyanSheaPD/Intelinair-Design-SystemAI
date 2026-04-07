@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(open \"http://localhost:3001/pages/map-view.html#figmacapture=d8c6bf98-bda8-4b11-a5e0-c3f61626f6c2&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fd8c6bf98-bda8-4b11-a5e0-c3f61626f6c2%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/map-view.html#figmacapture=306a288b-e336-4c89-963a-aaf01ac3077b&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F306a288b-e336-4c89-963a-aaf01ac3077b%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/map-view.html?state=info#figmacapture=4d98b9fb-42dc-4ee0-befe-b561c1a561e4&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F4d98b9fb-42dc-4ee0-befe-b561c1a561e4%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/map-view.html?state=edit#figmacapture=4f552052-cbd4-4108-831c-8994df8e41f8&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F4f552052-cbd4-4108-831c-8994df8e41f8%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/map-view.html?state=edit#figmacapture=8e57c618-9dad-43dd-a7f6-2472832fcdb2&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F8e57c618-9dad-43dd-a7f6-2472832fcdb2%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/mobile-yield-calibration.html#figmacapture=6a6d9fdf-23d5-4315-aa29-2fbb90a514b4&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F6a6d9fdf-23d5-4315-aa29-2fbb90a514b4%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/map-view.html?state=spray-edit#figmacapture=94f19a45-6442-49b6-8d35-3f37a78e48cb&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F94f19a45-6442-49b6-8d35-3f37a78e48cb%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/mobile-yield-calibration.html#figmacapture=ea28c46a-ec5e-4416-a932-d520ebfb760e&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2Fea28c46a-ec5e-4416-a932-d520ebfb760e%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/map-view.html?state=spray-info#figmacapture=5e6eba20-cd45-4ae6-a671-bcb3d9cea89f&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F5e6eba20-cd45-4ae6-a671-bcb3d9cea89f%2Fsubmit&figmadelay=3000\")"
+    ]
+  }
+}
