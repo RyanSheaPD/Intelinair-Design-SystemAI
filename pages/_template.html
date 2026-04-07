@@ -155,6 +155,257 @@
       background: var(--color-background);
     }
 
+    /* ===== SETTINGS / PERMISSIONS ===== */
+    .settings-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+      padding: 0 var(--spacing-l);
+    }
+    .settings-tabs__tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-family: var(--font-family);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .settings-tabs__tab:hover { color: var(--color-text); }
+    .settings-tabs__tab--active {
+      color: var(--color-brand-500);
+      border-bottom-color: var(--color-brand-500);
+    }
+
+    .settings-panel { display: flex; flex-direction: column; gap: 32px; }
+
+    .perm-section {}
+    .perm-section__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 16px;
+    }
+    .perm-section__title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 0;
+    }
+    .perm-section__desc {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+    }
+    .perm-section__controls { display: flex; align-items: center; gap: 8px; }
+
+    /* Role cards */
+    .perm-roles-grid { display: flex; flex-direction: column; gap: 12px; }
+    .perm-role-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .perm-role-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .perm-role-card__icon .material-symbols-outlined { font-size: 24px; }
+    .perm-role-card__body { flex: 1; }
+    .perm-role-card__name { font-size: 14px; font-weight: 600; color: var(--color-text); margin: 0; }
+    .perm-role-card__desc { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
+    .perm-role-card__badge {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: var(--color-neutral-100);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      white-space: nowrap;
+    }
+    .perm-role-card__edit {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+    .perm-role-card__edit:hover { color: var(--color-text); background: var(--color-neutral-100); }
+
+    /* Permission matrix */
+    .perm-matrix {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .perm-matrix__table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .perm-matrix__table thead th {
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      background: var(--color-neutral-50);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .perm-matrix__resource-col { width: 60px; }
+    .perm-matrix__perm-col { width: 120px; }
+    .perm-matrix__role-col { text-align: center !important; }
+    .perm-matrix__table tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text);
+    }
+    .perm-matrix__table tbody tr:last-child td { border-bottom: none; }
+    .perm-matrix__group-row td {
+      font-weight: 600;
+      font-size: 13px;
+      background: var(--color-neutral-50);
+    }
+    .perm-matrix__perm { color: var(--color-text-muted); }
+    .perm-matrix__check { text-align: center; }
+    .perm-matrix__on { font-size: 20px; color: var(--color-success-500); }
+    .perm-matrix__off { font-size: 20px; color: var(--color-neutral-300); }
+
+    /* Users table */
+    .perm-users-table {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .perm-users-table__table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .perm-users-table__table thead th {
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      background: var(--color-neutral-50);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .perm-users-table__table tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text);
+    }
+    .perm-users-table__table tbody tr:last-child td { border-bottom: none; }
+    .perm-users-table__name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+    .perm-users-table__avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .perm-users-table__role-badge {
+      display: inline-flex;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .perm-users-table__role-badge--owner { background: var(--color-brand-100); color: var(--color-brand-700); }
+    .perm-users-table__role-badge--agronomist { background: var(--color-success-100); color: var(--color-success-700); }
+    .perm-users-table__role-badge--seasonal { background: var(--color-warning-100); color: var(--color-warning-700); }
+    .perm-users-table__muted { color: var(--color-text-muted); }
+    .perm-users-table__action {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+    .perm-users-table__action:hover { color: var(--color-text); background: var(--color-neutral-100); }
+
+    /* Connection cards */
+    .perm-connections-grid { display: flex; flex-direction: column; gap: 12px; }
+    .perm-connection-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .perm-connection-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--color-neutral-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--color-brand-500);
+    }
+    .perm-connection-card__icon .material-symbols-outlined { font-size: 24px; }
+    .perm-connection-card__body { flex: 1; }
+    .perm-connection-card__name { font-size: 14px; font-weight: 600; color: var(--color-text); margin: 0; }
+    .perm-connection-card__desc { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
+    .perm-connection-card__status {
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .perm-connection-card__status--active { color: var(--color-success-500); }
+    .perm-connection-card__status--inactive { color: var(--color-text-muted); }
+    .perm-connection-card__manage {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+    .perm-connection-card__manage:hover { color: var(--color-text); background: var(--color-neutral-100); }
+
     /* ===== THUMBNAIL VIEW ===== */
     .thumb-bar {
       display: flex;
@@ -436,15 +687,15 @@
           <span class="nav__label">Home</span>
         </a>
         <a href="#" class="nav__item" data-page="growers" onclick="navigateTo(this); return false;">
-          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
+          <span class="nav__icon"><svg width="26" height="26" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 12C14.3261 12 15.5975 12.5272 16.5352 13.4648C17.4728 14.4025 18 15.6739 18 17V19C18 19.5523 17.5523 20 17 20C16.4477 20 16 19.5523 16 19V17C16 16.2044 15.6837 15.4415 15.1211 14.8789C14.6289 14.3867 13.9835 14.0829 13.2969 14.0146L13 14H5C4.20435 14 3.44152 14.3163 2.87891 14.8789C2.3163 15.4415 2 16.2044 2 17V19C2 19.5523 1.55228 20 1 20C0.447715 20 0 19.5523 0 19V17C0 15.6739 0.527162 14.4025 1.46484 13.4648C2.40253 12.5272 3.67392 12 5 12H13ZM19.0322 12.8799C19.1703 12.3452 19.7153 12.024 20.25 12.1621C21.3226 12.4391 22.2734 13.0639 22.9521 13.9395C23.6308 14.815 23.9991 15.8913 24 16.999V19C23.9999 19.5522 23.5522 20 23 20C22.4478 20 22.0001 19.5522 22 19V17.001L21.9893 16.7529C21.9411 16.1767 21.7275 15.6248 21.3711 15.165C20.9639 14.6397 20.3936 14.2638 19.75 14.0977C19.2153 13.9595 18.8942 13.4146 19.0322 12.8799ZM9 0C11.7614 0 14 2.23858 14 5C14 7.76142 11.7614 10 9 10C6.23858 10 4 7.76142 4 5C4 2.23858 6.23858 0 9 0ZM15.0312 0.881836C15.1682 0.346814 15.713 0.0241452 16.248 0.161133C17.3236 0.43651 18.2773 1.06244 18.958 1.93945C19.6385 2.81638 20.0078 3.89487 20.0078 5.00488L20.0039 5.21289C19.9608 6.24911 19.5959 7.24827 18.958 8.07031C18.2773 8.94732 17.3236 9.57326 16.248 9.84863C15.713 9.98562 15.1682 9.66295 15.0312 9.12793C14.8943 8.59291 15.2169 8.04812 15.752 7.91113C16.3972 7.74592 16.9695 7.37089 17.3779 6.84473C17.7353 6.38439 17.949 5.8311 17.9971 5.25391L18.0078 5.00488C18.0078 4.33876 17.7864 3.69125 17.3779 3.16504C16.9695 2.63888 16.3972 2.26385 15.752 2.09863C15.2169 1.96164 14.8943 1.41686 15.0312 0.881836ZM9 2C7.34315 2 6 3.34315 6 5C6 6.65685 7.34315 8 9 8C10.6569 8 12 6.65685 12 5C12 3.34315 10.6569 2 9 2Z" fill="currentColor"/></svg></span>
           <span class="nav__label">Growers</span>
         </a>
         <a href="#" class="nav__item" data-page="fields" onclick="navigateTo(this); return false;">
-          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__icon"><svg width="26" height="26" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.43262 12.7021C9.67193 12.7516 9.82653 12.9853 9.77735 13.2246L7.63379 23.583C7.58437 23.8251 7.37115 23.9995 7.12403 24H1.042C0.926451 23.9997 0.813647 23.9601 0.723639 23.8877C0.505235 23.7116 0.470661 23.3915 0.64649 23.1729L8.99415 12.8604C9.06993 12.7663 9.18048 12.7072 9.30079 12.6963V12.6943C9.34477 12.6901 9.38934 12.6933 9.43262 12.7021ZM12.5 12.542C12.7641 12.5419 12.9921 12.7268 13.0459 12.9854L15.1982 23.375C15.2052 23.4093 15.208 23.4445 15.208 23.4795C15.2078 23.767 14.9751 24.0001 14.6875 24H10.3154C10.2805 24 10.2452 23.9962 10.2109 23.9893C9.92936 23.9315 9.74817 23.6567 9.80567 23.375L11.9551 12.9854C12.0085 12.727 12.2362 12.542 12.5 12.542ZM15.6992 12.6963C15.8195 12.7075 15.9299 12.7665 16.0059 12.8604L24.3535 23.167C24.4301 23.2593 24.4716 23.3762 24.4707 23.4961C24.4683 23.7766 24.2386 24.0022 23.958 24H17.876C17.6289 23.9995 17.4156 23.8251 17.3662 23.583L15.2227 13.2256C15.2138 13.1823 15.2116 13.1377 15.2158 13.0938C15.2394 12.8505 15.4559 12.6728 15.6992 12.6963ZM5.31641 13.3496C5.42475 13.3233 5.53779 13.3702 5.59669 13.4648C5.65935 13.5598 5.65221 13.6843 5.57911 13.7715L0.462896 20.0928C0.413602 20.1534 0.338902 20.1883 0.260748 20.1885C0.117102 20.1887 0.000396453 20.0724 5.80463e-06 19.9287V16.3955C-0.0015452 15.8255 0.307829 15.3003 0.806646 15.0244C2.22904 14.2687 3.74538 13.7048 5.31641 13.3496ZM19.6836 13.3496C21.2546 13.7048 22.771 14.2687 24.1934 15.0244C24.6922 15.3003 25.0016 15.8255 25 16.3955V19.9238C24.9998 20.0018 24.9647 20.0757 24.9043 20.125C24.7927 20.2157 24.6278 20.1995 24.5371 20.0879L19.4209 13.7666C19.3707 13.7041 19.3518 13.622 19.3701 13.5439C19.403 13.4039 19.5436 13.3167 19.6836 13.3496ZM7.2002 8.03125C8.01174 5.10466 11.0421 3.38979 13.9688 4.20117C16.8954 5.01265 18.6101 8.04307 17.7988 10.9697C17.6544 11.4696 17.1366 11.7628 16.6338 11.6289C16.1234 11.493 15.8201 10.9684 15.9561 10.458C16.1294 9.83182 16.1294 9.17013 15.9561 8.54395C15.4275 6.63501 13.4509 5.51632 11.542 6.04492C9.63327 6.57361 8.51451 8.5492 9.04297 10.458C9.17687 10.9608 8.88366 11.4786 8.38379 11.623C7.87648 11.7694 7.34683 11.477 7.2002 10.9697C6.9337 10.0084 6.93369 8.99256 7.2002 8.03125ZM5.08301 9.11426C5.6583 9.11426 6.125 9.58096 6.12501 10.1562C6.12501 10.7315 5.65831 11.1982 5.08301 11.1982H4.042C3.4667 11.1982 3.00001 10.7315 3.00001 10.1562C3.00001 9.58096 3.4667 9.11426 4.042 9.11426H5.08301ZM21.083 9.11426C21.6583 9.11426 22.125 9.58096 22.125 10.1562C22.125 10.7315 21.6583 11.1982 21.083 11.1982H20.042C19.4667 11.1982 19 10.7315 19 10.1562C19 9.58096 19.4667 9.11426 20.042 9.11426H21.083ZM5.47462 3.00098C5.87427 2.58718 6.53444 2.57497 6.94825 2.97461L7.68653 3.71289C8.09303 4.11993 8.09249 4.77889 7.68555 5.18555C7.27862 5.59219 6.61965 5.5923 6.2129 5.18555L5.47462 4.44824C5.08489 4.0447 5.08512 3.40466 5.47462 3.00098ZM18.3643 2.97461C18.7678 2.58488 19.4078 2.58511 19.8115 2.97461C20.2253 3.37427 20.2375 4.03444 19.8379 4.44824L19.0996 5.18555C18.6929 5.5923 18.0339 5.59219 17.627 5.18555C17.22 4.77888 17.2195 4.11993 17.626 3.71289L18.3643 2.97461ZM12.6563 0C13.2315 4.319e-06 13.6982 0.466698 13.6982 1.04199V2.08301C13.6982 2.6583 13.2315 3.125 12.6563 3.125C12.081 3.125 11.6143 2.6583 11.6143 2.08301V1.04199C11.6143 0.466695 12.081 0 12.6563 0Z" fill="currentColor"/></svg></span>
           <span class="nav__label">Fields</span>
         </a>
         <a href="#" class="nav__item" data-page="scout" onclick="navigateTo(this); return false;">
-          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+          <span class="nav__icon"><svg width="26" height="26" viewBox="0 0 24.9993 22.9999" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.3413 0.809221C14.5774 -0.269739 16.4207 -0.269741 17.6568 0.809221C17.7492 0.889953 17.8262 0.986501 17.8833 1.09438L17.9331 1.20668L19.357 4.94203L20.7066 6.29262C20.7663 6.35239 20.8182 6.41933 20.8609 6.49184L20.9185 6.60512L23.7896 13.3043L23.9497 13.4645L23.8892 13.5221L24.0279 13.7233C25.5021 15.9812 25.2982 19.015 23.4175 21.0592L23.2417 21.2418C20.8986 23.5849 17.1005 23.5848 14.7574 21.2418C13.7987 20.2832 13.2314 19.0812 13.0572 17.8346C13.0325 17.7651 13.0142 17.6924 13.0054 17.6168L12.9995 17.4997V9.00453C12.9325 9.00344 12.8632 9.00124 12.7915 9.00063L11.9995 8.99965V17.9997C11.9995 18.2406 11.9139 18.4618 11.772 18.6344C11.5027 19.5894 10.9941 20.4913 10.2427 21.2428C7.89976 23.5858 4.10055 23.5853 1.75735 21.2428C-0.377096 19.1084 -0.567195 15.7663 1.18704 13.4166L4.07962 6.6686C4.11302 6.59065 4.15685 6.51762 4.20853 6.45082L4.29153 6.35512L5.63821 5.00746L7.06302 1.21156C7.10663 1.09527 7.17117 0.988217 7.25345 0.896135L7.34134 0.809221C8.5774 -0.269741 10.4207 -0.269739 11.6568 0.809221C11.8432 0.971988 11.9617 1.19729 11.9917 1.44008L11.9995 1.56215V5.56215C11.9995 6.11429 11.5516 6.56192 10.9995 6.56215C10.4868 6.56215 10.0633 6.17656 10.0054 5.67934L9.99954 5.56215L9.99856 2.10024L9.8804 2.05824C9.54944 1.9552 9.18533 1.9889 8.87649 2.16078L8.83255 2.18813L7.43509 5.91371C7.39753 6.01379 7.34466 6.10721 7.27786 6.19008L7.20657 6.26918L5.84231 7.63442L4.29349 11.2467C6.23352 10.6733 8.40629 11.1005 9.99954 12.528V9.05824C9.32308 9.13897 9.08296 9.31938 8.89407 9.69692C8.64708 10.1909 8.04625 10.3912 7.55228 10.1442C7.05842 9.89724 6.85826 9.29727 7.10501 8.80336C7.85983 7.29372 8.79659 7.01071 11.399 6.99965H12.5992C15.2018 7.01069 16.1392 7.29365 16.8941 8.80336C17.1406 9.29713 16.9404 9.89716 16.4468 10.1442C15.9528 10.3912 15.352 10.1909 15.105 9.69692C15.0723 9.63148 15.0373 9.57235 14.9995 9.51821V12.5289C16.6011 11.0937 18.7871 10.6696 20.7349 11.2565L19.1558 7.57094L17.7915 6.20668C17.7252 6.14028 17.6687 6.06483 17.6236 5.98305L17.565 5.85512L16.1675 2.1891L16.1216 2.16078C15.8128 1.98891 15.4487 1.95517 15.1177 2.05824L14.9995 2.10024V5.49965C14.9994 6.01238 14.613 6.43505 14.1158 6.49281L13.9995 6.49965C13.4867 6.49965 13.0632 6.1132 13.0054 5.61586L12.9995 5.49965V1.56215C12.9996 1.27355 13.124 0.999059 13.3413 0.809221ZM8.66849 14.0202C7.0981 12.611 4.68142 12.6618 3.17142 14.1715C3.08445 14.2585 3.00163 14.3484 2.92435 14.4411L2.91849 14.4567C2.85416 14.6067 2.75656 14.732 2.63919 14.8297C1.63611 16.3793 1.81348 18.4698 3.17142 19.8278C4.73353 21.3897 7.26563 21.3898 8.82767 19.8278C10.3373 18.3178 10.3881 15.9011 8.97903 14.3307L8.82767 14.1715L8.66849 14.0202ZM21.6685 14.0202C20.0981 12.611 17.6815 12.6619 16.1714 14.1715C14.6094 15.7336 14.6093 18.2657 16.1714 19.8278C17.7335 21.3897 20.2656 21.3898 21.8277 19.8278C23.3373 18.3178 23.3881 15.9011 21.979 14.3307L21.8277 14.1715L21.6685 14.0202Z" fill="currentColor"/></svg></span>
           <span class="nav__label">Scout</span>
         </a>
         <a href="#" class="nav__item" data-page="weather" onclick="navigateTo(this); return false;">
@@ -459,6 +710,7 @@
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">folder_shared</span></span>
           <span class="nav__label">Groups</span>
         </a>
+        <div class="nav__spacer"></div>
         <a href="#" class="nav__item" data-page="settings" onclick="navigateTo(this); return false;">
           <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
           <span class="nav__label">Settings</span>
@@ -658,7 +910,18 @@
         <div class="page-toolbar"><h1 class="page-toolbar__title">Groups</h1><div class="page-toolbar__controls"></div></div>
       </div>
       <div class="page-section" data-page-section="settings" style="display:none;">
-        <div class="page-toolbar"><h1 class="page-toolbar__title">Settings</h1><div class="page-toolbar__controls"></div></div>
+        <div class="page-toolbar">
+          <h1 class="page-toolbar__title">Settings</h1>
+          <div class="page-toolbar__controls">
+            <button class="btn btn--primary btn--sm" onclick="openInviteModal()"><span class="material-symbols-outlined" style="font-size:18px;">person_add</span> Invite user</button>
+          </div>
+        </div>
+        <!-- Settings sub-nav tabs -->
+        <div class="settings-tabs">
+          <button class="settings-tabs__tab" onclick="switchSettingsTab(this,'general')">General</button>
+          <button class="settings-tabs__tab settings-tabs__tab--active" onclick="switchSettingsTab(this,'permissions')">Permissions</button>
+          <button class="settings-tabs__tab" onclick="switchSettingsTab(this,'integrations')">Integrations</button>
+        </div>
       </div>
 
       <!-- CONTENT AREA: LIST VIEW (default) -->
@@ -1545,12 +1808,273 @@
           <span style="font-size:13px;">Organize fields into groups for bulk actions and reporting.</span>
         </div>
       </main>
-      <main class="page-content page-content--placeholder" data-page-content="settings" style="display:none;">
-        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--color-text-muted); gap:12px;">
-          <span class="material-symbols-outlined" style="font-size:48px; color:var(--color-neutral-300);">settings</span>
-          <span style="font-size:16px; font-weight:500;">Settings</span>
-          <span style="font-size:13px;">Account preferences, notification settings, and user management.</span>
-        </div>
+      <main class="page-content" data-page-content="settings" style="display:none;">
+
+        <!-- PERMISSIONS TAB (default visible) -->
+        <div class="settings-panel" id="settings-permissions">
+
+          <!-- === ROLES === -->
+          <section class="perm-section">
+            <div class="perm-section__header">
+              <div>
+                <h2 class="perm-section__title">Roles</h2>
+                <p class="perm-section__desc">Define access levels for people who interact with your organization's data.</p>
+              </div>
+            </div>
+
+            <div class="perm-roles-grid">
+              <!-- Internal Owner -->
+              <div class="perm-role-card">
+                <div class="perm-role-card__icon" style="background:var(--color-brand-100); color:var(--color-brand-600);"><span class="material-symbols-outlined">shield_person</span></div>
+                <div class="perm-role-card__body">
+                  <h3 class="perm-role-card__name">Internal Owner</h3>
+                  <p class="perm-role-card__desc">Full access to all fields, farms, and programs. Can manage users and integrations.</p>
+                </div>
+                <span class="perm-role-card__badge">3 users</span>
+                <button class="perm-role-card__edit"><span class="material-symbols-outlined">edit</span></button>
+              </div>
+              <!-- Outside Agronomist -->
+              <div class="perm-role-card">
+                <div class="perm-role-card__icon" style="background:var(--color-success-100); color:var(--color-success-600);"><span class="material-symbols-outlined">agriculture</span></div>
+                <div class="perm-role-card__body">
+                  <h3 class="perm-role-card__name">Outside Agronomist</h3>
+                  <p class="perm-role-card__desc">View and scout assigned fields. Can add observations and recommendations. No farm-level settings.</p>
+                </div>
+                <span class="perm-role-card__badge">8 users</span>
+                <button class="perm-role-card__edit"><span class="material-symbols-outlined">edit</span></button>
+              </div>
+              <!-- Seasonal Worker -->
+              <div class="perm-role-card">
+                <div class="perm-role-card__icon" style="background:var(--color-warning-100); color:var(--color-warning-600);"><span class="material-symbols-outlined">schedule</span></div>
+                <div class="perm-role-card__body">
+                  <h3 class="perm-role-card__name">Seasonal Worker</h3>
+                  <p class="perm-role-card__desc">Temporary, time-bound access to specific fields. Automatically expires at season end.</p>
+                </div>
+                <span class="perm-role-card__badge">12 users</span>
+                <button class="perm-role-card__edit"><span class="material-symbols-outlined">edit</span></button>
+              </div>
+            </div>
+          </section>
+
+          <!-- === ACCESS CONTROL: FIELDS, FARMS, PROGRAMS === -->
+          <section class="perm-section">
+            <div class="perm-section__header">
+              <div>
+                <h2 class="perm-section__title">Access control</h2>
+                <p class="perm-section__desc">Manage which roles can view, edit, or manage fields, farms, and programs.</p>
+              </div>
+            </div>
+
+            <div class="perm-matrix">
+              <table class="perm-matrix__table">
+                <thead>
+                  <tr>
+                    <th class="perm-matrix__resource-col">Resource</th>
+                    <th class="perm-matrix__perm-col">Permission</th>
+                    <th class="perm-matrix__role-col">Internal Owner</th>
+                    <th class="perm-matrix__role-col">Outside Agronomist</th>
+                    <th class="perm-matrix__role-col">Seasonal Worker</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Fields -->
+                  <tr class="perm-matrix__group-row"><td colspan="5"><span class="material-symbols-outlined" style="font-size:18px; vertical-align:middle;">grass</span> Fields</td></tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">View</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">Edit</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">Manage</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                  </tr>
+                  <!-- Farms -->
+                  <tr class="perm-matrix__group-row"><td colspan="5"><span class="material-symbols-outlined" style="font-size:18px; vertical-align:middle;">warehouse</span> Farms</td></tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">View</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">Edit</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">Manage</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                  </tr>
+                  <!-- Programs -->
+                  <tr class="perm-matrix__group-row"><td colspan="5"><span class="material-symbols-outlined" style="font-size:18px; vertical-align:middle;">hub</span> Programs</td></tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">View</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">Edit</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td class="perm-matrix__perm">Manage</td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__on">check_circle</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                    <td class="perm-matrix__check"><span class="material-symbols-outlined perm-matrix__off">cancel</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- === USERS LIST === -->
+          <section class="perm-section">
+            <div class="perm-section__header">
+              <div>
+                <h2 class="perm-section__title">Users</h2>
+                <p class="perm-section__desc">People with access to your organization.</p>
+              </div>
+              <div class="perm-section__controls">
+                <div style="position:relative;">
+                  <span class="material-symbols-outlined" style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:20px; color:var(--color-text-muted);">search</span>
+                  <input type="text" placeholder="Search users..." style="padding:8px 12px 8px 36px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); width:220px;" />
+                </div>
+              </div>
+            </div>
+
+            <div class="perm-users-table">
+              <table class="perm-users-table__table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Access</th>
+                    <th>Expires</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="perm-users-table__name"><span class="perm-users-table__avatar" style="background:var(--color-brand-500);">JD</span> John Dawson</td>
+                    <td>j.dawson@example.com</td>
+                    <td><span class="perm-users-table__role-badge perm-users-table__role-badge--owner">Internal Owner</span></td>
+                    <td>All fields, farms, programs</td>
+                    <td class="perm-users-table__muted">—</td>
+                    <td><button class="perm-users-table__action"><span class="material-symbols-outlined">more_vert</span></button></td>
+                  </tr>
+                  <tr>
+                    <td class="perm-users-table__name"><span class="perm-users-table__avatar" style="background:var(--color-success-500);">ML</span> Maria Lopez</td>
+                    <td>m.lopez@agpartners.com</td>
+                    <td><span class="perm-users-table__role-badge perm-users-table__role-badge--agronomist">Outside Agronomist</span></td>
+                    <td>14 fields</td>
+                    <td class="perm-users-table__muted">—</td>
+                    <td><button class="perm-users-table__action"><span class="material-symbols-outlined">more_vert</span></button></td>
+                  </tr>
+                  <tr>
+                    <td class="perm-users-table__name"><span class="perm-users-table__avatar" style="background:var(--color-brand-500);">TK</span> Tom Kirkland</td>
+                    <td>t.kirkland@example.com</td>
+                    <td><span class="perm-users-table__role-badge perm-users-table__role-badge--owner">Internal Owner</span></td>
+                    <td>All fields, farms, programs</td>
+                    <td class="perm-users-table__muted">—</td>
+                    <td><button class="perm-users-table__action"><span class="material-symbols-outlined">more_vert</span></button></td>
+                  </tr>
+                  <tr>
+                    <td class="perm-users-table__name"><span class="perm-users-table__avatar" style="background:var(--color-warning-500);">RB</span> Ray Bridges</td>
+                    <td>r.bridges@seasonal.com</td>
+                    <td><span class="perm-users-table__role-badge perm-users-table__role-badge--seasonal">Seasonal Worker</span></td>
+                    <td>6 fields</td>
+                    <td>Nov 30, 2025</td>
+                    <td><button class="perm-users-table__action"><span class="material-symbols-outlined">more_vert</span></button></td>
+                  </tr>
+                  <tr>
+                    <td class="perm-users-table__name"><span class="perm-users-table__avatar" style="background:var(--color-success-500);">KP</span> Karen Patel</td>
+                    <td>k.patel@cropadvise.com</td>
+                    <td><span class="perm-users-table__role-badge perm-users-table__role-badge--agronomist">Outside Agronomist</span></td>
+                    <td>22 fields</td>
+                    <td class="perm-users-table__muted">—</td>
+                    <td><button class="perm-users-table__action"><span class="material-symbols-outlined">more_vert</span></button></td>
+                  </tr>
+                  <tr>
+                    <td class="perm-users-table__name"><span class="perm-users-table__avatar" style="background:var(--color-warning-500);">SD</span> Sam Delgado</td>
+                    <td>s.delgado@farmhands.com</td>
+                    <td><span class="perm-users-table__role-badge perm-users-table__role-badge--seasonal">Seasonal Worker</span></td>
+                    <td>4 fields</td>
+                    <td>Oct 15, 2025</td>
+                    <td><button class="perm-users-table__action"><span class="material-symbols-outlined">more_vert</span></button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- === THIRD-PARTY DATA CONNECTIONS === -->
+          <section class="perm-section">
+            <div class="perm-section__header">
+              <div>
+                <h2 class="perm-section__title">Third-party data connections</h2>
+                <p class="perm-section__desc">External services that can read or push data into your organization.</p>
+              </div>
+              <button class="btn btn--outlined btn--sm"><span class="material-symbols-outlined" style="font-size:18px;">add</span> Add connection</button>
+            </div>
+
+            <div class="perm-connections-grid">
+              <div class="perm-connection-card">
+                <div class="perm-connection-card__icon"><span class="material-symbols-outlined">cloud_sync</span></div>
+                <div class="perm-connection-card__body">
+                  <h3 class="perm-connection-card__name">John Deere Operations Center</h3>
+                  <p class="perm-connection-card__desc">Machine data, yield maps, and field boundaries.</p>
+                </div>
+                <span class="perm-connection-card__status perm-connection-card__status--active"><span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> Connected</span>
+                <button class="perm-connection-card__manage"><span class="material-symbols-outlined">settings</span></button>
+              </div>
+              <div class="perm-connection-card">
+                <div class="perm-connection-card__icon"><span class="material-symbols-outlined">cloud_sync</span></div>
+                <div class="perm-connection-card__body">
+                  <h3 class="perm-connection-card__name">Climate FieldView</h3>
+                  <p class="perm-connection-card__desc">Planting and application data sync.</p>
+                </div>
+                <span class="perm-connection-card__status perm-connection-card__status--active"><span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> Connected</span>
+                <button class="perm-connection-card__manage"><span class="material-symbols-outlined">settings</span></button>
+              </div>
+              <div class="perm-connection-card">
+                <div class="perm-connection-card__icon" style="color:var(--color-text-muted);"><span class="material-symbols-outlined">cloud_off</span></div>
+                <div class="perm-connection-card__body">
+                  <h3 class="perm-connection-card__name">Granular / Corteva</h3>
+                  <p class="perm-connection-card__desc">Agronomic records and input tracking.</p>
+                </div>
+                <span class="perm-connection-card__status perm-connection-card__status--inactive">Not connected</span>
+                <button class="btn btn--outlined btn--sm">Connect</button>
+              </div>
+            </div>
+          </section>
+
+        </div><!-- /#settings-permissions -->
+
       </main>
 
     </div><!-- /.page-shell__main -->
@@ -1669,6 +2193,15 @@
     /* ===== PAGE NAVIGATION ===== */
     var activePage = 'home';
     var fieldsPages = ['fields']; // pages that use the list/thumbnail/map/detail content panels
+
+    function switchSettingsTab(el, tab) {
+      document.querySelectorAll('.settings-tabs__tab').forEach(function(t) { t.classList.remove('settings-tabs__tab--active'); });
+      el.classList.add('settings-tabs__tab--active');
+    }
+
+    function openInviteModal() {
+      // placeholder for invite user modal
+    }
 
     function navigateTo(el) {
       var page = el.dataset.page;

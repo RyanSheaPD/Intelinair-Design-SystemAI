@@ -21,6 +21,11 @@
   box-sizing: border-box;
 }
 
+/* Spacer pushes subsequent items to the bottom of the sidebar */
+.nav__spacer {
+  margin-top: auto;
+}
+
 .nav__item {
   display: flex;
   flex-direction: column;

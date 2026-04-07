@@ -395,3 +395,25 @@
 .header--myfs .header__back.btn--secondary:active:not(:disabled) {
   background: var(--color-myfs-200);
 }
+
+/* PB / Pivot Bio brand variant — uses PB dark navy ramp */
+.header--pb .header__logo {
+  color: var(--color-pb-500);
+}
+
+.header--pb .header__avatar {
+  background: var(--color-pb-500);
+  color: var(--color-text-on-pb-500, #fff);
+}
+
+.header--pb .header__back.btn--secondary {
+  color: var(--color-pb-500);
+}
+
+.header--pb .header__back.btn--secondary:hover:not(:disabled) {
+  background: var(--color-pb-100);
+}
+
+.header--pb .header__back.btn--secondary:active:not(:disabled) {
+  background: var(--color-pb-200);
+}

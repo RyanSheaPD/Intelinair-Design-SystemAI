@@ -5,7 +5,7 @@
     Pivot Bio  → add class="theme-pb" to <html>, class="header--pb" to <header>, swap logo to pb-logo-header.svg
     MyFS       → add class="theme-myfs" to <html>, class="header--myfs" to <header>, swap logo to myfs-logo.png
 -->
-<html lang="en">
+<html lang="en" class="theme-myfs">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -55,13 +55,413 @@
     /* Neutral pill */
     .filter-pill--neutral { --filter-pill-bg: var(--color-neutral-100); --filter-pill-bg-hover: var(--color-neutral-200); --filter-pill-text: var(--color-neutral-700); --filter-pill-text-hover: var(--color-neutral-900); }
 
+    /* ===== MAP + PANEL WRAPPER ===== */
+    .map-wrapper {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow: hidden;
+    }
+
     /* ===== MAP CONTAINER ===== */
     .map-container {
       flex: 1;
       position: relative;
       overflow: hidden;
-      background: #e8e4d8;
+      background: url('../assets/images/map-yield-bg.jpg') center/cover no-repeat;
     }
+
+    /* ===== TRIAL SIDE PANEL (left, pushes map right) ===== */
+    .trial-panel {
+      display: none;
+      width: 380px;
+      flex-shrink: 0;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      order: -1;
+    }
+    .trial-panel--open {
+      display: flex;
+    }
+    .trial-panel__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 20px 20px 0;
+    }
+    .trial-panel__title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .trial-panel__subtitle {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .trial-panel__close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      padding: 0;
+    }
+    .trial-panel__close:hover { color: var(--color-text); }
+    .trial-panel__close .material-symbols-outlined { font-size: 22px; }
+
+    .trial-panel__section {
+      padding: 16px 20px 0;
+    }
+    .trial-panel__label {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+    .trial-panel__select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font-size: 13px;
+      font-family: var(--font-family);
+      color: var(--color-text-muted);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .trial-panel__field-info {
+      padding: 16px 20px;
+    }
+    .trial-panel__field-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-brand-500);
+    }
+    .trial-panel__field-grower {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .trial-panel__field-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .trial-panel__field-meta-sep {
+      color: var(--color-border);
+    }
+    .trial-panel__field-meta-gdd {
+      color: var(--color-warning-500);
+    }
+
+    .trial-panel__treatments {
+      flex: 1;
+      margin: 0 20px;
+      background: var(--color-neutral-100);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .trial-panel__treatments-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--color-text-muted);
+    }
+    .trial-panel__treatments-empty .material-symbols-outlined {
+      font-size: 32px;
+      color: var(--color-neutral-400);
+    }
+    .trial-panel__treatments-empty-text {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .trial-panel__add-treatment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 14px;
+      border-top: 1px solid var(--color-border);
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+      font-family: var(--font-family);
+      width: 100%;
+    }
+    .trial-panel__add-treatment:hover {
+      background: var(--color-neutral-200);
+    }
+
+    .trial-panel__treatments-list {
+      padding: 16px 16px 0;
+    }
+    .trial-panel__treatments-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      margin-bottom: 10px;
+    }
+    .trial-panel__treatment-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      cursor: pointer;
+    }
+    .trial-panel__treatment-item:hover {
+      opacity: 0.8;
+    }
+    .trial-panel__treatment-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .trial-panel__treatment-name {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .trial-panel__treatment-chevron {
+      font-size: 20px;
+      color: var(--color-text-muted);
+    }
+    .trial-panel__treatment-divider {
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    /* Treatment detail view (replaces treatment list) */
+    .treatment-detail { display: none; flex-direction: column; flex: 1; min-height: 0; }
+    .treatment-detail--open { display: flex; }
+    .treatment-detail__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .treatment-detail__back {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-primitive-500, #3b82f6);
+      display: flex;
+      align-items: center;
+      padding: 0;
+    }
+    .treatment-detail__back .material-symbols-outlined { font-size: 22px; }
+    .treatment-detail__title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .treatment-detail__delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      padding: 0;
+    }
+    .treatment-detail__delete:hover { color: var(--color-danger-500); }
+    .treatment-detail__delete .material-symbols-outlined { font-size: 22px; }
+    .treatment-detail__body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .treatment-detail__radios {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .treatment-detail__radio {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+      cursor: pointer;
+    }
+    .treatment-detail__radio-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--color-neutral-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .treatment-detail__radio--active .treatment-detail__radio-circle {
+      border-color: var(--color-brand-500);
+    }
+    .treatment-detail__radio-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--color-brand-500);
+      display: none;
+    }
+    .treatment-detail__radio--active .treatment-detail__radio-dot {
+      display: block;
+    }
+    .treatment-detail__field-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 6px;
+    }
+    .treatment-detail__select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font-size: 13px;
+      font-family: var(--font-family);
+      color: var(--color-text-muted);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+    .treatment-detail__add-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .treatment-detail__add-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font-size: 13px;
+      font-family: var(--font-family);
+      color: var(--color-text);
+    }
+    .treatment-detail__add-input::placeholder { color: var(--color-text-muted); }
+    .treatment-detail__add-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-primitive-500, #3b82f6);
+      cursor: pointer;
+      font-family: var(--font-family);
+      padding: 10px 4px;
+      white-space: nowrap;
+    }
+    .treatment-detail__add-btn:hover { opacity: 0.8; }
+
+    .treatment-detail__exclude {
+      margin-top: 4px;
+    }
+    .treatment-detail__exclude-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+      cursor: pointer;
+    }
+    .treatment-detail__exclude-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 2px solid var(--color-neutral-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.12s ease, border-color 0.12s ease;
+    }
+    .treatment-detail__exclude-checkbox--checked {
+      background: var(--color-brand-500);
+      border-color: var(--color-brand-500);
+      color: #fff;
+    }
+    .treatment-detail__exclude-checkbox--checked .material-symbols-outlined {
+      display: block !important;
+    }
+    .treatment-detail__exclude-comment {
+      margin-top: 12px;
+    }
+    .treatment-detail__textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font-size: 13px;
+      font-family: var(--font-family);
+      color: var(--color-text);
+      resize: vertical;
+    }
+    .treatment-detail__textarea::placeholder { color: var(--color-text-muted); }
+
+    .trial-panel__footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 16px 20px;
+    }
+    .trial-panel__cancel {
+      background: none;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text);
+      cursor: pointer;
+      font-family: var(--font-family);
+      padding: 10px 24px;
+    }
+    .trial-panel__cancel:hover { color: var(--color-text-muted); }
+    .trial-panel__save {
+      padding: 10px 32px;
+      border: none;
+      border-radius: var(--radius-pill);
+      background: var(--color-brand-500);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--font-family);
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+    .trial-panel__save:hover { filter: brightness(1.1); }
 
     /* Satellite-style base */
     .map-canvas {
@@ -164,7 +564,55 @@
       bottom: 80px;
       left: 16px;
     }
-    .map-actions__share:hover { background: rgba(60,70,80,0.95); }
+    .map-actions__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(220,220,220,0.85);
+      color: var(--color-text);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: background 0.12s ease;
+    }
+    .map-actions__btn:hover { background: rgba(240,240,240,0.95); }
+    .map-actions__btn .material-symbols-outlined { font-size: 24px; }
+    .map-actions__btn--info { background: rgba(40,50,60,0.85); color: #fff; }
+    .map-actions__btn--info:hover { background: rgba(60,70,80,0.95); }
+    .map-actions__share {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 28px;
+      border: none;
+      border-radius: var(--radius-pill);
+      background: var(--color-brand-500);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font-family);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: background 0.12s ease;
+    }
+    .map-actions__share:hover { background: var(--color-brand-600); }
+    .map-actions__group {
+      display: flex;
+      align-items: center;
+      height: 44px;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-radius: 35px;
+      padding: 2px;
+    }
+    .map-actions__group .map-actions__share,
+    .map-actions__group .map-actions__btn {
+      box-shadow: none;
+    }
 
     /* Right controls — vertically centered */
     .map-controls--right {
@@ -205,6 +653,92 @@
     }
     .map-legend__label { color: var(--color-text-muted); }
 
+    /* Yield legend */
+    .yield-legend {
+      position: absolute;
+      bottom: 80px;
+      right: 16px;
+      width: 155px;
+      background: var(--color-surface);
+      border-radius: var(--radius-md);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 5;
+      overflow: hidden;
+    }
+    .yield-legend__header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .yield-legend__unit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+    .yield-legend__unit-select {
+      font-size: 11px;
+      border: none;
+      background: none;
+      color: var(--color-text-muted);
+      font-family: var(--font-family);
+      cursor: pointer;
+      padding: 0;
+    }
+    .yield-legend__gradient {
+      height: 200px;
+      margin: 0 12px 8px;
+      border-radius: 4px;
+      position: relative;
+      background: linear-gradient(to bottom,
+        #d73027 0%,
+        #f46d43 10%,
+        #fdae61 20%,
+        #fee08b 30%,
+        #ffff80 40%,
+        #d9ef8b 50%,
+        #a6d96a 60%,
+        #66bd63 70%,
+        #1a9850 80%,
+        #006837 100%
+      );
+    }
+    .yield-legend__scale {
+      position: absolute;
+      right: -40px;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+    .yield-legend__footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-top: 1px solid var(--color-border);
+    }
+    .yield-legend__show-more {
+      background: none;
+      border: none;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-family: var(--font-family);
+      cursor: pointer;
+    }
+    .yield-legend__show-more:hover { color: var(--color-text); }
+
     /* ===== TIMELINE BAR (floating) ===== */
     .timeline-bar {
       position: absolute;
@@ -215,8 +749,9 @@
       align-items: center;
       gap: 12px;
       padding: 8px 20px;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
       border-radius: var(--radius-lg);
       box-shadow: 0 4px 20px rgba(0,0,0,0.2);
       z-index: 10;
@@ -225,13 +760,13 @@
     .timeline-bar__year {
       font-size: 14px;
       font-weight: 700;
-      color: var(--color-text);
+      color: var(--color-neutral-50);
       flex-shrink: 0;
     }
     .timeline-bar__filter {
       font-size: 13px;
       font-weight: 500;
-      color: var(--color-text-muted);
+      color: var(--color-neutral-50);
       flex-shrink: 0;
       white-space: nowrap;
     }
@@ -256,9 +791,11 @@
       white-space: nowrap;
       transition: background 0.15s ease, border-color 0.15s ease;
       font-family: var(--font-family);
+      border-color: rgba(255,255,255,0.2);
+      background: #fff;
     }
     .timeline-bar__date:hover {
-      background: var(--color-neutral-100);
+      background: rgba(255,255,255,0.15);
     }
     .timeline-bar__date--active {
       background: var(--color-brand-500);
@@ -273,20 +810,675 @@
       align-items: center;
       justify-content: center;
     }
-    .timeline-bar__date-icon .material-symbols-outlined {
-      font-size: 16px;
+    .timeline-bar__date-icon svg {
+      width: 16px;
+      height: 16px;
     }
-    .timeline-bar__date--active .timeline-bar__date-icon .material-symbols-outlined {
+    .timeline-bar__date-icon {
+      color: var(--color-primitive-500);
+    }
+    .timeline-bar__date--active .timeline-bar__date-icon {
       color: #fff;
     }
-    .timeline-bar__date-icon .material-symbols-outlined {
-      color: var(--color-success-500);
-    }
-    .timeline-bar__date--active .timeline-bar__date-icon .material-symbols-outlined {
-      color: #fff;
-    }
-    .timeline-bar__date--processing .timeline-bar__date-icon .material-symbols-outlined {
+    .timeline-bar__date--processing .timeline-bar__date-icon {
       color: var(--color-brand-400);
+    }
+
+    /* ===== FIELD INFO MODAL ===== */
+    .field-info-modal {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 16px;
+      width: 420px;
+      max-height: calc(100% - 140px);
+      overflow-y: auto;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      z-index: 20;
+      flex-direction: column;
+    }
+    .field-info-modal--open { display: flex; }
+
+    .field-info-modal__top {
+      background: #fff;
+      padding: 20px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-info-modal__name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-brand-500);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .field-info-modal__name .material-symbols-outlined { font-size: 20px; }
+    .field-info-modal__farm {
+      font-size: 14px;
+      color: var(--color-text-muted);
+    }
+    .field-info-modal__farm-grower {
+      color: var(--color-brand-500);
+      font-weight: 500;
+    }
+    .field-info-modal__meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--color-text);
+      flex-wrap: wrap;
+    }
+    .field-info-modal__meta-sep {
+      color: var(--color-border);
+    }
+    .field-info-modal__meta-crop {
+      color: var(--color-brand-500);
+      font-weight: 600;
+    }
+    .field-info-modal__meta-gdd {
+      color: var(--color-warning-500);
+      font-weight: 600;
+    }
+    .field-info-modal__event {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--color-text);
+      flex-wrap: wrap;
+    }
+    .field-info-modal__event-gdd {
+      color: var(--color-warning-500);
+      font-weight: 600;
+    }
+    .field-info-modal__tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text);
+      background: transparent;
+      margin-top: 4px;
+    }
+
+    .field-info-modal__details {
+      background: var(--color-neutral-100);
+      padding: 20px;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+    .field-info-modal__details-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .field-info-modal__details-edit {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+    }
+    .field-info-modal__details-edit:hover { color: var(--color-text); }
+    .field-info-modal__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+    }
+    .field-info-modal__grid-label {
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+    .field-info-modal__grid-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-top: 2px;
+    }
+
+    /* ===== HARVEST EDIT MODAL ===== */
+    .harvest-edit-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+    }
+    .harvest-edit-scrim--open { display: block; }
+
+    .harvest-edit-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 680px;
+      max-height: 85vh;
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+      z-index: 101;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .harvest-edit-modal--open { display: flex; }
+
+    .harvest-edit-modal__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      background: var(--color-brand-500);
+      color: #fff;
+    }
+    .harvest-edit-modal__header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .harvest-edit-modal__header-left .material-symbols-outlined { font-size: 24px; }
+    .harvest-edit-modal__header-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .harvest-edit-modal__close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+    }
+    .harvest-edit-modal__close:hover { opacity: 0.8; }
+    .harvest-edit-modal__close .material-symbols-outlined { font-size: 24px; }
+
+    .harvest-edit-modal__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .harvest-edit-modal__field-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--color-neutral-50);
+      border-radius: var(--radius-md);
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--color-text);
+    }
+    .harvest-edit-modal__field-banner-name {
+      font-weight: 700;
+      color: var(--color-brand-500);
+      font-size: 14px;
+    }
+    .harvest-edit-modal__field-banner-sep {
+      color: var(--color-border);
+    }
+
+    .harvest-edit-modal__columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .harvest-edit-modal__col {
+      padding: 0;
+    }
+    .harvest-edit-modal__col-header {
+      padding: 12px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .harvest-edit-modal__col--locked .harvest-edit-modal__col-header {
+      background: var(--color-neutral-50);
+      color: var(--color-text-muted);
+    }
+    .harvest-edit-modal__col--editable .harvest-edit-modal__col-header {
+      background: var(--color-brand-50, var(--color-neutral-50));
+      color: var(--color-brand-600);
+    }
+
+    .harvest-edit-modal__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--color-border);
+      min-height: 52px;
+    }
+    .harvest-edit-modal__row:last-child { border-bottom: none; }
+
+    .harvest-edit-modal__row-label {
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+    .harvest-edit-modal__row-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .harvest-edit-modal__row-value--muted {
+      color: var(--color-text-muted);
+      font-weight: 400;
+    }
+
+    .harvest-edit-modal__input {
+      width: 120px;
+      padding: 8px 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-family: var(--font-family);
+      font-weight: 600;
+      color: var(--color-text);
+      text-align: right;
+      transition: border-color 0.15s;
+    }
+    .harvest-edit-modal__input:focus {
+      outline: none;
+      border-color: var(--color-brand-500);
+      box-shadow: 0 0 0 3px rgba(var(--color-brand-500-rgb, 59,130,246), 0.15);
+    }
+    .harvest-edit-modal__input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .harvest-edit-modal__input-unit {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .harvest-edit-modal__col--locked .harvest-edit-modal__row {
+      background: var(--color-neutral-50);
+    }
+
+    .harvest-edit-modal__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-surface);
+    }
+    .harvest-edit-modal__footer-left {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ===== PB SYNC BANNER (theme-pb only) ===== */
+    .harvest-edit-modal__sync {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--color-brand-50, #eef2f6);
+      border: 1px solid var(--color-brand-200, #c5d3e0);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+    .theme-pb .harvest-edit-modal__sync { display: flex; }
+    .harvest-edit-modal__sync-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--color-brand-500);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .harvest-edit-modal__sync-icon .material-symbols-outlined { font-size: 22px; }
+    .harvest-edit-modal__sync-body { flex: 1; }
+    .harvest-edit-modal__sync-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .harvest-edit-modal__sync-desc {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+    .harvest-edit-modal__sync-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .harvest-edit-modal__sync-status--synced { color: var(--color-success-500); }
+    .harvest-edit-modal__sync-status--pending { color: var(--color-warning-500); }
+    .harvest-edit-modal__sync-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--color-brand-500);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-brand-500);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-family);
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.12s;
+    }
+    .harvest-edit-modal__sync-btn:hover { background: var(--color-brand-50, #eef2f6); }
+    .harvest-edit-modal__sync-btn .material-symbols-outlined { font-size: 18px; }
+    .harvest-edit-modal__sync-divider {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .theme-pb .harvest-edit-modal__sync-divider { display: flex; }
+    .harvest-edit-modal__sync-divider::before,
+    .harvest-edit-modal__sync-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    /* ===== CALIBRATION SCOPE ===== */
+    .harvest-edit-modal__scope {
+      margin-bottom: 20px;
+    }
+    .harvest-edit-modal__scope-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .harvest-edit-modal__scope-label .material-symbols-outlined { font-size: 18px; color: var(--color-text-muted); }
+    .harvest-edit-modal__scope-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .harvest-edit-modal__scope-option {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 16px;
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      cursor: pointer;
+      font-family: var(--font-family);
+      text-align: left;
+      transition: border-color 0.15s;
+    }
+    .harvest-edit-modal__scope-option:hover { border-color: var(--color-neutral-400); }
+    .harvest-edit-modal__scope-option--active {
+      border-color: var(--color-brand-500);
+      background: var(--color-brand-50, #f0f6ff);
+    }
+    .harvest-edit-modal__scope-radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--color-neutral-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .harvest-edit-modal__scope-option--active .harvest-edit-modal__scope-radio {
+      border-color: var(--color-brand-500);
+    }
+    .harvest-edit-modal__scope-radio-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-brand-500);
+      display: none;
+    }
+    .harvest-edit-modal__scope-option--active .harvest-edit-modal__scope-radio-dot {
+      display: block;
+    }
+    .harvest-edit-modal__scope-option-body { flex: 1; }
+    .harvest-edit-modal__scope-option-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .harvest-edit-modal__scope-option-desc {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+
+    /* Combine cards */
+    .harvest-edit-modal__combines {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .harvest-edit-modal__combines--visible { display: flex; }
+    .harvest-edit-modal__combines-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .harvest-edit-modal__combines-title .material-symbols-outlined { font-size: 18px; color: var(--color-text-muted); }
+    .harvest-edit-modal__combine-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .harvest-edit-modal__combine-card:hover { border-color: var(--color-neutral-400); }
+    .harvest-edit-modal__combine-card--selected {
+      border-color: var(--color-brand-500);
+      background: var(--color-brand-50, #f0f6ff);
+    }
+    .harvest-edit-modal__combine-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .harvest-edit-modal__combine-info { flex: 1; }
+    .harvest-edit-modal__combine-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .harvest-edit-modal__combine-id {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    .harvest-edit-modal__combine-stats {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+    }
+    .harvest-edit-modal__combine-stat-value {
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .harvest-edit-modal__combine-stat-label {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+    }
+    .harvest-edit-modal__combine-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--color-neutral-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .harvest-edit-modal__combine-card--selected .harvest-edit-modal__combine-check {
+      background: var(--color-brand-500);
+      border-color: var(--color-brand-500);
+      color: #fff;
+    }
+    .harvest-edit-modal__combine-check .material-symbols-outlined {
+      font-size: 16px;
+      display: none;
+    }
+    .harvest-edit-modal__combine-card--selected .harvest-edit-modal__combine-check .material-symbols-outlined {
+      display: block;
+    }
+
+    /* ===== SPRAY APPLICATION INFO MODAL ===== */
+    .spray-info-modal {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 16px;
+      width: 440px;
+      max-height: calc(100% - 140px);
+      overflow-y: auto;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      z-index: 20;
+      flex-direction: column;
+    }
+    .spray-info-modal--open { display: flex; }
+
+    .spray-info-modal__top {
+      background: #fff;
+      padding: 20px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .spray-info-modal__status {
+      font-size: 12px;
+      color: var(--color-warning-600);
+      font-style: italic;
+    }
+
+    .spray-info-modal__details {
+      background: var(--color-neutral-100);
+      padding: 20px;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+    .spray-info-modal__columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .spray-info-modal__col {
+      padding: 0;
+    }
+    .spray-info-modal__col:first-child {
+      border-right: 1px solid var(--color-border);
+      padding-right: 20px;
+    }
+    .spray-info-modal__col:last-child {
+      padding-left: 20px;
+    }
+    .spray-info-modal__col-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 16px;
+    }
+    .spray-info-modal__item {
+      margin-bottom: 14px;
+    }
+    .spray-info-modal__item:last-child { margin-bottom: 0; }
+    .spray-info-modal__item-label {
+      font-size: 12px;
+      color: var(--color-text-muted);
+    }
+    .spray-info-modal__item-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-top: 2px;
+    }
+    .spray-info-modal__product-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: 12px;
+    }
+
+    /* Spray edit modal reuses harvest-edit-modal classes plus these */
+    .spray-edit-modal__products {
+      margin-bottom: 20px;
+    }
+    .spray-edit-modal__product-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .spray-edit-modal__product-card:last-child { margin-bottom: 0; }
+    .spray-edit-modal__product-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: var(--color-neutral-50);
+      border-bottom: 1px solid var(--color-border);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .spray-edit-modal__product-body {
+      padding: 0;
     }
 
     /* Scale bar */
@@ -519,15 +1711,15 @@
           <span class="nav__label">Home</span>
         </a>
         <a href="#" class="nav__item">
-          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
+          <span class="nav__icon"><svg width="26" height="26" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 12C14.3261 12 15.5975 12.5272 16.5352 13.4648C17.4728 14.4025 18 15.6739 18 17V19C18 19.5523 17.5523 20 17 20C16.4477 20 16 19.5523 16 19V17C16 16.2044 15.6837 15.4415 15.1211 14.8789C14.6289 14.3867 13.9835 14.0829 13.2969 14.0146L13 14H5C4.20435 14 3.44152 14.3163 2.87891 14.8789C2.3163 15.4415 2 16.2044 2 17V19C2 19.5523 1.55228 20 1 20C0.447715 20 0 19.5523 0 19V17C0 15.6739 0.527162 14.4025 1.46484 13.4648C2.40253 12.5272 3.67392 12 5 12H13ZM19.0322 12.8799C19.1703 12.3452 19.7153 12.024 20.25 12.1621C21.3226 12.4391 22.2734 13.0639 22.9521 13.9395C23.6308 14.815 23.9991 15.8913 24 16.999V19C23.9999 19.5522 23.5522 20 23 20C22.4478 20 22.0001 19.5522 22 19V17.001L21.9893 16.7529C21.9411 16.1767 21.7275 15.6248 21.3711 15.165C20.9639 14.6397 20.3936 14.2638 19.75 14.0977C19.2153 13.9595 18.8942 13.4146 19.0322 12.8799ZM9 0C11.7614 0 14 2.23858 14 5C14 7.76142 11.7614 10 9 10C6.23858 10 4 7.76142 4 5C4 2.23858 6.23858 0 9 0ZM15.0312 0.881836C15.1682 0.346814 15.713 0.0241452 16.248 0.161133C17.3236 0.43651 18.2773 1.06244 18.958 1.93945C19.6385 2.81638 20.0078 3.89487 20.0078 5.00488L20.0039 5.21289C19.9608 6.24911 19.5959 7.24827 18.958 8.07031C18.2773 8.94732 17.3236 9.57326 16.248 9.84863C15.713 9.98562 15.1682 9.66295 15.0312 9.12793C14.8943 8.59291 15.2169 8.04812 15.752 7.91113C16.3972 7.74592 16.9695 7.37089 17.3779 6.84473C17.7353 6.38439 17.949 5.8311 17.9971 5.25391L18.0078 5.00488C18.0078 4.33876 17.7864 3.69125 17.3779 3.16504C16.9695 2.63888 16.3972 2.26385 15.752 2.09863C15.2169 1.96164 14.8943 1.41686 15.0312 0.881836ZM9 2C7.34315 2 6 3.34315 6 5C6 6.65685 7.34315 8 9 8C10.6569 8 12 6.65685 12 5C12 3.34315 10.6569 2 9 2Z" fill="currentColor"/></svg></span>
           <span class="nav__label">Growers</span>
         </a>
         <a href="#" class="nav__item" aria-current="page">
-          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
+          <span class="nav__icon"><svg width="26" height="26" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.43262 12.7021C9.67193 12.7516 9.82653 12.9853 9.77735 13.2246L7.63379 23.583C7.58437 23.8251 7.37115 23.9995 7.12403 24H1.042C0.926451 23.9997 0.813647 23.9601 0.723639 23.8877C0.505235 23.7116 0.470661 23.3915 0.64649 23.1729L8.99415 12.8604C9.06993 12.7663 9.18048 12.7072 9.30079 12.6963V12.6943C9.34477 12.6901 9.38934 12.6933 9.43262 12.7021ZM12.5 12.542C12.7641 12.5419 12.9921 12.7268 13.0459 12.9854L15.1982 23.375C15.2052 23.4093 15.208 23.4445 15.208 23.4795C15.2078 23.767 14.9751 24.0001 14.6875 24H10.3154C10.2805 24 10.2452 23.9962 10.2109 23.9893C9.92936 23.9315 9.74817 23.6567 9.80567 23.375L11.9551 12.9854C12.0085 12.727 12.2362 12.542 12.5 12.542ZM15.6992 12.6963C15.8195 12.7075 15.9299 12.7665 16.0059 12.8604L24.3535 23.167C24.4301 23.2593 24.4716 23.3762 24.4707 23.4961C24.4683 23.7766 24.2386 24.0022 23.958 24H17.876C17.6289 23.9995 17.4156 23.8251 17.3662 23.583L15.2227 13.2256C15.2138 13.1823 15.2116 13.1377 15.2158 13.0938C15.2394 12.8505 15.4559 12.6728 15.6992 12.6963ZM5.31641 13.3496C5.42475 13.3233 5.53779 13.3702 5.59669 13.4648C5.65935 13.5598 5.65221 13.6843 5.57911 13.7715L0.462896 20.0928C0.413602 20.1534 0.338902 20.1883 0.260748 20.1885C0.117102 20.1887 0.000396453 20.0724 5.80463e-06 19.9287V16.3955C-0.0015452 15.8255 0.307829 15.3003 0.806646 15.0244C2.22904 14.2687 3.74538 13.7048 5.31641 13.3496ZM19.6836 13.3496C21.2546 13.7048 22.771 14.2687 24.1934 15.0244C24.6922 15.3003 25.0016 15.8255 25 16.3955V19.9238C24.9998 20.0018 24.9647 20.0757 24.9043 20.125C24.7927 20.2157 24.6278 20.1995 24.5371 20.0879L19.4209 13.7666C19.3707 13.7041 19.3518 13.622 19.3701 13.5439C19.403 13.4039 19.5436 13.3167 19.6836 13.3496ZM7.2002 8.03125C8.01174 5.10466 11.0421 3.38979 13.9688 4.20117C16.8954 5.01265 18.6101 8.04307 17.7988 10.9697C17.6544 11.4696 17.1366 11.7628 16.6338 11.6289C16.1234 11.493 15.8201 10.9684 15.9561 10.458C16.1294 9.83182 16.1294 9.17013 15.9561 8.54395C15.4275 6.63501 13.4509 5.51632 11.542 6.04492C9.63327 6.57361 8.51451 8.5492 9.04297 10.458C9.17687 10.9608 8.88366 11.4786 8.38379 11.623C7.87648 11.7694 7.34683 11.477 7.2002 10.9697C6.9337 10.0084 6.93369 8.99256 7.2002 8.03125ZM5.08301 9.11426C5.6583 9.11426 6.125 9.58096 6.12501 10.1562C6.12501 10.7315 5.65831 11.1982 5.08301 11.1982H4.042C3.4667 11.1982 3.00001 10.7315 3.00001 10.1562C3.00001 9.58096 3.4667 9.11426 4.042 9.11426H5.08301ZM21.083 9.11426C21.6583 9.11426 22.125 9.58096 22.125 10.1562C22.125 10.7315 21.6583 11.1982 21.083 11.1982H20.042C19.4667 11.1982 19 10.7315 19 10.1562C19 9.58096 19.4667 9.11426 20.042 9.11426H21.083ZM5.47462 3.00098C5.87427 2.58718 6.53444 2.57497 6.94825 2.97461L7.68653 3.71289C8.09303 4.11993 8.09249 4.77889 7.68555 5.18555C7.27862 5.59219 6.61965 5.5923 6.2129 5.18555L5.47462 4.44824C5.08489 4.0447 5.08512 3.40466 5.47462 3.00098ZM18.3643 2.97461C18.7678 2.58488 19.4078 2.58511 19.8115 2.97461C20.2253 3.37427 20.2375 4.03444 19.8379 4.44824L19.0996 5.18555C18.6929 5.5923 18.0339 5.59219 17.627 5.18555C17.22 4.77888 17.2195 4.11993 17.626 3.71289L18.3643 2.97461ZM12.6563 0C13.2315 4.319e-06 13.6982 0.466698 13.6982 1.04199V2.08301C13.6982 2.6583 13.2315 3.125 12.6563 3.125C12.081 3.125 11.6143 2.6583 11.6143 2.08301V1.04199C11.6143 0.466695 12.081 0 12.6563 0Z" fill="currentColor"/></svg></span>
           <span class="nav__label">Fields</span>
         </a>
         <a href="#" class="nav__item">
-          <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
+          <span class="nav__icon"><svg width="26" height="26" viewBox="0 0 24.9993 22.9999" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.3413 0.809221C14.5774 -0.269739 16.4207 -0.269741 17.6568 0.809221C17.7492 0.889953 17.8262 0.986501 17.8833 1.09438L17.9331 1.20668L19.357 4.94203L20.7066 6.29262C20.7663 6.35239 20.8182 6.41933 20.8609 6.49184L20.9185 6.60512L23.7896 13.3043L23.9497 13.4645L23.8892 13.5221L24.0279 13.7233C25.5021 15.9812 25.2982 19.015 23.4175 21.0592L23.2417 21.2418C20.8986 23.5849 17.1005 23.5848 14.7574 21.2418C13.7987 20.2832 13.2314 19.0812 13.0572 17.8346C13.0325 17.7651 13.0142 17.6924 13.0054 17.6168L12.9995 17.4997V9.00453C12.9325 9.00344 12.8632 9.00124 12.7915 9.00063L11.9995 8.99965V17.9997C11.9995 18.2406 11.9139 18.4618 11.772 18.6344C11.5027 19.5894 10.9941 20.4913 10.2427 21.2428C7.89976 23.5858 4.10055 23.5853 1.75735 21.2428C-0.377096 19.1084 -0.567195 15.7663 1.18704 13.4166L4.07962 6.6686C4.11302 6.59065 4.15685 6.51762 4.20853 6.45082L4.29153 6.35512L5.63821 5.00746L7.06302 1.21156C7.10663 1.09527 7.17117 0.988217 7.25345 0.896135L7.34134 0.809221C8.5774 -0.269741 10.4207 -0.269739 11.6568 0.809221C11.8432 0.971988 11.9617 1.19729 11.9917 1.44008L11.9995 1.56215V5.56215C11.9995 6.11429 11.5516 6.56192 10.9995 6.56215C10.4868 6.56215 10.0633 6.17656 10.0054 5.67934L9.99954 5.56215L9.99856 2.10024L9.8804 2.05824C9.54944 1.9552 9.18533 1.9889 8.87649 2.16078L8.83255 2.18813L7.43509 5.91371C7.39753 6.01379 7.34466 6.10721 7.27786 6.19008L7.20657 6.26918L5.84231 7.63442L4.29349 11.2467C6.23352 10.6733 8.40629 11.1005 9.99954 12.528V9.05824C9.32308 9.13897 9.08296 9.31938 8.89407 9.69692C8.64708 10.1909 8.04625 10.3912 7.55228 10.1442C7.05842 9.89724 6.85826 9.29727 7.10501 8.80336C7.85983 7.29372 8.79659 7.01071 11.399 6.99965H12.5992C15.2018 7.01069 16.1392 7.29365 16.8941 8.80336C17.1406 9.29713 16.9404 9.89716 16.4468 10.1442C15.9528 10.3912 15.352 10.1909 15.105 9.69692C15.0723 9.63148 15.0373 9.57235 14.9995 9.51821V12.5289C16.6011 11.0937 18.7871 10.6696 20.7349 11.2565L19.1558 7.57094L17.7915 6.20668C17.7252 6.14028 17.6687 6.06483 17.6236 5.98305L17.565 5.85512L16.1675 2.1891L16.1216 2.16078C15.8128 1.98891 15.4487 1.95517 15.1177 2.05824L14.9995 2.10024V5.49965C14.9994 6.01238 14.613 6.43505 14.1158 6.49281L13.9995 6.49965C13.4867 6.49965 13.0632 6.1132 13.0054 5.61586L12.9995 5.49965V1.56215C12.9996 1.27355 13.124 0.999059 13.3413 0.809221ZM8.66849 14.0202C7.0981 12.611 4.68142 12.6618 3.17142 14.1715C3.08445 14.2585 3.00163 14.3484 2.92435 14.4411L2.91849 14.4567C2.85416 14.6067 2.75656 14.732 2.63919 14.8297C1.63611 16.3793 1.81348 18.4698 3.17142 19.8278C4.73353 21.3897 7.26563 21.3898 8.82767 19.8278C10.3373 18.3178 10.3881 15.9011 8.97903 14.3307L8.82767 14.1715L8.66849 14.0202ZM21.6685 14.0202C20.0981 12.611 17.6815 12.6619 16.1714 14.1715C14.6094 15.7336 14.6093 18.2657 16.1714 19.8278C17.7335 21.3897 20.2656 21.3898 21.8277 19.8278C23.3373 18.3178 23.3881 15.9011 21.979 14.3307L21.8277 14.1715L21.6685 14.0202Z" fill="currentColor"/></svg></span>
           <span class="nav__label">Scout</span>
         </a>
         <a href="#" class="nav__item">
@@ -547,9 +1739,9 @@
 
       <!-- HEADER (PB brand) -->
       <!-- HEADER — add header--pb + swap logo src for Pivot Bio, header--myfs for MyFS -->
-      <header class="header">
+      <header class="header header--myfs">
         <div class="header__left">
-          <a href="#" class="header__logo"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+          <a href="#" class="header__logo"><img src="../assets/icons/myfs-logo.png" alt="MyFS" /></a>
         </div>
         <div class="header__center">
           <div class="header__search-wrap">
@@ -583,6 +1775,9 @@
           </div>
         </div>
       </div>
+
+      <!-- MAP + TRIAL PANEL WRAPPER -->
+      <div class="map-wrapper">
 
       <!-- MAP VIEW CONTENT -->
       <div class="map-container">
@@ -627,9 +1822,109 @@
 
         <!-- Top-right actions (info, share, more) -->
         <div class="map-actions-topright">
-          <button class="map-actions__btn map-actions__btn--info"><span class="material-symbols-outlined">info</span></button>
-          <button class="map-actions__share">Share</button>
-          <button class="map-actions__btn"><span class="material-symbols-outlined">more_vert</span></button>
+          <button class="map-actions__btn map-actions__btn--info" onclick="toggleFieldInfo()"><span class="material-symbols-outlined">info</span></button>
+          <div class="map-actions__group">
+            <button class="map-actions__share">Share</button>
+            <button class="map-actions__btn"><span class="material-symbols-outlined">more_vert</span></button>
+          </div>
+        </div>
+
+        <!-- Field info modal -->
+        <div class="field-info-modal" id="field-info-modal">
+          <div class="field-info-modal__top">
+            <div class="field-info-modal__name">Flanagan Amity 378 <span class="material-symbols-outlined">description</span></div>
+            <div class="field-info-modal__farm">Flanagan Amity South 196 &nbsp;<span class="field-info-modal__farm-grower">Agee</span></div>
+            <div class="field-info-modal__meta">
+              <span>377.2 ac</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span class="material-symbols-outlined" style="font-size:16px;">water_drop</span> 4/24
+              <span class="field-info-modal__meta-sep">|</span>
+              <span class="field-info-modal__meta-crop">🚀 Soybeans</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span class="field-info-modal__meta-gdd">GDD: 402</span>
+            </div>
+            <div class="field-info-modal__event">
+              <span class="material-symbols-outlined" style="font-size:16px;">agriculture</span>
+              <span>10/29, 1:23 PM</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span class="field-info-modal__event-gdd">Event GDD: 3299</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span>CX4QHUTAA <span class="material-symbols-outlined" style="font-size:16px;">description</span></span>
+            </div>
+            <span class="field-info-modal__tag">#Duplicate25</span>
+          </div>
+          <div class="field-info-modal__details">
+            <div class="field-info-modal__details-title"><span>Harvest details</span><button class="field-info-modal__details-edit" onclick="openHarvestEdit()"><span class="material-symbols-outlined">edit</span></button></div>
+            <div class="field-info-modal__grid">
+              <div><div class="field-info-modal__grid-label">Area Worked</div><div class="field-info-modal__grid-value">366.9 ac</div></div>
+              <div><div class="field-info-modal__grid-label">Average Speed</div><div class="field-info-modal__grid-value">5.1 mi/hr</div></div>
+              <div><div class="field-info-modal__grid-label">Average Moisture</div><div class="field-info-modal__grid-value">13.4 percentage</div></div>
+              <div><div class="field-info-modal__grid-label">Total Distance</div><div class="field-info-modal__grid-value">79,348.3 ft</div></div>
+              <div><div class="field-info-modal__grid-label">Total Dry Mass</div><div class="field-info-modal__grid-value">4,935,242.1 lb</div></div>
+              <div><div class="field-info-modal__grid-label">Total Wet Mass</div><div class="field-info-modal__grid-value">4,936,045.5 lb</div></div>
+              <div><div class="field-info-modal__grid-label">Total Dry Volume</div><div class="field-info-modal__grid-value">88,129.3 bu</div></div>
+              <div><div class="field-info-modal__grid-label">Total Wet Volume</div><div class="field-info-modal__grid-value">88,143.7 bu</div></div>
+              <div><div class="field-info-modal__grid-label">Average Dry Mass</div><div class="field-info-modal__grid-value">13,452.3 lb/ac</div></div>
+              <div><div class="field-info-modal__grid-label">Average Wet Mass</div><div class="field-info-modal__grid-value">13,454.5 lb/ac</div></div>
+              <div><div class="field-info-modal__grid-label">Average Dry Volume</div><div class="field-info-modal__grid-value">240.2 bu/ac</div></div>
+              <div><div class="field-info-modal__grid-label">Average Wet Volume</div><div class="field-info-modal__grid-value">240.3 bu/ac</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spray application info modal (shown when application chicklet + info button) -->
+        <div class="spray-info-modal" id="spray-info-modal">
+          <div class="spray-info-modal__top">
+            <div class="field-info-modal__name">0712-Kessler Rd <span class="material-symbols-outlined">description</span></div>
+            <div class="field-info-modal__farm">Divernon-Farmersvile &nbsp;<span class="field-info-modal__farm-grower">Dowson Farms</span></div>
+            <div class="spray-info-modal__status">For review (Farm was updated)</div>
+            <div class="field-info-modal__meta">
+              <span>159.7 ac</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span><span class="material-symbols-outlined" style="font-size:14px;">water_drop</span> N/A</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span style="color:var(--color-text-muted);">Crop unknown</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span style="color:var(--color-text-muted);">GDD: N/A</span>
+            </div>
+            <div class="field-info-modal__event">
+              <span class="material-symbols-outlined" style="font-size:16px;">agriculture</span>
+              <span>9/5, 5:21 PM</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span class="field-info-modal__event-gdd">Event GDD: 2884</span>
+              <span class="field-info-modal__meta-sep">|</span>
+              <span>RVIXY23UF <span class="material-symbols-outlined" style="font-size:16px;">description</span></span>
+            </div>
+            <span class="field-info-modal__tag">#R2 Fungicide Check</span>
+          </div>
+          <div class="spray-info-modal__details">
+            <div class="field-info-modal__details-title"><span>Application details</span><button class="field-info-modal__details-edit" onclick="openSprayEdit()"><span class="material-symbols-outlined">edit</span></button></div>
+            <div class="spray-info-modal__columns">
+              <div class="spray-info-modal__col">
+                <div class="spray-info-modal__col-title">Application</div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Area Worked</div><div class="spray-info-modal__item-value">184 ac</div></div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Average Rate</div><div class="spray-info-modal__item-value">199.9 lb/ac</div></div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Total Applied</div><div class="spray-info-modal__item-value">36,789.5 lb</div></div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Average Speed</div><div class="spray-info-modal__item-value">21.2 mi/hr</div></div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Average Planned Rate</div><div class="spray-info-modal__item-value">200 lb/ac</div></div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Total Distance</div><div class="spray-info-modal__item-value">44,532.3 ft</div></div>
+              </div>
+              <div class="spray-info-modal__col">
+                <div class="spray-info-modal__col-title">Products</div>
+                <div class="spray-info-modal__product-name">Artazene</div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Rate</div><div class="spray-info-modal__item-value">100 Lbs</div></div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Total area</div><div class="spray-info-modal__item-value">200 ac</div></div>
+                <div style="margin-top:14px;"></div>
+                <div class="spray-info-modal__product-name">Trivolt 250Gal</div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Rate</div><div class="spray-info-modal__item-value">200 Lbs</div></div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Total area</div><div class="spray-info-modal__item-value">4,000 ac</div></div>
+                <div style="margin-top:14px;"></div>
+                <div class="spray-info-modal__product-name">LI 700 LECITECH 275</div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Rate</div><div class="spray-info-modal__item-value">300 Lbs</div></div>
+                <div class="spray-info-modal__item"><div class="spray-info-modal__item-label">Total area</div><div class="spray-info-modal__item-value">371 ac</div></div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Layer toggles (top-left) -->
@@ -651,11 +1946,11 @@
                 <div class="trials-panel__item">
                   <span class="trials-panel__item-checkbox"><span class="material-symbols-outlined">check</span></span>
                   <span class="trials-panel__item-name">26-ZEAMX-US700-IL-1214034-GROW</span>
-                  <button class="trials-panel__item-edit"><span class="material-symbols-outlined">edit</span></button>
+                  <button class="trials-panel__item-edit" onclick="openTrialEdit(); toggleTrials();"><span class="material-symbols-outlined">edit</span></button>
                   <span class="trials-panel__item-dot" style="background: var(--color-danger-500);"></span>
                 </div>
               </div>
-              <button class="trials-panel__add">+ Add trial</button>
+              <button class="trials-panel__add" onclick="openTrialAdd(); toggleTrials();">+ Add trial</button>
             </div>
           </div>
         </div>
@@ -681,35 +1976,215 @@
 
 
 
+        <!-- Yield legend -->
+        <div class="yield-legend">
+          <div class="yield-legend__header">Dry Yield</div>
+          <div class="yield-legend__unit-row">
+            <span>bu/ac</span>
+            <select class="yield-legend__unit-select"><option>Area</option><option>Point</option></select>
+          </div>
+          <div style="padding:0 12px 8px; position:relative;">
+            <div style="display:flex; gap:4px;">
+              <div class="yield-legend__gradient" style="flex:1; margin:0;"></div>
+              <div style="display:flex; flex-direction:column; justify-content:space-between; font-size:10px; color:var(--color-text-muted); padding:2px 0;">
+                <span>350</span>
+                <span>300</span>
+                <span>250</span>
+                <span>200</span>
+                <span>150</span>
+                <span>100</span>
+                <span>50</span>
+              </div>
+            </div>
+          </div>
+          <div class="yield-legend__footer">
+            <button class="yield-legend__show-more">Show more</button>
+          </div>
+        </div>
+
         <!-- TIMELINE BAR (floating) -->
         <div class="timeline-bar">
           <span class="timeline-bar__year">2025</span>
           <span class="timeline-bar__filter">All activities</span>
           <div class="timeline-bar__dates">
-            <button class="timeline-bar__date">
-              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+            <button class="timeline-bar__date" onclick="selectChicklet(this,'flight')">
+              <span class="timeline-bar__date-icon"><svg width="16" height="16" viewBox="0 0 20 22.9678" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.9937 15.728V13.7807C20.0436 13.1815 19.794 12.5824 19.3446 12.2329L12.0049 7.73915V5.79188C12.0049 1.74755 11.5056 0 10.0077 0C8.5098 0 8.0105 1.79748 8.0105 5.79188V7.73915L0.670789 12.2828C0.171489 12.6323 -0.078161 13.2315 0.021699 13.7807V15.728L8.31008 12.832L8.70952 18.9235L5.91344 20.4713C5.66379 20.6211 5.514 20.9207 5.514 21.2203V22.9678L10.0077 21.6197L14.5014 22.9678V21.1703C14.5014 20.8707 14.3516 20.6211 14.1519 20.4214L11.3558 18.8735L11.7053 12.7821L19.9937 15.728Z" fill="currentColor"/></svg></span>
               <span>May 8</span>
             </button>
-            <button class="timeline-bar__date timeline-bar__date--active">
-              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+            <button class="timeline-bar__date" onclick="selectChicklet(this,'spray')">
+              <span class="timeline-bar__date-icon"><svg width="16" height="16" viewBox="0 0 20 18.75" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="10" cy="10" rx="1.25" ry="1.25" fill="currentColor"/><ellipse cx="7.5" cy="13.75" rx="1.25" ry="1.25" fill="currentColor"/><ellipse cx="5" cy="17.5" rx="1.25" ry="1.25" fill="currentColor"/><ellipse cx="10" cy="17.5" rx="1.25" ry="1.25" fill="currentColor"/><circle cx="15" cy="17.5" r="1.25" fill="currentColor"/><circle cx="12.5" cy="13.75" r="1.25" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.506 0C0.325 0 0.237 0.222 0.369 0.346L6.614 6.196C6.651 6.231 6.7 6.25 6.75 6.25H13.259C13.309 6.25 13.358 6.231 13.395 6.196L19.631 0.346C19.764 0.222 19.676 0 19.495 0H0.506Z" fill="currentColor"/></svg></span>
+              <span>Jun 12</span>
+            </button>
+            <button class="timeline-bar__date timeline-bar__date--active" onclick="selectChicklet(this,'harvest')">
+              <span class="timeline-bar__date-icon"><svg width="16" height="16" viewBox="0 0 21.33 19.69" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.168 14.569C6.037 14.587 5.906 14.597 5.774 14.597C4.215 14.414 2.805 13.538 1.905 12.193C0.034 9.886-0.77 3.728 0.939 0.346C1.027 0.172 1.186 0.05 1.37 0.012C1.554-0.025 1.744 0.026 1.887 0.153C3.132 1.147 4.566 1.851 6.093 2.219C7.734 2.55 9.241 3.391 10.415 4.635C11.518 5.726 12.048 7.306 11.841 8.879C11.637 9.705 11.169 10.433 10.515 10.942C10.284 11.138 10.218 11.476 10.358 11.751C10.879 12.775 11.335 13.834 11.722 14.921C11.749 14.997 11.802 15.06 11.871 15.097C12.022 15.179 12.209 15.117 12.287 14.958C12.417 14.698 12.556 14.433 12.704 14.164C12.823 13.95 12.815 13.684 12.684 13.479C12.383 13.026 12.221 12.488 12.217 11.938C12.293 10.752 12.932 9.685 13.917 9.094C14.779 8.54 15.727 8.148 16.719 7.937C17.854 7.708 18.929 7.226 19.871 6.523C20.021 6.406 20.214 6.365 20.396 6.412C20.577 6.461 20.729 6.592 20.807 6.77C21.807 9.703 21.365 12.963 19.624 15.49C18.875 16.403 17.805 16.962 16.657 17.039C16.491 17.039 16.325 17.023 16.161 16.991C15.975 16.953 15.794 16.894 15.621 16.815C15.599 16.805 15.578 16.794 15.557 16.781C15.261 16.602 15.16 16.205 15.332 15.894C16.027 14.46 17.085 13.253 18.392 12.406C18.699 12.245 18.823 11.856 18.67 11.535C18.516 11.215 18.144 11.084 17.837 11.245C15.373 12.531 13.462 16.314 12.665 19.004C12.545 19.412 12.184 19.692 11.776 19.692C11.753 19.693 11.73 19.693 11.707 19.692C11.274 19.659 10.921 19.317 10.855 18.868C10.298 15.252 7.721 10.254 5.311 7.061C5.098 6.78 4.707 6.732 4.438 6.955C4.169 7.177 4.123 7.586 4.336 7.867C5.599 9.534 6.696 11.331 7.611 13.231C7.75 13.52 7.663 13.872 7.408 14.056C7.039 14.327 6.614 14.502 6.168 14.569Z" fill="currentColor"/></svg></span>
               <span>Aug 27</span>
             </button>
-            <button class="timeline-bar__date timeline-bar__date--processing">
-              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">settings</span></span>
+            <button class="timeline-bar__date" onclick="selectChicklet(this,'spray')">
+              <span class="timeline-bar__date-icon"><svg width="16" height="16" viewBox="0 0 20 18.75" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="10" cy="10" rx="1.25" ry="1.25" fill="currentColor"/><ellipse cx="7.5" cy="13.75" rx="1.25" ry="1.25" fill="currentColor"/><ellipse cx="5" cy="17.5" rx="1.25" ry="1.25" fill="currentColor"/><ellipse cx="10" cy="17.5" rx="1.25" ry="1.25" fill="currentColor"/><circle cx="15" cy="17.5" r="1.25" fill="currentColor"/><circle cx="12.5" cy="13.75" r="1.25" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.506 0C0.325 0 0.237 0.222 0.369 0.346L6.614 6.196C6.651 6.231 6.7 6.25 6.75 6.25H13.259C13.309 6.25 13.358 6.231 13.395 6.196L19.631 0.346C19.764 0.222 19.676 0 19.495 0H0.506Z" fill="currentColor"/></svg></span>
+              <span>Sep 5</span>
+            </button>
+            <button class="timeline-bar__date timeline-bar__date--processing" onclick="selectChicklet(this,'flight')">
+              <span class="timeline-bar__date-icon"><svg width="16" height="16" viewBox="0 0 19.9994 20.645" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.06418 0C4.91314 0 4.77987 0.0533071 4.67326 0.159921L0.159921 4.67326C0.0533071 4.77987 0 4.93091 0 5.08195C0 5.23298 0.0533071 5.36625 0.159921 5.47286L3.05627 8.38699C4.04646 7.3968 5.24013 6.20865 6.2971 5.15656C7.13688 4.32067 7.89037 3.57066 8.38698 3.07404L5.47286 0.159921C5.36625 0.0533071 5.21521 0 5.06418 0ZM11.1596 3.22576C10.6259 3.22576 10.1058 3.40443 9.7124 3.78356L2.69371 10.5469C2.58517 10.6515 2.51282 10.7996 2.51282 10.9478C2.51282 11.096 2.58517 11.2267 2.69371 11.3313L3.36302 11.9763C2.31157 11.8586 1.38901 12.0482 0.812412 12.6038C0.588556 12.8217 0.588556 13.1703 0.812412 13.3882L2.44046 14.957C2.27539 15.2468 2.16912 15.5584 2.16912 15.8983C2.16912 16.4278 2.37715 16.9354 2.76607 17.3102C3.15499 17.685 3.68184 17.8855 4.23131 17.8855C4.58405 17.8855 4.9074 17.783 5.20814 17.624L6.83619 19.1928C7.0623 19.4085 7.42409 19.4085 7.65021 19.1928C8.22681 18.6372 8.42353 17.7482 8.30143 16.735L8.97074 17.3799C9.08379 17.4889 9.21947 17.5543 9.3687 17.5543C9.51794 17.5543 9.6717 17.4889 9.78476 17.3799L16.8035 10.6166C17.1924 10.2418 17.4185 9.75159 17.4185 9.22211C17.4185 8.69264 17.1924 8.18495 16.8035 7.81018L12.6248 3.78356C12.2359 3.40879 11.6932 3.22576 11.1596 3.22576ZM14.2352 14.9567C15.2738 13.9133 16.2963 12.8859 16.9254 12.258L19.8395 15.1721C19.9461 15.2787 19.9994 15.4298 19.9994 15.5808C19.9994 15.7318 19.9461 15.8651 19.8395 15.9717L15.3262 20.4851C15.2151 20.5961 15.0641 20.645 14.9175 20.645C14.7709 20.645 14.6198 20.5961 14.5088 20.4851L11.6124 17.5887C12.3016 16.8995 13.2753 15.9212 14.2352 14.9567Z" fill="currentColor"/></svg></span>
               <span>Dec 16</span>
             </button>
-            <button class="timeline-bar__date">
-              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
+            <button class="timeline-bar__date" onclick="selectChicklet(this,'flight')">
+              <span class="timeline-bar__date-icon"><svg width="16" height="16" viewBox="0 0 20 22.9678" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.9937 15.728V13.7807C20.0436 13.1815 19.794 12.5824 19.3446 12.2329L12.0049 7.73915V5.79188C12.0049 1.74755 11.5056 0 10.0077 0C8.5098 0 8.0105 1.79748 8.0105 5.79188V7.73915L0.670789 12.2828C0.171489 12.6323 -0.078161 13.2315 0.021699 13.7807V15.728L8.31008 12.832L8.70952 18.9235L5.91344 20.4713C5.66379 20.6211 5.514 20.9207 5.514 21.2203V22.9678L10.0077 21.6197L14.5014 22.9678V21.1703C14.5014 20.8707 14.3516 20.6211 14.1519 20.4214L11.3558 18.8735L11.7053 12.7821L19.9937 15.728Z" fill="currentColor"/></svg></span>
               <span>Dec 22</span>
-            </button>
-            <button class="timeline-bar__date">
-              <span class="timeline-bar__date-icon"><span class="material-symbols-outlined">flight_takeoff</span></span>
-              <span>Dec 24</span>
             </button>
           </div>
         </div>
 
       </div><!-- /.map-container -->
+
+      <!-- TRIAL SIDE PANEL (Add new — empty state) -->
+      <aside class="trial-panel" id="trial-panel-add">
+        <div class="trial-panel__header">
+          <div>
+            <div class="trial-panel__title">Trial</div>
+            <div class="trial-panel__subtitle">MTXX-GROW</div>
+          </div>
+          <button class="trial-panel__close" onclick="closeTrialPanels()"><span class="material-symbols-outlined">close</span></button>
+        </div>
+
+        <div class="trial-panel__section">
+          <div class="trial-panel__label">Protocol</div>
+          <select class="trial-panel__select">
+            <option>Select protocol</option>
+          </select>
+        </div>
+
+        <div class="trial-panel__field-info">
+          <div class="trial-panel__field-name">Fazenda ind 25</div>
+          <div class="trial-panel__field-grower">fazenda ind 25 grower</div>
+          <div class="trial-panel__field-meta">
+            <span>27.1 ac</span>
+            <span class="trial-panel__field-meta-sep">|</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">water_drop</span> N/A
+            <span class="trial-panel__field-meta-sep">|</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">eco</span> Corn 20in
+            <span class="trial-panel__field-meta-sep">|</span>
+            <span class="trial-panel__field-meta-gdd">GDD: N/A</span>
+          </div>
+        </div>
+
+        <div class="trial-panel__treatments">
+          <div class="trial-panel__treatments-empty">
+            <span class="material-symbols-outlined">grid_view</span>
+            <span class="trial-panel__treatments-empty-text">No treatments created</span>
+          </div>
+          <button class="trial-panel__add-treatment">+ Add treatment</button>
+        </div>
+
+        <div class="trial-panel__footer">
+          <button class="trial-panel__cancel" onclick="closeTrialPanels()">Cancel</button>
+          <button class="trial-panel__save">Save trial</button>
+        </div>
+      </aside>
+
+      <!-- TRIAL SIDE PANEL (Edit — populated state) -->
+      <aside class="trial-panel" id="trial-panel-edit">
+        <div class="trial-panel__header">
+          <div>
+            <div class="trial-panel__title">Trial</div>
+            <div class="trial-panel__subtitle" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;">30-ZEAMX-AM2025-MT-1214170-GR...</div>
+          </div>
+          <button class="trial-panel__close" onclick="closeTrialPanels()"><span class="material-symbols-outlined">close</span></button>
+        </div>
+
+        <div class="trial-panel__section">
+          <div class="trial-panel__label">Protocol</div>
+          <select class="trial-panel__select" style="color:var(--color-text);">
+            <option selected>30-ZEAMX-AM2025</option>
+          </select>
+        </div>
+
+        <div class="trial-panel__field-info">
+          <div class="trial-panel__field-name">Fazenda ind 25</div>
+          <div class="trial-panel__field-grower">fazenda ind 25 grower</div>
+          <div class="trial-panel__field-meta">
+            <span>27.1 ac</span>
+            <span class="trial-panel__field-meta-sep">|</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">water_drop</span> N/A
+            <span class="trial-panel__field-meta-sep">|</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">eco</span> Corn 20in
+            <span class="trial-panel__field-meta-sep">|</span>
+            <span class="trial-panel__field-meta-gdd">GDD: N/A</span>
+          </div>
+        </div>
+
+        <div class="trial-panel__treatments" id="edit-treatments">
+          <!-- Treatment list view -->
+          <div class="trial-panel__treatments-list" id="treatment-list">
+            <div class="trial-panel__treatments-label">Treatments</div>
+            <div class="trial-panel__treatment-item" onclick="showTreatmentDetail('Treatment 1')">
+              <span class="trial-panel__treatment-dot" style="background: var(--color-danger-500);"></span>
+              <span class="trial-panel__treatment-name">Treatment 1</span>
+              <span class="material-symbols-outlined trial-panel__treatment-chevron">chevron_right</span>
+            </div>
+            <div class="trial-panel__treatment-divider"></div>
+            <div class="trial-panel__treatment-item" onclick="showTreatmentDetail('Treatment 2')">
+              <span class="trial-panel__treatment-dot" style="background: var(--color-warning-500);"></span>
+              <span class="trial-panel__treatment-name">Treatment 2</span>
+              <span class="material-symbols-outlined trial-panel__treatment-chevron">chevron_right</span>
+            </div>
+          </div>
+          <button class="trial-panel__add-treatment" id="add-treatment-btn">+ Add treatment</button>
+
+          <!-- Treatment detail view (replaces list when a treatment is selected) -->
+          <div class="treatment-detail" id="treatment-detail">
+            <div class="treatment-detail__header">
+              <button class="treatment-detail__back" onclick="hideTreatmentDetail()"><span class="material-symbols-outlined">chevron_left</span></button>
+              <span class="treatment-detail__title" id="treatment-detail-title">Treatment 1</span>
+              <button class="treatment-detail__delete"><span class="material-symbols-outlined">delete_outline</span></button>
+            </div>
+            <div class="treatment-detail__body">
+              <div class="treatment-detail__radios">
+                <label class="treatment-detail__radio">
+                  <span class="treatment-detail__radio-circle"><span class="treatment-detail__radio-dot"></span></span>
+                  Treated
+                </label>
+                <label class="treatment-detail__radio treatment-detail__radio--active">
+                  <span class="treatment-detail__radio-circle"><span class="treatment-detail__radio-dot"></span></span>
+                  Untreated
+                </label>
+              </div>
+              <div>
+                <div class="treatment-detail__field-label">Product</div>
+                <select class="treatment-detail__select"><option>Select</option></select>
+              </div>
+              <div>
+                <div class="treatment-detail__field-label">N-Factor</div>
+                <select class="treatment-detail__select"><option>Select</option></select>
+              </div>
+              <div>
+                <div class="treatment-detail__field-label">Complimentary products</div>
+                <div class="treatment-detail__add-row">
+                  <input type="text" class="treatment-detail__add-input" placeholder="Type to add" />
+                  <button class="treatment-detail__add-btn">Add</button>
+                </div>
+              </div>
+
+              <div class="treatment-detail__exclude">
+                <label class="treatment-detail__exclude-label" onclick="toggleExclude()">
+                  <span class="treatment-detail__exclude-checkbox" id="exclude-checkbox"><span class="material-symbols-outlined" style="font-size:16px;display:none;" id="exclude-check">check</span></span>
+                  Exclude treatment
+                </label>
+                <div class="treatment-detail__exclude-comment" id="exclude-comment" style="display:none;">
+                  <div class="treatment-detail__field-label">Reason for exclusion</div>
+                  <textarea class="treatment-detail__textarea" placeholder="Add a comment..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="trial-panel__footer">
+          <button class="trial-panel__cancel" onclick="closeTrialPanels()">Cancel</button>
+          <button class="trial-panel__save">Save trial</button>
+        </div>
+      </aside>
+
+      </div><!-- /.map-wrapper -->
 
     </div><!-- /.page-shell__main -->
   </div><!-- /.page-shell -->
@@ -719,6 +2194,362 @@
       var panel = document.getElementById('trials-panel');
       panel.classList.toggle('trials-panel--open');
     }
+    function closeTrialPanels() {
+      document.getElementById('trial-panel-add').classList.remove('trial-panel--open');
+      document.getElementById('trial-panel-edit').classList.remove('trial-panel--open');
+    }
+    function openTrialAdd() {
+      closeTrialPanels();
+      document.getElementById('trial-panel-add').classList.add('trial-panel--open');
+    }
+    function openTrialEdit() {
+      closeTrialPanels();
+      hideTreatmentDetail();
+      document.getElementById('trial-panel-edit').classList.add('trial-panel--open');
+    }
+    function showTreatmentDetail(name) {
+      document.getElementById('treatment-detail-title').textContent = name;
+      document.getElementById('treatment-list').style.display = 'none';
+      document.getElementById('add-treatment-btn').style.display = 'none';
+      document.getElementById('treatment-detail').classList.add('treatment-detail--open');
+    }
+    function toggleExclude() {
+      var cb = document.getElementById('exclude-checkbox');
+      var comment = document.getElementById('exclude-comment');
+      cb.classList.toggle('treatment-detail__exclude-checkbox--checked');
+      if (cb.classList.contains('treatment-detail__exclude-checkbox--checked')) {
+        comment.style.display = '';
+      } else {
+        comment.style.display = 'none';
+      }
+    }
+    function hideTreatmentDetail() {
+      document.getElementById('treatment-detail').classList.remove('treatment-detail--open');
+      document.getElementById('treatment-list').style.display = '';
+      document.getElementById('add-treatment-btn').style.display = '';
+    }
+    function setScope(type, el) {
+      document.querySelectorAll('.harvest-edit-modal__scope-option').forEach(function(o) { o.classList.remove('harvest-edit-modal__scope-option--active'); });
+      el.classList.add('harvest-edit-modal__scope-option--active');
+      var combines = document.getElementById('combine-cards');
+      if (type === 'combine') { combines.classList.add('harvest-edit-modal__combines--visible'); }
+      else { combines.classList.remove('harvest-edit-modal__combines--visible'); }
+    }
+    function toggleCombine(el) {
+      el.classList.toggle('harvest-edit-modal__combine-card--selected');
+    }
+    function openSprayEdit() {
+      document.getElementById('spray-edit-scrim').classList.add('harvest-edit-scrim--open');
+      document.getElementById('spray-edit-modal').classList.add('harvest-edit-modal--open');
+    }
+    function closeSprayEdit() {
+      document.getElementById('spray-edit-scrim').classList.remove('harvest-edit-scrim--open');
+      document.getElementById('spray-edit-modal').classList.remove('harvest-edit-modal--open');
+    }
+    function setSprayScope(type, el) {
+      el.parentElement.querySelectorAll('.harvest-edit-modal__scope-option').forEach(function(o) { o.classList.remove('harvest-edit-modal__scope-option--active'); });
+      el.classList.add('harvest-edit-modal__scope-option--active');
+      var cards = document.getElementById('spray-equipment-cards');
+      if (type === 'equipment') { cards.classList.add('harvest-edit-modal__combines--visible'); }
+      else { cards.classList.remove('harvest-edit-modal__combines--visible'); }
+    }
+    var activeChickletType = 'harvest';
+    function selectChicklet(el, type) {
+      document.querySelectorAll('.timeline-bar__date').forEach(function(d) { d.classList.remove('timeline-bar__date--active'); });
+      el.classList.add('timeline-bar__date--active');
+      activeChickletType = type;
+      // Close any open info modals
+      document.getElementById('field-info-modal').classList.remove('field-info-modal--open');
+      document.getElementById('spray-info-modal').classList.remove('spray-info-modal--open');
+    }
+    function toggleFieldInfo() {
+      if (activeChickletType === 'spray') {
+        document.getElementById('field-info-modal').classList.remove('field-info-modal--open');
+        document.getElementById('spray-info-modal').classList.toggle('spray-info-modal--open');
+      } else {
+        document.getElementById('spray-info-modal').classList.remove('spray-info-modal--open');
+        document.getElementById('field-info-modal').classList.toggle('field-info-modal--open');
+      }
+    }
+    function openHarvestEdit() {
+      document.getElementById('harvest-edit-scrim').classList.add('harvest-edit-scrim--open');
+      document.getElementById('harvest-edit-modal').classList.add('harvest-edit-modal--open');
+    }
+    function closeHarvestEdit() {
+      document.getElementById('harvest-edit-scrim').classList.remove('harvest-edit-scrim--open');
+      document.getElementById('harvest-edit-modal').classList.remove('harvest-edit-modal--open');
+    }
   </script>
+
+  <!-- HARVEST EDIT MODAL -->
+  <div class="harvest-edit-scrim" id="harvest-edit-scrim" onclick="closeHarvestEdit()"></div>
+  <div class="harvest-edit-modal" id="harvest-edit-modal">
+    <div class="harvest-edit-modal__header">
+      <div class="harvest-edit-modal__header-left">
+        <span class="material-symbols-outlined">edit_note</span>
+        <span class="harvest-edit-modal__header-title">Edit Harvest Details</span>
+      </div>
+      <button class="harvest-edit-modal__close" onclick="closeHarvestEdit()"><span class="material-symbols-outlined">close</span></button>
+    </div>
+
+    <div class="harvest-edit-modal__body">
+      <!-- Field context banner -->
+      <div class="harvest-edit-modal__field-banner">
+        <span class="harvest-edit-modal__field-banner-name">Flanagan Amity 378</span>
+        <span class="harvest-edit-modal__field-banner-sep">|</span>
+        <span>377.2 ac</span>
+        <span class="harvest-edit-modal__field-banner-sep">|</span>
+        <span>Soybeans</span>
+        <span class="harvest-edit-modal__field-banner-sep">|</span>
+        <span>10/29, 1:23 PM</span>
+      </div>
+
+      <!-- PB Sync (only visible in theme-pb) -->
+      <div class="harvest-edit-modal__sync">
+        <div class="harvest-edit-modal__sync-icon"><span class="material-symbols-outlined">sync</span></div>
+        <div class="harvest-edit-modal__sync-body">
+          <div class="harvest-edit-modal__sync-title">Pivot Bio Protocol Sync</div>
+          <div class="harvest-edit-modal__sync-desc">Pull the latest calibration data from the Pivot Bio data pipeline before making manual edits.</div>
+          <div class="harvest-edit-modal__sync-status harvest-edit-modal__sync-status--synced">
+            <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span> Last synced: Apr 4, 2026 · 9:12 AM
+          </div>
+        </div>
+        <button class="harvest-edit-modal__sync-btn"><span class="material-symbols-outlined">sync</span> Sync Now</button>
+      </div>
+      <div class="harvest-edit-modal__sync-divider">or edit manually</div>
+
+      <!-- Calibration scope -->
+      <div class="harvest-edit-modal__scope">
+        <div class="harvest-edit-modal__scope-label"><span class="material-symbols-outlined">tune</span> Calibration Scope</div>
+        <div class="harvest-edit-modal__scope-options">
+          <button class="harvest-edit-modal__scope-option" onclick="setScope('field', this)">
+            <span class="harvest-edit-modal__scope-radio"><span class="harvest-edit-modal__scope-radio-dot"></span></span>
+            <div class="harvest-edit-modal__scope-option-body">
+              <div class="harvest-edit-modal__scope-option-title">Entire Field</div>
+              <div class="harvest-edit-modal__scope-option-desc">Apply a single calibration factor across all yield data.</div>
+            </div>
+          </button>
+          <button class="harvest-edit-modal__scope-option harvest-edit-modal__scope-option--active" onclick="setScope('combine', this)">
+            <span class="harvest-edit-modal__scope-radio"><span class="harvest-edit-modal__scope-radio-dot"></span></span>
+            <div class="harvest-edit-modal__scope-option-body">
+              <div class="harvest-edit-modal__scope-option-title">Specific Combines</div>
+              <div class="harvest-edit-modal__scope-option-desc">Calibrate only selected machines. Accurate data stays untouched.</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Combine cards (visible when scope = combine) -->
+      <div class="harvest-edit-modal__combines harvest-edit-modal__combines--visible" id="combine-cards">
+        <div class="harvest-edit-modal__combines-title"><span class="material-symbols-outlined">agriculture</span> Detected Combines</div>
+        <div class="harvest-edit-modal__combine-card harvest-edit-modal__combine-card--selected" onclick="toggleCombine(this)">
+          <span class="harvest-edit-modal__combine-dot" style="background:var(--color-brand-500);"></span>
+          <div class="harvest-edit-modal__combine-info">
+            <div class="harvest-edit-modal__combine-name">2023 X9 1100</div>
+            <div class="harvest-edit-modal__combine-id">Machine ID: JD-4821</div>
+          </div>
+          <div class="harvest-edit-modal__combine-stats">
+            <div><span class="harvest-edit-modal__combine-stat-value">60</span><br/><span class="harvest-edit-modal__combine-stat-label">Acres</span></div>
+            <div><span class="harvest-edit-modal__combine-stat-value">250</span><br/><span class="harvest-edit-modal__combine-stat-label">BU/AC</span></div>
+            <div><span class="harvest-edit-modal__combine-stat-value">15,000</span><br/><span class="harvest-edit-modal__combine-stat-label">Bushels</span></div>
+          </div>
+          <span class="harvest-edit-modal__combine-check"><span class="material-symbols-outlined">check</span></span>
+        </div>
+        <div class="harvest-edit-modal__combine-card" onclick="toggleCombine(this)">
+          <span class="harvest-edit-modal__combine-dot" style="background:var(--color-success-500);"></span>
+          <div class="harvest-edit-modal__combine-info">
+            <div class="harvest-edit-modal__combine-name">2021 S790</div>
+            <div class="harvest-edit-modal__combine-id">Machine ID: JD-3150</div>
+          </div>
+          <div class="harvest-edit-modal__combine-stats">
+            <div><span class="harvest-edit-modal__combine-stat-value">40</span><br/><span class="harvest-edit-modal__combine-stat-label">Acres</span></div>
+            <div><span class="harvest-edit-modal__combine-stat-value">300</span><br/><span class="harvest-edit-modal__combine-stat-label">BU/AC</span></div>
+            <div><span class="harvest-edit-modal__combine-stat-value">12,000</span><br/><span class="harvest-edit-modal__combine-stat-label">Bushels</span></div>
+          </div>
+          <span class="harvest-edit-modal__combine-check"><span class="material-symbols-outlined">check</span></span>
+        </div>
+      </div>
+
+      <!-- Two-column: Original values | Updated values -->
+      <div class="harvest-edit-modal__columns">
+        <!-- Column 1: Original / Machine Detected -->
+        <div class="harvest-edit-modal__col harvest-edit-modal__col--locked">
+          <div class="harvest-edit-modal__col-header"><span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle; margin-right:4px;">lock</span> Machine Detected</div>
+          <div class="harvest-edit-modal__row"><span class="harvest-edit-modal__row-label">Average Moisture</span><span class="harvest-edit-modal__row-value">13.4</span></div>
+          <div class="harvest-edit-modal__row"><span class="harvest-edit-modal__row-label">Avg Dry Mass</span><span class="harvest-edit-modal__row-value">13,452.3</span></div>
+          <div class="harvest-edit-modal__row"><span class="harvest-edit-modal__row-label">Avg Wet Mass</span><span class="harvest-edit-modal__row-value">13,454.5</span></div>
+          <div class="harvest-edit-modal__row"><span class="harvest-edit-modal__row-label">Avg Dry Volume</span><span class="harvest-edit-modal__row-value">240.2</span></div>
+          <div class="harvest-edit-modal__row"><span class="harvest-edit-modal__row-label">Avg Wet Volume</span><span class="harvest-edit-modal__row-value">240.3</span></div>
+          <div class="harvest-edit-modal__row"><span class="harvest-edit-modal__row-label">Calibration Factor</span><span class="harvest-edit-modal__row-value">1.107</span></div>
+          <div class="harvest-edit-modal__row"><span class="harvest-edit-modal__row-label">Validated Total</span><span class="harvest-edit-modal__row-value">28,600</span></div>
+        </div>
+        <!-- Column 2: Calibrated / Updated -->
+        <div class="harvest-edit-modal__col harvest-edit-modal__col--editable">
+          <div class="harvest-edit-modal__col-header"><span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle; margin-right:4px;">edit</span> Calibrated Values</div>
+          <div class="harvest-edit-modal__row"><div class="harvest-edit-modal__input-group"><input type="text" class="harvest-edit-modal__input" value="13.4" /><span class="harvest-edit-modal__input-unit">%</span></div></div>
+          <div class="harvest-edit-modal__row"><div class="harvest-edit-modal__input-group"><input type="text" class="harvest-edit-modal__input" value="13,452.3" /><span class="harvest-edit-modal__input-unit">lb/ac</span></div></div>
+          <div class="harvest-edit-modal__row"><div class="harvest-edit-modal__input-group"><input type="text" class="harvest-edit-modal__input" value="13,454.5" /><span class="harvest-edit-modal__input-unit">lb/ac</span></div></div>
+          <div class="harvest-edit-modal__row"><div class="harvest-edit-modal__input-group"><input type="text" class="harvest-edit-modal__input" value="240.2" /><span class="harvest-edit-modal__input-unit">bu/ac</span></div></div>
+          <div class="harvest-edit-modal__row"><div class="harvest-edit-modal__input-group"><input type="text" class="harvest-edit-modal__input" value="240.3" /><span class="harvest-edit-modal__input-unit">bu/ac</span></div></div>
+          <div class="harvest-edit-modal__row"><div class="harvest-edit-modal__input-group"><input type="text" class="harvest-edit-modal__input" value="1.107" /><span class="harvest-edit-modal__input-unit">x</span></div></div>
+          <div class="harvest-edit-modal__row"><div class="harvest-edit-modal__input-group"><input type="text" class="harvest-edit-modal__input" value="28,600" /><span class="harvest-edit-modal__input-unit">bu</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="harvest-edit-modal__footer">
+      <div class="harvest-edit-modal__footer-left">
+        <span class="material-symbols-outlined" style="font-size:16px;">info</span>
+        Changes will update downstream yield analytics.
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn--outlined btn--sm" onclick="closeHarvestEdit()">Cancel</button>
+        <button class="btn btn--primary btn--sm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPRAY EDIT MODAL -->
+  <div class="harvest-edit-scrim" id="spray-edit-scrim" onclick="closeSprayEdit()"></div>
+  <div class="harvest-edit-modal" id="spray-edit-modal" style="width:720px;">
+    <div class="harvest-edit-modal__header">
+      <div class="harvest-edit-modal__header-left">
+        <span class="material-symbols-outlined">edit_note</span>
+        <span class="harvest-edit-modal__header-title">Edit Application Details</span>
+      </div>
+      <button class="harvest-edit-modal__close" onclick="closeSprayEdit()"><span class="material-symbols-outlined">close</span></button>
+    </div>
+
+    <div class="harvest-edit-modal__body">
+      <!-- Field context banner -->
+      <div class="harvest-edit-modal__field-banner">
+        <span class="harvest-edit-modal__field-banner-name">0712-Kessler Rd</span>
+        <span class="harvest-edit-modal__field-banner-sep">|</span>
+        <span>159.7 ac</span>
+        <span class="harvest-edit-modal__field-banner-sep">|</span>
+        <span>Crop unknown</span>
+        <span class="harvest-edit-modal__field-banner-sep">|</span>
+        <span>9/5, 5:21 PM</span>
+      </div>
+
+      <!-- Scope selector -->
+      <div class="harvest-edit-modal__scope">
+        <div class="harvest-edit-modal__scope-label"><span class="material-symbols-outlined">tune</span> Calibration Scope</div>
+        <div class="harvest-edit-modal__scope-options">
+          <button class="harvest-edit-modal__scope-option" onclick="setSprayScope('field', this)">
+            <span class="harvest-edit-modal__scope-radio"><span class="harvest-edit-modal__scope-radio-dot"></span></span>
+            <div class="harvest-edit-modal__scope-option-body">
+              <div class="harvest-edit-modal__scope-option-title">Entire Field</div>
+              <div class="harvest-edit-modal__scope-option-desc">Apply a single calibration across all application data.</div>
+            </div>
+          </button>
+          <button class="harvest-edit-modal__scope-option harvest-edit-modal__scope-option--active" onclick="setSprayScope('equipment', this)">
+            <span class="harvest-edit-modal__scope-radio"><span class="harvest-edit-modal__scope-radio-dot"></span></span>
+            <div class="harvest-edit-modal__scope-option-body">
+              <div class="harvest-edit-modal__scope-option-title">Specific Equipment</div>
+              <div class="harvest-edit-modal__scope-option-desc">Calibrate only selected sprayers. Accurate data stays untouched.</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Equipment cards -->
+      <div class="harvest-edit-modal__combines harvest-edit-modal__combines--visible" id="spray-equipment-cards">
+        <div class="harvest-edit-modal__combines-title"><span class="material-symbols-outlined">agriculture</span> Detected Equipment</div>
+        <div class="harvest-edit-modal__combine-card harvest-edit-modal__combine-card--selected" onclick="toggleCombine(this)">
+          <span class="harvest-edit-modal__combine-dot" style="background:var(--color-brand-500);"></span>
+          <div class="harvest-edit-modal__combine-info">
+            <div class="harvest-edit-modal__combine-name">2022 R4045 Sprayer</div>
+            <div class="harvest-edit-modal__combine-id">Machine ID: JD-8890</div>
+          </div>
+          <div class="harvest-edit-modal__combine-stats">
+            <div><span class="harvest-edit-modal__combine-stat-value">184</span><br/><span class="harvest-edit-modal__combine-stat-label">Acres</span></div>
+            <div><span class="harvest-edit-modal__combine-stat-value">200</span><br/><span class="harvest-edit-modal__combine-stat-label">LB/AC</span></div>
+            <div><span class="harvest-edit-modal__combine-stat-value">36,790</span><br/><span class="harvest-edit-modal__combine-stat-label">LB Total</span></div>
+          </div>
+          <span class="harvest-edit-modal__combine-check"><span class="material-symbols-outlined">check</span></span>
+        </div>
+      </div>
+
+      <!-- Application fields row -->
+      <div style="display:grid; grid-template-columns:1.5fr 1fr 1fr auto; gap:12px; margin-bottom:20px;">
+        <div>
+          <label style="font-size:12px; font-weight:500; color:var(--color-text-muted); display:block; margin-bottom:4px;">Title *</label>
+          <input type="text" value="Post emergence nutrient" style="width:100%; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text);" />
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:500; color:var(--color-text-muted); display:block; margin-bottom:4px;">Application timing</label>
+          <select style="width:100%; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text); background:var(--color-surface); appearance:none; background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23999%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat:no-repeat; background-position:right 12px center;">
+            <option>At planting</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:500; color:var(--color-text-muted); display:block; margin-bottom:4px;">Application type</label>
+          <select style="width:100%; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text); background:var(--color-surface); appearance:none; background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23999%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat:no-repeat; background-position:right 12px center;">
+            <option>Dry</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:500; color:var(--color-text-muted); display:block; margin-bottom:4px;">Product trial</label>
+          <div style="display:flex; align-items:center; gap:12px; padding-top:8px;">
+            <label style="display:flex; align-items:center; gap:4px; font-size:13px; color:var(--color-text); cursor:pointer;">
+              <span style="width:20px; height:20px; border-radius:50%; border:2px solid var(--color-neutral-400); display:inline-flex; align-items:center; justify-content:center;"></span> Yes
+            </label>
+            <label style="display:flex; align-items:center; gap:4px; font-size:13px; color:var(--color-text); cursor:pointer;">
+              <span style="width:20px; height:20px; border-radius:50%; border:2px solid var(--color-brand-500); display:inline-flex; align-items:center; justify-content:center;"><span style="width:10px; height:10px; border-radius:50%; background:var(--color-brand-500); display:block;"></span></span> No
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product rows -->
+      <div style="margin-bottom:16px;">
+        <div style="display:grid; grid-template-columns:2.5fr 0.7fr 0.7fr 0.7fr auto; gap:8px; margin-bottom:6px; font-size:12px; font-weight:500; color:var(--color-text-muted);">
+          <span>Product name*</span><span>Rate</span><span>Units *</span><span>Total area</span><span></span>
+        </div>
+        <!-- Product 1 -->
+        <div style="display:grid; grid-template-columns:2.5fr 0.7fr 0.7fr 0.7fr auto; gap:8px; margin-bottom:8px; align-items:center;">
+          <select style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text); background:var(--color-surface); appearance:none; background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23999%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat:no-repeat; background-position:right 12px center;"><option>Artazene</option></select>
+          <input type="text" value="100" style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); text-align:right;" />
+          <select style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text); background:var(--color-surface); appearance:none; background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23999%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat:no-repeat; background-position:right 12px center;"><option>Lbs</option></select>
+          <input type="text" value="200" style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); text-align:right;" />
+          <span></span>
+        </div>
+        <!-- Product 2 -->
+        <div style="display:grid; grid-template-columns:2.5fr 0.7fr 0.7fr 0.7fr auto; gap:8px; margin-bottom:8px; align-items:center;">
+          <select style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text); background:var(--color-surface); appearance:none; background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23999%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat:no-repeat; background-position:right 12px center;"><option>Trivolt 250Gal</option></select>
+          <input type="text" value="200" style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); text-align:right;" />
+          <select style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text); background:var(--color-surface); appearance:none; background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23999%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat:no-repeat; background-position:right 12px center;"><option>Lbs</option></select>
+          <input type="text" value="4000" style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); text-align:right;" />
+          <button style="background:none; border:none; cursor:pointer; color:var(--color-danger-500); display:flex; align-items:center;"><span class="material-symbols-outlined" style="font-size:20px;">delete</span></button>
+        </div>
+        <!-- Product 3 -->
+        <div style="display:grid; grid-template-columns:2.5fr 0.7fr 0.7fr 0.7fr auto; gap:8px; margin-bottom:8px; align-items:center;">
+          <select style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text); background:var(--color-surface); appearance:none; background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23999%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat:no-repeat; background-position:right 12px center;"><option>LI 700 LECITECH 275</option></select>
+          <input type="text" value="300" style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); text-align:right;" />
+          <select style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); color:var(--color-text); background:var(--color-surface); appearance:none; background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23999%27 stroke-width=%272%27%3E%3Cpath d=%27M6 9l6 6 6-6%27/%3E%3C/svg%3E'); background-repeat:no-repeat; background-position:right 12px center;"><option>Lbs</option></select>
+          <input type="text" value="371" style="padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); font-size:13px; font-family:var(--font-family); text-align:right;" />
+          <button style="background:none; border:none; cursor:pointer; color:var(--color-danger-500); display:flex; align-items:center;"><span class="material-symbols-outlined" style="font-size:20px;">delete</span></button>
+        </div>
+        <!-- Add product -->
+        <button style="display:flex; align-items:center; gap:4px; background:none; border:none; cursor:pointer; font-size:13px; font-weight:600; color:var(--color-brand-500); font-family:var(--font-family); padding:4px 0;">
+          <span class="material-symbols-outlined" style="font-size:18px;">add</span> Add product
+        </button>
+      </div>
+
+    </div>
+
+    <div class="harvest-edit-modal__footer">
+      <div class="harvest-edit-modal__footer-left">
+        <span class="material-symbols-outlined" style="font-size:16px;">info</span>
+        Changes will update downstream yield analytics.
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn--outlined btn--sm" onclick="closeSprayEdit()">Cancel</button>
+        <button class="btn btn--primary btn--sm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
