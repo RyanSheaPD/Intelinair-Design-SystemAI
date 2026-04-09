@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+    (function () {
+      try {
+        if (/figmacapture=/.test(window.location.hash || '')) {
+          document.documentElement.classList.add('weather-figma-capture');
+        }
+        var q = new URLSearchParams(window.location.search || '');
+        var hover = q.get('figmaHover');
+        if (hover && /^[a-z0-9-]+$/i.test(hover)) {
+          document.documentElement.classList.add(
+            'weather-hover-export',
+            'weather-hover-export--' + String(hover).toLowerCase()
+          );
+        }
+        var fieldN = parseInt(q.get('field'), 10);
+        if (!isNaN(fieldN) && fieldN >= 1 && fieldN <= 8) {
+          document.documentElement.setAttribute('data-figma-map-field', String(fieldN));
+        }
+        var layer = q.get('layer');
+        if (layer && /^[a-z0-9._-]+$/i.test(layer)) {
+          document.documentElement.setAttribute('data-figma-layer-tab', String(layer).toLowerCase());
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <title>AgMRI — Weather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/data-table.css" />
+  <link rel="stylesheet" href="../components/counter-badge.css" />
+  <link rel="stylesheet" href="../components/bottom-sheet.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="css/weather-hover-export.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: var(--font-family-web); background: #f5f5f5; color: var(--color-text); }
+
+    .app-shell { display: flex; height: 100vh; overflow: hidden; }
+    .app-nav { flex-shrink: 0; height: 100vh; overflow-y: auto; overflow-x: hidden; }
+    .app-nav .nav { height: 100%; min-height: 100vh; }
+    .app-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--color-surface); }
+    .app-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+
+    /* Toolbar: title + actions + timestamp */
+    .weather-toolbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 12px 24px 10px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+    }
+    .weather-toolbar__title {
+      font-size: 20px;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      line-height: 1.3;
+      padding-top: 4px;
+    }
+    .weather-toolbar__right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      flex: 1;
+      min-width: 0;
+    }
+    .weather-toolbar__meta {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .filter-action-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-action-bar .btn--secondary {
+      font-size: 12px;
+      padding: 7px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-2xl);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-weight: 500;
+      gap: 5px;
+      transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .filter-action-bar .btn--secondary:hover:not(:disabled) {
+      border-color: var(--color-neutral-300, #d4d4d8);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    .filter-action-bar .btn--secondary:focus-visible {
+      outline: 2px solid var(--color-focus-ring, #2563eb);
+      outline-offset: 2px;
+    }
+    .filter-action-bar .btn--secondary svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    .filter-action-bar__sep {
+      width: 1px;
+      height: 24px;
+      background: var(--color-border);
+      flex-shrink: 0;
+    }
+
+    .view-toggle { position: relative; }
+    .view-toggle__trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 10px;
+      margin: -2px 0;
+      border-radius: var(--radius-md);
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .view-toggle__trigger:hover {
+      color: var(--color-text);
+      background: var(--color-neutral-100);
+    }
+    .view-toggle__trigger:focus-visible {
+      outline: 2px solid var(--color-focus-ring, #2563eb);
+      outline-offset: 2px;
+    }
+    .view-toggle__trigger svg { width: 16px; height: 16px; }
+    .view-toggle__caret {
+      width: 14px;
+      height: 14px;
+      color: var(--color-text-muted);
+      transition: transform 0.15s ease;
+    }
+    .view-toggle.is-open .view-toggle__caret { transform: rotate(180deg); }
+    .view-toggle__menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 30;
+      min-width: 160px;
+      padding: 4px 0;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+    }
+    .view-toggle.is-open .view-toggle__menu { display: block; }
+    .view-toggle__option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--color-text);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+    }
+    .view-toggle__option:hover { background: var(--color-neutral-50); }
+    .view-toggle__option:focus-visible {
+      outline: none;
+      background: var(--color-neutral-100);
+      box-shadow: inset 0 0 0 2px var(--color-focus-ring, #2563eb);
+    }
+    .view-toggle__option.is-active {
+      font-weight: 600;
+      color: var(--color-brand-500);
+    }
+    .view-toggle__option svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .view-toggle__check {
+      width: 14px;
+      height: 14px;
+      margin-left: auto;
+      color: var(--color-brand-500);
+    }
+
+    .weather-list-pane,
+    .weather-map-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .weather-list-pane[hidden],
+    .weather-map-pane[hidden] {
+      display: none !important;
+    }
+
+    .weather-map-pane {
+      background: var(--color-neutral-50, #f4f4f5);
+      position: relative;
+    }
+    .weather-map__inner {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      margin: 0 16px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.06));
+      overflow: hidden;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .weather-map__inner:hover,
+    .weather-map__inner:focus-within {
+      border-color: var(--color-neutral-300, #d4d4d8);
+      box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
+    }
+
+    /* Tab bar — same shell as index.html Disease demo (.std-page-tabs) */
+    .std-page-tabs {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+    .std-page-tabs .tabs {
+      justify-content: flex-start;
+      flex: 1;
+      min-width: 0;
+      padding-top: var(--spacing-l);
+    }
+    .std-page-tabs .tabs__item {
+      width: var(--tab-width, 110px);
+      min-width: var(--tab-width, 110px);
+    }
+    .std-page-tabs__right {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-m);
+      padding-right: var(--spacing-l);
+      padding-left: var(--spacing-m);
+      flex-shrink: 0;
+      font-size: var(--font-size-12);
+      color: var(--color-text-muted);
+    }
+    .std-page-tabs__meta {
+      white-space: nowrap;
+      max-width: min(280px, 40vw);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .filter-pill--neutral {
+      --filter-pill-bg: var(--color-neutral-100);
+      --filter-pill-bg-hover: var(--color-neutral-200);
+      --filter-pill-bg-active: var(--color-neutral-500);
+      --filter-pill-text: var(--color-neutral-700);
+      --filter-pill-text-hover: var(--color-neutral-900);
+      --filter-pill-text-active: var(--color-neutral-0);
+    }
+    .std-page-tabs__show-fields {
+      flex-shrink: 0;
+      height: 32px;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .std-page-tabs__show-fields .filter-pill__icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Map layer tabs — clearer hover for inactive items */
+    .std-page-tabs .tabs__item {
+      transition: background 0.15s ease, color 0.15s ease;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+    .std-page-tabs .tabs__item[aria-selected="false"]:hover {
+      background: var(--color-neutral-50);
+    }
+    .std-page-tabs .tabs__item:focus-visible {
+      outline: 2px solid var(--color-focus-ring, #2563eb);
+      outline-offset: -2px;
+      z-index: 1;
+    }
+
+    .weather-map-stage {
+      position: relative;
+      flex: 1;
+      min-height: 420px;
+      background: #e8eaed;
+    }
+    .weather-map-stage--fields-off .weather-map-fields-svg {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .weather-map-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('../assets/weather-map-fields-bg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .weather-map-fields-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .weather-map-field-hit {
+      fill: rgba(34, 197, 94, 0.2);
+      stroke: rgba(21, 128, 61, 0.5);
+      stroke-width: 0.35;
+      vector-effect: non-scaling-stroke;
+      cursor: pointer;
+      transition: fill 0.14s ease, stroke 0.14s ease, stroke-width 0.14s ease, filter 0.14s ease;
+    }
+    .weather-map-field-hit:hover,
+    .weather-map-field-hit.is-hover {
+      fill: rgba(34, 197, 94, 0.5);
+      stroke: rgba(21, 128, 61, 0.92);
+      stroke-width: 0.65;
+      filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.35));
+    }
+    .weather-map-field-hit:focus {
+      outline: none;
+    }
+    .weather-map-field-hit:focus-visible {
+      stroke: var(--color-brand-500, #2563eb);
+      stroke-width: 1.25;
+    }
+
+    .weather-map-tooltip__header {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .weather-map-tooltip__meta {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+    .weather-tooltip--rich .gw-so-detail--gw {
+      margin-bottom: 8px;
+    }
+
+    .weather-table-wrap {
+      flex: 1;
+      overflow: auto;
+      min-height: 0;
+    }
+    .weather-table-wrap .ds-data-table {
+      table-layout: auto;
+      min-width: 1200px;
+    }
+    .weather-table-wrap .ds-data-table thead th {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      padding: 10px 10px;
+      white-space: nowrap;
+      background: var(--color-neutral-50, #fafafa);
+      border-bottom: 1px solid var(--ds-table-border-row);
+      border-right: 1px solid var(--ds-table-border-row);
+      vertical-align: middle;
+    }
+    .weather-table-wrap .ds-data-table thead th:last-child {
+      border-right: none;
+    }
+    .weather-table-wrap .ds-data-table tbody td {
+      padding: 0 10px;
+      font-size: 13px;
+      height: 50px;
+      vertical-align: middle;
+      border-bottom: 1px solid #ececec;
+    }
+    .weather-table-wrap .ds-data-table tbody tr:hover {
+      background: var(--color-neutral-50);
+    }
+
+    .field-name-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 50px;
+    }
+    .field-thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      background: var(--color-neutral-100);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .field-thumb svg { width: 24px; height: 24px; opacity: 0.5; }
+    .field-name-link {
+      color: var(--color-brand-500);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .field-name-link:hover { text-decoration: underline; }
+
+    .text-na { color: var(--color-text-muted); }
+    .text-gdo-na {
+      color: var(--color-warning-600, #d97706);
+      font-weight: 500;
+    }
+
+    .sort-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .sort-indicator svg {
+      width: 12px;
+      height: 12px;
+      color: var(--color-neutral-400);
+      flex-shrink: 0;
+    }
+    .th-sortable { cursor: pointer; }
+    .th-sortable:hover { color: var(--color-text); }
+    .th-sortable:hover .sort-indicator svg { color: var(--color-neutral-600); }
+    .th-sortable--active .sort-indicator svg { color: var(--color-brand-500); }
+
+    /* GW / Spray list columns — tinted header + divider (design reference) */
+    .weather-table-wrap .ds-data-table thead th.weather-th-gw,
+    .weather-table-wrap .ds-data-table thead th.weather-th-spray {
+      background: #f1eff7;
+      color: #555560;
+    }
+    .weather-table-wrap .ds-data-table thead th.weather-th-spray {
+      border-left: 1px solid #e0dce8;
+    }
+    .weather-table-wrap .ds-data-table tbody td.weather-td-spray {
+      border-left: 1px solid #ececec;
+    }
+
+    /* Ground workability / spray outlook — stacked bar glyphs (hover/tap for breakdown) */
+    .status-cell-wrap { vertical-align: middle !important; }
+    .status-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      max-width: 128px;
+      padding: 6px 8px;
+      margin: -2px -8px;
+      cursor: help;
+      outline: none;
+      border-radius: 6px;
+      transition: background 0.15s ease, box-shadow 0.15s ease;
+    }
+    .status-cell.status-cell--bars-only {
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0;
+      max-width: none;
+      min-height: 36px;
+      padding: 8px 10px;
+    }
+    html:not(.weather-coarse-pointer) .status-cell:hover {
+      background: var(--color-neutral-50);
+      box-shadow: 0 0 0 1px var(--color-border);
+    }
+    .status-cell:focus-visible {
+      box-shadow: 0 0 0 2px var(--color-focus-ring);
+      border-radius: 6px;
+    }
+    .weather-list-status-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      width: 36px;
+      flex-shrink: 0;
+    }
+    .weather-list-status-bars__seg {
+      display: block;
+      height: 5px;
+      border-radius: 999px;
+      width: 100%;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+
+    .weather-tooltip {
+      position: fixed;
+      z-index: 400;
+      max-width: 360px;
+      padding: 0;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--color-text);
+      pointer-events: none;
+    }
+    .weather-tooltip--rich { padding: 10px 12px 12px; max-width: 340px; }
+    .weather-tooltip strong { color: var(--color-text); font-weight: 600; }
+    /* Map field tooltip: ?mapTooltip=mini — header + GW/SO status rows only */
+    .weather-tooltip--mini.weather-tooltip--rich {
+      padding: 8px 10px 10px;
+      max-width: 240px;
+      font-size: 11px;
+    }
+    .weather-tooltip--mini .weather-map-tooltip__header {
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+    }
+    .weather-tooltip--mini.weather-tooltip--rich .gw-so-detail--gw {
+      margin-bottom: 4px;
+    }
+    .gw-so-detail--mini { line-height: 1.25; }
+    .gw-so-mini-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 20px;
+    }
+    .gw-so-mini-kind {
+      flex: 0 0 1.75rem;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .gw-so-detail__swatch--mini {
+      width: 4px;
+      height: 16px;
+      border-radius: 2px;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+    }
+    .gw-so-detail__status--mini {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    /* GW / SO detail blocks (tooltip + bottom sheet body) — compact layout */
+    .gw-so-detail { font-size: 12px; line-height: 1.4; color: var(--color-text); }
+    .gw-so-detail--compact .gw-so-detail__brand {
+      margin-bottom: 6px;
+    }
+    .gw-so-detail__brand {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      margin-bottom: 8px;
+    }
+    .gw-so-compact-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .gw-so-compact-head__text {
+      min-width: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 10px;
+    }
+    .gw-so-detail__swatch {
+      width: 12px;
+      height: 44px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.12);
+    }
+    .gw-so-detail__swatch--compact {
+      width: 6px;
+      height: 28px;
+      border-radius: 2px;
+      margin-top: 2px;
+    }
+    .gw-so-detail__status {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .gw-so-detail__status--compact {
+      font-size: 14px;
+      display: inline;
+    }
+    .gw-so-compact-inline-meta {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+    .gw-so-fact--compact {
+      margin: 0 0 6px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      line-height: 1.35;
+    }
+    .gw-so-foot {
+      margin: 0;
+      font-size: 10px;
+      color: var(--color-text-muted);
+      line-height: 1.35;
+    }
+    .gw-so-compact-good {
+      margin: 0 0 8px;
+      padding: 6px 8px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--color-text);
+      background: rgba(21, 128, 61, 0.08);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(21, 128, 61, 0.2);
+    }
+    .gw-so-compact-good__k {
+      font-weight: 700;
+      color: #15803d;
+      margin-right: 4px;
+    }
+    .gw-so-compact-all-good {
+      margin: 0 0 8px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+    .gw-so-metric-list {
+      list-style: none;
+      margin: 0 0 12px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .gw-so-metric-list--compact {
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .gw-so-metric {
+      padding: 8px 10px;
+      background: var(--color-neutral-50);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-border);
+    }
+    .gw-so-metric--compact {
+      padding: 6px 8px 7px;
+    }
+    .gw-so-metric--limiting {
+      border-color: rgba(234, 88, 12, 0.45);
+      box-shadow: inset 3px 0 0 #ea580c;
+      padding-left: 10px;
+    }
+    .gw-so-metric--compact.gw-so-metric--limiting {
+      padding-left: 9px;
+    }
+    .gw-so-metric--limiting.gw-so-metric--risk {
+      border-color: rgba(196, 30, 58, 0.38);
+      box-shadow: inset 3px 0 0 #c41e3a;
+    }
+    .gw-so-metric__row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+    }
+    .gw-so-metric__row--compact {
+      gap: 4px 8px;
+    }
+    .gw-so-metric__label { font-weight: 600; flex: 1 1 auto; min-width: 0; font-size: 11px; }
+    .gw-so-metric__value { font-variant-numeric: tabular-nums; color: var(--color-text); font-size: 11px; }
+    .gw-so-metric__detail { margin: 6px 0 0; font-size: 11px; color: var(--color-text-muted); }
+    .gw-so-metric__detail--compact {
+      margin: 4px 0 0;
+      font-size: 10px;
+      line-height: 1.3;
+    }
+    .gw-so-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      flex-shrink: 0;
+    }
+    .gw-so-pill--compact {
+      padding: 1px 6px;
+      font-size: 9px;
+    }
+    .gw-so-pill--good { background: rgba(21, 128, 61, 0.14); color: #15803d; }
+    .gw-so-pill--marginal { background: rgba(234, 88, 12, 0.16); color: #c2410c; }
+    .gw-so-pill--at-risk { background: rgba(196, 30, 58, 0.14); color: #c41e3a; }
+    .gw-so-limiting {
+      padding: 10px 12px;
+      background: var(--color-surface);
+      border: 1px dashed var(--color-border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+    }
+    .gw-so-limiting__title { font-size: 11px; font-weight: 700; margin-bottom: 6px; color: var(--color-text); }
+    .gw-so-limiting__list { margin: 0; padding-left: 18px; font-size: 12px; }
+    .gw-so-limiting__list li { margin-bottom: 4px; }
+    .gw-so-limiting--none {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      padding: 8px 0;
+      margin-bottom: 8px;
+    }
+
+    /* Sheet: title already in chrome; hide in-body section label */
+    .gw-so-sheet__body .gw-so-detail__brand { display: none; }
+
+    .gw-so-sheet__subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    /* Map field tap — sheet body (two columns, three-bar stacks, footer) */
+    .weather-field-click-gwso {
+      font-size: 14px;
+      color: var(--color-text);
+    }
+    .weather-field-click-gwso__cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px 24px;
+      align-items: start;
+    }
+    @media (max-width: 380px) {
+      .weather-field-click-gwso__cols {
+        grid-template-columns: 1fr;
+      }
+    }
+    .weather-field-click-gwso__heading {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      margin: 0 0 12px;
+    }
+    .weather-field-click-gwso__status-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+    }
+    .weather-field-click-gwso__stack {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 40px;
+      flex-shrink: 0;
+    }
+    .weather-field-click-gwso__stack-bar {
+      display: block;
+      height: 6px;
+      border-radius: 999px;
+      width: 100%;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06);
+    }
+    .weather-field-click-gwso__status-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .weather-field-click-gwso__footer {
+      margin: 20px 0 0;
+      padding: 0;
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--color-text-muted);
+      font-weight: 400;
+    }
+
+    html.weather-coarse-pointer .status-cell {
+      cursor: pointer;
+      position: relative;
+      padding-right: 14px;
+    }
+    html.weather-coarse-pointer .status-cell::after {
+      content: '';
+      position: absolute;
+      right: 2px;
+      top: 50%;
+      width: 5px;
+      height: 5px;
+      border-right: 2px solid var(--color-text-muted);
+      border-bottom: 2px solid var(--color-text-muted);
+      transform: translateY(-70%) rotate(45deg);
+      opacity: 0.7;
+    }
+
+    .gw-so-sheet-layer[hidden] { display: none !important; }
+
+    .nav__spacer { flex: 1; }
+    .nav__icon svg { fill: currentColor; }
+
+    /*
+     * Figma HTML→Design captures a static frame — :hover is not applied.
+     * When the capture hash is present, html.weather-figma-capture freezes key hover visuals.
+     */
+    html.weather-figma-capture .weather-map__inner {
+      border-color: var(--color-neutral-300, #d4d4d8);
+      box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
+    }
+    html.weather-figma-capture .weather-map-fields-svg .weather-map-field-hit:first-of-type {
+      fill: rgba(34, 197, 94, 0.5);
+      stroke: rgba(21, 128, 61, 0.92);
+      stroke-width: 0.65;
+      filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.35));
+    }
+    html.weather-figma-capture #view-toggle-btn {
+      color: var(--color-text);
+      background: var(--color-neutral-100);
+    }
+    html.weather-figma-capture .filter-action-bar .btn--secondary:first-of-type {
+      border-color: var(--color-neutral-300, #d4d4d8);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    html.weather-figma-capture .std-page-tabs .tabs__item[data-layer="temp"] {
+      background: var(--color-neutral-50);
+    }
+    html.weather-figma-capture #weather-tbody tr:first-child .status-cell {
+      background: var(--color-neutral-50);
+      box-shadow: 0 0 0 1px var(--color-border);
+    }
+    html.weather-figma-capture .std-page-tabs__show-fields.filter-pill[aria-pressed="true"] {
+      filter: brightness(1.06);
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="app-nav">
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 9.00001L12 2.00001L21 9.00001V20C21 20.5304 20.7893 21.0392 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0392 3 20.5304 3 20V9.00001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span>
+        <span class="nav__label">Home</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+        <span class="nav__label">AI Chat</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 12C14.3261 12 15.5975 12.5272 16.5352 13.4648C17.4728 14.4025 18 15.6739 18 17V19C18 19.5523 17.5523 20 17 20C16.4477 20 16 19.5523 16 19V17C16 16.2044 15.6837 15.4415 15.1211 14.8789C14.6289 14.3867 13.9835 14.0829 13.2969 14.0146L13 14H5C4.20435 14 3.44152 14.3163 2.87891 14.8789C2.3163 15.4415 2 16.2044 2 17V19C2 19.5523 1.55228 20 1 20C0.447715 20 0 19.5523 0 19V17C0 15.6739 0.527162 14.4025 1.46484 13.4648C2.40253 12.5272 3.67392 12 5 12H13ZM19.0322 12.8799C19.1703 12.3452 19.7153 12.024 20.25 12.1621C21.3226 12.4391 22.2734 13.0639 22.9521 13.9395C23.6308 14.815 23.9991 15.8913 24 16.999V19C23.9999 19.5522 23.5522 20 23 20C22.4478 20 22.0001 19.5522 22 19V17.001L21.9893 16.7529C21.9411 16.1767 21.7275 15.6248 21.3711 15.165C20.9639 14.6397 20.3936 14.2638 19.75 14.0977C19.2153 13.9595 18.8942 13.4146 19.0322 12.8799ZM9 0C11.7614 0 14 2.23858 14 5C14 7.76142 11.7614 10 9 10C6.23858 10 4 7.76142 4 5C4 2.23858 6.23858 0 9 0ZM15.0312 0.881836C15.1682 0.346814 15.713 0.0241452 16.248 0.161133C17.3236 0.43651 18.2773 1.06244 18.958 1.93945C19.6385 2.81638 20.0078 3.89487 20.0078 5.00488L20.0039 5.21289C19.9608 6.24911 19.5959 7.24827 18.958 8.07031C18.2773 8.94732 17.3236 9.57326 16.248 9.84863C15.713 9.98562 15.1682 9.66295 15.0312 9.12793C14.8943 8.59291 15.2169 8.04812 15.752 7.91113C16.3972 7.74592 16.9695 7.37089 17.3779 6.84473C17.7353 6.38439 17.949 5.8311 17.9971 5.25391L18.0078 5.00488C18.0078 4.33876 17.7864 3.69125 17.3779 3.16504C16.9695 2.63888 16.3972 2.26385 15.752 2.09863C15.2169 1.96164 14.8943 1.41686 15.0312 0.881836ZM9 2C7.34315 2 6 3.34315 6 5C6 6.65685 7.34315 8 9 8C10.6569 8 12 6.65685 12 5C12 3.34315 10.6569 2 9 2Z"/></svg></span>
+        <span class="nav__label">Growers</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+        <span class="nav__label">Groups</span>
+      </a>
+      <a href="fields-list.html" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 23.041" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M9.05665 12.1943C9.28633 12.2419 9.43399 12.4666 9.38673 12.6963L7.32911 22.6406C7.28167 22.873 7.07705 23.0405 6.83985 23.041H1.00098C0.890057 23.0408 0.781728 23.0022 0.695319 22.9326C0.485729 22.7635 0.453183 22.4569 0.622077 22.2471L8.63477 12.3467C8.70758 12.2562 8.814 12.1989 8.92969 12.1885V12.1875C8.97205 12.1834 9.01498 12.1857 9.05665 12.1943ZM15.0723 12.1875C15.1878 12.1982 15.2943 12.2554 15.3672 12.3457L23.3799 22.2402C23.4535 22.3289 23.4941 22.4404 23.4932 22.5557C23.491 22.8251 23.2705 23.0421 23.001 23.04H17.1621C16.9249 23.0396 16.7203 22.8721 16.6729 22.6396L14.6152 12.6963C14.6067 12.6548 14.6044 12.6124 14.6084 12.5703C14.6309 12.3367 14.8386 12.165 15.0723 12.1875ZM11.9981 12.0391C12.2516 12.039 12.4708 12.2176 12.5225 12.4658L14.5889 22.4395C14.5956 22.4724 14.5986 22.5064 14.5986 22.54C14.5984 22.816 14.3746 23.0391 14.0986 23.0391H9.90137C9.86791 23.0391 9.83456 23.036 9.80176 23.0293C9.5312 22.9741 9.35592 22.71 9.41114 22.4395L11.4756 12.4658C11.5268 12.2179 11.7449 12.0393 11.9981 12.0391ZM5.1045 12.8154C5.2083 12.7904 5.31653 12.8342 5.37305 12.9248C5.43321 13.0159 5.42645 13.136 5.35645 13.2197L0.444342 19.2881C0.397079 19.3462 0.325905 19.3806 0.250983 19.3809C0.112911 19.3812 0.000381827 19.2689 6.4633e-06 19.1309V15.7393C-0.00159755 15.1919 0.295458 14.6868 0.774421 14.4219C2.13989 13.6964 3.59635 13.1564 5.1045 12.8154ZM18.8955 12.8164C20.4037 13.1574 21.8601 13.6983 23.2256 14.4238C23.7046 14.6887 24.0016 15.1939 24 15.7412V19.1279C23.9998 19.2029 23.9654 19.274 23.9072 19.3213C23.8001 19.408 23.6427 19.3921 23.5557 19.2852L18.6436 13.2168C18.5954 13.1568 18.5781 13.0778 18.5957 13.0029C18.6273 12.8687 18.7613 12.7852 18.8955 12.8164ZM6.91407 7.70996C7.69318 4.90046 10.6025 3.2543 13.4121 4.0332C16.2216 4.81231 17.8678 7.72162 17.0889 10.5312C16.9502 11.0111 16.4534 11.2915 15.9707 11.1631C15.4808 11.0326 15.1889 10.53 15.3193 10.04C15.4858 9.43879 15.4858 8.8034 15.3193 8.20215C14.8118 6.36965 12.9146 5.29529 11.082 5.80273C9.24969 6.31035 8.17523 8.20758 8.68262 10.04C8.81116 10.5227 8.53066 11.0195 8.05079 11.1582C7.56371 11.299 7.05493 11.0183 6.91407 10.5312C6.65821 9.60837 6.65821 8.63285 6.91407 7.70996ZM4.88184 8.75098C5.43413 8.75098 5.88184 9.19869 5.88184 9.75098C5.88173 10.3032 5.43407 10.751 4.88184 10.751H3.88184C3.32967 10.7509 2.88195 10.3031 2.88184 9.75098C2.88184 9.19872 3.3296 8.75103 3.88184 8.75098H4.88184ZM20.2422 8.75098C20.7944 8.75105 21.2422 9.19873 21.2422 9.75098C21.2421 10.3031 20.7944 10.7509 20.2422 10.751H19.2422C18.69 10.751 18.2423 10.3032 18.2422 9.75098C18.2422 9.1987 18.6899 8.751 19.2422 8.75098H20.2422ZM5.2588 2.87988C5.64247 2.48263 6.2756 2.47181 6.67286 2.85547L7.38184 3.56348C7.77205 3.95414 7.77226 4.5871 7.38184 4.97754C6.99116 5.36793 6.35728 5.3681 5.9668 4.97754L5.2588 4.26953C4.88458 3.88206 4.88467 3.26741 5.2588 2.87988ZM17.6309 2.85547C18.0184 2.48119 18.633 2.48121 19.0205 2.85547C19.4177 3.23916 19.4286 3.87231 19.0449 4.26953L18.3369 4.97754C17.9464 5.36788 17.3135 5.36786 16.9229 4.97754C16.5323 4.58719 16.5318 3.95425 16.9219 3.56348L17.6309 2.85547ZM12.1504 0C12.7027 0 13.1504 0.447714 13.1504 1V2C13.1504 2.55229 12.7027 3 12.1504 3C11.5983 2.99977 11.1504 2.55215 11.1504 2V1C11.1504 0.447859 11.5983 0.00023457 12.1504 0Z"/></svg></span>
+        <span class="nav__label">Fields</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 25 23" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.3413 0.809221C14.5774 -0.269739 16.4207 -0.269741 17.6568 0.809221C17.7492 0.889953 17.8262 0.986501 17.8833 1.09438L17.9331 1.20668L19.357 4.94203L20.7066 6.29262C20.7663 6.35239 20.8182 6.41933 20.8609 6.49184L20.9185 6.60512L23.7896 13.3043L23.9497 13.4645L23.8892 13.5221L24.0279 13.7233C25.5021 15.9812 25.2982 19.015 23.4175 21.0592L23.2417 21.2418C20.8986 23.5849 17.1005 23.5848 14.7574 21.2418C13.7987 20.2832 13.2314 19.0812 13.0572 17.8346C13.0325 17.7651 13.0142 17.6924 13.0054 17.6168L12.9995 17.4997V9.00453C12.9325 9.00344 12.8632 9.00124 12.7915 9.00063L11.9995 8.99965V17.9997C11.9995 18.2406 11.9139 18.4618 11.772 18.6344C11.5027 19.5894 10.9941 20.4913 10.2427 21.2428C7.89976 23.5858 4.10055 23.5853 1.75735 21.2428C-0.377096 19.1084 -0.567195 15.7663 1.18704 13.4166L4.07962 6.6686C4.11302 6.59065 4.15685 6.51762 4.20853 6.45082L4.29153 6.35512L5.63821 5.00746L7.06302 1.21156C7.10663 1.09527 7.17117 0.988217 7.25345 0.896135L7.34134 0.809221C8.5774 -0.269741 10.4207 -0.269739 11.6568 0.809221C11.8432 0.971988 11.9617 1.19729 11.9917 1.44008L11.9995 1.56215V5.56215C11.9995 6.11429 11.5516 6.56192 10.9995 6.56215C10.4868 6.56215 10.0633 6.17656 10.0054 5.67934L9.99954 5.56215L9.99856 2.10024L9.8804 2.05824C9.54944 1.9552 9.18533 1.9889 8.87649 2.16078L8.83255 2.18813L7.43509 5.91371C7.39753 6.01379 7.34466 6.10721 7.27786 6.19008L7.20657 6.26918L5.84231 7.63442L4.29349 11.2467C6.23352 10.6733 8.40629 11.1005 9.99954 12.528V9.05824C9.32308 9.13897 9.08296 9.31938 8.89407 9.69692C8.64708 10.1909 8.04625 10.3912 7.55228 10.1442C7.05842 9.89724 6.85826 9.29727 7.10501 8.80336C7.85983 7.29372 8.79659 7.01071 11.399 6.99965H12.5992C15.2018 7.01069 16.1392 7.29365 16.8941 8.80336C17.1406 9.29713 16.9404 9.89716 16.4468 10.1442C15.9528 10.3912 15.352 10.1909 15.105 9.69692C15.0723 9.63148 15.0373 9.57235 14.9995 9.51821V12.5289C16.6011 11.0937 18.7871 10.6696 20.7349 11.2565L19.1558 7.57094L17.7915 6.20668C17.7252 6.14028 17.6687 6.06483 17.6236 5.98305L17.565 5.85512L16.1675 2.1891L16.1216 2.16078C15.8128 1.98891 15.4487 1.95517 15.1177 2.05824L14.9995 2.10024V5.49965C14.9994 6.01238 14.613 6.43505 14.1158 6.49281L13.9995 6.49965C13.4867 6.49965 13.0632 6.1132 13.0054 5.61586L12.9995 5.49965V1.56215C12.9996 1.27355 13.124 0.999059 13.3413 0.809221Z"/></svg></span>
+        <span class="nav__label">Scout</span>
+      </a>
+      <a href="agmri-weather.html" class="nav__item nav__item--active" aria-current="page">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
+        <span class="nav__label">Weather</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+        <span class="nav__label">Analyze</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+        <span class="nav__label">Disease</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        <span class="nav__label">Library</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+        <span class="nav__label">Crop plan</span>
+      </a>
+      <div class="nav__spacer"></div>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v2H8V6a4 4 0 0 1 4-4z"/><rect x="5" y="8" width="14" height="12" rx="2"/><line x1="12" y1="12" x2="12" y2="16"/></svg></span>
+        <span class="nav__label" style="font-size:9px;line-height:1.15;">Connect<br>machine data</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        <span class="nav__label">Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <div class="app-main">
+    <header class="header" role="banner">
+      <div class="header__left">
+        <a href="#" class="header__logo" aria-label="AgMRI home">
+          <img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" />
+        </a>
+        <button type="button" class="btn btn--secondary header__back" aria-label="Go back">
+          <span class="btn__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </span>
+          Back
+        </button>
+      </div>
+      <div class="header__center">
+        <div class="header__search-wrap">
+          <span class="header__search-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </span>
+          <input type="search" class="header__search" placeholder="Search…" aria-label="Search" />
+        </div>
+      </div>
+      <div class="header__right">
+        <span class="header__user-name">Jordan Smith</span>
+        <div class="header__avatar" aria-hidden="true">JS</div>
+        <div class="header__notifications">
+          <button type="button" class="header__notifications-btn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="header__notifications-badge">84</span>
+          </button>
+        </div>
+        <div class="header__flag-wrap">
+          <button type="button" class="header__flag-btn" aria-label="Language or region">
+            <span class="header__flag-btn-inner">
+              <span class="header__flag-display">🇺🇸</span>
+              <span class="header__flag-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M7 10l5 6 5-6H7z" fill="currentColor"/></svg>
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-content">
+      <div class="weather-toolbar">
+        <h1 class="weather-toolbar__title">Weather</h1>
+        <div class="weather-toolbar__right">
+          <div class="filter-action-bar">
+            <button type="button" class="btn btn--secondary">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#f5a623"/></svg>
+              Favorite fields
+            </button>
+            <button type="button" class="btn btn--secondary">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#f5a623"/></svg>
+              Favorite growers
+            </button>
+            <div class="filter-action-bar__sep" aria-hidden="true"></div>
+            <button type="button" class="btn btn--secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="var(--color-surface)"/><circle cx="16" cy="12" r="2" fill="var(--color-surface)"/><circle cx="10" cy="18" r="2" fill="var(--color-surface)"/></svg>
+              Advanced filters
+            </button>
+            <button type="button" class="btn btn--secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18M15 3v18"/></svg>
+              Customize table
+            </button>
+            <div class="filter-action-bar__sep" aria-hidden="true"></div>
+            <div class="view-toggle" id="view-toggle">
+              <button type="button" class="view-toggle__trigger" id="view-toggle-btn" aria-expanded="false" aria-haspopup="listbox">
+                <svg id="view-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <span id="view-toggle-label">List view</span>
+                <svg class="view-toggle__caret" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8l4 4 4-4"/></svg>
+              </button>
+              <div class="view-toggle__menu" role="listbox">
+                <button type="button" class="view-toggle__option is-active" data-view="list">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                  List view
+                  <svg class="view-toggle__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+                <button type="button" class="view-toggle__option" data-view="map">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                  Map view
+                </button>
+              </div>
+            </div>
+          </div>
+          <span class="weather-toolbar__meta">Ground workability (IBM soil moisture index): current cadence 8am &amp; 1pm ET</span>
+        </div>
+      </div>
+
+      <div id="weather-list-pane" class="weather-list-pane">
+      <div class="weather-table-wrap">
+        <div class="ds-data-table-shell" style="border:none;border-radius:0;">
+          <div class="ds-data-table-shell__scroll">
+            <table id="weather-table" class="ds-data-table ds-data-table--fixed-height">
+              <thead>
+                <tr>
+                  <th class="th-sortable" scope="col" style="min-width:200px;" data-sort-key="field_name">
+                    <span class="sort-indicator">Field <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="farm">
+                    <span class="sort-indicator">Farm <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="grower">
+                    <span class="sort-indicator">Grower <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="gdo">
+                    <span class="sort-indicator">GDO <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable th-sortable--active" scope="col" data-sort-key="air_temp_f">
+                    <span class="sort-indicator">Air temp <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="season_precip_in">
+                    <span class="sort-indicator">Season precip. <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="precip_24h_in">
+                    <span class="sort-indicator">Precip. 24h | 48h <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="humidity_pct">
+                    <span class="sort-indicator">Humidity <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="soil_temp_f">
+                    <span class="sort-indicator">Soil temp <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="soil_moisture_index">
+                    <span class="sort-indicator">Soil moisture <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable weather-th-gw" scope="col" data-sort-key="ground_workability">
+                    <span class="sort-indicator">Ground workability <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable weather-th-spray" scope="col" data-sort-key="spray_outlook">
+                    <span class="sort-indicator">Spray outlook <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                  <th class="th-sortable" scope="col" data-sort-key="wind_speed_12hr_mph">
+                    <span class="sort-indicator">Wind <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="weather-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div id="weather-map-pane" class="weather-map-pane" hidden aria-hidden="true">
+        <div class="std-page-tabs" id="weather-map-layer-toolbar" role="region" aria-label="Weather map layers">
+          <div class="tabs" role="tablist" aria-label="Weather tabs">
+            <button type="button" class="tabs__item" role="tab" aria-selected="true" data-layer="radar">
+              <span class="tabs__icon" aria-hidden="true">
+                <img src="https://static.intelinair.com/weather_badges/radar.svg" alt="" decoding="async" />
+              </span>
+              <span class="tabs__label">Radar</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-layer="temp">
+              <span class="tabs__icon" aria-hidden="true">
+                <img src="https://static.intelinair.com/weather_badges/temperature.svg" alt="" decoding="async" />
+              </span>
+              <span class="tabs__label">Temperature</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-layer="wind">
+              <span class="tabs__icon" aria-hidden="true">
+                <img src="https://static.intelinair.com/weather_badges/wind.svg" alt="" decoding="async" />
+              </span>
+              <span class="tabs__label">Wind</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-layer="rain">
+              <span class="tabs__icon" aria-hidden="true">
+                <img src="https://static.intelinair.com/weather_badges/rain_acc.svg" alt="" decoding="async" />
+              </span>
+              <span class="tabs__label">Rain acc.</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-layer="clouds">
+              <span class="tabs__icon" aria-hidden="true">
+                <img src="https://static.intelinair.com/weather_badges/clouds.svg" alt="" decoding="async" />
+              </span>
+              <span class="tabs__label">Clouds</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+            <button type="button" class="tabs__item" role="tab" aria-selected="false" data-layer="forecast">
+              <span class="tabs__icon" aria-hidden="true">
+                <img src="https://static.intelinair.com/weather_badges/next_24h.svg" alt="" decoding="async" />
+              </span>
+              <span class="tabs__label">24h forecast</span>
+              <span class="tabs__indicator-wrap"><span class="tabs__indicator"></span></span>
+            </button>
+          </div>
+          <div class="std-page-tabs__right">
+            <span class="std-page-tabs__meta">Weather data collected at noon ET</span>
+            <button type="button" class="filter-pill filter-pill--neutral std-page-tabs__show-fields" id="weather-map-show-fields-btn" aria-pressed="true" aria-label="Show field boundaries on map">
+              <span class="filter-pill__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-4 5 3 5-4 5 3v3H3z"/></svg>
+              </span>
+              Show fields
+            </button>
+          </div>
+        </div>
+        <div id="weather-map-inner" class="weather-map__inner" role="region" aria-label="Weather map">
+          <div id="weather-map-stage" class="weather-map-stage">
+            <div class="weather-map-bg" aria-hidden="true"></div>
+            <svg
+              id="weather-map-fields-svg"
+              class="weather-map-fields-svg"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="xMidYMid slice"
+              role="group"
+              aria-label="Field boundaries"
+            ></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GW / Spray outlook — tap detail (coarse pointer); same markup source as map popovers -->
+<div id="gw-so-scrim" class="bottom-sheet-scrim gw-so-sheet-layer" hidden aria-hidden="true"></div>
+<div id="gw-so-sheet" class="bottom-sheet gw-so-sheet-layer" hidden role="dialog" aria-modal="true" aria-labelledby="gw-so-sheet-title" aria-hidden="true">
+  <div class="bottom-sheet__handle" aria-hidden="true">
+    <div class="bottom-sheet__handle-bar"></div>
+  </div>
+  <div class="bottom-sheet__header">
+    <div class="bottom-sheet__header-left" style="flex-direction:column;align-items:flex-start;gap:2px;">
+      <h2 id="gw-so-sheet-title" class="bottom-sheet__title">Ground workability</h2>
+      <p id="gw-so-sheet-subtitle" class="gw-so-sheet__subtitle"></p>
+    </div>
+    <button type="button" id="gw-so-sheet-close" class="bottom-sheet__close" aria-label="Close details">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div id="gw-so-sheet-body" class="bottom-sheet__body gw-so-sheet__body" style="padding-bottom:20px;"></div>
+</div>
+
+<script src="js/weather-ground-spray-logic.js"></script>
+<script src="js/weather-list-init.js"></script>
+<script>
+(function () {
+  var toggle = document.getElementById('view-toggle');
+  var toggleBtn = document.getElementById('view-toggle-btn');
+  var toggleLabel = document.getElementById('view-toggle-label');
+  if (!toggle || !toggleBtn || !toggleLabel) return;
+
+  var LIST_ICON = '<svg id="view-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
+  var MAP_ICON = '<svg id="view-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>';
+  var CHECK_SVG = '<svg class="view-toggle__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  toggleBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var open = toggle.classList.toggle('is-open');
+    toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', function () {
+    toggle.classList.remove('is-open');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+  });
+
+  toggle.querySelectorAll('.view-toggle__option').forEach(function (opt) {
+    opt.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var view = opt.getAttribute('data-view');
+      toggle.querySelectorAll('.view-toggle__option').forEach(function (o) {
+        o.classList.remove('is-active');
+        var ch = o.querySelector('.view-toggle__check');
+        if (ch) ch.remove();
+      });
+      opt.classList.add('is-active');
+      opt.insertAdjacentHTML('beforeend', CHECK_SVG);
+      toggleLabel.textContent = view === 'map' ? 'Map view' : 'List view';
+      var iconEl = document.getElementById('view-toggle-icon');
+      if (iconEl) iconEl.outerHTML = view === 'map' ? MAP_ICON : LIST_ICON;
+      toggle.classList.remove('is-open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      if (typeof window.__WEATHER_SET_VIEW__ === 'function') {
+        window.__WEATHER_SET_VIEW__(view);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

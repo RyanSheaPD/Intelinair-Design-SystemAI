@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyFS — All Scouting Reports</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/counter-badge.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Page shell ── */
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-family);
+      background: var(--color-neutral-100);
+      color: var(--color-text);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Override brand to MyFS for this page */
+    :root {
+      --color-brand: var(--color-myfs-500);
+      --color-brand-rgb: var(--color-myfs-rgb);
+      --color-action-brand: var(--color-myfs-500);
+      --tab-indicator-color: var(--color-myfs-500);
+      --nav-background: var(--color-myfs-500);
+      --nav-text-active: var(--color-myfs-500);
+      --nav-icon-active: var(--color-myfs-500);
+      --counter-badge-bg: var(--color-myfs-500);
+    }
+
+    .app-shell {
+      display: flex;
+      flex: 1;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar nav ── */
+    .app-nav {
+      flex-shrink: 0;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    /* ── Main area: header + content ── */
+    .app-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    /* ── Page header bar ── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px 0;
+      background: #fff;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-myfs-500);
+      border-bottom: 3px solid var(--color-myfs-500);
+      padding-bottom: 6px;
+      display: inline-block;
+    }
+
+    .page-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-family: var(--font-family);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .action-btn:hover { background: var(--color-neutral-100); }
+
+    .action-btn--dark {
+      background: var(--color-neutral-900);
+      color: #fff;
+      border-radius: 999px;
+      padding: 6px 14px;
+    }
+
+    .action-btn--dark:hover { background: var(--color-neutral-700); }
+
+    .action-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .action-btn__star { color: var(--color-warning-500); }
+
+    .action-sep { width: 1px; height: 20px; background: var(--color-neutral-200); }
+
+    /* ── Tabs row ── */
+    .tabs-wrap {
+      padding: 12px 24px 0;
+      background: #fff;
+      border-bottom: 1px solid var(--color-neutral-200);
+    }
+
+    .scout-tabs {
+      display: flex;
+      gap: 0;
+    }
+
+    .scout-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      width: 110px;
+      min-height: 86px;
+      padding: 0 8px 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      font-family: var(--font-family);
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-text-muted);
+      text-align: center;
+    }
+
+    .scout-tab--active {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    .scout-tab__indicator {
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+      right: 16px;
+      height: 4px;
+      border-radius: 2px 2px 0 0;
+      background: transparent;
+    }
+
+    .scout-tab--active .scout-tab__indicator {
+      background: var(--color-myfs-500);
+    }
+
+    .scout-tab__icon-wrap {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scout-tab__icon {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    .scout-tab__badge {
+      position: absolute;
+      top: -4px;
+      right: -8px;
+      min-width: 28px;
+      height: 18px;
+      padding: 0 5px;
+      background: var(--color-cyan-500);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-family);
+    }
+
+    /* ── Status filter bar ── */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 24px;
+      background: #fff;
+      border-bottom: 1px solid var(--color-neutral-200);
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-family);
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      background: none;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .status-pill--active-blue {
+      background: var(--color-primitive-100);
+      border-color: var(--color-primitive-300);
+      color: var(--color-primitive-700);
+    }
+
+    .status-pill__count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--color-primitive-500);
+      color: #fff;
+    }
+
+    .status-pill--active-blue .status-pill__count {
+      background: var(--color-primitive-500);
+      color: #fff;
+    }
+
+    .status-pill__count--zero {
+      background: var(--color-neutral-300);
+      color: var(--color-neutral-600);
+    }
+
+    .filter-sep { width: 1px; height: 20px; background: var(--color-neutral-200); margin: 0 4px; }
+
+    .tags-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-family: var(--font-family);
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 6px;
+    }
+
+    .tags-trigger svg { width: 14px; height: 14px; }
+    .clear-all { font-size: 12px; color: var(--color-myfs-500); font-family: var(--font-family); background: none; border: none; cursor: pointer; font-weight: 500; }
+
+    /* ── Table ── */
+    .table-wrap {
+      overflow-x: auto;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      font-family: var(--font-family);
+    }
+
+    thead th {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      border-bottom: 1px solid var(--color-neutral-200);
+      white-space: nowrap;
+      background: #fff;
+    }
+
+    thead th .sort-icon {
+      display: inline-flex;
+      vertical-align: middle;
+      margin-left: 3px;
+      opacity: 0.5;
+    }
+
+    thead th .sort-icon svg { width: 10px; height: 10px; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--color-neutral-100);
+    }
+
+    tbody tr:hover { background: var(--color-neutral-50); }
+
+    tbody td {
+      padding: 10px 12px;
+      vertical-align: middle;
+      color: var(--color-text);
+    }
+
+    /* Field cell */
+    .td-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 180px;
+    }
+
+    .field-thumb {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--color-neutral-200);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .field-thumb svg { width: 16px; height: 16px; color: var(--color-neutral-400); }
+
+    .field-name {
+      color: var(--color-myfs-500);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .field-star { color: var(--color-warning-500); width: 14px; height: 14px; }
+
+    /* Crop cell */
+    .td-crop {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .crop-icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .crop-name { color: var(--color-myfs-500); font-weight: 500; }
+    /* Status pills */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .status-badge--in-progress {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+
+    .status-badge--needs-scouted {
+      background: var(--color-primitive-100);
+      color: var(--color-primitive-700);
+    }
+
+    /* Category pills */
+    .categories { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    .cat-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--color-primitive-100);
+      color: var(--color-primitive-700);
+      white-space: nowrap;
+    }
+
+    /* ── Tags dropdown overlay ── */
+    .tags-dropdown-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .tags-panel {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      min-width: 280px;
+      background: #fff;
+      border: 1px solid var(--color-neutral-200);
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      padding: 8px 0 12px;
+    }
+
+    .tags-panel-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: var(--font-family);
+    }
+
+    .tags-panel-row:hover { background: var(--color-neutral-50); }
+
+    .tags-panel-row__left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tags-panel-row__count {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-left: auto;
+    }
+
+    .tags-panel-row--all .tags-panel-row__label { font-weight: 600; }
+
+    /* custom radio/checkbox */
+    .tags-radio {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 2px solid var(--color-myfs-500);
+      background: var(--color-myfs-500);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tags-radio::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #fff;
+    }
+
+    .tags-checkbox {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      border: 1.5px solid var(--color-neutral-300);
+      flex-shrink: 0;
+    }
+
+    .tags-panel-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 0;
+      border-top: 1px solid var(--color-neutral-200);
+      margin-top: 4px;
+    }
+
+    .tags-cancel {
+      font-size: 13px;
+      font-family: var(--font-family);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .tags-apply {
+      font-size: 13px;
+      font-family: var(--font-family);
+      font-weight: 600;
+      color: #fff;
+      background: var(--color-myfs-500);
+      border: none;
+      cursor: pointer;
+      padding: 7px 20px;
+      border-radius: 999px;
+    }
+
+    /* ── "Times Used" header in panel ── */
+    .tags-panel-header {
+      display: flex;
+      justify-content: flex-end;
+      padding: 4px 16px 4px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-family: var(--font-family);
+    }
+
+    /* Interactive checkbox/radio states */
+    .tags-checkbox { position: relative; }
+    .tags-checkbox--checked {
+      background: var(--color-myfs-500);
+      border-color: var(--color-myfs-500);
+    }
+    .tags-checkbox--checked::after {
+      content: '';
+      position: absolute;
+      left: 3px; top: 1px;
+      width: 7px; height: 4px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg);
+    }
+    .tags-radio--empty { background: transparent; }
+    .tags-radio--empty::after { display: none; }
+
+    /* Active tag chip in status bar */
+    .tag-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 24px; padding: 0 8px;
+      background: var(--color-myfs-100);
+      border: 1px solid var(--color-myfs-300);
+      border-radius: 999px;
+      font-size: 12px; font-weight: 500;
+      color: var(--color-myfs-900);
+      font-family: var(--font-family);
+    }
+    .tag-chip__remove {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 14px; height: 14px; border-radius: 999px;
+      background: none; border: none; cursor: pointer;
+      color: var(--color-myfs-500); font-size: 14px; line-height: 1;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ── Left nav ── -->
+  <aside class="app-nav">
+    <nav class="nav nav--myfs" aria-label="Main navigation" style="height:100vh;">
+      <a href="#" class="nav__item" aria-label="Home">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+        <span class="nav__label">Home</span>
+      </a>
+      <a href="#" class="nav__item" aria-label="Alerts">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+        <span class="nav__label">Alerts</span>
+      </a>
+      <a href="#" class="nav__item" aria-label="Growers">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+        <span class="nav__label">Growers</span>
+      </a>
+      <a href="#" class="nav__item" aria-label="Fields">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+        <span class="nav__label">Fields</span>
+      </a>
+      <a href="#" class="nav__item nav__item--active" aria-current="page" aria-label="Scout">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+        <span class="nav__label">Scout</span>
+      </a>
+      <a href="#" class="nav__item" aria-label="Weather">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
+        <span class="nav__label">Weather</span>
+      </a>
+      <a href="#" class="nav__item" aria-label="Disease">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg></span>
+        <span class="nav__label">Disease</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="app-main">
+
+    <!-- Global header -->
+    <header class="header header--myfs" role="banner">
+      <div class="header__start">
+        <a href="#" class="header__logo" aria-label="MyFS home">
+          <img src="https://myfs-test.intelinair.dev/assets/myfs-theme/img/logo.png" alt="MyFS" />
+        </a>
+      </div>
+      <div class="header__center">
+        <div class="header__search-wrap">
+          <input type="text" class="header__search" placeholder="Search…" aria-label="Search" />
+        </div>
+      </div>
+      <div class="header__end">
+        <span class="header__user-name">Caleb Wieber</span>
+        <div class="header__avatar" aria-label="Caleb Wieber">CW</div>
+        <div style="position:relative; display:inline-flex;">
+          <button class="header__notifications" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <span style="position:absolute;top:-6px;right:-6px;min-width:20px;height:18px;padding:0 4px;background:#c41e3a;color:#fff;font-size:10px;font-weight:700;border-radius:999px;display:flex;align-items:center;justify-content:center;font-family:var(--font-family);">13</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-content">
+
+      <!-- Page title + actions -->
+      <div class="page-header">
+        <h1 class="page-title">All scouting reports</h1>
+        <div class="page-actions">
+          <button class="action-btn action-btn--dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/></svg>
+            Affected only
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="action-sep"></div>
+          <button class="action-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="action-btn__star"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Favorite fields
+          </button>
+          <button class="action-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor" class="action-btn__star"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Favorite growers
+          </button>
+          <div class="action-sep"></div>
+          <button class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Advanced filters
+          </button>
+          <div class="action-sep"></div>
+          <button class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            List view
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="action-sep"></div>
+          <button class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scout category tabs -->
+      <div class="tabs-wrap">
+        <div class="scout-tabs" role="tablist">
+
+          <button class="scout-tab" role="tab">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/all.png" alt="All" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#e0f2fe;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌾</span>
+              <span class="scout-tab__badge">1234</span>
+            </div>
+            <span>All</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button class="scout-tab scout-tab--active" role="tab" aria-selected="true">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/weeds.png" alt="Weeds" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#dcfce7;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌿</span>
+              <span class="scout-tab__badge">231</span>
+            </div>
+            <span>Weeds</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button class="scout-tab" role="tab">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/disease.png" alt="Disease" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#fee2e2;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🦠</span>
+              <span class="scout-tab__badge">1</span>
+            </div>
+            <span>Disease</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button class="scout-tab" role="tab">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/fertility.png" alt="Fertility" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#fef3c7;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌱</span>
+              <span class="scout-tab__badge">21</span>
+            </div>
+            <span>Fertility</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button class="scout-tab" role="tab">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://intelinair-misc.s3.amazonaws.com/common/icons/scout_types/irrigation.png" alt="Irrigation" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#cffafe;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">💧</span>
+              <span class="scout-tab__badge">21</span>
+            </div>
+            <span>Irrigation</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button class="scout-tab" role="tab">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/other.png" alt="Other" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#f3e8ff;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">📋</span>
+              <span class="scout-tab__badge">231</span>
+            </div>
+            <span>Other</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button class="scout-tab" role="tab">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/pests.png" alt="Pests" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#fde8eb;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🐛</span>
+              <span class="scout-tab__badge">1</span>
+            </div>
+            <span>Pests</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button class="scout-tab" role="tab">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/stand-count.png" alt="Stand cnt." onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#dcfce7;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">📊</span>
+              <span class="scout-tab__badge">21</span>
+            </div>
+            <span>Stand cnt.</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button class="scout-tab" role="tab">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="https://intelinair-misc.s3.amazonaws.com/common/icons/scout_types/vines.png" alt="Vines" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#f3e8ff;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🍇</span>
+              <span class="scout-tab__badge">21</span>
+            </div>
+            <span>Vines</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Status filter bar -->
+      <div class="status-bar">
+        <button class="status-pill status-pill--active-blue">
+          Needs scouted
+          <span class="status-pill__count">12</span>
+        </button>
+        <button class="status-pill">
+          In progress
+          <span class="status-pill__count">12</span>
+        </button>
+        <button class="status-pill">
+          Approved
+          <span class="status-pill__count status-pill__count--zero">0</span>
+        </button>
+        <button class="status-pill">
+          Pending review
+          <span class="status-pill__count status-pill__count--zero">0</span>
+        </button>
+        <button class="status-pill">
+          Needs revision
+          <span class="status-pill__count status-pill__count--zero">0</span>
+        </button>
+        <div class="filter-sep"></div>
+        <span style="font-size:12px;color:var(--color-text-muted);font-family:var(--font-family);">Filter by</span>
+        <div class="tags-dropdown-wrap">
+          <button class="tags-trigger">
+            Tags:
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="tags-panel" id="tags-panel" style="display:none;">
+            <div class="tags-panel-header">Times Used</div>
+            <div class="tags-panel-row tags-panel-row--all">
+              <div class="tags-panel-row__left"><div class="tags-radio"></div><span class="tags-panel-row__label">All</span></div>
+            </div>
+            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Waterhemp</span></div><span class="tags-panel-row__count">23</span></div>
+            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Palmer Amaranth</span></div><span class="tags-panel-row__count">21</span></div>
+            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Foxtail</span></div><span class="tags-panel-row__count">10</span></div>
+            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Ragweed</span></div><span class="tags-panel-row__count">3</span></div>
+            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Marestail</span></div><span class="tags-panel-row__count">1</span></div>
+            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Barnyardgrass</span></div><span class="tags-panel-row__count">0</span></div>
+            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Morning Glory</span></div><span class="tags-panel-row__count">0</span></div>
+            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Canada Thistle</span></div><span class="tags-panel-row__count">0</span></div>
+            <div class="tags-panel-actions">
+              <button class="tags-cancel">Cancel</button>
+              <button class="tags-apply">Apply</button>
+            </div>
+          </div>
+        </div>
+        <button class="clear-all">Clear All</button>
+      </div>
+
+      <!-- Data table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Field <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th>Farm <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th>Grower <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th>Acres <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th>Crop <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th>Status <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th>Categories <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th>Created by <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th>Scout Date <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-categories="weeds">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>Pontiac Il.</td>
+              <td>Jacob Jones</td>
+              <td>22,910.6 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
+              <td><div class="categories"><span class="cat-pill">Weeds</span></div></td>
+              <td>Kristin Watson</td>
+              <td>9/13</td>
+            </tr>
+            <tr data-categories="weeds crop-health">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Dowson Farms</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>New York, NY</td>
+              <td>Savannah Nguyen</td>
+              <td>20,000 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
+              <td><div class="categories"><span class="cat-pill">Crop Health</span><span class="cat-pill">Weeds</span></div></td>
+              <td>Ralph Edwards</td>
+              <td>5/13</td>
+            </tr>
+            <tr data-categories="weeds">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Campbell Farms and more</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>New York, NY</td>
+              <td>Robert Fox</td>
+              <td>17,836.8 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 3c-1.5 0-3 1-4 3-1 2-1 4 0 6l4 8 4-8c1-2 1-4 0-6-1-2-2.5-3-4-3z"/></svg><span class="crop-name">Soy</span></div></td>
+              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
+              <td><div class="categories"><span class="cat-pill">Weeds</span></div></td>
+              <td>Dianne Russell</td>
+              <td>7/13</td>
+            </tr>
+            <tr data-categories="disease">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>Pontiac Il.</td>
+              <td>Kathryn Murphy</td>
+              <td>22,910.6 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
+              <td><div class="categories"><span class="cat-pill">Disease</span></div></td>
+              <td>Wade Warren</td>
+              <td>3/13</td>
+            </tr>
+            <tr data-categories="weeds crop-health">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Dowson Farms</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>Yerevan, Arm</td>
+              <td>Eleanor Pena</td>
+              <td>22,910.6 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
+              <td><div class="categories"><span class="cat-pill">Crop Health</span><span class="cat-pill">Weeds</span></div></td>
+              <td>Leslie Alexander</td>
+              <td>4/13</td>
+            </tr>
+            <tr data-categories="fertility">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>Chicago. Il</td>
+              <td>Devon Lane</td>
+              <td>17,836.8 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
+              <td><div class="categories"><span class="cat-pill">Fertility</span></div></td>
+              <td>Brooklyn Simmons</td>
+              <td>4/13</td>
+            </tr>
+            <tr data-categories="pests">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>Chicago. Il</td>
+              <td>Jane Cooper</td>
+              <td>17,836.8 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
+              <td><div class="categories"><span class="cat-pill">Pests</span></div></td>
+              <td>Eleanor Pena</td>
+              <td>4/13</td>
+            </tr>
+            <tr data-categories="stand-cnt stand count">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>Chicago. Il</td>
+              <td>Courtney Henry</td>
+              <td>17,836.8 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
+              <td><div class="categories"><span class="cat-pill">Stand cnt.</span></div></td>
+              <td>Jenny Wilson</td>
+              <td>4/13</td>
+            </tr>
+            <tr data-categories="weeds">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>Chicago. Il</td>
+              <td>Esther Howard</td>
+              <td>17,836.8 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
+              <td><div class="categories"><span class="cat-pill">Weeds</span></div></td>
+              <td>Savannah Nguyen</td>
+              <td>4/13</td>
+            </tr>
+            <tr data-categories="other">
+              <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
+              <td>Chicago. Il</td>
+              <td>Bessie Cooper</td>
+              <td>17,836.8 ac</td>
+              <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
+              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
+              <td><div class="categories"><span class="cat-pill">Other</span></div></td>
+              <td>Jane Cooper</td>
+              <td>12/13</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /app-content -->
+  </div><!-- /app-main -->
+</div><!-- /app-shell -->
+
+<script>
+(function () {
+
+  // ── Scout tabs ──────────────────────────────────────────────────────────
+  var tabs = document.querySelectorAll('.scout-tab');
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) {
+        t.classList.remove('scout-tab--active');
+        t.removeAttribute('aria-selected');
+      });
+      this.classList.add('scout-tab--active');
+      this.setAttribute('aria-selected', 'true');
+
+      // Get the label text (last span before indicator)
+      var spans = this.querySelectorAll('span');
+      var label = '';
+      spans.forEach(function (s) {
+        if (!s.classList.contains('scout-tab__badge') && !s.classList.contains('scout-tab__indicator')) {
+          label = s.textContent.trim().toLowerCase();
+        }
+      });
+
+      // Filter rows
+      document.querySelectorAll('tbody tr').forEach(function (row) {
+        if (label === 'all') {
+          row.style.display = '';
+        } else {
+          var cats = (row.getAttribute('data-categories') || '').toLowerCase();
+          // Normalise tab label: "stand cnt." → "stand"
+          var key = label.replace('.', '').split(' ')[0];
+          row.style.display = cats.includes(key) ? '' : 'none';
+        }
+      });
+    });
+  });
+
+  // ── Tags dropdown ────────────────────────────────────────────────────────
+  var trigger = document.querySelector('.tags-trigger');
+  var panel   = document.getElementById('tags-panel');
+
+  trigger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var open = panel.style.display === 'block';
+    panel.style.display = open ? 'none' : 'block';
+  });
+
+  // Close on outside click
+  document.addEventListener('click', function (e) {
+    if (!panel.contains(e.target) && e.target !== trigger) {
+      panel.style.display = 'none';
+    }
+  });
+
+  // Cancel button
+  document.querySelector('.tags-cancel').addEventListener('click', function (e) {
+    e.stopPropagation();
+    // Uncheck all checkboxes
+    document.querySelectorAll('.tags-checkbox').forEach(function (cb) {
+      cb.classList.remove('tags-checkbox--checked');
+    });
+    // Restore "All" radio
+    var allRadio = document.querySelector('.tags-radio');
+    allRadio.classList.remove('tags-radio--empty');
+    panel.style.display = 'none';
+  });
+
+  // Apply button
+  document.querySelector('.tags-apply').addEventListener('click', function (e) {
+    e.stopPropagation();
+    var checked = [];
+    document.querySelectorAll('.tags-panel-row').forEach(function (row) {
+      var cb = row.querySelector('.tags-checkbox--checked');
+      if (cb) {
+        checked.push(row.querySelector('span:not(.tags-panel-row__count)').textContent.trim());
+      }
+    });
+    renderTagChips(checked);
+    panel.style.display = 'none';
+  });
+
+  // ── Tag checkboxes / "All" radio ──────────────────────────────────────────
+  document.querySelectorAll('.tags-panel-row').forEach(function (row) {
+    row.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var cb    = this.querySelector('.tags-checkbox');
+      var radio = this.querySelector('.tags-radio');
+
+      if (radio) {
+        // "All" row — clear all checkboxes, restore radio fill
+        document.querySelectorAll('.tags-checkbox').forEach(function (c) {
+          c.classList.remove('tags-checkbox--checked');
+        });
+        radio.classList.remove('tags-radio--empty');
+      }
+
+      if (cb) {
+        var isChecked = cb.classList.contains('tags-checkbox--checked');
+        cb.classList.toggle('tags-checkbox--checked', !isChecked);
+        // Hollow out "All" radio when anything is checked
+        var allRadio = document.querySelector('.tags-radio');
+        var anyChecked = document.querySelector('.tags-checkbox--checked');
+        if (anyChecked) {
+          allRadio.classList.add('tags-radio--empty');
+        } else {
+          allRadio.classList.remove('tags-radio--empty');
+        }
+      }
+    });
+  });
+
+  // ── Render active tag chips in status bar ────────────────────────────────
+  var chipsContainer = null;
+
+  function renderTagChips(tags) {
+    if (chipsContainer) {
+      chipsContainer.remove();
+      chipsContainer = null;
+    }
+    if (!tags.length) return;
+
+    chipsContainer = document.createElement('div');
+    chipsContainer.style.cssText = 'display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap;';
+
+    tags.forEach(function (tag) {
+      var chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.innerHTML = tag + '<button class="tag-chip__remove" aria-label="Remove ' + tag + '">×</button>';
+      chip.querySelector('.tag-chip__remove').addEventListener('click', function () {
+        // Uncheck in panel
+        document.querySelectorAll('.tags-panel-row').forEach(function (row) {
+          var span = row.querySelector('span:not(.tags-panel-row__count)');
+          if (span && span.textContent.trim() === tag) {
+            var cb = row.querySelector('.tags-checkbox');
+            if (cb) cb.classList.remove('tags-checkbox--checked');
+          }
+        });
+        chip.remove();
+        // Restore "All" if none left
+        if (!chipsContainer.querySelector('.tag-chip')) {
+          chipsContainer.remove();
+          chipsContainer = null;
+          document.querySelector('.tags-radio').classList.remove('tags-radio--empty');
+        }
+      });
+      chipsContainer.appendChild(chip);
+    });
+
+    // Insert after the tags-dropdown-wrap
+    var wrap = document.querySelector('.tags-dropdown-wrap');
+    wrap.parentNode.insertBefore(chipsContainer, wrap.nextSibling);
+  }
+
+  // ── Status pills ─────────────────────────────────────────────────────────
+  document.querySelectorAll('.status-pill').forEach(function (pill) {
+    pill.addEventListener('click', function () {
+      document.querySelectorAll('.status-pill').forEach(function (p) {
+        p.classList.remove('status-pill--active-blue');
+      });
+      this.classList.add('status-pill--active-blue');
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>

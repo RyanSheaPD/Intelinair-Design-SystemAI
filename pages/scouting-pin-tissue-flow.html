@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AgMRI — Single Pin · Tissue Sample</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    :root {
+      --scout-accent: #2d7a4f;
+      --scout-accent-soft: rgba(45, 122, 79, 0.14);
+      --scout-pending: #d97706;
+      --scout-pending-bg: rgba(217, 119, 6, 0.15);
+      --scout-map-bg1: #3d6b4f;
+      --scout-map-bg2: #2d4a38;
+      --scout-sheet-radius: 16px;
+      --scout-safe-b: env(safe-area-inset-bottom, 0px);
+      --font: 'Figtree', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--color-neutral-200, #e5e5e5);
+      color: var(--color-text, #171717);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .demo-wrap {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 12px 12px 24px;
+    }
+
+    .demo-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-muted, #737373);
+      margin-bottom: 8px;
+      width: 100%;
+      max-width: 390px;
+    }
+
+    /* Phone chrome */
+    .phone {
+      width: 100%;
+      max-width: 390px;
+      height: min(844px, calc(100vh - 48px));
+      min-height: 560px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
+      background: #000;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* ── Map ── */
+    .map-root {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(165deg, var(--scout-map-bg1) 0%, var(--scout-map-bg2) 45%, #1a2e24 100%);
+    }
+
+    .field-bar {
+      flex-shrink: 0;
+      padding: 10px 16px 10px;
+      padding-top: max(10px, env(safe-area-inset-top, 10px));
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 5;
+    }
+
+    .field-bar__title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .field-bar__sub {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+    }
+
+    .field-bar__wx {
+      font-size: 22px;
+      opacity: 0.85;
+    }
+
+    .map-stage {
+      flex: 1;
+      position: relative;
+      cursor: crosshair;
+      touch-action: manipulation;
+    }
+
+    .map-stage--armed { cursor: crosshair; }
+
+    .map-sat {
+      position: absolute;
+      inset: 0;
+      opacity: 0.35;
+      background-image:
+        radial-gradient(ellipse 120% 80% at 50% 40%, rgba(120, 180, 100, 0.25) 0%, transparent 55%),
+        repeating-linear-gradient(-12deg, transparent, transparent 8px, rgba(0,0,0,0.04) 8px, rgba(0,0,0,0.04) 9px);
+    }
+
+    .field-boundary {
+      position: absolute;
+      left: 8%;
+      top: 14%;
+      width: 84%;
+      height: 68%;
+      border: 2px solid rgba(255,255,255,0.75);
+      border-radius: 38% 42% 48% 40% / 45% 48% 42% 46%;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.15), inset 0 0 40px rgba(255,255,255,0.08);
+      pointer-events: none;
+    }
+
+    .map-pin {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      z-index: 4;
+      cursor: pointer;
+    }
+
+    .map-pin__dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--scout-accent);
+      border: 2px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-pin__dot--pending {
+      background: var(--scout-pending);
+    }
+
+    .map-pin__dot svg { width: 10px; height: 10px; fill: #fff; }
+
+    .map-pin__label {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      max-width: 140px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .placement-veil {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.12);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .placement-hint {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 100px;
+      text-align: center;
+      pointer-events: none;
+      z-index: 4;
+      padding: 0 24px;
+    }
+
+    .placement-hint__icon { font-size: 40px; margin-bottom: 8px; }
+    .placement-hint__t {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+    .placement-hint__d {
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+      margin-top: 6px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.45);
+      line-height: 1.35;
+    }
+
+    .placement-cancel {
+      position: absolute;
+      top: max(8px, env(safe-area-inset-top, 8px));
+      left: 12px;
+      z-index: 6;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--scout-accent);
+      background: rgba(255,255,255,0.92);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    /* FAB */
+    .fab {
+      position: absolute;
+      right: 16px;
+      bottom: calc(24px + var(--scout-safe-b));
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      background: var(--scout-accent);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 8;
+      transition: transform 0.15s;
+    }
+
+    .fab:active { transform: scale(0.96); }
+    .fab svg { width: 26px; height: 26px; }
+
+    /* Backdrop */
+    .backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.38);
+      z-index: 20;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+
+    .backdrop--on {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Action sheet — tools */
+    .action-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 25;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 14px 14px 0 0;
+      padding: 8px 0 calc(12px + var(--scout-safe-b));
+      transform: translateY(110%);
+      transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+      max-height: 55%;
+    }
+
+    .action-sheet--open { transform: translateY(0); }
+
+    .action-sheet__title {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      padding: 12px 16px 8px;
+    }
+
+    .action-sheet__btn {
+      display: block;
+      width: 100%;
+      padding: 16px 20px;
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 17px;
+      text-align: left;
+      cursor: pointer;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .action-sheet__btn:hover { background: rgba(0,0,0,0.04); }
+    .action-sheet__btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .action-sheet__cancel {
+      margin-top: 8px;
+      border-top: 8px solid var(--color-neutral-100, #f5f5f5);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* Composer bottom sheet */
+    .composer-sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 30;
+      max-height: 88%;
+      background: var(--color-surface, #fff);
+      border-radius: var(--scout-sheet-radius) var(--scout-sheet-radius) 0 0;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.18);
+      display: flex;
+      flex-direction: column;
+      transform: translateY(105%);
+      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+
+    .composer-sheet--open { transform: translateY(0); }
+
+    .composer-grabber {
+      width: 36px;
+      height: 5px;
+      border-radius: 3px;
+      background: var(--color-neutral-300, #d4d4d4);
+      margin: 8px auto 4px;
+      flex-shrink: 0;
+    }
+
+    .composer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px 12px;
+      border-bottom: 1px solid var(--color-border, #e5e5e5);
+      flex-shrink: 0;
+    }
+
+    .composer-head__back {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--scout-accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      min-width: 44px;
+      font-family: inherit;
+    }
+
+    .composer-head__back:disabled {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .composer-head__title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .composer-head__close {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--scout-accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+      font-family: inherit;
+    }
+
+    .composer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 16px 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .composer-foot {
+      flex-shrink: 0;
+      padding: 12px 16px calc(16px + var(--scout-safe-b));
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--color-border, #e5e5e5);
+    }
+
+    .composer-hint {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-bottom: 8px;
+      min-height: 16px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 600;
+      background: var(--scout-accent);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin: 16px 0 10px;
+    }
+
+    .section-label:first-child { margin-top: 0; }
+
+    .badge-req {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--scout-pending);
+      background: var(--scout-pending-bg);
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* Category grid */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .cat-cell {
+      border: 1px solid var(--color-border, #e5e5e5);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+      background: var(--color-surface, #fff);
+      font-family: inherit;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .cat-cell:hover { background: var(--color-neutral-50, #fafafa); }
+
+    .cat-cell--selected {
+      border-color: var(--scout-accent);
+      border-width: 2px;
+      padding: 13px;
+      background: var(--scout-accent-soft);
+    }
+
+    .cat-cell__icon { font-size: 22px; margin-bottom: 8px; }
+    .cat-cell__label { font-size: 14px; font-weight: 600; }
+
+    /* Form controls */
+    .form-card {
+      background: var(--color-surface, #fff);
+      border: 1px solid var(--color-border, #e5e5e5);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .form-row label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 6px;
+    }
+
+    select.ds-input, textarea.ds-input, input.ds-input {
+      width: 100%;
+      font-family: inherit;
+      font-size: 16px;
+      border: 1px solid var(--color-border, #e5e5e5);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #fff;
+    }
+
+    textarea.ds-input {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--scout-accent);
+      background: #fff;
+      color: var(--scout-accent);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .media-strip {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .media-add {
+      flex-shrink: 0;
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      border: 2px dashed rgba(45, 122, 79, 0.4);
+      background: var(--scout-accent-soft);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--scout-accent);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .media-thumb {
+      flex-shrink: 0;
+      width: 72px;
+      height: 72px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #3d6b4f, #5a8f6a);
+      position: relative;
+    }
+
+    .media-thumb__x {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .btn-dest {
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px;
+      border: none;
+      background: none;
+      color: var(--color-error-500, #dc2626);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Barcode full screen */
+    .barcode-full {
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      background: linear-gradient(160deg, #0d0d0d 0%, #1a3d2e 50%, #0d0d0d 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding: max(12px, env(safe-area-inset-top)) 16px calc(20px + var(--scout-safe-b));
+      transform: translateX(100%);
+      transition: transform 0.28s ease;
+    }
+
+    .barcode-full--open { transform: translateX(0); }
+
+    .barcode-full__nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .barcode-full__nav button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    .barcode-frame {
+      border: 2px solid rgba(255,255,255,0.85);
+      border-radius: 14px;
+      height: 120px;
+      margin: 0 24px 20px;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .barcode-full__title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .barcode-full__sub {
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.75;
+      margin-bottom: 20px;
+    }
+
+    .barcode-full input {
+      width: 100%;
+      font-family: ui-monospace, monospace;
+      font-size: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 20px;
+    }
+
+    .barcode-full .btn-primary { margin-top: auto; }
+
+    /* Report */
+    .report-full {
+      position: absolute;
+      inset: 0;
+      z-index: 35;
+      background: var(--color-neutral-50, #fafafa);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.28s ease;
+    }
+
+    .report-full--open { transform: translateX(0); }
+
+    .report-nav {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: max(8px, env(safe-area-inset-top)) 12px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .report-nav__title { font-size: 17px; font-weight: 600; }
+    .report-nav button {
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--scout-accent);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 12px;
+    }
+
+    .report-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .status-banner {
+      background: var(--scout-pending-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .status-banner--ok {
+      background: var(--scout-accent-soft);
+    }
+
+    .status-banner__icon { font-size: 22px; }
+    .status-banner__t { font-size: 15px; font-weight: 700; }
+    .status-banner__d { font-size: 13px; color: var(--color-text-muted); margin-top: 4px; line-height: 1.4; }
+
+    .report-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--color-border);
+    }
+
+    .report-card h3 {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-muted);
+      margin-bottom: 8px;
+    }
+
+    .kv { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--color-neutral-100); }
+    .kv:last-child { border-bottom: none; }
+    .kv__k { width: 112px; flex-shrink: 0; font-size: 14px; color: var(--color-text-muted); }
+    .kv__v { font-size: 14px; font-weight: 600; flex: 1; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="demo-wrap">
+    <p class="demo-label">Interactive demo · Single pin · Tissue sample</p>
+    <div class="phone" id="phone">
+      <div class="map-root">
+        <header class="field-bar">
+          <div>
+            <div class="field-bar__title">West 80</div>
+            <div class="field-bar__sub">Corn · 2026 season</div>
+          </div>
+          <span class="field-bar__wx" aria-hidden="true">⛅</span>
+        </header>
+
+        <div class="map-stage" id="mapStage" role="application" aria-label="Field map">
+          <div class="map-sat" aria-hidden="true"></div>
+          <div class="field-boundary" aria-hidden="true"></div>
+          <div id="pinsLayer"></div>
+
+          <div class="placement-veil hidden" id="placementVeil"></div>
+          <button type="button" class="placement-cancel hidden" id="placementCancel" aria-label="Cancel pin placement">Cancel</button>
+          <div class="placement-hint hidden" id="placementHint">
+            <div class="placement-hint__icon" aria-hidden="true">📍</div>
+            <div class="placement-hint__t">Tap where you sampled</div>
+            <div class="placement-hint__d">Pan and zoom this demo, then tap the map to drop a pin.</div>
+          </div>
+
+          <button type="button" class="fab" id="fab" aria-label="Scouting tools">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="backdrop" id="backdropTools"></div>
+      <div class="action-sheet" id="toolSheet" role="dialog" aria-labelledby="toolSheetTitle">
+        <div class="action-sheet__title" id="toolSheetTitle">Scouting tools</div>
+        <button type="button" class="action-sheet__btn" data-tool="pin">Pin</button>
+        <button type="button" class="action-sheet__btn" data-tool="poly">Polygon</button>
+        <button type="button" class="action-sheet__btn" data-tool="draw">Free Draw</button>
+        <button type="button" class="action-sheet__btn" data-tool="grid">Grid</button>
+        <button type="button" class="action-sheet__btn" data-tool="measure">Measure</button>
+        <button type="button" class="action-sheet__btn action-sheet__cancel" id="toolSheetCancel">Cancel</button>
+      </div>
+
+      <div class="backdrop" id="backdropComposer"></div>
+      <div class="composer-sheet" id="composerSheet" role="dialog" aria-modal="true" aria-labelledby="composerTitle">
+        <div class="composer-grabber" aria-hidden="true"></div>
+        <div class="composer-head">
+          <button type="button" class="composer-head__back" id="composerBack" aria-label="Back">‹</button>
+          <h2 class="composer-head__title" id="composerTitle">New Location</h2>
+          <button type="button" class="composer-head__close" id="composerClose">Close</button>
+        </div>
+        <div class="composer-body" id="composerBody"></div>
+        <div class="composer-foot">
+          <p class="composer-hint" id="composerHint"></p>
+          <button type="button" class="btn-primary" id="composerPrimary" disabled>Continue</button>
+        </div>
+      </div>
+
+      <div class="barcode-full" id="barcodeFull" aria-hidden="true">
+        <div class="barcode-full__nav">
+          <button type="button" id="barcodeClose">Close</button>
+          <span style="font-weight:600;font-size:15px;">Scan barcode</span>
+          <span style="width:52px"></span>
+        </div>
+        <p class="barcode-full__title">Align barcode in frame</p>
+        <p class="barcode-full__sub">Demo: edit value and confirm</p>
+        <div class="barcode-frame" aria-hidden="true"></div>
+        <input type="text" id="barcodeInput" class="ds-input" value="AGMRI-2026-004812" autocomplete="off" />
+        <button type="button" class="btn-primary" id="barcodeUse">Use barcode</button>
+        <button type="button" style="margin-top:12px;background:none;border:none;color:rgba(255,255,255,0.85);font-family:inherit;font-size:15px;cursor:pointer;" id="barcodeManual">Enter on form only</button>
+      </div>
+
+      <div class="report-full" id="reportFull" aria-hidden="true">
+        <div class="report-nav">
+          <button type="button" id="reportDone">Done</button>
+          <span class="report-nav__title">Scouting report</span>
+          <span style="width:48px"></span>
+        </div>
+        <div class="report-scroll" id="reportScroll"></div>
+      </div>
+    </div>
+  </div>
+
+  <template id="tplCategory">
+    <p style="font-size:14px;color:var(--color-text-muted);margin-bottom:12px;">What are you recording?</p>
+    <div class="cat-grid" id="catGrid"></div>
+  </template>
+
+  <template id="tplTissue">
+    <div class="form-card" style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-size:12px;color:var(--color-text-muted);">Issue category</div>
+          <div style="font-size:16px;font-weight:600;" id="tissueCatLabel">Tissue Test</div>
+        </div>
+        <button type="button" class="composer-head__close" style="padding:6px 10px;font-size:14px;" id="tissueChangeCat">Change</button>
+      </div>
+    </div>
+    <div class="section-label">Required <span class="badge-req">Required</span></div>
+    <div class="form-card form-row">
+      <label for="zoneSelect">Treatment zone</label>
+      <select id="zoneSelect" class="ds-input">
+        <option value="">Select zone</option>
+        <option value="tz_n">North — VR Nitrogen</option>
+        <option value="tz_s">South — Standard rate</option>
+        <option value="tz_e">East — Check strip</option>
+      </select>
+    </div>
+    <button type="button" class="btn-secondary" id="btnScan">Scan barcode</button>
+    <div class="form-card form-row">
+      <label for="barcodeField">Barcode number</label>
+      <input type="text" id="barcodeField" class="ds-input" placeholder="Optional — scan or type" />
+      <p id="barcodeSourceHint" class="hidden" style="font-size:12px;color:var(--scout-accent);margin-top:6px;">From scan</p>
+    </div>
+    <div class="section-label">Attachments</div>
+    <div class="media-strip" id="mediaStrip"></div>
+    <div class="section-label">Notes</div>
+    <div class="form-card form-row">
+      <textarea id="notesField" class="ds-input" placeholder="Add context for the lab or team"></textarea>
+    </div>
+    <div class="section-label">Growth stage</div>
+    <div class="form-card form-row">
+      <label for="growthSelect">Growth stage</label>
+      <select id="growthSelect" class="ds-input">
+        <option value="">Not specified</option>
+        <option>V6</option><option>V10</option><option>VT</option>
+        <option>R1</option><option>R2</option><option>R3</option><option>R4</option><option>R5</option><option>R6</option>
+      </select>
+    </div>
+    <button type="button" class="btn-dest" id="btnDeletePin">Delete pin</button>
+  </template>
+
+  <template id="tplGeneric">
+    <div class="form-card" style="margin-bottom:16px;">
+      <div style="font-size:12px;color:var(--color-text-muted);">Issue category</div>
+      <div style="font-size:16px;font-weight:600;" id="genericCatLabel"></div>
+      <button type="button" class="composer-head__close" style="margin-top:10px;padding:6px 10px;font-size:14px;" id="genericChangeCat">Change category</button>
+    </div>
+    <div class="section-label">Notes</div>
+    <div class="form-card form-row">
+      <textarea id="genericNotes" class="ds-input" placeholder="What did you see?"></textarea>
+    </div>
+    <button type="button" class="btn-dest" id="btnDeletePinGen">Delete pin</button>
+  </template>
+
+  <script>
+(function () {
+  const state = {
+    placementArmed: false,
+    draftPct: null,
+    selectedCategory: null,
+    sheetStep: 'category',
+    zoneId: '',
+    barcode: '',
+    barcodeSource: 'none',
+    notes: '',
+    growth: '',
+    mediaCount: 0,
+    pins: [
+      { id: 'seed', pct: { x: 28, y: 38 }, label: 'Disease', pending: false, cat: 'Disease', zone: 'North — VR Nitrogen', barcode: '', notes: 'Northern edge.', growth: 'R3', media: 1 }
+    ],
+    reportPinId: null,
+    dirty: false
+  };
+
+  const el = {
+    mapStage: document.getElementById('mapStage'),
+    pinsLayer: document.getElementById('pinsLayer'),
+    placementVeil: document.getElementById('placementVeil'),
+    placementHint: document.getElementById('placementHint'),
+    placementCancel: document.getElementById('placementCancel'),
+    fab: document.getElementById('fab'),
+    backdropTools: document.getElementById('backdropTools'),
+    toolSheet: document.getElementById('toolSheet'),
+    toolSheetCancel: document.getElementById('toolSheetCancel'),
+    backdropComposer: document.getElementById('backdropComposer'),
+    composerSheet: document.getElementById('composerSheet'),
+    composerBody: document.getElementById('composerBody'),
+    composerTitle: document.getElementById('composerTitle'),
+    composerBack: document.getElementById('composerBack'),
+    composerClose: document.getElementById('composerClose'),
+    composerHint: document.getElementById('composerHint'),
+    composerPrimary: document.getElementById('composerPrimary'),
+    barcodeFull: document.getElementById('barcodeFull'),
+    barcodeInput: document.getElementById('barcodeInput'),
+    barcodeClose: document.getElementById('barcodeClose'),
+    barcodeUse: document.getElementById('barcodeUse'),
+    barcodeManual: document.getElementById('barcodeManual'),
+    reportFull: document.getElementById('reportFull'),
+    reportScroll: document.getElementById('reportScroll'),
+    reportDone: document.getElementById('reportDone')
+  };
+
+  const CATEGORIES = [
+    { id: 'tissue', label: 'Tissue Test', icon: '🌿' },
+    { id: 'disease', label: 'Disease', icon: '🩺' },
+    { id: 'weeds', label: 'Weeds', icon: '🌾' },
+    { id: 'insects', label: 'Insects', icon: '🐜' },
+    { id: 'other', label: 'Other', icon: '⋯' }
+  ];
+
+  function openTools() {
+    el.backdropTools.classList.add('backdrop--on');
+    el.toolSheet.classList.add('action-sheet--open');
+  }
+
+  function closeTools() {
+    el.backdropTools.classList.remove('backdrop--on');
+    el.toolSheet.classList.remove('action-sheet--open');
+  }
+
+  function setPlacementArmed(on) {
+    state.placementArmed = on;
+    el.mapStage.classList.toggle('map-stage--armed', on);
+    el.placementVeil.classList.toggle('hidden', !on);
+    el.placementHint.classList.toggle('hidden', !on);
+    el.placementCancel.classList.toggle('hidden', !on);
+  }
+
+  function openComposer() {
+    el.backdropComposer.classList.add('backdrop--on');
+    el.composerSheet.classList.add('composer-sheet--open');
+    renderComposer();
+  }
+
+  function closeComposer() {
+    el.backdropComposer.classList.remove('backdrop--on');
+    el.composerSheet.classList.remove('composer-sheet--open');
+    el.composerBody.innerHTML = '';
+    state.sheetStep = 'category';
+    state.draftPct = null;
+    state.selectedCategory = null;
+    state.dirty = false;
+    resetDraftFields();
+  }
+
+  function resetDraftFields() {
+    state.zoneId = '';
+    state.barcode = '';
+    state.barcodeSource = 'none';
+    state.notes = '';
+    state.growth = '';
+    state.mediaCount = 0;
+  }
+
+  function discardComposer() {
+    closeComposer();
+  }
+
+  function mapPctFromEvent(e) {
+    const rect = el.mapStage.getBoundingClientRect();
+    const x = ((e.clientX ?? (e.touches && e.touches[0].clientX)) - rect.left) / rect.width;
+    const y = ((e.clientY ?? (e.touches && e.touches[0].clientY)) - rect.top) / rect.height;
+    return {
+      x: Math.max(4, Math.min(96, x * 100)),
+      y: Math.max(8, Math.min(92, y * 100))
+    };
+  }
+
+  function renderPins() {
+    el.pinsLayer.innerHTML = '';
+    state.pins.forEach(function (pin) {
+      const wrap = document.createElement('button');
+      wrap.type = 'button';
+      wrap.className = 'map-pin';
+      wrap.style.left = pin.pct.x + '%';
+      wrap.style.top = pin.pct.y + '%';
+      wrap.setAttribute('aria-label', 'Open report: ' + pin.label);
+      const dot = document.createElement('div');
+      dot.className = 'map-pin__dot' + (pin.pending ? ' map-pin__dot--pending' : '');
+      dot.innerHTML = '<svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5a1.58 1.58 0 0 0 1.74 1.75c1.05-.33 2.05-.88 2.86-1.63z"/></svg>';
+      const lab = document.createElement('span');
+      lab.className = 'map-pin__label';
+      lab.textContent = pin.label;
+      wrap.appendChild(dot);
+      wrap.appendChild(lab);
+      wrap.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (state.placementArmed) return;
+        openReport(pin);
+      });
+      el.pinsLayer.appendChild(wrap);
+    });
+  }
+
+  function openReport(pin) {
+    state.reportPinId = pin.id;
+    el.reportFull.classList.add('report-full--open');
+    el.reportFull.setAttribute('aria-hidden', 'false');
+    const pending = pin.pending;
+    el.reportScroll.innerHTML = '';
+    const banner = document.createElement('div');
+    banner.className = 'status-banner' + (pending ? '' : ' status-banner--ok');
+    banner.innerHTML =
+      '<span class="status-banner__icon">' + (pending ? '⏱' : '✓') + '</span><div><div class="status-banner__t">' +
+      (pending ? 'Pending review' : 'Approved on map') +
+      '</div><div class="status-banner__d">' +
+      (pending
+        ? 'Your pin is queued for agronomy review. You can keep scouting.'
+        : 'Visible to your team on the field map.') +
+      '</div></div>';
+    el.reportScroll.appendChild(banner);
+
+    const field = document.createElement('div');
+    field.className = 'report-card';
+    field.innerHTML =
+      '<h3>Field context</h3><div style="font-size:18px;font-weight:700;">West 80</div><div style="font-size:14px;color:var(--color-text-muted);margin-top:4px;">Grower · Heartland Co-op</div><div style="font-size:12px;color:var(--color-text-muted);margin-top:8px;">156 ac · Corn 2026</div>';
+    el.reportScroll.appendChild(field);
+
+    if (pin.trial) {
+      const trial = document.createElement('div');
+      trial.className = 'report-card';
+      trial.innerHTML = '<h3>Trial metadata</h3><div class="kv"><span class="kv__k">Trial ID</span><span class="kv__v">' + pin.trial + '</span></div><div class="kv"><span class="kv__k">Zone</span><span class="kv__v">' + pin.zone + '</span></div>';
+      el.reportScroll.appendChild(trial);
+    }
+
+    const obs = document.createElement('div');
+    obs.className = 'report-card';
+    let kv = '<h3>Observation</h3>';
+    kv += '<div class="kv"><span class="kv__k">Issue</span><span class="kv__v">' + pin.cat + '</span></div>';
+    kv += '<div class="kv"><span class="kv__k">Treatment zone</span><span class="kv__v">' + pin.zone + '</span></div>';
+    if (pin.growth) kv += '<div class="kv"><span class="kv__k">Growth stage</span><span class="kv__v">' + pin.growth + '</span></div>';
+    if (pin.barcode) kv += '<div class="kv"><span class="kv__k">Barcode</span><span class="kv__v">' + pin.barcode + '</span></div>';
+    if (pin.notes) kv += '<div class="kv"><span class="kv__k">Notes</span><span class="kv__v">' + pin.notes + '</span></div>';
+    obs.innerHTML = kv;
+    el.reportScroll.appendChild(obs);
+
+    if (pin.cat === 'Tissue Test' && pending) {
+      const lab = document.createElement('div');
+      lab.className = 'report-card';
+      lab.innerHTML =
+        '<h3>Lab analysis</h3><div style="display:flex;gap:12px;align-items:center;"><span style="font-size:20px;">⋯</span><div><div style="font-weight:600;">Pending analysis</div><div style="font-size:13px;color:var(--color-text-muted);margin-top:4px;">Nutrient results will appear when the lab posts them.</div></div></div>';
+      el.reportScroll.appendChild(lab);
+    }
+  }
+
+  function closeReport() {
+    el.reportFull.classList.remove('report-full--open');
+    el.reportFull.setAttribute('aria-hidden', 'true');
+    state.reportPinId = null;
+  }
+
+  function renderCategoryStep() {
+    state.sheetStep = 'category';
+    el.composerTitle.textContent = 'New Location';
+    el.composerBack.disabled = true;
+    el.composerBody.innerHTML = '';
+    const t = document.getElementById('tplCategory').content.cloneNode(true);
+    const grid = t.getElementById('catGrid');
+    CATEGORIES.forEach(function (c) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cat-cell' + (state.selectedCategory === c.id ? ' cat-cell--selected' : '');
+      b.innerHTML = '<div class="cat-cell__icon">' + c.icon + '</div><div class="cat-cell__label">' + c.label + '</div>';
+      b.addEventListener('click', function () {
+        state.selectedCategory = c.id;
+        state.dirty = true;
+        renderCategoryStep();
+        updatePrimary();
+      });
+      grid.appendChild(b);
+    });
+    el.composerBody.appendChild(t);
+    el.composerPrimary.textContent = state.selectedCategory === 'tissue' ? 'Continue to tissue test' : 'Continue';
+    updatePrimary();
+  }
+
+  function wireTissueForm() {
+    document.getElementById('tissueChangeCat').addEventListener('click', function () {
+      state.sheetStep = 'category';
+      renderComposer();
+    });
+    const zone = document.getElementById('zoneSelect');
+    zone.value = state.zoneId;
+    zone.addEventListener('change', function () {
+      state.zoneId = zone.value;
+      state.dirty = true;
+      updatePrimary();
+    });
+    const bf = document.getElementById('barcodeField');
+    bf.value = state.barcode;
+    bf.addEventListener('input', function () {
+      state.barcode = bf.value;
+      if (state.barcode && state.barcodeSource !== 'scan') state.barcodeSource = 'manual';
+      document.getElementById('barcodeSourceHint').classList.toggle('hidden', state.barcodeSource !== 'scan');
+      state.dirty = true;
+    });
+    document.getElementById('btnScan').addEventListener('click', function () {
+      el.barcodeInput.value = state.barcode || 'AGMRI-2026-004812';
+      el.barcodeFull.classList.add('barcode-full--open');
+      el.barcodeFull.setAttribute('aria-hidden', 'false');
+    });
+    document.getElementById('notesField').value = state.notes;
+    document.getElementById('notesField').addEventListener('input', function (e) {
+      state.notes = e.target.value;
+      state.dirty = true;
+    });
+    const gs = document.getElementById('growthSelect');
+    gs.value = state.growth;
+    gs.addEventListener('change', function () {
+      state.growth = gs.value;
+      state.dirty = true;
+    });
+    renderMediaStrip();
+    document.getElementById('btnDeletePin').addEventListener('click', function () {
+      if (confirm('Delete this pin?')) discardComposer();
+    });
+  }
+
+  function renderMediaStrip() {
+    const strip = document.getElementById('mediaStrip');
+    strip.innerHTML = '';
+    const add = document.createElement('button');
+    add.type = 'button';
+    add.className = 'media-add';
+    add.textContent = '+ Add';
+    add.addEventListener('click', function () {
+      if (state.mediaCount < 8) {
+        state.mediaCount++;
+        state.dirty = true;
+        renderMediaStrip();
+      }
+    });
+    strip.appendChild(add);
+    for (let i = 0; i < state.mediaCount; i++) {
+      const th = document.createElement('div');
+      th.className = 'media-thumb';
+      const x = document.createElement('button');
+      x.type = 'button';
+      x.className = 'media-thumb__x';
+      x.textContent = '×';
+      x.addEventListener('click', function () {
+        state.mediaCount--;
+        renderMediaStrip();
+      });
+      th.appendChild(x);
+      strip.appendChild(th);
+    }
+  }
+
+  function wireGenericForm() {
+    const label = CATEGORIES.find(function (c) { return c.id === state.selectedCategory; });
+    document.getElementById('genericCatLabel').textContent = label ? label.label : '';
+    document.getElementById('genericChangeCat').addEventListener('click', function () {
+      state.sheetStep = 'category';
+      renderComposer();
+    });
+    const gn = document.getElementById('genericNotes');
+    gn.value = state.notes;
+    gn.addEventListener('input', function (e) {
+      state.notes = e.target.value;
+      state.dirty = true;
+    });
+    document.getElementById('btnDeletePinGen').addEventListener('click', function () {
+      if (confirm('Delete this pin?')) discardComposer();
+    });
+  }
+
+  function renderComposer() {
+    if (state.sheetStep === 'category') {
+      renderCategoryStep();
+      return;
+    }
+    el.composerBack.disabled = false;
+    if (state.sheetStep === 'tissue') {
+      el.composerTitle.textContent = 'Tissue test';
+      el.composerBody.innerHTML = '';
+      el.composerBody.appendChild(document.getElementById('tplTissue').content.cloneNode(true));
+      wireTissueForm();
+      document.getElementById('barcodeSourceHint').classList.toggle('hidden', state.barcodeSource !== 'scan');
+      updatePrimary();
+      return;
+    }
+    if (state.sheetStep === 'generic') {
+      el.composerTitle.textContent = labelForCategory(state.selectedCategory);
+      el.composerBody.innerHTML = '';
+      el.composerBody.appendChild(document.getElementById('tplGeneric').content.cloneNode(true));
+      wireGenericForm();
+      updatePrimary();
+    }
+  }
+
+  function labelForCategory(id) {
+    const c = CATEGORIES.find(function (x) { return x.id === id; });
+    return c ? c.label : 'Observation';
+  }
+
+  function updatePrimary() {
+    if (state.sheetStep === 'category') {
+      el.composerHint.textContent = state.selectedCategory ? ' ' : 'Select a category to continue';
+      el.composerPrimary.textContent = state.selectedCategory === 'tissue' ? 'Continue to tissue test' : 'Continue';
+      el.composerPrimary.disabled = !state.selectedCategory;
+      el.composerPrimary.onclick = onContinueCategory;
+      return;
+    }
+    if (state.sheetStep === 'tissue') {
+      const ok = !!state.zoneId;
+      el.composerHint.textContent = ok ? ' ' : 'Select a treatment zone to save';
+      el.composerPrimary.textContent = 'Save pin';
+      el.composerPrimary.disabled = !ok;
+      el.composerPrimary.onclick = onSaveTissue;
+      return;
+    }
+    if (state.sheetStep === 'generic') {
+      el.composerHint.textContent = ' ';
+      el.composerPrimary.textContent = 'Save pin';
+      el.composerPrimary.disabled = false;
+      el.composerPrimary.onclick = onSaveGeneric;
+    }
+  }
+
+  function onContinueCategory() {
+    if (!state.selectedCategory) return;
+    if (state.selectedCategory === 'tissue') state.sheetStep = 'tissue';
+    else state.sheetStep = 'generic';
+    renderComposer();
+  }
+
+  function onSaveTissue() {
+    if (!state.zoneId || !state.draftPct) return;
+    const z = document.getElementById('zoneSelect');
+    const zText = z.options[z.selectedIndex].text;
+    const bc = (document.getElementById('barcodeField') && document.getElementById('barcodeField').value) || '';
+    let lbl = 'Tissue test';
+    if (bc) lbl = 'Tissue · ' + (bc.length > 12 ? bc.slice(0, 12) + '…' : bc);
+    state.pins.push({
+      id: 'p' + Date.now(),
+      pct: state.draftPct,
+      label: lbl,
+      pending: true,
+      cat: 'Tissue Test',
+      zone: zText,
+      barcode: bc,
+      notes: state.notes,
+      growth: state.growth,
+      media: state.mediaCount,
+      trial: 'TRL-2026-014'
+    });
+    renderPins();
+    closeComposer();
+  }
+
+  function onSaveGeneric() {
+    if (!state.draftPct) return;
+    const lab = labelForCategory(state.selectedCategory);
+    state.pins.push({
+      id: 'p' + Date.now(),
+      pct: state.draftPct,
+      label: lab,
+      pending: false,
+      cat: lab,
+      zone: '—',
+      barcode: '',
+      notes: state.notes,
+      growth: '',
+      media: 0,
+      trial: null
+    });
+    renderPins();
+    closeComposer();
+  }
+
+  el.fab.addEventListener('click', function (e) {
+    e.stopPropagation();
+    openTools();
+  });
+
+  el.backdropTools.addEventListener('click', closeTools);
+  el.toolSheetCancel.addEventListener('click', closeTools);
+
+  document.querySelectorAll('[data-tool]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      closeTools();
+      if (btn.getAttribute('data-tool') === 'pin') setPlacementArmed(true);
+    });
+  });
+
+  el.placementCancel.addEventListener('click', function () {
+    setPlacementArmed(false);
+  });
+
+  el.mapStage.addEventListener('click', function (e) {
+    if (!state.placementArmed) return;
+    if (e.target.closest('.fab') || e.target.closest('.map-pin')) return;
+    state.draftPct = mapPctFromEvent(e);
+    state.dirty = false;
+    resetDraftFields();
+    state.selectedCategory = null;
+    state.sheetStep = 'category';
+    setPlacementArmed(false);
+    openComposer();
+  });
+
+  el.composerClose.addEventListener('click', function () {
+    if (state.dirty) {
+      if (confirm('Discard changes?')) discardComposer();
+    } else discardComposer();
+  });
+
+  el.backdropComposer.addEventListener('click', function () {
+    el.composerClose.click();
+  });
+
+  el.composerBack.addEventListener('click', function () {
+    if (state.sheetStep === 'category') return;
+    state.sheetStep = 'category';
+    renderComposer();
+  });
+
+  el.barcodeClose.addEventListener('click', function () {
+    el.barcodeFull.classList.remove('barcode-full--open');
+    el.barcodeFull.setAttribute('aria-hidden', 'true');
+  });
+
+  el.barcodeUse.addEventListener('click', function () {
+    const v = el.barcodeInput.value.trim();
+    state.barcode = v;
+    state.barcodeSource = 'scan';
+    const bf = document.getElementById('barcodeField');
+    if (bf) bf.value = v;
+    const h = document.getElementById('barcodeSourceHint');
+    if (h) h.classList.remove('hidden');
+    el.barcodeFull.classList.remove('barcode-full--open');
+    el.barcodeFull.setAttribute('aria-hidden', 'true');
+  });
+
+  el.barcodeManual.addEventListener('click', el.barcodeClose.click.bind(el.barcodeClose));
+
+  el.reportDone.addEventListener('click', closeReport);
+
+  renderPins();
+})();
+  </script>
+</body>
+</html>

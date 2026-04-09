@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather page — hover state export URLs</title>
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 28px 48px;
+      font-family: var(--font-family-web, system-ui, sans-serif);
+      background: var(--color-neutral-50, #fafafa);
+      color: var(--color-text);
+      line-height: 1.5;
+    }
+    h1 { font-size: 1.35rem; font-weight: 700; margin: 0 0 8px; }
+    p.lead { margin: 0 0 20px; color: var(--color-text-muted); font-size: 14px; max-width: 720px; }
+    code { font-size: 12px; background: var(--color-neutral-100); padding: 2px 6px; border-radius: 4px; }
+    .meta { font-size: 12px; color: var(--color-text-muted); margin-bottom: 20px; }
+    .meta a { color: var(--color-brand-500); }
+    table { width: 100%; max-width: 1100px; border-collapse: collapse; background: var(--color-surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    th, td { text-align: left; padding: 10px 12px; font-size: 13px; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+    th { background: var(--color-neutral-50); font-weight: 600; color: var(--color-text-muted); font-size: 12px; }
+    tr:last-child td { border-bottom: none; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    a.open { color: var(--color-brand-500); font-weight: 600; text-decoration: none; }
+    a.open:hover { text-decoration: underline; }
+    button.copy {
+      font-family: inherit;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      cursor: pointer;
+    }
+    button.copy:hover { background: var(--color-neutral-50); }
+    .err { color: #b91c1c; font-size: 14px; margin-bottom: 16px; }
+    .query { word-break: break-all; font-size: 12px; color: var(--color-text-muted); }
+  </style>
+</head>
+<body>
+  <h1>Weather hover states — export URLs</h1>
+  <p class="lead">
+    Each link opens <code>agmri-weather.html</code> with a frozen hover visual (query <code>figmaHover=…</code>).
+    Use these URLs with Figma HTML→Design, screenshots, or design QA. Real <code>:hover</code> is not captured by static export tools.
+  </p>
+  <p class="meta">
+    <strong>Export (all states, one document):</strong>
+    <a href="weather-hover-states-export.html"><code>pages/weather-hover-states-export.html</code></a>
+    · Manifest: <a href="../data/weather-hover-states.json"><code>data/weather-hover-states.json</code></a>
+    · CSS: <a href="css/weather-hover-export.css"><code>pages/css/weather-hover-export.css</code></a>
+    · Layout: <a href="css/weather-hover-states-export.css"><code>pages/css/weather-hover-states-export.css</code></a>
+  </p>
+  <p id="fetch-err" class="err" hidden></p>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:28%">State</th>
+        <th style="width:42%">Query</th>
+        <th style="width:30%">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <script>
+    (function () {
+      var tbody = document.getElementById('rows');
+      var errEl = document.getElementById('fetch-err');
+      var weatherPage = new URL('agmri-weather.html', window.location.href).href;
+
+      function row(state) {
+        var full = weatherPage + (weatherPage.indexOf('?') >= 0 ? '&' : '?') + state.query;
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + escapeHtml(state.label) + '</td>' +
+          '<td class="query"><code>' + escapeHtml(state.query) + '</code></td>' +
+          '<td><div class="actions">' +
+          '<a class="open" href="' + escapeAttr(full) + '" target="_blank" rel="noopener">Open</a>' +
+          '<button type="button" class="copy" data-url="' + escapeAttr(full) + '">Copy URL</button>' +
+          '</div></td>';
+        return tr;
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function escapeAttr(s) {
+        return escapeHtml(s).replace(/'/g, '&#39;');
+      }
+
+      fetch('../data/weather-hover-states.json')
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (data) {
+          (data.states || []).forEach(function (s) {
+            tbody.appendChild(row(s));
+          });
+          tbody.addEventListener('click', function (e) {
+            var btn = e.target.closest('.copy');
+            if (!btn || !btn.getAttribute('data-url')) return;
+            var url = btn.getAttribute('data-url');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(url).then(function () {
+                var t = btn.textContent;
+                btn.textContent = 'Copied';
+                setTimeout(function () { btn.textContent = t; }, 1500);
+              });
+            }
+          });
+        })
+        .catch(function () {
+          errEl.hidden = false;
+          errEl.textContent =
+            'Could not load ../data/weather-hover-states.json. Serve this folder over HTTP (e.g. python3 -m http.server from the repo root) and open pages/weather-hover-states.html again.';
+        });
+    })();
+  </script>
+</body>
+</html>

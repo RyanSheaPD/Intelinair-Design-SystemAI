@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yield Forecast — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="design-tokens/tokens.css" />
+  <link rel="stylesheet" href="components/typography.css" />
+  <link rel="stylesheet" href="components/empty-state.css" />
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <style>
+    /*
+     * Crop row: parity with app crop selector (flex + outline surface + active state + mat-icon-style SVG + f-14 label + count).
+     * Chart view: app data-set-controls / data-set-control + active (Day|Week|Season pattern).
+     */
+    /* Webfont: Figtree (loaded above); lock stack for this page */
+    html { font-family: var(--font-family-web); }
+    body { margin: 0; font-family: var(--font-family-web); background: var(--color-neutral-100); color: var(--color-text); padding: 16px; }
+    .yield-page { max-width: 560px; margin: 0 auto; }
+    /* Reference layout: card only (Ideal / Realistic demo bar hidden) */
+    .yield-model-bar { display: none; margin-bottom: var(--spacing-l); padding-bottom: var(--spacing-l); border-bottom: 1px solid var(--color-border); }
+    .yield-model-bar__label { margin: 0 0 var(--spacing-s); font-size: var(--type-caption-size, 12px); font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .yield-model-toggle { display: inline-flex; }
+    .yield-model-toggle .yield-model-toggle__btn {
+      height: 32px;
+      padding: 0 14px;
+      margin-left: -1px;
+      border: 1px solid var(--color-border);
+      border-radius: 0;
+      background: var(--color-surface);
+      color: var(--color-text-muted);
+      font-family: var(--font-family-web);
+      font-size: var(--type-body-size, 14px);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .yield-model-toggle .yield-model-toggle__btn:first-of-type { margin-left: 0; border-radius: var(--radius-md) 0 0 var(--radius-md); }
+    .yield-model-toggle .yield-model-toggle__btn:last-of-type { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+    .yield-model-toggle .yield-model-toggle__btn:hover { background: var(--color-neutral-100); color: var(--color-text); }
+    .yield-model-toggle .yield-model-toggle__btn[aria-pressed="true"] { background: var(--color-action); border-color: var(--color-action); color: var(--color-text-inverse); }
+    .yield-card {
+      /* Subset of Angular Material + app theme (matches live app computed styles / CSS variables). */
+      --app-primary-color: #3c84c7;
+      --app-primary-color-100: #c5daee;
+      --app-primary-color-400: #3677b3;
+      --mat-app-text-color: rgba(0, 0, 0, 0.87);
+      --mat-app-background-color: #fafafa;
+      --mat-divider-color: rgba(0, 0, 0, 0.12);
+      background: var(--color-surface);
+      border-radius: 20px;
+      border: 1px solid #e8e8e8;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .yield-card__title {
+      margin: 0 0 var(--spacing-m);
+      padding: 0;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+    }
+    .yield-card__crop-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-m);
+      margin-bottom: var(--spacing-l);
+      flex-wrap: wrap;
+    }
+    /* Crop row — pill chips: inactive = #c5daee bg + #3c84c7 icon/text; active = #3c84c7 fill + white content. */
+    .yield-card__crop.yield-card__crop-pills {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--spacing-s, 8px);
+    }
+    .crop-chip {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-family: var(--font-family-web), Figtree, sans-serif;
+      font-weight: 400;
+      color: inherit;
+      border-radius: 9999px;
+      text-align: left;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .crop-chip:focus {
+      outline: none;
+    }
+    .crop-chip:focus-visible .crop-chip__surface {
+      box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--app-primary-color);
+    }
+    .crop-chip__surface {
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 30px;
+      height: 30px;
+      max-height: 30px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 9999px;
+      background: var(--app-primary-color-100);
+      color: var(--app-primary-color);
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .crop-chip:hover:not([aria-pressed="true"]) .crop-chip__surface {
+      background: color-mix(in srgb, var(--app-primary-color-100) 82%, var(--app-primary-color));
+      color: var(--app-primary-color);
+    }
+    .crop-chip[aria-pressed="true"] .crop-chip__surface {
+      background: var(--app-primary-color);
+      color: #fff;
+      box-shadow: none;
+    }
+    .crop-chip[aria-pressed="true"]:hover .crop-chip__surface {
+      background: var(--app-primary-color-400);
+      color: #fff;
+    }
+    .crop-chip__icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: currentColor;
+    }
+    .crop-chip__icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .crop-chip__label,
+    .crop-chip__count {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: normal;
+      color: currentColor;
+    }
+    .crop-chip__count {
+      font-variant-numeric: tabular-nums;
+    }
+    .yield-card__county-wrap {
+      display: none;
+      align-items: center;
+      gap: var(--spacing-s);
+      flex-shrink: 0;
+    }
+    .yield-card--histogram .yield-card__county-wrap { display: flex; }
+    .yield-card__county-label {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--type-caption-size, 12px);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .yield-card__county-select {
+      min-width: 168px;
+      height: 30px;
+      padding: 0 28px 0 10px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-family: var(--font-family-web);
+      font-size: var(--type-caption-size, 12px);
+      font-weight: 500;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .yield-card__county-select:hover { border-color: var(--color-neutral-300); }
+    .yield-card__county-select:focus {
+      outline: none;
+      border-color: var(--color-action);
+      box-shadow: 0 0 0 2px rgba(60, 132, 199, 0.2);
+    }
+    .yield-card__headers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-l);
+      padding-bottom: var(--spacing-m);
+      margin-bottom: var(--spacing-m);
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .yield-card__stat-block { padding-bottom: 0; }
+    .yield-card__stat-label { margin: 0 0 4px; color: #888888; font-weight: 500; }
+    .yield-card__stat-value { margin: 0; color: #000000; font-size: 2rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
+    .yield-card__chart-wrap { margin-bottom: var(--spacing-l); }
+    /* Legend (left) + % Acres / # Fields toggle (right) — same row as reference */
+    .yield-card__chart-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-m);
+      margin-bottom: var(--spacing-s);
+      flex-wrap: wrap;
+    }
+    .yield-card__chart-toolbar .yield-card__chart-legend { margin-top: 0; flex: 1 1 auto; min-width: 0; }
+    .yield-card__chart-toolbar .yield-card__chart-toggle { flex-shrink: 0; margin-bottom: 0; }
+    /* App utility mirrors (scoped to card) */
+    .yield-card .d-flex { display: flex; }
+    .yield-card .align-items-center { align-items: center; }
+    .yield-card .cursor-pointer { cursor: pointer; }
+    .yield-card .f-14 { font-size: 14px; line-height: normal; font-weight: 400; }
+    /* data-set-controls: Day / Week / Season class names; each control is its own pill (not a segmented bar) */
+    .yield-card .data-set-controls {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--spacing-s, 8px);
+      box-sizing: border-box;
+    }
+    .yield-card .data-set-control {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0 16px;
+      min-height: 30px;
+      height: 30px;
+      border: 1px solid var(--mat-divider-color);
+      border-radius: 9999px;
+      background: var(--color-surface);
+      font-family: var(--font-family-web), Figtree, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: normal;
+      color: var(--mat-app-text-color);
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .yield-card .data-set-control:hover {
+      border-color: rgba(0, 0, 0, 0.24);
+      background: var(--mat-app-background-color);
+    }
+    .yield-card .data-set-control.active {
+      border-color: var(--app-primary-color);
+      background: var(--app-primary-color-100);
+      color: var(--mat-app-text-color);
+    }
+    .yield-card .data-set-control:focus {
+      outline: none;
+    }
+    .yield-card .data-set-control:focus-visible {
+      box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--app-primary-color);
+    }
+    .yield-card__chart-toggle {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .yield-card__chart-inner { display: flex; gap: var(--spacing-s); align-items: stretch; }
+    .yield-card__chart-y { display: flex; flex-direction: column; justify-content: space-between; width: 22px; flex-shrink: 0; padding-top: 4px; padding-bottom: 22px; box-sizing: border-box; }
+    .yield-card__chart-y .type-caption { color: var(--color-text-muted); line-height: 1; font-size: 11px; text-align: right; }
+    .yield-card--hc .yield-card__chart-y { display: none; }
+    .yield-card__chart-area { position: relative; height: 180px; width: 100%; flex: 1; border-radius: var(--radius-md); overflow: hidden; min-width: 0; background: var(--color-surface); }
+    .yield-card__chart-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .yield-card__chart-highcharts { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .yield-card--hc .yield-card__chart-svg { display: none; }
+    .yield-card__chart-area .highcharts-root,
+    .yield-card__chart-area .highcharts-container text { font-family: var(--font-family-web) !important; }
+    .yield-card__chart-xlabels { display: flex; justify-content: space-between; margin-top: 2px; padding: 0 2px; }
+    .yield-card__chart-xlabels .type-caption { color: var(--color-text-muted); font-size: 9px; line-height: 1.2; text-align: center; flex: 1; min-width: 0; }
+    .yield-card--hc .yield-card__chart-xlabels { display: none; }
+    .yield-card__chart-legend { display: flex; flex-wrap: wrap; gap: var(--spacing-l); padding-left: 0; align-items: center; }
+    .yield-card__chart-legend span { display: inline-flex; align-items: center; gap: 6px; font-size: var(--type-caption-size, 12px); color: var(--color-text-muted); }
+    .yield-card__chart-legend .legend-swatch { width: 12px; height: 3px; border-radius: 2px; }
+    .yield-card__chart-legend .legend-swatch--yield { background: #42d379; }
+    .yield-card__chart-legend .legend-swatch--dry { background: #888888; }
+    .yield-card__footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: var(--spacing-m);
+      padding-top: var(--spacing-s);
+      border-top: 1px solid #e0e0e0;
+      margin-top: var(--spacing-s);
+    }
+    .yield-card__footer-main { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: var(--spacing-m); }
+    .yield-card__footer-aside { flex: 0 0 auto; text-align: right; max-width: 220px; }
+    .yield-card__company-line {
+      margin: 0;
+      color: #737373;
+      font-size: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px 10px;
+    }
+    .yield-card__company-label { font-weight: 600; color: #525252; }
+    .yield-card__company-name { font-weight: 600; color: var(--color-text); }
+    .yield-card__company-badge {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f1f5f9;
+    }
+    .yield-card__stats { display: flex; flex-direction: column; gap: var(--spacing-m); }
+    .yield-card__stats-total {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .yield-card__stats-total .type-caption { color: #737373; }
+    .yield-card__stats-total .type-footnote { font-weight: 700; color: #000; }
+    .yield-card__stats-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-m);
+    }
+    @media (max-width: 420px) {
+      .yield-card__stats-columns { grid-template-columns: 1fr; }
+    }
+    .yield-card__stats-series {
+      padding: var(--spacing-s) var(--spacing-m);
+      border-radius: var(--radius-md);
+      background: #fafafa;
+      border: 1px solid #eeeeee;
+    }
+    .yield-card__stats-series--forecast { border-left: 3px solid #42d379; }
+    .yield-card__stats-series--actual { border-left: 3px solid #888888; }
+    .yield-card__stats-series-label {
+      display: block;
+      margin: 0 0 var(--spacing-s);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #737373;
+    }
+    .yield-card__stats-series--forecast .yield-card__stats-series-label { color: #1a7d37; }
+    .yield-card__stats-series--actual .yield-card__stats-series-label { color: #5c5c5c; }
+    .yield-card__stat-item { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+    .yield-card__stat-item:last-child { margin-bottom: 0; }
+    .yield-card__stat-item .type-caption { color: #737373; font-size: 11px; }
+    .yield-card__stat-item .type-footnote { font-weight: 700; font-size: 13px; }
+    .yield-card__stats-series--forecast .yield-card__stat-item .type-footnote { color: #1a7d37; }
+    .yield-card__stats-series--actual .yield-card__stat-item .type-footnote { color: #888888; }
+    .yield-card__last-update { color: #a3a3a3; font-size: 11px; margin: 0 0 6px; }
+    .yield-card__product-note {
+      margin: 0;
+      font-size: 10px;
+      line-height: 1.45;
+      color: #a3a3a3;
+      max-width: 28em;
+      margin-left: auto;
+    }
+    .yield-card__empty.empty-state {
+      background: transparent;
+      min-height: 200px;
+      padding: var(--spacing-xl) var(--spacing-l);
+    }
+    .yield-card__main[hidden] { display: none !important; }
+    .yield-card__empty[hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="yield-page">
+  <div class="yield-model-bar">
+    <p class="yield-model-bar__label">Forecast model</p>
+    <div class="yield-model-toggle" role="group" aria-label="Forecast model">
+      <button type="button" class="yield-model-toggle__btn" data-model="ideal" aria-pressed="true">Ideal</button>
+      <button type="button" class="yield-model-toggle__btn" data-model="realistic" aria-pressed="false">Realistic</button>
+      <button type="button" class="yield-model-toggle__btn" data-model="empty" aria-pressed="false">No data</button>
+    </div>
+  </div>
+  <div class="yield-card yield-card--soy" id="yield-card" data-crop="soy" data-model="ideal" data-y-view="fields" data-county="adams-in" data-demo-company="Demo Growers LLC" aria-labelledby="yield-card-title">
+    <h2 class="type-title3 yield-card__title" id="yield-card-title">Yield forecast</h2>
+    <div class="yield-card__main" id="yield-card-main">
+    <div class="yield-card__crop-row">
+    <div class="yield-card__crop yield-card__crop-pills" role="group" aria-label="Crop">
+      <!-- Static mirror of app crop control: .d-flex.outline + .active, mat-icon crop SVG, .f-14 label + trailing count -->
+      <button type="button" class="crop-chip yield-card__crop-btn" data-crop="corn" aria-pressed="false">
+        <span class="crop-chip__surface">
+          <span class="crop-chip__icon crop-chip__icon--corn" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" focusable="false" aria-hidden="true">
+              <path d="M5.2095 5.42725C7.22297 5.42725 8.71253 7.28453 8.93802 10.5981C8.93801 10.9192 8.91883 11.2447 8.88138 11.5698L8.8804 11.5718C8.79586 12.104 8.74562 12.3899 8.51321 12.7466C8.44588 12.8496 8.47517 12.9881 8.57864 13.0552C8.68166 13.1224 8.82019 13.0932 8.88724 12.9897C9.16447 12.5633 9.24561 12.2142 9.32474 11.6206V11.6187C9.36399 11.2777 9.3843 10.9353 9.38431 10.5981C9.38431 9.48513 9.158 8.50327 8.83548 7.77686C8.88165 7.62084 8.94347 7.47148 9.01907 7.33154C9.20756 6.98149 9.48689 6.69108 9.83939 6.51514C10.0083 6.43072 10.1946 6.37302 10.3921 6.34717C10.4688 6.3398 10.6086 6.33118 10.8482 6.33252H11.607C11.6832 6.33207 11.7598 6.35883 11.8169 6.40186C11.8745 6.44479 11.9143 6.50106 11.937 6.56104C11.9522 6.60155 11.9595 6.64418 11.9595 6.68799C11.96 6.74801 11.9444 6.81239 11.9087 6.87061C11.8732 6.92828 11.8161 6.9766 11.7515 7.00439C11.4812 7.12128 11.2563 7.30182 11.0992 7.52686C10.9423 7.7522 10.8516 8.02315 10.8511 8.3374V11.2593C10.8511 12.0466 10.5303 12.7627 10.0142 13.2788C9.69788 13.595 9.30688 13.8375 8.86966 13.978C8.86966 14.4144 8.51545 14.7688 8.07864 14.769H7.91165C7.47511 14.769 7.12064 14.4146 7.12064 13.978C6.68418 13.8376 6.29257 13.5952 5.9761 13.2788C5.45954 12.7627 5.13972 12.0466 5.14017 11.2593V7.44678C5.13969 7.13227 5.04805 6.84594 4.88919 6.604C4.73021 6.362 4.50366 6.16464 4.23489 6.03662C4.17803 6.00985 4.12766 5.96525 4.09622 5.9126C4.06543 5.86052 4.0513 5.80245 4.0513 5.74756C4.0513 5.68846 4.06721 5.63132 4.09818 5.57959C4.12916 5.52829 4.1778 5.48182 4.23978 5.45459C4.28029 5.43614 4.32637 5.42729 4.37064 5.42725H5.2095ZM7.99466 1.23096C8.17111 1.23051 8.35056 1.2975 8.48685 1.43018L8.65286 1.59131C8.70232 1.63876 8.76764 1.66453 8.8345 1.66455C8.84699 1.66455 8.85913 1.66343 8.87161 1.66162L9.10013 1.62939L9.19974 1.62256C9.36922 1.62256 9.52855 1.68363 9.65189 1.78662C9.77609 1.88962 9.86591 2.03717 9.89603 2.20752L9.93607 2.43506C9.94944 2.51443 9.99976 2.58313 10.0708 2.62061L10.2759 2.72998C10.3944 2.79283 10.4895 2.88571 10.5533 2.99463C10.6179 3.10279 10.6509 3.22787 10.6509 3.35498C10.6508 3.45918 10.6284 3.56591 10.5796 3.66455L10.523 3.78076L10.5025 3.83643C10.4981 3.85561 10.4966 3.87532 10.4966 3.89502C10.4966 3.96151 10.5219 4.02672 10.5699 4.07666L10.6587 4.16943C10.7908 4.30616 10.8579 4.48421 10.8579 4.66064C10.8579 4.8371 10.7909 5.01609 10.6587 5.15283C10.6095 5.20354 10.586 5.26769 10.5855 5.3335C10.5859 5.39948 10.6095 5.46431 10.6587 5.51514C10.7615 5.62157 10.8254 5.75402 10.8482 5.89111C9.71655 5.87316 8.9312 6.34736 8.58548 7.25635C7.92856 6.00616 6.79364 4.91965 5.2095 4.98389C5.15777 4.88268 5.13192 4.77103 5.13235 4.66064C5.1319 4.48432 5.19856 4.30613 5.3306 4.16943L5.42044 4.07666C5.46887 4.02672 5.49368 3.9615 5.49368 3.89502C5.49368 3.8563 5.48483 3.81769 5.46732 3.78076L5.41068 3.66455C5.36224 3.56572 5.33841 3.4584 5.33841 3.354C5.33848 3.22703 5.37333 3.10268 5.43704 2.99463C5.50122 2.88576 5.59592 2.79281 5.71439 2.72998L5.91946 2.62061C5.99055 2.58314 6.03995 2.51459 6.05423 2.43506L6.09427 2.20752C6.12435 2.03723 6.21423 1.88964 6.33743 1.78662C6.46169 1.68358 6.62103 1.62256 6.79056 1.62256C6.82313 1.62257 6.85661 1.62434 6.88919 1.62939L7.11868 1.66162C7.13116 1.66342 7.14376 1.66455 7.15579 1.66455C7.22263 1.66452 7.28791 1.63828 7.33646 1.59131L7.50345 1.43018C7.63992 1.29768 7.81794 1.23061 7.99466 1.23096Z" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="crop-chip__label">Corn</span>
+          <span class="crop-chip__count" data-crop-acres="corn">4,820</span>
+        </span>
+      </button>
+      <button type="button" class="crop-chip yield-card__crop-btn" data-crop="soy" aria-pressed="true">
+        <span class="crop-chip__surface">
+          <span class="crop-chip__icon crop-chip__icon--soy" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" fill="none" focusable="false" aria-hidden="true">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M4.64131 19.5005C4.73418 19.3168 4.83659 19.1143 4.95004 18.8997C3.97001 18.9072 3.28493 18.4371 2.8594 18.1173C2.29363 17.6923 0 17.3017 0 17.3017C1.06624 16.8729 1.65798 15.8 1.65798 15.8C2.07845 12.4264 3.8677 11.653 5.15211 11.298C5.41607 11.2251 5.68241 11.1694 5.94369 11.1147C6.954 10.9034 7.88867 10.7079 8.31773 9.59386C8.8582 8.19151 9.99824 7.67886 9.99824 7.67886C12.5569 6.54204 12.7514 5.95237 12.7514 5.95237C12.7514 5.95237 14.1239 3.13849 15.955 2.5364C16.8725 2.23501 17.5713 1.96052 18.0399 1.76189L18.0369 1.75293C18.0369 1.75293 19.8395 0.677952 20.0516 0C20.0516 0 21.1492 2.72974 21.1889 3.35665C21.5604 4.17162 22.3609 6.35537 21.3011 8.19588C20.8495 8.98028 20.4719 9.42519 20.151 9.80333C19.5257 10.5402 19.1154 11.0236 18.7914 13.2717C18.3015 16.6734 15.5931 17.17 15.5931 17.17C15.5931 17.17 13.4319 17.689 12.9199 19.161C12.4075 20.6326 10.0311 22.5577 7.51058 21.848C4.98981 21.1386 3.02331 21.4715 3.02331 21.4715C3.02331 21.4715 3.5516 21.0439 4.14404 20.3744C4.2731 20.2287 4.43326 19.9119 4.64131 19.5005ZM3.90156 16.0466C4.16952 16.7128 4.73321 17.1705 5.38048 17.3313C5.8642 16.4383 6.65865 15.268 8.03774 15.0472C8.019 14.8444 7.9711 14.6408 7.89113 14.442C7.44823 13.3403 6.19575 12.8065 5.09406 13.2495C3.99222 13.6924 3.45852 14.9448 3.90156 16.0466ZM12.9603 10.2547C11.6656 11.0676 11.4223 11.9529 11.3423 12.2442C11.3259 12.3038 11.3163 12.3385 11.306 12.3426C11.2932 12.3479 11.272 12.3939 11.239 12.4656L11.239 12.4656C11.1669 12.6222 11.0385 12.9011 10.8183 13.1422C10.2892 12.9044 9.84718 12.4708 9.61374 11.8901C9.13545 10.7004 9.71179 9.348 10.9015 8.86942C11.9017 8.46714 13.0165 8.81094 13.6311 9.63723C13.5471 9.79106 13.3613 10.0026 12.9603 10.2547ZM15.3103 7.24486C15.3314 7.1702 15.3169 7.12897 15.3169 7.12897C15.3169 7.12897 15.3123 5.37015 16.7839 4.23939C16.4874 4.20367 16.1781 4.2418 15.8834 4.36626C14.981 4.74712 14.5584 5.78741 14.9395 6.68973C15.0295 6.90305 15.1568 7.08924 15.3103 7.24486Z" fill="currentColor" />
+            </svg>
+          </span>
+          <span class="crop-chip__label">Soybeans</span>
+          <span class="crop-chip__count" data-crop-acres="soy">3,120</span>
+        </span>
+      </button>
+    </div>
+    <div class="yield-card__county-wrap">
+      <label class="yield-card__county-label" for="yield-county-select">County</label>
+      <select id="yield-county-select" class="yield-card__county-select" aria-label="County for histogram">
+        <option value="adams-in">Adams County, IN</option>
+        <option value="boone-in">Boone County, IN</option>
+        <option value="jasper-in">Jasper County, IN</option>
+        <option value="story-ia">Story County, IA</option>
+        <option value="dubuque-ia">Dubuque County, IA</option>
+        <option value="lancaster-ne">Lancaster County, NE</option>
+        <option value="hall-ne">Hall County, NE</option>
+      </select>
+    </div>
+    </div>
+
+    <div class="yield-card__headers">
+      <div class="yield-card__stat-block">
+        <p class="type-subhead yield-card__stat-label">Yield Forecast</p>
+        <p class="type-header yield-card__stat-value yield-card__stat-value--forecast">50</p>
+      </div>
+      <div class="yield-card__stat-block">
+        <p class="type-subhead yield-card__stat-label">Dry Yield</p>
+        <p class="type-header yield-card__stat-value yield-card__stat-value--dry">48</p>
+      </div>
+    </div>
+
+    <!-- X-axis buckets: corn = Looker-style bands (275+, 250–275, 225–250, … 0–175); soy = same bucket count, 0–100 bu/ac. -->
+    <div class="yield-card__chart-wrap">
+      <div class="yield-card__chart-toolbar">
+        <div class="yield-card__chart-legend" aria-label="Chart legend">
+          <span><span class="legend-swatch legend-swatch--yield" aria-hidden="true"></span><span class="legend-label-yield">Forecast</span></span>
+          <span><span class="legend-swatch legend-swatch--dry" aria-hidden="true"></span><span class="legend-label-dry">Actual</span></span>
+        </div>
+        <div class="yield-card__chart-toggle" role="group" aria-label="Chart view">
+          <div class="data-set-controls d-flex">
+            <button type="button" class="data-set-control cursor-pointer f-14 d-flex align-items-center yield-card__chart-toggle-btn" data-y-view="acres" aria-pressed="false">% of Acres</button>
+            <button type="button" class="data-set-control cursor-pointer f-14 d-flex align-items-center yield-card__chart-toggle-btn active" data-y-view="fields" aria-pressed="true"># of Fields</button>
+          </div>
+        </div>
+      </div>
+      <div class="yield-card__chart-inner">
+        <div class="yield-card__chart-y" id="yield-chart-ylabels" aria-hidden="true">
+          <span class="type-caption">100</span>
+          <span class="type-caption">50</span>
+          <span class="type-caption">0</span>
+        </div>
+        <div class="yield-card__chart-area" id="yield-bell-chart-wrap" title="Yield bucket drill-in: Analyze view, sorted by field, filtered to the selected bucket (product default).">
+          <svg class="yield-card__chart-svg" id="yield-bell-svg" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="Forecast and actual yield curves" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="yield-svg-fill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0891b2" stop-opacity="0.35" />
+                <stop offset="100%" stop-color="#0891b2" stop-opacity="0.05" />
+              </linearGradient>
+            </defs>
+            <path id="yield-svg-area" fill="url(#yield-svg-fill)" />
+            <path id="yield-svg-line" fill="none" stroke="#0891b2" stroke-width="2" />
+            <path id="yield-svg-dry" fill="none" stroke="#737373" stroke-width="2" stroke-dasharray="8 5" />
+            <g id="yield-svg-histogram" class="yield-svg-histogram" style="display: none" aria-hidden="true"></g>
+          </svg>
+          <div class="yield-card__chart-highcharts" id="yield-bell-chart"></div>
+        </div>
+      </div>
+      <div class="yield-card__chart-xlabels" id="yield-chart-xlabels" aria-hidden="true"></div>
+    </div>
+
+    <!-- v1: no hybrid split or county benchmark in-widget; averages = straight mean. Future: AI assistant summarizes distribution / drivers. -->
+    <div class="yield-card__footer">
+      <div class="yield-card__footer-main">
+        <p class="yield-card__company-line" id="yield-company-line">
+          <span class="yield-card__company-label">Company</span>
+          <span class="yield-card__company-name" id="yield-company-name">Demo Growers LLC</span>
+          <span class="yield-card__company-badge" title="Data scope follows the active company in the platform">Current selection</span>
+        </p>
+        <div class="yield-card__stats yield-card__stats--split" role="region" aria-label="Coverage by data source">
+          <div class="yield-card__stats-total">
+            <span class="type-caption">Total acres</span>
+            <span class="type-footnote yield-card__stat-acres">3,120</span>
+          </div>
+          <div class="yield-card__stats-columns">
+            <div class="yield-card__stats-series yield-card__stats-series--forecast" role="group" aria-label="Yield forecast coverage">
+              <span class="yield-card__stats-series-label">Forecast</span>
+              <div class="yield-card__stat-item">
+                <span class="type-caption">Fields</span>
+                <span class="type-footnote yield-card__stat-fields-forecast">32</span>
+              </div>
+              <div class="yield-card__stat-item">
+                <span class="type-caption">Acres represented</span>
+                <span class="type-footnote yield-card__stat-acres-rep-forecast">2,980</span>
+              </div>
+            </div>
+            <div class="yield-card__stats-series yield-card__stats-series--actual" role="group" aria-label="Actual yield coverage">
+              <span class="yield-card__stats-series-label">Actual</span>
+              <div class="yield-card__stat-item">
+                <span class="type-caption">Fields</span>
+                <span class="type-footnote yield-card__stat-fields-actual">27</span>
+              </div>
+              <div class="yield-card__stat-item">
+                <span class="type-caption">Acres represented</span>
+                <span class="type-footnote yield-card__stat-acres-rep-actual">2,510</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="yield-card__footer-aside">
+        <p class="type-caption yield-card__last-update">Last Update 00/00/2026</p>
+        <p class="yield-card__product-note">
+          Forecast can hide once enough fields report actual dry yield (starting at ~50%; threshold is company-specific).
+          Headline yields are simple averages. Yield bucket drill-in: Analyze view, sorted by field, filtered to the selected bucket.
+        </p>
+      </div>
+    </div>
+    </div>
+
+    <div class="yield-card__empty empty-state empty-state--compact" id="yield-card-empty" hidden>
+      <div class="empty-state__icon" aria-hidden="true">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 58 L28 42 L44 50 L60 22" />
+          <circle cx="44" cy="36" r="14" />
+          <path d="M54 46 L68 60" />
+        </svg>
+      </div>
+      <p class="empty-state__message">No yield forecast data available for the current selection.</p>
+    </div>
+  </div>
+  </div>
+  <script>
+    (function () {
+      var card = document.getElementById('yield-card');
+      var forecastEl = card.querySelector('.yield-card__stat-value--forecast');
+      var dryEl = card.querySelector('.yield-card__stat-value--dry');
+      var acresEl = card.querySelector('.yield-card__stat-acres');
+      var fieldsForecastEl = card.querySelector('.yield-card__stat-fields-forecast');
+      var fieldsActualEl = card.querySelector('.yield-card__stat-fields-actual');
+      var acresRepForecastEl = card.querySelector('.yield-card__stat-acres-rep-forecast');
+      var acresRepActualEl = card.querySelector('.yield-card__stat-acres-rep-actual');
+      var companyNameEl = document.getElementById('yield-company-name');
+
+      function getCompanyDisplayName() {
+        return card.getAttribute('data-demo-company') || 'Demo Growers LLC';
+      }
+
+      var cornData = {
+        forecastIdeal: '210',
+        forecastRealistic: '204',
+        dry: '198',
+        acres: '4,820',
+        fieldsForecast: '47',
+        fieldsActual: '41',
+        acresRepForecast: '4,525',
+        acresRepActual: '3,940'
+      };
+      var soyData = {
+        forecastIdeal: '50',
+        forecastRealistic: '49',
+        dry: '48',
+        acres: '3,120',
+        fieldsForecast: '32',
+        fieldsActual: '27',
+        acresRepForecast: '2,980',
+        acresRepActual: '2,510'
+      };
+
+      function getModel() {
+        var m = card.getAttribute('data-model');
+        if (m === 'realistic') return 'realistic';
+        if (m === 'empty') return 'empty';
+        return 'ideal';
+      }
+
+      /**
+       * Ideal corn — smooth reference wave: low start, ~flat left ~¼ of axis, gradual rise,
+       * soft peak ~70% across (~200 bu/ac), right tail higher than left.
+       */
+      function idealReferenceWaveCorn(xMin, xMax, steps) {
+        steps = steps || 180;
+        var data = [];
+        for (var i = 0; i <= steps; i++) {
+          var x = xMin + (i / steps) * (xMax - xMin);
+          var base = 0.17;
+          var main = 0.96 * Math.exp(-0.5 * Math.pow((x - 198) / 46, 2));
+          var rightShelf = 0.24 * Math.exp(-0.5 * Math.pow((x - 270) / 44, 2));
+          var leftRamp = 0.1 * (1 - Math.exp(-x / 58));
+          var y = Math.max(0.02, base + main + rightShelf + leftRamp);
+          data.push([Math.round(x * 10) / 10, y]);
+        }
+        return data;
+      }
+
+      /** Ideal soy — same silhouette scaled on the axis. */
+      function idealReferenceWaveSoy(xMin, xMax, steps) {
+        steps = steps || 180;
+        var span = xMax - xMin;
+        var peakX = xMin + 0.71 * span;
+        var data = [];
+        for (var i = 0; i <= steps; i++) {
+          var x = xMin + (i / steps) * span;
+          var base = 0.17;
+          var main = 0.94 * Math.exp(-0.5 * Math.pow((x - peakX) / (span * 0.2), 2));
+          var rightShelf = 0.23 * Math.exp(-0.5 * Math.pow((x - (xMax - span * 0.08)) / (span * 0.16), 2));
+          var leftRamp = 0.1 * (1 - Math.exp(-(x - xMin) / (span * 0.24)));
+          var y = Math.max(0.02, base + main + rightShelf + leftRamp);
+          data.push([Math.round(x * 10) / 10, y]);
+        }
+        return data;
+      }
+
+      function idealReferenceWavePoints(isSoy, xMin, xMax, steps) {
+        return isSoy ? idealReferenceWaveSoy(xMin, xMax, steps) : idealReferenceWaveCorn(xMin, xMax, steps);
+      }
+
+      /**
+       * Natural cubic spline (C²) through knots — used for Realistic bimodal reference.
+       * t in [0,1] along the yield axis; y is relative height before % scaling.
+       */
+      function createNaturalCubicSpline(xa, ya) {
+        var n = xa.length;
+        var a = ya.slice();
+        var b = new Array(n);
+        var d = new Array(n);
+        var h = new Array(n);
+        for (var i = 0; i < n - 1; i++) h[i] = xa[i + 1] - xa[i];
+        var alpha = new Array(n);
+        for (var j = 0; j < n; j++) alpha[j] = 0;
+        for (var i = 1; i < n - 1; i++) {
+          alpha[i] = (3 / h[i]) * (a[i + 1] - a[i]) - (3 / h[i - 1]) * (a[i] - a[i - 1]);
+        }
+        var c = new Array(n);
+        for (var j = 0; j < n; j++) c[j] = 0;
+        var l = new Array(n);
+        var mu = new Array(n);
+        var z = new Array(n);
+        l[0] = 1;
+        mu[0] = 0;
+        z[0] = 0;
+        for (var i = 1; i < n - 1; i++) {
+          l[i] = 2 * (xa[i + 1] - xa[i - 1]) - h[i - 1] * mu[i - 1];
+          mu[i] = h[i] / l[i];
+          z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
+        }
+        l[n - 1] = 1;
+        z[n - 1] = 0;
+        c[n - 1] = 0;
+        for (var j = n - 2; j >= 0; j--) {
+          c[j] = z[j] - mu[j] * c[j + 1];
+          b[j] = (a[j + 1] - a[j]) / h[j] - (h[j] * (c[j + 1] + 2 * c[j])) / 3;
+          d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
+        }
+        return function (x) {
+          var i = 0;
+          if (x <= xa[0]) i = 0;
+          else if (x >= xa[n - 1]) i = n - 2;
+          else {
+            for (var k = 0; k < n - 1; k++) {
+              if (x < xa[k + 1]) {
+                i = k;
+                break;
+              }
+            }
+          }
+          var dx = x - xa[i];
+          return a[i] + b[i] * dx + c[i] * dx * dx + d[i] * dx * dx * dx;
+        };
+      }
+
+      /** Bimodal “realistic” silhouette: left shoulder ~40%, first peak ~23%, trough ~60%, taller peak ~83%, right ~58% (of span). */
+      var realisticBimodalSplineEval = null;
+      function getRealisticBimodalSplineEval() {
+        if (!realisticBimodalSplineEval) {
+          realisticBimodalSplineEval = createNaturalCubicSpline(
+            [0, 0.23, 0.6, 0.83, 1],
+            [0.4, 0.8, 0.44, 0.93, 0.58]
+          );
+        }
+        return realisticBimodalSplineEval;
+      }
+
+      function realisticBimodalDistributionPoints(isSoy, xMin, xMax, steps) {
+        steps = steps || 200;
+        var evalT = getRealisticBimodalSplineEval();
+        var span = xMax - xMin;
+        var data = [];
+        for (var i = 0; i <= steps; i++) {
+          var x = xMin + (i / steps) * span;
+          var t = span > 0 ? (x - xMin) / span : 0;
+          var y = Math.max(0.02, evalT(t));
+          data.push([Math.round(x * 10) / 10, y]);
+        }
+        return data;
+      }
+
+      function getForecastMeanBu(isSoy, model) {
+        var d = isSoy ? soyData : cornData;
+        var key = model === 'realistic' ? 'forecastRealistic' : 'forecastIdeal';
+        return parseFloat(d[key], 10);
+      }
+
+      function getDryMeanBu(isSoy) {
+        var d = isSoy ? soyData : cornData;
+        return parseFloat(d.dry, 10);
+      }
+
+      /** Linear interpolate y on a sorted [x,y] series (yield template). */
+      function interpolateSeriesY(pts, xq) {
+        if (!pts.length) return 0;
+        if (xq <= pts[0][0]) return pts[0][1];
+        var last = pts[pts.length - 1];
+        if (xq >= last[0]) return last[1];
+        for (var i = 0; i < pts.length - 1; i++) {
+          var x0 = pts[i][0];
+          var x1 = pts[i + 1][0];
+          if (xq >= x0 && xq <= x1) {
+            var t = (xq - x0) / (x1 - x0);
+            return pts[i][1] + t * (pts[i + 1][1] - pts[i][1]);
+          }
+        }
+        return last[1];
+      }
+
+      /**
+       * Dry yield uses the same silhouette as the forecast curve, shifted along bu/ac so the
+       * mode sits near dry mean (lower than forecast). Works for Ideal wave, Realistic bimodal,
+       * corn/soy, % acres and # fields (scaling happens later).
+       * Realistic: add extra bu/ac shift so dashed “actual” sits clearly apart from forecast after scaling.
+       */
+      function dryPointsFollowingYieldShape(yieldPts, isSoy, model, xMin, xMax) {
+        var shift = getForecastMeanBu(isSoy, model) - getDryMeanBu(isSoy);
+        if (model === 'realistic') {
+          shift += isSoy ? 10 : 22;
+        }
+        return yieldPts.map(function (p) {
+          var x = p[0];
+          var xSrc = x + shift;
+          if (xSrc < xMin) xSrc = xMin;
+          if (xSrc > xMax) xSrc = xMax;
+          var y = interpolateSeriesY(yieldPts, xSrc);
+          return [x, Math.max(0.02, y)];
+        });
+      }
+
+      /**
+       * Realistic only: pull dashed actual (dry) down toward the right end of the axis
+       * so it ends in a visible dip vs the forecast peak.
+       */
+      function dryActualTailDipRealistic(dryPts, model, xMin, xMax) {
+        if (model !== 'realistic' || !dryPts.length) return dryPts;
+        var tailFrom = xMin + 0.66 * (xMax - xMin);
+        var tailSpan = xMax - tailFrom;
+        if (tailSpan <= 0) return dryPts;
+        return dryPts.map(function (p) {
+          var x = p[0];
+          var y = p[1];
+          if (x <= tailFrom) return p;
+          var t = (x - tailFrom) / tailSpan;
+          var mult = 1 - 0.58 * t * t;
+          return [x, Math.max(0.02, y * mult)];
+        });
+      }
+
+      /** % of acres scale: peak = 100; axis 0–100 to match layout reference. */
+      var CHART_Y_FLOOR = 0;
+      /** # of fields Y-axis: same shape as % acres, mapped linearly 10→100% → 0→80 fields. */
+      var FIELDS_Y_MAX = 80;
+      var FIELDS_Y_TICKS = [0, 40, 80];
+      var HISTOGRAM_BIN_COUNT = 12;
+      var CHART_COLORS = { yield: '#42D379', dry: '#888888' };
+
+      /**
+       * X-axis domain for synthetic curves (bu/ac). Corn extends past 280 so the 275+ bucket has mass.
+       * Soy spans 0–100 per product guidance (same bucket logic as corn, compressed to the soybean range).
+       */
+      function getYieldAxisRange(isSoy) {
+        return isSoy ? { xMin: 0, xMax: 100 } : { xMin: 0, xMax: 400 };
+      }
+
+      /**
+       * Looker-aligned corn buckets (Caleb): …225–250, 250–275, 275+; lower bands 0–175, 175–200, 200–225.
+       * edges[i]–edges[i+1] for i < n-1 are half-open [lo, hi); last bucket [275, edges[n]] closed at hi.
+       */
+      var CORN_BUCKET_EDGES = [0, 175, 200, 225, 250, 275, 400];
+      var CORN_BUCKET_LABELS = ['0–175', '175–200', '200–225', '225–250', '250–275', '275+'];
+
+      /** Six equal-width buckets on 0–100 bu/ac (same count / logic as corn). */
+      var SOY_BUCKET_EDGES = [0, 100 / 6, (200 / 6), 50, (400 / 6), (500 / 6), 100];
+      var SOY_BUCKET_LABELS = ['0–17', '17–33', '33–50', '50–67', '67–83', '83–100+'];
+
+      /** Mean Y per predefined yield bucket (for grouped columns). */
+      function curveToBucketMeans(pts, edges) {
+        var nb = edges.length - 1;
+        var out = [];
+        for (var b = 0; b < nb; b++) {
+          var lo = edges[b];
+          var hi = edges[b + 1];
+          var last = b === nb - 1;
+          var sum = 0;
+          var cnt = 0;
+          pts.forEach(function (p) {
+            var x = p[0];
+            var inside = last ? x >= lo && x <= hi : x >= lo && x < hi;
+            if (inside) {
+              sum += p[1];
+              cnt++;
+            }
+          });
+          out.push(cnt > 0 ? sum / cnt : CHART_Y_FLOOR);
+        }
+        return out;
+      }
+
+      function binHeightsPercentToFields(heights) {
+        var span = 100 - CHART_Y_FLOOR;
+        if (span <= 0) return heights.slice();
+        return heights.map(function (h) {
+          return Math.round(Math.max(0, ((h - CHART_Y_FLOOR) / span) * FIELDS_Y_MAX) * 10) / 10;
+        });
+      }
+
+      function getYView() {
+        var v = card.getAttribute('data-y-view');
+        if (v === 'fields') return 'fields';
+        if (v === 'histogram') return 'histogram';
+        return 'acres';
+      }
+
+      /** Bucket a dense curve into `binCount` x-intervals; y = mean of points in each bin. */
+      function curveToHistogramBins(pts, xMin, xMax, binCount) {
+        binCount = binCount || HISTOGRAM_BIN_COUNT;
+        var w = (xMax - xMin) / binCount;
+        var bins = [];
+        for (var b = 0; b < binCount; b++) {
+          var lo = xMin + b * w;
+          var hi = xMin + (b + 1) * w;
+          var mid = (lo + hi) / 2;
+          var sum = 0;
+          var n = 0;
+          pts.forEach(function (p) {
+            var x = p[0];
+            var inside = x >= lo && (b < binCount - 1 ? x < hi : x <= xMax);
+            if (inside) {
+              sum += p[1];
+              n++;
+            }
+          });
+          var y = n > 0 ? sum / n : CHART_Y_FLOOR;
+          bins.push([mid, Math.round(y * 10) / 10]);
+        }
+        return bins;
+      }
+
+      function normalizeHistogramPair(histYield, histDry) {
+        var m = 0;
+        histYield.forEach(function (p) {
+          if (p[1] > m) m = p[1];
+        });
+        histDry.forEach(function (p) {
+          if (p[1] > m) m = p[1];
+        });
+        if (m <= 0) m = 1;
+        return {
+          yield: histYield.map(function (p) {
+            return [p[0], Math.round((p[1] / m) * 1000) / 10];
+          }),
+          dry: histDry.map(function (p) {
+            return [p[0], Math.round((p[1] / m) * 1000) / 10];
+          })
+        };
+      }
+
+      /** Per-county shape bias for histogram only (12-bin view). */
+      var COUNTY_HISTOGRAM_BIAS = {
+        'adams-in': { fy: 1, fd: 1, wY: 1, wD: 1.15 },
+        'boone-in': { fy: 1.08, fd: 0.9, wY: 1.45, wD: 0.95 },
+        'jasper-in': { fy: 0.93, fd: 1.06, wY: 0.85, wD: 1.35 },
+        'story-ia': { fy: 1.1, fd: 0.87, wY: 1.25, wD: 1.05 },
+        'dubuque-ia': { fy: 0.97, fd: 1.03, wY: 1.55, wD: 0.82 },
+        'lancaster-ne': { fy: 1.05, fd: 0.94, wY: 1.12, wD: 1.18 },
+        'hall-ne': { fy: 1.02, fd: 0.99, wY: 1.3, wD: 1.08 }
+      };
+
+      /** Demo forecast / dry header numbers when Histogram + county is selected (bu/ac). */
+      var COUNTY_HEADER_STATS = {
+        'adams-in': {
+          corn: { ideal: '210', realistic: '204', dry: '198' },
+          soy: { ideal: '52', realistic: '50', dry: '48' }
+        },
+        'boone-in': {
+          corn: { ideal: '218', realistic: '211', dry: '203' },
+          soy: { ideal: '54', realistic: '52', dry: '49' }
+        },
+        'jasper-in': {
+          corn: { ideal: '205', realistic: '199', dry: '192' },
+          soy: { ideal: '50', realistic: '48', dry: '46' }
+        },
+        'story-ia': {
+          corn: { ideal: '222', realistic: '215', dry: '206' },
+          soy: { ideal: '55', realistic: '53', dry: '50' }
+        },
+        'dubuque-ia': {
+          corn: { ideal: '208', realistic: '202', dry: '195' },
+          soy: { ideal: '51', realistic: '49', dry: '47' }
+        },
+        'lancaster-ne': {
+          corn: { ideal: '214', realistic: '207', dry: '200' },
+          soy: { ideal: '53', realistic: '51', dry: '48' }
+        },
+        'hall-ne': {
+          corn: { ideal: '212', realistic: '206', dry: '199' },
+          soy: { ideal: '52', realistic: '50', dry: '47' }
+        }
+      };
+
+      function getCountyId() {
+        return card.getAttribute('data-county') || 'adams-in';
+      }
+
+      function applyCountyHistogramBias(scaledPct, countyId, xMin, xMax) {
+        var p = COUNTY_HISTOGRAM_BIAS[countyId] || COUNTY_HISTOGRAM_BIAS['adams-in'];
+        var span = xMax - xMin || 1;
+        return {
+          yield: scaledPct.yield.map(function (pt) {
+            var t = (pt[0] - xMin) / span;
+            var mod = 1 + 0.16 * Math.sin(t * Math.PI * p.wY);
+            return [pt[0], Math.max(CHART_Y_FLOOR, pt[1] * p.fy * mod)];
+          }),
+          dry: scaledPct.dry.map(function (pt) {
+            var t = (pt[0] - xMin) / span;
+            var mod = 1 + 0.14 * Math.cos(t * Math.PI * p.wD);
+            return [pt[0], Math.max(CHART_Y_FLOOR, pt[1] * p.fd * mod)];
+          })
+        };
+      }
+
+      /** Scale both series so the tallest peak = 100 (reads like % of acres at mode). */
+      function scaleCurvesTo100(yieldPts, dryPts) {
+        var maxY = 0;
+        yieldPts.forEach(function (p) { if (p[1] > maxY) maxY = p[1]; });
+        dryPts.forEach(function (p) { if (p[1] > maxY) maxY = p[1]; });
+        if (maxY <= 0) maxY = 1;
+        return {
+          yield: yieldPts.map(function (p) { return [p[0], Math.round((p[1] / maxY) * 1000) / 10]; }),
+          dry: dryPts.map(function (p) { return [p[0], Math.round((p[1] / maxY) * 1000) / 10]; })
+        };
+      }
+
+      function applyChartFloor(scaled) {
+        var f = CHART_Y_FLOOR;
+        return {
+          yield: scaled.yield.map(function (p) { return [p[0], Math.max(f, p[1])]; }),
+          dry: scaled.dry.map(function (p) { return [p[0], Math.max(f, p[1])]; })
+        };
+      }
+
+      function getChartOptions(crop, model, yView) {
+        model = model || getModel();
+        yView = yView || getYView();
+        var fieldsMode = yView === 'fields';
+        var histogramMode = yView === 'histogram';
+        var isSoy = crop === 'soy';
+        var yieldColor = CHART_COLORS.yield;
+        var xr = getYieldAxisRange(isSoy);
+        var xMin = xr.xMin;
+        var xMax = xr.xMax;
+        var yPts =
+          model === 'ideal'
+            ? idealReferenceWavePoints(isSoy, xMin, xMax, 180)
+            : realisticBimodalDistributionPoints(isSoy, xMin, xMax, 200);
+        var dPts = dryActualTailDipRealistic(
+          dryPointsFollowingYieldShape(yPts, isSoy, model, xMin, xMax),
+          model,
+          xMin,
+          xMax
+        );
+        var scaledPct = applyChartFloor(scaleCurvesTo100(yPts, dPts));
+        var scaled;
+        var categoryLabels = null;
+        if (histogramMode) {
+          var pctForHist = applyCountyHistogramBias(scaledPct, getCountyId(), xMin, xMax);
+          var hy = curveToHistogramBins(pctForHist.yield, xMin, xMax, HISTOGRAM_BIN_COUNT);
+          var hd = curveToHistogramBins(pctForHist.dry, xMin, xMax, HISTOGRAM_BIN_COUNT);
+          scaled = normalizeHistogramPair(hy, hd);
+        } else {
+          var edges = isSoy ? SOY_BUCKET_EDGES : CORN_BUCKET_EDGES;
+          var yBins = curveToBucketMeans(scaledPct.yield, edges);
+          var dBins = curveToBucketMeans(scaledPct.dry, edges);
+          var roundBin = function (v) {
+            return Math.round(v * 10) / 10;
+          };
+          if (fieldsMode) {
+            scaled = {
+              yield: binHeightsPercentToFields(yBins),
+              dry: binHeightsPercentToFields(dBins)
+            };
+          } else {
+            scaled = {
+              yield: yBins.map(roundBin),
+              dry: dBins.map(roundBin)
+            };
+          }
+          categoryLabels = isSoy ? SOY_BUCKET_LABELS.slice() : CORN_BUCKET_LABELS.slice();
+        }
+        var yAxisMin = fieldsMode ? 0 : CHART_Y_FLOOR;
+        var yAxisMax = fieldsMode ? FIELDS_Y_MAX : 100;
+        var yTickPositions = fieldsMode ? FIELDS_Y_TICKS : [0, 50, 100];
+        var xAxisCorn = {
+          min: 0,
+          max: 400,
+          tickPositions: [0, 100, 200, 300, 400],
+          gridLineWidth: 0,
+          lineWidth: 1,
+          tickLength: 4,
+          labels: {
+            style: { fontSize: '10px', color: '#888888', fontFamily: 'Figtree, system-ui, sans-serif' }
+          }
+        };
+        var xAxisSoy = {
+          min: 0,
+          max: 100,
+          tickPositions: [0, 25, 50, 75, 100],
+          gridLineWidth: 0,
+          lineWidth: 1,
+          tickLength: 4,
+          labels: {
+            style: { fontSize: '10px', color: '#888888', fontFamily: 'Figtree, system-ui, sans-serif' }
+          }
+        };
+        var xAxisCategory = {
+          categories: categoryLabels,
+          lineWidth: 1,
+          tickLength: 0,
+          lineColor: '#e5e5e5',
+          labels: { style: { fontSize: '9px', color: '#888888', fontFamily: 'Figtree, system-ui, sans-serif' } }
+        };
+        return {
+          chart: { height: 180, backgroundColor: 'transparent', style: { fontFamily: 'Figtree, system-ui, sans-serif' } },
+          title: { text: null },
+          legend: { enabled: false },
+          credits: { enabled: false },
+          xAxis: histogramMode ? (isSoy ? xAxisSoy : xAxisCorn) : xAxisCategory,
+          yAxis: {
+            min: yAxisMin,
+            max: yAxisMax,
+            tickPositions: yTickPositions,
+            endOnTick: true,
+            startOnTick: true,
+            title: { text: null },
+            gridLineWidth: 1,
+            gridLineColor: 'rgba(0,0,0,0.06)',
+            labels: { style: { fontSize: '11px', color: '#888888', fontFamily: 'Figtree, system-ui, sans-serif' } }
+          },
+          tooltip: { enabled: false },
+          plotOptions: {
+            column: {
+              grouping: true,
+              groupPadding: 0.2,
+              pointPadding: 0.12,
+              borderWidth: 0,
+              borderRadius: 4,
+              enableMouseTracking: false
+            }
+          },
+          series: histogramMode
+            ? [
+                { name: 'Forecast', type: 'column', data: scaled.yield, color: yieldColor, zIndex: 1 },
+                { name: 'Actual', type: 'column', data: scaled.dry, color: CHART_COLORS.dry, zIndex: 0 }
+              ]
+            : [
+                { name: 'Forecast', type: 'column', data: scaled.yield, color: yieldColor, zIndex: 1 },
+                { name: 'Actual', type: 'column', data: scaled.dry, color: CHART_COLORS.dry, zIndex: 0 }
+              ]
+        };
+      }
+
+      var yieldChart = null;
+      var svgW = 400;
+      var svgH = 160;
+
+      /** SVG paths — fill closes at yLo (chart floor). y range matches Highcharts yAxis. */
+      function svgPathsFromScaledSeries(scaledYield, scaledDry, xMin, xMax, yLo, yHi) {
+        yLo = yLo != null ? yLo : CHART_Y_FLOOR;
+        yHi = yHi != null ? yHi : 100;
+        var padT = 10, padB = 14;
+        var innerH = svgH - padT - padB;
+        function xPx(x) { return ((x - xMin) / (xMax - xMin)) * svgW; }
+        function yPx(y) {
+          return padT + innerH * (1 - (y - yLo) / (yHi - yLo));
+        }
+        function lineD(pts) {
+          var parts = [];
+          pts.forEach(function (p, i) {
+            parts.push((i ? 'L' : 'M') + xPx(p[0]).toFixed(2) + ' ' + yPx(p[1]).toFixed(2));
+          });
+          return parts.join(' ');
+        }
+        var yLine = lineD(scaledYield);
+        var dLine = lineD(scaledDry);
+        var x0 = xPx(xMin), x1 = xPx(xMax);
+        var yBase = yPx(yLo);
+        var area = yLine + ' L ' + x1.toFixed(2) + ' ' + yBase.toFixed(2) + ' L ' + x0.toFixed(2) + ' ' + yBase.toFixed(2) + ' Z';
+        return { area: area, yieldLine: yLine, dryLine: dLine };
+      }
+
+      function updateXAxisLabels(crop) {
+        var el = document.getElementById('yield-chart-xlabels');
+        if (!el) return;
+        var labels = crop === 'soy' ? SOY_BUCKET_LABELS : CORN_BUCKET_LABELS;
+        el.innerHTML = labels.map(function (t) {
+          return '<span class="type-caption">' + t + '</span>';
+        }).join('');
+      }
+
+      function updateYAxisLabelSpans(yView) {
+        yView = yView || getYView();
+        var el = document.getElementById('yield-chart-ylabels');
+        if (!el) return;
+        var labels =
+          yView === 'fields'
+            ? ['80', '40', '0']
+            : ['100', '50', '0'];
+        el.innerHTML = labels.map(function (t) {
+          return '<span class="type-caption">' + t + '</span>';
+        }).join('');
+      }
+
+      function updateSvgFallback(crop, model, yView) {
+        model = model || getModel();
+        if (model === 'empty') return;
+        yView = yView || getYView();
+        var fieldsMode = yView === 'fields';
+        var histogramMode = yView === 'histogram';
+        var isSoy = crop === 'soy';
+        var xrSvg = getYieldAxisRange(isSoy);
+        var xMin = xrSvg.xMin;
+        var xMax = xrSvg.xMax;
+        var yPts =
+          model === 'ideal'
+            ? idealReferenceWavePoints(isSoy, xMin, xMax, 180)
+            : realisticBimodalDistributionPoints(isSoy, xMin, xMax, 200);
+        var dPts = dryActualTailDipRealistic(
+          dryPointsFollowingYieldShape(yPts, isSoy, model, xMin, xMax),
+          model,
+          xMin,
+          xMax
+        );
+        var scaledPctSvg = applyChartFloor(scaleCurvesTo100(yPts, dPts));
+        var scaledSvg;
+        var categoryBarMode = !histogramMode;
+        if (histogramMode) {
+          var pctHistSvg = applyCountyHistogramBias(scaledPctSvg, getCountyId(), xMin, xMax);
+          var hy = curveToHistogramBins(pctHistSvg.yield, xMin, xMax, HISTOGRAM_BIN_COUNT);
+          var hd = curveToHistogramBins(pctHistSvg.dry, xMin, xMax, HISTOGRAM_BIN_COUNT);
+          scaledSvg = normalizeHistogramPair(hy, hd);
+        } else {
+          var edgesSvg = isSoy ? SOY_BUCKET_EDGES : CORN_BUCKET_EDGES;
+          var yBinsSvg = curveToBucketMeans(scaledPctSvg.yield, edgesSvg);
+          var dBinsSvg = curveToBucketMeans(scaledPctSvg.dry, edgesSvg);
+          var rb = function (v) {
+            return Math.round(v * 10) / 10;
+          };
+          if (fieldsMode) {
+            scaledSvg = {
+              yield: binHeightsPercentToFields(yBinsSvg),
+              dry: binHeightsPercentToFields(dBinsSvg)
+            };
+          } else {
+            scaledSvg = {
+              yield: yBinsSvg.map(rb),
+              dry: dBinsSvg.map(rb)
+            };
+          }
+        }
+        var yLoSvg = fieldsMode ? 0 : CHART_Y_FLOOR;
+        var yHiSvg = fieldsMode ? FIELDS_Y_MAX : 100;
+        var areaEl = document.getElementById('yield-svg-area');
+        var lineEl = document.getElementById('yield-svg-line');
+        var dryPathEl = document.getElementById('yield-svg-dry');
+        var histG = document.getElementById('yield-svg-histogram');
+        var yieldStroke = CHART_COLORS.yield;
+        var dryStroke = CHART_COLORS.dry;
+
+        if (histogramMode && histG) {
+          if (areaEl) areaEl.setAttribute('d', '');
+          if (lineEl) lineEl.setAttribute('d', '');
+          if (dryPathEl) dryPathEl.setAttribute('d', '');
+          histG.style.display = 'block';
+          histG.innerHTML = '';
+          var padT = 10;
+          var padB = 14;
+          var innerH = svgH - padT - padB;
+          function xPxSvg(x) {
+            return ((x - xMin) / (xMax - xMin)) * svgW;
+          }
+          function yPxSvg(y) {
+            return padT + innerH * (1 - (y - yLoSvg) / (yHiSvg - yLoSvg));
+          }
+          var yBase = yPxSvg(yLoSvg);
+          var binW = (xMax - xMin) / HISTOGRAM_BIN_COUNT;
+          scaledSvg.yield.forEach(function (p, i) {
+            var cx = p[0];
+            var fy = p[1];
+            var dy = scaledSvg.dry[i][1];
+            var lo = cx - binW / 2;
+            var hi = cx + binW / 2;
+            var slotL = xPxSvg(lo);
+            var slotR = xPxSvg(hi);
+            var slotW = Math.max(slotR - slotL, 2);
+            var barW = Math.max(slotW * 0.36, 2);
+            var gap = slotW * 0.06;
+            var x1 = slotL + gap;
+            var x2 = x1 + barW + gap;
+            var yTopF = yPxSvg(fy);
+            var yTopD = yPxSvg(dy);
+            var hF = Math.max(yBase - yTopF, 0);
+            var hD = Math.max(yBase - yTopD, 0);
+            var r1 = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            r1.setAttribute('x', x1.toFixed(2));
+            r1.setAttribute('y', yTopF.toFixed(2));
+            r1.setAttribute('width', barW.toFixed(2));
+            r1.setAttribute('height', hF.toFixed(2));
+            r1.setAttribute('fill', yieldStroke);
+            r1.setAttribute('opacity', '0.88');
+            histG.appendChild(r1);
+            var r2 = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            r2.setAttribute('x', x2.toFixed(2));
+            r2.setAttribute('y', yTopD.toFixed(2));
+            r2.setAttribute('width', barW.toFixed(2));
+            r2.setAttribute('height', hD.toFixed(2));
+            r2.setAttribute('fill', dryStroke);
+            r2.setAttribute('opacity', '0.85');
+            histG.appendChild(r2);
+          });
+        } else if (categoryBarMode && histG) {
+          if (areaEl) areaEl.setAttribute('d', '');
+          if (lineEl) lineEl.setAttribute('d', '');
+          if (dryPathEl) dryPathEl.setAttribute('d', '');
+          histG.style.display = 'block';
+          histG.innerHTML = '';
+          var nCat = scaledSvg.yield.length;
+          var padTC = 10;
+          var padBC = 14;
+          var innerHC = svgH - padTC - padBC;
+          var slotWC = svgW / nCat;
+          function yPxCat(y) {
+            return padTC + innerHC * (1 - (y - yLoSvg) / (yHiSvg - yLoSvg));
+          }
+          var yBaseCat = yPxCat(yLoSvg);
+          for (var ci = 0; ci < nCat; ci++) {
+            var fyC = scaledSvg.yield[ci];
+            var dyC = scaledSvg.dry[ci];
+            var slotLC = ci * slotWC;
+            var barWC = Math.max(slotWC * 0.32, 3);
+            var gapC = slotWC * 0.08;
+            var x1c = slotLC + gapC;
+            var x2c = x1c + barWC + gapC;
+            var yTopFC = yPxCat(fyC);
+            var yTopDC = yPxCat(dyC);
+            var hFC = Math.max(yBaseCat - yTopFC, 0);
+            var hDC = Math.max(yBaseCat - yTopDC, 0);
+            var r1b = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            r1b.setAttribute('x', x1c.toFixed(2));
+            r1b.setAttribute('y', yTopFC.toFixed(2));
+            r1b.setAttribute('width', barWC.toFixed(2));
+            r1b.setAttribute('height', hFC.toFixed(2));
+            r1b.setAttribute('rx', '4');
+            r1b.setAttribute('fill', yieldStroke);
+            histG.appendChild(r1b);
+            var r2b = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            r2b.setAttribute('x', x2c.toFixed(2));
+            r2b.setAttribute('y', yTopDC.toFixed(2));
+            r2b.setAttribute('width', barWC.toFixed(2));
+            r2b.setAttribute('height', hDC.toFixed(2));
+            r2b.setAttribute('rx', '4');
+            r2b.setAttribute('fill', dryStroke);
+            histG.appendChild(r2b);
+          }
+        } else {
+          if (histG) {
+            histG.style.display = 'none';
+            histG.innerHTML = '';
+          }
+          var paths = svgPathsFromScaledSeries(scaledSvg.yield, scaledSvg.dry, xMin, xMax, yLoSvg, yHiSvg);
+          var gradStop0 = document.querySelector('#yield-svg-fill stop:nth-child(1)');
+          var gradStop1 = document.querySelector('#yield-svg-fill stop:nth-child(2)');
+          if (areaEl) areaEl.setAttribute('d', paths.area);
+          if (lineEl) {
+            lineEl.setAttribute('d', paths.yieldLine);
+            lineEl.setAttribute('stroke', yieldStroke);
+          }
+          if (dryPathEl) dryPathEl.setAttribute('d', paths.dryLine);
+          if (gradStop0 && gradStop1) {
+            gradStop0.setAttribute('stop-color', yieldStroke);
+            gradStop1.setAttribute('stop-color', yieldStroke);
+          }
+        }
+        updateXAxisLabels(crop);
+        updateYAxisLabelSpans(yView);
+      }
+
+      function updateCropChipCounts() {
+        card.querySelectorAll('.yield-card__crop-btn').forEach(function (btn) {
+          var c = btn.getAttribute('data-crop');
+          var row = c === 'soy' ? soyData : cornData;
+          var countEl = btn.querySelector('.crop-chip__count');
+          if (countEl) countEl.textContent = row.acres;
+        });
+      }
+
+      function applyHeaderStats(crop, model, yView) {
+        model = model || getModel();
+        if (model === 'empty') return;
+        yView = yView != null ? yView : getYView();
+        var d = crop === 'soy' ? soyData : cornData;
+        updateCropChipCounts();
+        if (acresEl) acresEl.textContent = d.acres;
+        if (fieldsForecastEl) fieldsForecastEl.textContent = d.fieldsForecast;
+        if (fieldsActualEl) fieldsActualEl.textContent = d.fieldsActual;
+        if (acresRepForecastEl) acresRepForecastEl.textContent = d.acresRepForecast;
+        if (acresRepActualEl) acresRepActualEl.textContent = d.acresRepActual;
+        if (companyNameEl) companyNameEl.textContent = getCompanyDisplayName();
+        if (yView === 'histogram') {
+          var countyRow = COUNTY_HEADER_STATS[getCountyId()];
+          if (countyRow) {
+            var row = crop === 'soy' ? countyRow.soy : countyRow.corn;
+            forecastEl.textContent = model === 'realistic' ? row.realistic : row.ideal;
+            dryEl.textContent = row.dry;
+            return;
+          }
+        }
+        var f = model === 'realistic' ? d.forecastRealistic : d.forecastIdeal;
+        forecastEl.textContent = f;
+        dryEl.textContent = d.dry;
+      }
+
+      function setModelUi(model) {
+        card.setAttribute('data-model', model);
+        card.classList.toggle('yield-card--realistic', model === 'realistic');
+        card.classList.toggle('yield-card--empty', model === 'empty');
+        document.querySelectorAll('.yield-model-toggle__btn').forEach(function (b) {
+          b.setAttribute('aria-pressed', b.getAttribute('data-model') === model ? 'true' : 'false');
+        });
+        var mainEl = document.getElementById('yield-card-main');
+        var emptyEl = document.getElementById('yield-card-empty');
+        if (mainEl) mainEl.hidden = model === 'empty';
+        if (emptyEl) emptyEl.hidden = model !== 'empty';
+      }
+
+      function refreshCharts(crop, model, yView) {
+        crop = crop || card.getAttribute('data-crop') || 'corn';
+        model = model || getModel();
+        yView = yView || getYView();
+        if (model === 'empty') {
+          card.classList.remove('yield-card--hc');
+          card.classList.remove('yield-card--histogram');
+          if (yieldChart) {
+            yieldChart.destroy();
+            yieldChart = null;
+          }
+          var hcClear = document.getElementById('yield-bell-chart');
+          if (hcClear) hcClear.innerHTML = '';
+          return;
+        }
+        card.classList.toggle('yield-card--histogram', yView === 'histogram');
+        updateSvgFallback(crop, model, yView);
+        var hcEl = document.getElementById('yield-bell-chart');
+        if (yieldChart) {
+          yieldChart.destroy();
+          yieldChart = null;
+        }
+        if (typeof Highcharts !== 'undefined' && hcEl) {
+          try {
+            hcEl.innerHTML = '';
+            yieldChart = Highcharts.chart('yield-bell-chart', getChartOptions(crop, model, yView));
+            card.classList.add('yield-card--hc');
+          } catch (err) {
+            yieldChart = null;
+          }
+        }
+        applyHeaderStats(crop, model, yView);
+      }
+
+      function initChart() {
+        var hcEl = document.getElementById('yield-bell-chart');
+        if (!hcEl) return;
+        var crop = card.getAttribute('data-crop') || 'corn';
+        var model = getModel();
+        var yView = getYView();
+        if (model === 'empty') {
+          card.classList.remove('yield-card--hc');
+          card.classList.remove('yield-card--histogram');
+          hcEl.innerHTML = '';
+          return;
+        }
+        card.classList.toggle('yield-card--histogram', yView === 'histogram');
+        updateSvgFallback(crop, model, yView);
+        if (typeof Highcharts === 'undefined') {
+          hcEl.innerHTML = '';
+          applyHeaderStats(crop, model, yView);
+          return;
+        }
+        try {
+          yieldChart = Highcharts.chart('yield-bell-chart', getChartOptions(crop, model, yView));
+          card.classList.add('yield-card--hc');
+        } catch (err) {
+          hcEl.innerHTML = '';
+          yieldChart = null;
+        }
+        applyHeaderStats(crop, model, yView);
+      }
+
+      document.querySelectorAll('.yield-model-toggle__btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var model = btn.getAttribute('data-model');
+          setModelUi(model);
+          var crop = card.getAttribute('data-crop') || 'corn';
+          refreshCharts(crop, model);
+        });
+      });
+
+      card.querySelectorAll('.yield-card__crop-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var crop = btn.getAttribute('data-crop');
+          card.querySelectorAll('.yield-card__crop-btn').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
+          btn.setAttribute('aria-pressed', 'true');
+          card.setAttribute('data-crop', crop);
+          card.classList.toggle('yield-card--soy', crop === 'soy');
+          var model = getModel();
+          refreshCharts(crop, model);
+        });
+      });
+
+      document.querySelectorAll('.yield-card__chart-toggle').forEach(function (group) {
+        group.querySelectorAll('.yield-card__chart-toggle-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            group.querySelectorAll('.yield-card__chart-toggle-btn').forEach(function (b) {
+              b.setAttribute('aria-pressed', 'false');
+              b.classList.remove('active');
+            });
+            btn.setAttribute('aria-pressed', 'true');
+            btn.classList.add('active');
+            var yView = btn.getAttribute('data-y-view') || 'acres';
+            card.setAttribute('data-y-view', yView);
+            var crop = card.getAttribute('data-crop') || 'corn';
+            var model = getModel();
+            refreshCharts(crop, model, yView);
+          });
+        });
+      });
+
+      var countySelect = document.getElementById('yield-county-select');
+      if (countySelect) {
+        var initialCounty = card.getAttribute('data-county') || 'adams-in';
+        if (countySelect.querySelector('option[value="' + initialCounty + '"]')) {
+          countySelect.value = initialCounty;
+        }
+        countySelect.addEventListener('change', function () {
+          card.setAttribute('data-county', countySelect.value);
+          var crop = card.getAttribute('data-crop') || 'corn';
+          var model = getModel();
+          var yView = getYView();
+          if (yView === 'histogram' && model !== 'empty') {
+            refreshCharts(crop, model, yView);
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initChart);
+      } else {
+        initChart();
+      }
+
+      /* Auto-switch to histogram+realistic if "histogram" appears anywhere in the hash */
+      if (window.location.hash.indexOf('histogram') !== -1) {
+        setTimeout(function () {
+          var realBtn = document.querySelector('[data-model="realistic"]');
+          if (realBtn) realBtn.click();
+          setTimeout(function () {
+            var histBtn = document.querySelector('[data-y-view="histogram"]');
+            if (histBtn) histBtn.click();
+          }, 200);
+        }, 300);
+      }
+    })();
+  </script>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</body>
+</html>

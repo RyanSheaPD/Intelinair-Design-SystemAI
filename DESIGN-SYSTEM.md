@@ -10,6 +10,7 @@ A static HTML/CSS design system aligned with the **Variable Design System (test)
 | [docs/field-cards-design-system-instances.md](./docs/field-cards-design-system-instances.md) | Field card instances checklist |
 | [docs/empty-states.md](./docs/empty-states.md) | Empty state patterns |
 | [docs/figma-mcp.md](./docs/figma-mcp.md) | Figma MCP workflow |
+| [docs/myfs-trials-treatments-flow.md](./docs/myfs-trials-treatments-flow.md) | **MyFS MiTrials / treatments** — canonical shell, CSS, naming for new screens |
 
 **Figma (source of truth for variables):** [Variable Design System (test)](https://www.figma.com/design/0njyFuWX2qzunGeGrKHyHi/Variable-Design-System--test-?m=dev)
 
@@ -85,6 +86,7 @@ CSS lives in **`components/`**. Compose pages by linking `tokens.css` first, the
 | `header.css` | App / page headers |
 | `nav.css` | Navigation patterns |
 | `tabs.css` | Tabbed interfaces |
+| `view-switcher.css` | Fields toolbar view menu (map / list / thumbnail) — AGMRI `mapViewIcon` + `arrowCollapseIcon` trigger, `mat-menu`–style panel; see `pages/map-view.html` |
 | `menu.css` | Menus and menu items |
 | `dropdown.css` | Dropdown triggers and panels |
 | `filter-pill.css` | Filter / tag pills |
@@ -94,6 +96,8 @@ CSS lives in **`components/`**. Compose pages by linking `tokens.css` first, the
 | `field-card.css` | Field list cards (summary + detail) — rules in [docs/cards.md](./docs/cards.md) |
 | `counter-badge.css` | Numeric badges on tabs/icons |
 | `triangle-icons.css` | Directional / status triangle icons |
+| `myfs-trials-flow-shell.css` | **MyFS trials / treatments:** MyFS `:root` (incl. map field brand), `.myfs-trials-flow*` — pair with `field-map-view-shell.css` — [docs/myfs-trials-treatments-flow.md](./docs/myfs-trials-treatments-flow.md) |
+| `field-map-view-shell.css` | **Fields map view:** `.page-shell`, toolbar, `.map-container`, timeline, controls — shared by `pages/map-view.html` and MyFS MiTrials |
 
 Add new components here with a short description in this table when you introduce them.
 
@@ -108,6 +112,7 @@ Add new components here with a short description in this table when you introduc
 | Root HTML files | e.g. `yield-forecast-card.html`, `test-brand-cards.html`, brand-specific previews |
 | `pages/ios-assistant-widget-screens.html` | iOS-style widget gallery + home placement + assistant sheet interaction |
 | `pages/csv-data-table.html` | Default `data/adam_ford_s170.csv` (paginated, optional hide geometry cols); file picker or any CSV → `data-table.css` |
+| `pages/myfs-mitrials.html` | **Default starter** for MyFS MiTrials (4th layer chip + inline trials SVG replaces grid; Fields toolbar) + `myfs-trials-flow-shell.css` + `field-map-view-shell.css` |
 
 Link new demos from `index.html` when they represent approved patterns.
 

@@ -1,0 +1,155 @@
+/**
+ * Fields toolbar — view mode menu (map / list / thumbnail).
+ * Parity with AGMRI Angular: .view-icons + .view-icon-wrapper, mapViewIcon SVG,
+ * 12px label (f-12), arrowCollapseIcon caret; mat-menu–style panel.
+ */
+
+.view-switcher {
+  position: relative;
+  font-family: var(--font-family);
+}
+
+/* Outer row — matches d-flex align-items-center view-icons */
+.view-icons {
+  display: flex;
+  align-items: center;
+}
+
+.view-icons.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Trigger — mat-mdc-menu-trigger + view-icon-wrapper, gap-8 */
+.view-switcher__trigger.view-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 6px;
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.view-switcher__trigger:hover {
+  background: var(--color-neutral-100);
+}
+
+.view-switcher__trigger:focus-visible {
+  outline: 2px solid var(--color-focus-ring, var(--color-primitive-500));
+  outline-offset: 2px;
+}
+
+/* mapViewIcon — 18×18, icon-color */
+.view-switcher__map-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-muted);
+}
+
+.view-switcher__map-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.view-switcher__trigger:hover .view-switcher__map-icon,
+.view-switcher--open .view-switcher__map-icon {
+  color: var(--color-text);
+}
+
+/* f-12 */
+.view-switcher__label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-text);
+}
+
+/* arrowCollapseIcon — 16px box, 14×8 graphic */
+.view-switcher__caret {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+}
+
+.view-switcher__caret svg {
+  width: 14px;
+  height: 8px;
+  display: block;
+}
+
+.view-switcher--open .view-switcher__caret {
+  transform: rotate(180deg);
+}
+
+.view-switcher__caret {
+  transition: transform 0.15s ease;
+}
+
+/* Menu — mat-menu panel (xPosition before → align trailing edge to trigger) */
+.view-switcher__menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 200px;
+  padding: 8px 0;
+  margin: 0;
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 50;
+}
+
+.view-switcher__menu[hidden] {
+  display: none !important;
+}
+
+.view-switcher__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.view-switcher__option:hover {
+  background: var(--color-neutral-100);
+}
+
+.view-switcher__option .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--color-text-muted);
+}
+
+.view-switcher__option--active {
+  font-weight: 600;
+  background: var(--color-neutral-50);
+}
+
+.view-switcher__option--active .material-symbols-outlined {
+  color: var(--color-brand-500);
+}

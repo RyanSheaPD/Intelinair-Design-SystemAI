@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Imagery Quality Tiers — iOS Export</title>
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    @font-face {
+      font-family: 'SF Pro';
+      src: local('SF Pro Display'), local('SF Pro Text'), local('.SF NS'), local('.AppleSystemUIFont');
+      font-weight: 100 900;
+      font-style: normal;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'SF Pro', 'SF Pro Display', 'SF Pro Text', -apple-system, system-ui, sans-serif;
+      background: #f0f2f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 40px 32px 80px;
+    }
+
+    .export-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .export-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .export-item__label {
+      font-family: 'SF Pro', -apple-system, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+      background: #f0f2f0;
+      color: var(--color-text, #1a1a1a);
+      min-height: 100vh;
+    }
+
+    /* ── Page layout ── */
+    .spec-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    .spec-page__title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .spec-page__subtitle {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 40px;
+    }
+
+    /* ── Viewport tabs ── */
+    .viewport-tabs {
+      display: flex;
+      gap: 2px;
+      background: rgba(0,0,0,0.07);
+      border-radius: 9px;
+      padding: 3px;
+      margin-bottom: 32px;
+      width: fit-content;
+    }
+    .viewport-tab {
+      height: 30px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    }
+    .viewport-tab--active {
+      background: #fff;
+      color: #111;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+    .viewport-section { display: none; }
+    .viewport-section.active { display: block; }
+
+    /* ── Section headers ── */
+    .spec-section {
+      margin-bottom: 48px;
+    }
+    .spec-section__header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .spec-section__title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: -0.2px;
+    }
+    .spec-section__badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .spec-section__badge--tier1 {
+      background: #fef3cd;
+      color: #856404;
+    }
+    .spec-section__badge--tier2 {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .spec-section__badge--component {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    .spec-section__desc {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 20px;
+      max-width: 680px;
+      line-height: 1.5;
+    }
+
+    /* ── Spec callout ── */
+    .spec-callout {
+      background: #fff;
+      border: 1px solid #e4e9e4;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .spec-callout__label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #aaa;
+      margin-bottom: 12px;
+    }
+
+    /* ── Redlines table ── */
+    .redlines {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 16px;
+    }
+    .redlines th {
+      text-align: left;
+      font-weight: 600;
+      color: #555;
+      padding: 6px 12px 6px 0;
+      border-bottom: 1px solid #e8e8ed;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .redlines td {
+      padding: 8px 12px 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+    }
+    .redlines code {
+      background: #f5f5f5;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 12px;
+      color: #c0392b;
+      font-family: 'SF Mono', 'Menlo', monospace;
+    }
+    .redlines .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 6px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    /* ══════════════════════════════════════════
+       COMPONENT DEMOS
+    ══════════════════════════════════════════ */
+
+    /* ── Cloud Icon ── */
+    .cloud-icon-demo {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .cloud-icon-size {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .cloud-icon-size__label {
+      font-size: 10px;
+      color: #aaa;
+      font-weight: 500;
+    }
+
+    /* ── Timeline chicklet (38×38 squares) ── */
+    .chicklet-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      padding: 16px 0;
+    }
+    .chicklet {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .chicklet__square {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+    .chicklet__square--active {
+      border: 2px solid #8B7355;
+      background: #f5f0ea;
+    }
+    .chicklet__square--tier1 {
+      border: 2px solid #f59e0b;
+      background: #fffbeb;
+    }
+    .chicklet__square--tier2 {
+      border: 2px solid #cd0e13;
+      background: #fef2f2;
+    }
+    .chicklet__cloud {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      z-index: 2;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+    }
+    .chicklet__date {
+      font-size: 9px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    /* ── Map mockup — Virtual Scout layout ── */
+    /* Nav is full-height left column; header + map stack to the right */
+    .map-mockup {
+      position: relative;
+      width: 100%;
+      max-width: 780px;
+      height: 420px;
+      background: #3a4a3a;
+      border-radius: 10px;
+      border: 1px solid #2a3a2a;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+    }
+    .map-mockup--ios {
+      max-width: 390px;
+      height: 520px;
+      border-radius: 20px;
+      flex-direction: column;
+    }
+    .map-mockup--android {
+      max-width: 390px;
+      height: 520px;
+      border-radius: 12px;
+      flex-direction: column;
+    }
+
+    /* ── iOS / Mobile top bar (back arrow + category tabs) ── */
+    .mobile-topbar {
+      display: flex;
+      align-items: center;
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid #e8e8ed;
+      padding: 0 8px;
+      gap: 0;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .mobile-topbar__back {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #333;
+    }
+    .mobile-topbar__tabs {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      overflow-x: auto;
+      flex: 1;
+      padding: 4px 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .mobile-topbar__tabs::-webkit-scrollbar { display: none; }
+    .mobile-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 72px;
+      padding: 4px 6px 4px;
+      flex-shrink: 0;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .mobile-tab--active {
+      border-bottom-color: var(--color-brand-500, #3c84c7);
+    }
+    .mobile-tab__icon {
+      width: 36px;
+      height: 36px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mobile-tab__icon img,
+    .mobile-tab__icon svg {
+      width: 36px;
+      height: 36px;
+    }
+    .mobile-tab__badge {
+      position: absolute;
+      top: -2px;
+      right: -6px;
+      min-width: 18px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .mobile-tab__label {
+      font-size: 9px;
+      font-weight: 500;
+      color: #888;
+      white-space: nowrap;
+      text-align: center;
+    }
+    .mobile-tab--active .mobile-tab__label {
+      color: #111;
+      font-weight: 700;
+    }
+
+    /* ── Mobile field info bar ── */
+    .mobile-field-info {
+      display: flex;
+      align-items: center;
+      height: 32px;
+      background: #fff;
+      border-top: 1px solid #e8e8ed;
+      padding: 0 12px;
+      font-size: 11px;
+      color: #555;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .mobile-field-info__name {
+      font-weight: 600;
+      color: #111;
+    }
+    .mobile-field-info__sep {
+      color: #ccc;
+      margin: 0 2px;
+    }
+    .mobile-field-info__more {
+      margin-left: auto;
+      color: var(--color-brand-500, #3c84c7);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    /* ── Mobile map body (column layout, no left nav) ── */
+    .mobile-map-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      position: relative;
+    }
+
+    /* Header bar */
+    .map-header {
+      display: flex;
+      align-items: center;
+      height: 40px;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 0 12px;
+      gap: 10px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    .map-header__logo {
+      display: flex;
+      align-items: center;
+    }
+    .map-header__logo img {
+      height: 20px;
+      width: auto;
+      object-fit: contain;
+    }
+    .map-header__back {
+      font-size: 12px;
+      color: var(--color-brand-500, #3c84c7);
+      font-weight: 500;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 3px 10px;
+    }
+    .map-header__search {
+      flex: 1;
+      max-width: 220px;
+      height: 28px;
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 14px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 11px;
+      color: #aaa;
+      gap: 4px;
+    }
+    .map-header__user {
+      font-size: 11px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .map-header__avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      background: var(--color-brand-500, #3c84c7);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Map body: header + satellite stacked vertically, to the right of nav */
+    .map-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0;
+      position: relative;
+    }
+
+    /* Left sidebar nav — full height, top to bottom, brand-colored */
+    .map-nav {
+      width: 56px;
+      background: var(--color-brand-500, #3c84c7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 0;
+      gap: 0;
+      flex-shrink: 0;
+      align-self: stretch;
+      z-index: 10;
+    }
+    .map-nav__item {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.75);
+      font-size: 7px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      position: relative;
+    }
+    .map-nav__item--active {
+      background: #fff;
+      color: var(--color-brand-500, #3c84c7);
+      border-radius: 8px;
+    }
+    .map-nav__item svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Satellite / field area */
+    .map-satellite {
+      flex: 1;
+      position: relative;
+      background:
+        linear-gradient(135deg, #4a5a3a 0%, #3a4a2a 30%, #5a6a4a 50%, #4a5a3a 70%, #3a4a2a 100%);
+      overflow: hidden;
+    }
+
+    /* Field overlay with boundary */
+    .map-field-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-3deg);
+      width: 240px;
+      height: 160px;
+      border: 2px solid #3366cc;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .map-field-overlay__fill {
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(90deg, #8db83a 0%, #a8c84a 15%, #c8d84a 30%, #8db83a 45%, #a8c84a 60%, #c8d84a 75%, #8db83a 100%);
+      opacity: 0.7;
+    }
+    /* Red spots on field */
+    .map-field-overlay__spot {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(180, 60, 40, 0.5);
+    }
+
+    /* Left-side map controls (layers, location, compass) */
+    .map-controls-left {
+      position: absolute;
+      top: 60px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 5;
+    }
+
+    /* Right-side map controls (+, -, etc.) */
+    .map-controls-right {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 5;
+    }
+
+    /* btn--glass style for map controls */
+    .map-ctrl-btn {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      min-height: 32px;
+      padding: 0;
+      background: rgba(250, 250, 250, 0.8);
+      color: #1a1a1a;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .map-ctrl-btn svg {
+      width: 20px;
+      height: 20px;
+      color: #1a1a1a;
+      stroke: currentColor;
+      fill: none;
+    }
+
+    /* Top-right buttons (info, share, more) — glass style */
+    .map-top-right {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 5;
+    }
+    .map-top-right__btn {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(250, 250, 250, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      font-size: 11px;
+      font-weight: 600;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .map-top-right__btn--circle {
+      width: 32px;
+      padding: 0;
+      justify-content: center;
+    }
+
+    /* Top-left field info pill — glass style */
+    .map-field-info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 5;
+    }
+    .map-field-info__pill {
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(250, 250, 250, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    /* Bottom timeline strip */
+    .map-timeline {
+      height: 56px;
+      background: rgba(30, 40, 30, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 4px;
+      flex-shrink: 0;
+      z-index: 10;
+      overflow-x: auto;
+    }
+    .map-timeline__filters {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-right: 6px;
+      flex-shrink: 0;
+    }
+    .map-timeline__filter-btn {
+      font-size: 9px;
+      color: rgba(255,255,255,0.6);
+      background: none;
+      border: none;
+      padding: 2px 4px;
+    }
+    .map-timeline__chicklet {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      gap: 1px;
+    }
+    .map-timeline__chicklet--active {
+      background: rgba(255,255,255,0.25);
+      border: 2px solid rgba(255,255,255,0.5);
+    }
+    .map-timeline__chicklet--tier1 {
+      border: 2px solid #f59e0b;
+      background: rgba(245,158,11,0.15);
+    }
+    .map-timeline__chicklet--tier2 {
+      border: 2px solid #cd0e13;
+      background: rgba(205,14,19,0.15);
+    }
+    .map-timeline__chicklet-date {
+      font-size: 7px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+    }
+    .map-timeline__chicklet-cloud {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      z-index: 2;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+    }
+
+    /* Bottom-left zoom label */
+    .map-zoom-label {
+      position: absolute;
+      bottom: 62px;
+      left: 58px;
+      font-size: 9px;
+      color: rgba(255,255,255,0.5);
+      background: rgba(0,0,0,0.4);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* ── Tier banners (rich banner pattern: left accent border, tinted bg, bold title, body text, action) ── */
+    .imagery-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.4;
+      position: relative;
+      z-index: 5;
+      border-left: 4px solid var(--ib-accent);
+    }
+    .imagery-banner__content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .imagery-banner__title {
+      font-weight: 700;
+      color: var(--ib-accent);
+    }
+    .imagery-banner__body {
+      font-size: 13px;
+      color: #555;
+    }
+    .imagery-banner__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+    .imagery-banner__action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      background: var(--ib-accent);
+      color: #fff;
+    }
+    .imagery-banner__dismiss {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+      color: var(--ib-accent);
+      opacity: 0.6;
+      margin-top: 1px;
+    }
+    .imagery-banner__dismiss:hover {
+      opacity: 1;
+      background: rgba(0,0,0,0.05);
+    }
+
+    /* Tier 1 — Warning / Amber */
+    .imagery-banner--tier1 {
+      --ib-accent: #d97706;
+      background: #fef3c7;
+    }
+
+    /* Tier 2 — Danger / Red */
+    .imagery-banner--tier2 {
+      --ib-accent: #dc2626;
+      background: #fee2e2;
+    }
+
+    /* ── Tier alert toasts (360px, top-right of map, icon + text + dismiss) ── */
+    /* Matches the .alert component: white bg, border, radius, shadow, leading icon, dismiss X */
+    .imagery-toast {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 360px;
+      max-width: calc(100% - 80px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 58px;
+      padding: 8px 10px 8px 20px;
+      padding-right: 40px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
+      font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+      font-size: 12px;
+      line-height: 1.2;
+      color: #1a1a1a;
+      z-index: 20;
+      box-sizing: border-box;
+    }
+    .imagery-toast__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+    .imagery-toast__icon svg {
+      width: 18px;
+      height: 18px;
+    }
+    .imagery-toast__text {
+      flex: 1;
+      min-width: 0;
+    }
+    .imagery-toast__dismiss {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      color: #999;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+    .imagery-toast__dismiss:hover {
+      color: #333;
+      background: #f5f5f5;
+    }
+    .imagery-toast__dismiss svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Warning icon color (Tier 1) */
+    .imagery-toast--warning .imagery-toast__icon {
+      color: #d97706;
+    }
+
+    /* Error icon color (Tier 2) */
+    .imagery-toast--error .imagery-toast__icon {
+      color: #dc2626;
+    }
+
+    /* ── Filter menu mockup ── */
+    .filter-menu {
+      width: 260px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e4e9e4;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+    .filter-menu__header {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      border-bottom: 1px solid #e8e8ed;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-menu__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #333;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .filter-menu__item:last-child {
+      border-bottom: none;
+    }
+    .filter-menu__item--new {
+      background: #fafff5;
+    }
+    .filter-menu__item-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-menu__new-badge {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: #d1ecf1;
+      color: #0c5460;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      border-radius: 12px;
+      background: #ddd;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle--on {
+      background: var(--color-brand-500, #3c84c7);
+    }
+    .toggle__thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: left 0.2s;
+    }
+    .toggle--on .toggle__thumb {
+      left: 22px;
+    }
+
+    /* ── Annotation arrows / callouts ── */
+    .annotation {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #c0392b;
+      background: rgba(192,57,43,0.08);
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* ── Side-by-side layout ── */
+    .side-by-side {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .side-by-side > * {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    /* ── Asset export list ── */
+    .asset-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .asset-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #fff;
+      border: 1px solid #e8e8ed;
+      border-radius: 8px;
+    }
+    .asset-item__preview {
+      width: 40px;
+      height: 40px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .asset-item__info {
+      flex: 1;
+    }
+    .asset-item__name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+    }
+    .asset-item__meta {
+      font-size: 11px;
+      color: #999;
+    }
+
+    /* ── Dimension annotations ── */
+    .dim-line {
+      position: absolute;
+      background: #c0392b;
+    }
+    .dim-line--h {
+      height: 1px;
+      left: 0;
+      right: 0;
+    }
+    .dim-line--v {
+      width: 1px;
+      top: 0;
+      bottom: 0;
+    }
+    .dim-label {
+      position: absolute;
+      font-size: 9px;
+      font-weight: 700;
+      color: #c0392b;
+      background: rgba(255,255,255,0.9);
+      padding: 0 3px;
+      border-radius: 2px;
+    }
+  
+
+    /* Override all font-family to SF Pro */
+    .map-mockup,
+    .map-mockup *,
+    .mobile-topbar,
+    .mobile-topbar *,
+    .mobile-field-info,
+    .mobile-field-info *,
+    .map-timeline,
+    .map-timeline *,
+    .imagery-banner,
+    .imagery-banner *,
+    .imagery-toast,
+    .imagery-toast * {
+      font-family: 'SF Pro', 'SF Pro Display', 'SF Pro Text', -apple-system, system-ui, sans-serif !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="export-grid">
+
+    <div class="export-item">
+      <div class="export-item__label">Tier 1 Banner — Minor Issues</div>
+      <div class="map-mockup map-mockup--ios">
+            <div class="mobile-topbar">
+              <div class="mobile-topbar__back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div class="mobile-topbar__tabs">
+                <div class="mobile-tab mobile-tab--active">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><path d="M6 28h24v2H6z" fill="#8B7355" opacity="0.4"/></svg>
+                    <span class="mobile-tab__badge">1234</span>
+                  </div>
+                  <span class="mobile-tab__label">Field only</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><circle cx="22" cy="14" r="4" fill="#e8a040" opacity="0.7"/></svg>
+                    <span class="mobile-tab__badge">231</span>
+                  </div>
+                  <span class="mobile-tab__label">Weed escape</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><circle cx="18" cy="16" r="3" fill="#e74c3c" opacity="0.7"/></svg>
+                    <span class="mobile-tab__badge">1</span>
+                  </div>
+                  <span class="mobile-tab__label">Replant</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><path d="M14 12h8v4h-8z" fill="#d4a017" opacity="0.6"/></svg>
+                    <span class="mobile-tab__badge">21</span>
+                  </div>
+                  <span class="mobile-tab__label">Weed pressure</span>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-map-body">
+              <div class="map-satellite" style="flex:1;">
+                <div style="position:absolute;top:0;left:0;right:0;z-index:6;"><div class="imagery-banner imagery-banner--tier1">
+                  <div class="imagery-banner__content">
+                    <span class="imagery-banner__title">Warning</span>
+                    <span class="imagery-banner__body">Cloud interference may cause inaccuracy with the analytics presented on this field image.</span>
+                  </div>
+                  <div class="imagery-banner__actions">
+                    <button class="imagery-banner__action">Dismiss</button>
+                  </div>
+                </div></div>
+                <div class="map-field-overlay">
+                  <div class="map-field-overlay__fill" style="background:linear-gradient(180deg, rgba(122,182,72,0.6) 0%, rgba(200,160,40,0.5) 50%, rgba(200,60,40,0.6) 100%);"></div>
+                </div>
+                <div style="position:absolute;bottom:24px;left:10px;width:36px;height:36px;background:rgba(255,255,255,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.2);z-index:3;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21"/></svg>
+                </div>
+                <div style="position:absolute;bottom:4px;left:8px;display:flex;align-items:center;gap:4px;font-size:8px;color:rgba(255,255,255,0.6);z-index:2;">
+                  <span style="background:rgba(255,255,255,0.9);border-radius:10px;padding:1px 4px;color:#333;">© mapbox</span>
+                  <span>© CNES 2022, Distribution Airbus DS</span>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-field-info">
+              <span class="mobile-field-info__name">Glendale-01</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>Michael Williams</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>27 ac</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>🌽 Corn</span>
+              <span class="mobile-field-info__more">More ···</span>
+            </div>
+            <div class="map-timeline" style="height:54px;padding:4px 6px;gap:3px;">
+              <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="1.5" fill="#888" stroke="none"/><circle cx="14" cy="12" r="1.5" fill="#888" stroke="none"/><circle cx="10" cy="18" r="1.5" fill="#888" stroke="none"/></svg></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8A0A0" stroke-width="2.5" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8EA8D0" stroke-width="2.5" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7EC07E" stroke-width="2.5" stroke-linecap="round"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0A878" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/><path d="M5 17H3v-4l2-5h8"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8A0D0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet map-timeline__chicklet--tier1 map-timeline__chicklet--active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7EC07E" stroke-width="2.5" stroke-linecap="round"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul 13</span><span class="map-timeline__chicklet-cloud"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4a7.48 7.48 0 0 0-6.93 4.63A5.99 5.99 0 0 0 1 14.5C1 17.54 3.46 20 6.5 20h12c2.49 0 4.5-2.01 4.5-4.5 0-2.34-1.79-4.27-4.08-4.46h-.07Z" fill="#f59e0b" stroke="#d4a017" stroke-width="1.5"/></svg></span></div>
+            </div>
+          </div>
+    </div>
+
+    <div class="export-item">
+      <div class="export-item__label">Tier 2 Banner — Drastic Issues</div>
+      <div class="map-mockup map-mockup--ios">
+            <div class="mobile-topbar">
+              <div class="mobile-topbar__back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div class="mobile-topbar__tabs">
+                <div class="mobile-tab mobile-tab--active">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><path d="M6 28h24v2H6z" fill="#8B7355" opacity="0.4"/></svg>
+                    <span class="mobile-tab__badge">1234</span>
+                  </div>
+                  <span class="mobile-tab__label">Field only</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><circle cx="22" cy="14" r="4" fill="#e8a040" opacity="0.7"/></svg>
+                    <span class="mobile-tab__badge">231</span>
+                  </div>
+                  <span class="mobile-tab__label">Weed escape</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><circle cx="18" cy="16" r="3" fill="#e74c3c" opacity="0.7"/></svg>
+                    <span class="mobile-tab__badge">1</span>
+                  </div>
+                  <span class="mobile-tab__label">Replant</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><path d="M14 12h8v4h-8z" fill="#d4a017" opacity="0.6"/></svg>
+                    <span class="mobile-tab__badge">21</span>
+                  </div>
+                  <span class="mobile-tab__label">Weed pressure</span>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-map-body">
+              <div class="map-satellite" style="flex:1;">
+                <div style="position:absolute;top:0;left:0;right:0;z-index:6;"><div class="imagery-banner imagery-banner--tier2">
+                  <div class="imagery-banner__content">
+                    <span class="imagery-banner__title">Attention</span>
+                    <span class="imagery-banner__body">Due to severe weather interference, analytics have been removed from this field image.</span>
+                  </div>
+                </div></div>
+                <div class="map-field-overlay" style="opacity:0.4;">
+                  <div class="map-field-overlay__fill" style="background:linear-gradient(180deg, rgba(122,182,72,0.6) 0%, rgba(200,160,40,0.5) 50%, rgba(200,60,40,0.6) 100%);"></div>
+                </div>
+                <div style="position:absolute;bottom:24px;left:10px;width:36px;height:36px;background:rgba(255,255,255,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.2);z-index:3;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21"/></svg>
+                </div>
+                <div style="position:absolute;bottom:4px;left:8px;display:flex;align-items:center;gap:4px;font-size:8px;color:rgba(255,255,255,0.6);z-index:2;">
+                  <span style="background:rgba(255,255,255,0.9);border-radius:10px;padding:1px 4px;color:#333;">© mapbox</span>
+                  <span>© CNES 2022, Distribution Airbus DS</span>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-field-info">
+              <span class="mobile-field-info__name">Glendale-01</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>Michael Williams</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>27 ac</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>🌽 Corn</span>
+              <span class="mobile-field-info__more">More ···</span>
+            </div>
+            <div class="map-timeline" style="height:54px;padding:4px 6px;gap:3px;">
+              <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="1.5" fill="#888" stroke="none"/><circle cx="14" cy="12" r="1.5" fill="#888" stroke="none"/><circle cx="10" cy="18" r="1.5" fill="#888" stroke="none"/></svg></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8A0A0" stroke-width="2.5" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8EA8D0" stroke-width="2.5" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7EC07E" stroke-width="2.5" stroke-linecap="round" opacity="0.4"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0A878" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/><path d="M5 17H3v-4l2-5h8"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8A0D0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet map-timeline__chicklet--tier2 map-timeline__chicklet--active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7EC07E" stroke-width="2.5" stroke-linecap="round" opacity="0.4"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul 13</span><span class="map-timeline__chicklet-cloud"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4a7.48 7.48 0 0 0-6.93 4.63A5.99 5.99 0 0 0 1 14.5C1 17.54 3.46 20 6.5 20h12c2.49 0 4.5-2.01 4.5-4.5 0-2.34-1.79-4.27-4.08-4.46h-.07Z" fill="#cd0e13" stroke="#a00" stroke-width="1.5"/></svg></span></div>
+            </div>
+          </div>
+    </div>
+
+    <div class="export-item">
+      <div class="export-item__label">Tier 1 Alert — Minor Issues</div>
+      <div class="map-mockup map-mockup--ios">
+            <div class="mobile-topbar">
+              <div class="mobile-topbar__back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div class="mobile-topbar__tabs">
+                <div class="mobile-tab mobile-tab--active">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><path d="M6 28h24v2H6z" fill="#8B7355" opacity="0.4"/></svg>
+                    <span class="mobile-tab__badge">1234</span>
+                  </div>
+                  <span class="mobile-tab__label">Field only</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><circle cx="22" cy="14" r="4" fill="#e8a040" opacity="0.7"/></svg>
+                    <span class="mobile-tab__badge">231</span>
+                  </div>
+                  <span class="mobile-tab__label">Weed escape</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><circle cx="18" cy="16" r="3" fill="#e74c3c" opacity="0.7"/></svg>
+                    <span class="mobile-tab__badge">1</span>
+                  </div>
+                  <span class="mobile-tab__label">Replant</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><path d="M14 12h8v4h-8z" fill="#d4a017" opacity="0.6"/></svg>
+                    <span class="mobile-tab__badge">21</span>
+                  </div>
+                  <span class="mobile-tab__label">Weed pressure</span>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-map-body">
+              <div class="map-satellite" style="flex:1;">
+                <div class="imagery-toast imagery-toast--warning">
+                  <span class="imagery-toast__icon"><svg viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span class="imagery-toast__text">Cloud interference may cause inaccuracy with the analytics presented on this field image.</span>
+                  <button class="imagery-toast__dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="map-field-overlay">
+                  <div class="map-field-overlay__fill" style="background:linear-gradient(180deg, rgba(122,182,72,0.6) 0%, rgba(200,160,40,0.5) 50%, rgba(200,60,40,0.6) 100%);"></div>
+                </div>
+                <div style="position:absolute;bottom:24px;left:10px;width:36px;height:36px;background:rgba(255,255,255,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.2);z-index:3;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21"/></svg>
+                </div>
+                <div style="position:absolute;bottom:4px;left:8px;display:flex;align-items:center;gap:4px;font-size:8px;color:rgba(255,255,255,0.6);z-index:2;">
+                  <span style="background:rgba(255,255,255,0.9);border-radius:10px;padding:1px 4px;color:#333;">© mapbox</span>
+                  <span>© CNES 2022, Distribution Airbus DS</span>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-field-info">
+              <span class="mobile-field-info__name">Glendale-01</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>Michael Williams</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>27 ac</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>🌽 Corn</span>
+              <span class="mobile-field-info__more">More ···</span>
+            </div>
+            <div class="map-timeline" style="height:54px;padding:4px 6px;gap:3px;">
+              <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="1.5" fill="#888" stroke="none"/><circle cx="14" cy="12" r="1.5" fill="#888" stroke="none"/><circle cx="10" cy="18" r="1.5" fill="#888" stroke="none"/></svg></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8A0A0" stroke-width="2.5" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8EA8D0" stroke-width="2.5" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7EC07E" stroke-width="2.5" stroke-linecap="round"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0A878" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/><path d="M5 17H3v-4l2-5h8"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8A0D0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet map-timeline__chicklet--tier1 map-timeline__chicklet--active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7EC07E" stroke-width="2.5" stroke-linecap="round"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul 13</span><span class="map-timeline__chicklet-cloud"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4a7.48 7.48 0 0 0-6.93 4.63A5.99 5.99 0 0 0 1 14.5C1 17.54 3.46 20 6.5 20h12c2.49 0 4.5-2.01 4.5-4.5 0-2.34-1.79-4.27-4.08-4.46h-.07Z" fill="#f59e0b" stroke="#d4a017" stroke-width="1.5"/></svg></span></div>
+            </div>
+          </div>
+    </div>
+
+    <div class="export-item">
+      <div class="export-item__label">Tier 2 Alert — Drastic Issues</div>
+      <div class="map-mockup map-mockup--ios">
+            <div class="mobile-topbar">
+              <div class="mobile-topbar__back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></div>
+              <div class="mobile-topbar__tabs">
+                <div class="mobile-tab mobile-tab--active">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><path d="M6 28h24v2H6z" fill="#8B7355" opacity="0.4"/></svg>
+                    <span class="mobile-tab__badge">1234</span>
+                  </div>
+                  <span class="mobile-tab__label">Field only</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><circle cx="22" cy="14" r="4" fill="#e8a040" opacity="0.7"/></svg>
+                    <span class="mobile-tab__badge">231</span>
+                  </div>
+                  <span class="mobile-tab__label">Weed escape</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><circle cx="18" cy="16" r="3" fill="#e74c3c" opacity="0.7"/></svg>
+                    <span class="mobile-tab__badge">1</span>
+                  </div>
+                  <span class="mobile-tab__label">Replant</span>
+                </div>
+                <div class="mobile-tab">
+                  <div class="mobile-tab__icon">
+                    <svg width="36" height="36" viewBox="0 0 36 36"><rect width="36" height="36" rx="4" fill="#e8f0e0"/><path d="M8 26l10-14 10 14z" fill="#7ab648" opacity="0.7"/><path d="M14 12h8v4h-8z" fill="#d4a017" opacity="0.6"/></svg>
+                    <span class="mobile-tab__badge">21</span>
+                  </div>
+                  <span class="mobile-tab__label">Weed pressure</span>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-map-body">
+              <div class="map-satellite" style="flex:1;">
+                <div class="imagery-toast imagery-toast--error">
+                  <span class="imagery-toast__icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span class="imagery-toast__text">Due to severe weather interference, analytics have been removed from this field image.</span>
+                  <button class="imagery-toast__dismiss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="map-field-overlay" style="opacity:0.4;">
+                  <div class="map-field-overlay__fill" style="background:linear-gradient(180deg, rgba(122,182,72,0.6) 0%, rgba(200,160,40,0.5) 50%, rgba(200,60,40,0.6) 100%);"></div>
+                </div>
+                <div style="position:absolute;bottom:24px;left:10px;width:36px;height:36px;background:rgba(255,255,255,0.92);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.2);z-index:3;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21"/></svg>
+                </div>
+                <div style="position:absolute;bottom:4px;left:8px;display:flex;align-items:center;gap:4px;font-size:8px;color:rgba(255,255,255,0.6);z-index:2;">
+                  <span style="background:rgba(255,255,255,0.9);border-radius:10px;padding:1px 4px;color:#333;">© mapbox</span>
+                  <span>© CNES 2022, Distribution Airbus DS</span>
+                </div>
+              </div>
+            </div>
+            <div class="mobile-field-info">
+              <span class="mobile-field-info__name">Glendale-01</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>Michael Williams</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>27 ac</span>
+              <span class="mobile-field-info__sep">|</span>
+              <span>🌽 Corn</span>
+              <span class="mobile-field-info__more">More ···</span>
+            </div>
+            <div class="map-timeline" style="height:54px;padding:4px 6px;gap:3px;">
+              <div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="1.5" fill="#888" stroke="none"/><circle cx="14" cy="12" r="1.5" fill="#888" stroke="none"/><circle cx="10" cy="18" r="1.5" fill="#888" stroke="none"/></svg></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8A0A0" stroke-width="2.5" stroke-linecap="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8EA8D0" stroke-width="2.5" stroke-linecap="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7EC07E" stroke-width="2.5" stroke-linecap="round" opacity="0.4"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C0A878" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/><path d="M5 17H3v-4l2-5h8"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A8A0D0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul XX</span></div>
+              <div class="map-timeline__chicklet map-timeline__chicklet--tier2 map-timeline__chicklet--active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7EC07E" stroke-width="2.5" stroke-linecap="round" opacity="0.4"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg><span class="map-timeline__chicklet-date" style="font-size:8px;">Jul 13</span><span class="map-timeline__chicklet-cloud"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4a7.48 7.48 0 0 0-6.93 4.63A5.99 5.99 0 0 0 1 14.5C1 17.54 3.46 20 6.5 20h12c2.49 0 4.5-2.01 4.5-4.5 0-2.34-1.79-4.27-4.08-4.46h-.07Z" fill="#cd0e13" stroke="#a00" stroke-width="1.5"/></svg></span></div>
+            </div>
+          </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

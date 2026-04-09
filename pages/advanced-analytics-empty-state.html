@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced analytics — empty state</title>
+  <link rel="stylesheet" href="design-tokens/tokens.css" />
+  <link rel="stylesheet" href="components/typography.css" />
+  <link rel="stylesheet" href="components/button.css" />
+  <link rel="stylesheet" href="components/modal.css" />
+  <link rel="stylesheet" href="components/filter-pill.css" />
+  <link rel="stylesheet" href="components/empty-state.css" />
+  <style>
+    body {
+      font-family: var(--font-family);
+      background: var(--color-neutral-200);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-l);
+      box-sizing: border-box;
+    }
+    .modal-overlay {
+      position: relative;
+      inset: auto;
+      padding: 0;
+      background: transparent;
+    }
+    .modal-overlay .modal {
+      max-width: 640px;
+    }
+    .modal__header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--spacing-m);
+      flex-wrap: wrap;
+    }
+    .modal__header-meta {
+      font-size: var(--font-size-12);
+      color: var(--color-text-muted);
+      margin: 0.25rem 0 0 0;
+      width: 100%;
+    }
+    .modal__header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-m);
+    }
+    .empty-state {
+      min-height: 320px;
+    }
+    .section-label {
+      font-size: var(--font-size-12);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-muted);
+      margin: 0 0 var(--spacing-s) 0;
+      text-align: left;
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-s);
+      margin-bottom: var(--spacing-m);
+    }
+    .tabs-row {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--color-neutral-200);
+      margin-bottom: var(--spacing-l);
+      overflow-x: auto;
+    }
+    .tabs-row .tab {
+      flex-shrink: 0;
+      padding: 10px var(--spacing-m);
+      font-size: var(--font-size-12);
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-family: var(--font-family);
+      margin-bottom: -1px;
+    }
+    .tabs-row .tab:hover {
+      color: var(--color-text);
+    }
+    .tabs-row .tab[aria-selected="true"] {
+      color: var(--color-brand);
+      border-bottom-color: var(--color-brand);
+    }
+  </style>
+</head>
+<body>
+  <div class="modal-overlay" aria-hidden="false">
+    <div class="modal" role="dialog" aria-labelledby="analytics-title" aria-modal="true">
+      <header class="modal__header">
+        <div style="flex: 1; min-width: 0;">
+          <div class="modal__header-top">
+            <h1 id="analytics-title" class="modal__title">Advanced analytics</h1>
+            <div class="modal__header-actions">
+              <button type="button" class="btn btn--secondary" style="flex-shrink: 0;">Create PDF</button>
+              <button type="button" class="modal__close" aria-label="Close">
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>
+          <p class="modal__header-meta">Sample date: 2/11 &nbsp; Observed growth stage: V8</p>
+        </div>
+      </header>
+
+      <div class="modal__body">
+        <p class="section-label">Show sample type</p>
+        <div class="filter-row">
+          <button type="button" class="filter-pill" aria-pressed="true">Tissue Sample</button>
+          <button type="button" class="filter-pill" aria-pressed="true">Reese Nevins</button>
+        </div>
+
+        <div class="tabs-row" role="tablist">
+          <button type="button" class="tab" role="tab" aria-selected="true">Trial 1</button>
+          <button type="button" class="tab" role="tab" aria-selected="false">Trial 2</button>
+          <button type="button" class="tab" role="tab" aria-selected="false">Trial 3</button>
+          <button type="button" class="tab" role="tab" aria-selected="false">Trial 4</button>
+          <button type="button" class="tab" role="tab" aria-selected="false">Trial 5</button>
+          <button type="button" class="tab" role="tab" aria-selected="false">Trial 6</button>
+          <button type="button" class="tab" role="tab" aria-selected="false">Trial 7</button>
+          <button type="button" class="tab" role="tab" aria-selected="false">Trial 8</button>
+        </div>
+
+        <!-- Empty state (matches Emergence: icon + single line, no CTA) -->
+        <div class="empty-state">
+          <div class="empty-state__icon" aria-hidden="true">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+              <!-- Line chart (upward trend / N-shape) -->
+              <path d="M12 58 L28 42 L44 50 L60 22"/>
+              <!-- Magnifying glass circle over the chart -->
+              <circle cx="44" cy="36" r="14"/>
+              <!-- Magnifying glass handle -->
+              <path d="M54 46 L68 60"/>
+            </svg>
+          </div>
+          <p class="empty-state__message">No analytics data available for this sample and trial.</p>
+        </div>
+      </div>
+
+      <footer class="modal__footer">
+        <button type="button" class="btn btn--secondary">Close</button>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

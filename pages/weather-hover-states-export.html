@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgMRI Weather — hover states export</title>
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="css/weather-hover-states-export.css" />
+</head>
+<body>
+  <div class="hover-export-doc">
+    <h1 class="hover-export-doc__title">AgMRI Weather — hover states (export document)</h1>
+    <p class="hover-export-doc__lede">
+      Each block embeds the live weather page with a frozen hover visual (<code>figmaHover</code>).
+      Use this page for PDF print, long-scroll screenshots, or HTML→Design capture of the whole document.
+    </p>
+    <p class="hover-export-doc__note">
+      <strong>Serve over HTTP</strong> (e.g. <code>python3 -m http.server</code> from the repo root), then open
+      <code>pages/weather-hover-states-export.html</code>. Iframes will not load from <code>file://</code>.
+      Manifest: <code>data/weather-hover-states.json</code> · frozen styles: <code>pages/css/weather-hover-export.css</code>
+      (loaded by <code>agmri-weather.html</code>). Regenerate this file after editing the manifest:
+      <code>python3 figma-sync/regen_weather_hover_export.py</code>
+    </p>
+
+    <nav class="hover-export-toc" aria-label="Hover states">
+      <h2>Contents</h2>
+      <ol>
+      <li><a href="#state-01">01. Map — panel card hover</a></li>
+      <li><a href="#state-02">02. Map — field polygon 1</a></li>
+      <li><a href="#state-03">03. Map — field polygon 2</a></li>
+      <li><a href="#state-04">04. Map — field polygon 3</a></li>
+      <li><a href="#state-05">05. Map — field polygon 4</a></li>
+      <li><a href="#state-06">06. Map — field polygon 5</a></li>
+      <li><a href="#state-07">07. Map — field polygon 6</a></li>
+      <li><a href="#state-08">08. Map — field polygon 7</a></li>
+      <li><a href="#state-09">09. Map — field polygon 8</a></li>
+      <li><a href="#state-10">10. Toolbar — list/map control hover</a></li>
+      <li><a href="#state-11">11. Toolbar — Favorite fields button</a></li>
+      <li><a href="#state-12">12. Toolbar — Advanced filters button</a></li>
+      <li><a href="#state-13">13. Map — Temperature layer tab (inactive hover)</a></li>
+      <li><a href="#state-14">14. Map — Wind layer tab (inactive hover)</a></li>
+      <li><a href="#state-15">15. Map — Rain acc. layer tab (inactive hover)</a></li>
+      <li><a href="#state-16">16. Map — Clouds layer tab (inactive hover)</a></li>
+      <li><a href="#state-17">17. Map — 24h forecast layer tab (inactive hover)</a></li>
+      <li><a href="#state-18">18. Map — Show fields pill (pressed + hover brightness)</a></li>
+      <li><a href="#state-19">19. Table — Ground workability cell (row 1)</a></li>
+      <li><a href="#state-20">20. Table — Spray outlook cell (row 1)</a></li>
+      <li><a href="#state-21">21. Table — First data row hover</a></li>
+      <li><a href="#state-22">22. Table — Inactive sortable header hover</a></li>
+      <li><a href="#state-23">23. Sidebar — inactive nav item (Growers)</a></li>
+      <li><a href="#state-24">24. Header — Back button (secondary hover)</a></li>
+      </ol>
+    </nav>
+
+    <main>
+    <section class="hover-export-slab" id="state-01" data-state-id="map-card">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">01</span>
+        <h2 class="hover-export-slab__title">Map — panel card hover</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-card</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — panel card hover" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-card"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-02" data-state-id="map-field">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">02</span>
+        <h2 class="hover-export-slab__title">Map — field polygon 1</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-field</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — field polygon 1" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-field"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-03" data-state-id="map-field">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">03</span>
+        <h2 class="hover-export-slab__title">Map — field polygon 2</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=2</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — field polygon 2" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=2"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-04" data-state-id="map-field">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">04</span>
+        <h2 class="hover-export-slab__title">Map — field polygon 3</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=3</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — field polygon 3" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=3"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-05" data-state-id="map-field">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">05</span>
+        <h2 class="hover-export-slab__title">Map — field polygon 4</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=4</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — field polygon 4" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=4"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-06" data-state-id="map-field">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">06</span>
+        <h2 class="hover-export-slab__title">Map — field polygon 5</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=5</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — field polygon 5" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=5"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-07" data-state-id="map-field">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">07</span>
+        <h2 class="hover-export-slab__title">Map — field polygon 6</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=6</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — field polygon 6" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=6"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-08" data-state-id="map-field">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">08</span>
+        <h2 class="hover-export-slab__title">Map — field polygon 7</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=7</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — field polygon 7" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=7"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-09" data-state-id="map-field">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">09</span>
+        <h2 class="hover-export-slab__title">Map — field polygon 8</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=8</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — field polygon 8" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=map-field&amp;field=8"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-10" data-state-id="view-toggle">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">10</span>
+        <h2 class="hover-export-slab__title">Toolbar — list/map control hover</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=view-toggle</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Toolbar — list/map control hover" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=view-toggle"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-11" data-state-id="toolbar-favorite">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">11</span>
+        <h2 class="hover-export-slab__title">Toolbar — Favorite fields button</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=toolbar-favorite</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Toolbar — Favorite fields button" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=toolbar-favorite"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-12" data-state-id="toolbar-advanced">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">12</span>
+        <h2 class="hover-export-slab__title">Toolbar — Advanced filters button</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=toolbar-advanced</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Toolbar — Advanced filters button" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=toolbar-advanced"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-13" data-state-id="layer-tab">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">13</span>
+        <h2 class="hover-export-slab__title">Map — Temperature layer tab (inactive hover)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=temp</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — Temperature layer tab (inactive hover)" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=temp"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-14" data-state-id="layer-tab">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">14</span>
+        <h2 class="hover-export-slab__title">Map — Wind layer tab (inactive hover)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=wind</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — Wind layer tab (inactive hover)" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=wind"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-15" data-state-id="layer-tab">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">15</span>
+        <h2 class="hover-export-slab__title">Map — Rain acc. layer tab (inactive hover)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=rain</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — Rain acc. layer tab (inactive hover)" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=rain"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-16" data-state-id="layer-tab">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">16</span>
+        <h2 class="hover-export-slab__title">Map — Clouds layer tab (inactive hover)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=clouds</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — Clouds layer tab (inactive hover)" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=clouds"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-17" data-state-id="layer-tab">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">17</span>
+        <h2 class="hover-export-slab__title">Map — 24h forecast layer tab (inactive hover)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=forecast</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — 24h forecast layer tab (inactive hover)" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=layer-tab&amp;layer=forecast"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-18" data-state-id="show-fields-pill">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">18</span>
+        <h2 class="hover-export-slab__title">Map — Show fields pill (pressed + hover brightness)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=show-fields-pill</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Map — Show fields pill (pressed + hover brightness)" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=show-fields-pill"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-19" data-state-id="status-gw">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">19</span>
+        <h2 class="hover-export-slab__title">Table — Ground workability cell (row 1)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=list&amp;figmaHover=status-gw</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Table — Ground workability cell (row 1)" loading="lazy" src="agmri-weather.html?view=list&amp;figmaHover=status-gw"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-20" data-state-id="status-spray">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">20</span>
+        <h2 class="hover-export-slab__title">Table — Spray outlook cell (row 1)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=list&amp;figmaHover=status-spray</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Table — Spray outlook cell (row 1)" loading="lazy" src="agmri-weather.html?view=list&amp;figmaHover=status-spray"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-21" data-state-id="table-row">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">21</span>
+        <h2 class="hover-export-slab__title">Table — First data row hover</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=list&amp;figmaHover=table-row</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Table — First data row hover" loading="lazy" src="agmri-weather.html?view=list&amp;figmaHover=table-row"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-22" data-state-id="th-sortable">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">22</span>
+        <h2 class="hover-export-slab__title">Table — Inactive sortable header hover</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=list&amp;figmaHover=th-sortable</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Table — Inactive sortable header hover" loading="lazy" src="agmri-weather.html?view=list&amp;figmaHover=th-sortable"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-23" data-state-id="nav-item">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">23</span>
+        <h2 class="hover-export-slab__title">Sidebar — inactive nav item (Growers)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=nav-item</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Sidebar — inactive nav item (Growers)" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=nav-item"></iframe>
+      </div>
+    </section>
+
+    <section class="hover-export-slab" id="state-24" data-state-id="header-back">
+      <header class="hover-export-slab__head">
+        <span class="hover-export-slab__num">24</span>
+        <h2 class="hover-export-slab__title">Header — Back button (secondary hover)</h2>
+        <code class="hover-export-slab__query">agmri-weather.html?view=map&amp;figmaHover=header-back</code>
+      </header>
+      <div class="hover-export-slab__frame">
+        <iframe title="Header — Back button (secondary hover)" loading="lazy" src="agmri-weather.html?view=map&amp;figmaHover=header-back"></iframe>
+      </div>
+    </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field card — Scouting report (tabs)</title>
+  <link rel="stylesheet" href="design-tokens/tokens.css" />
+  <link rel="stylesheet" href="components/typography.css" />
+  <link rel="stylesheet" href="components/button.css" />
+  <link rel="stylesheet" href="components/header.css" />
+  <link rel="stylesheet" href="components/nav.css" />
+  <link rel="stylesheet" href="components/modal.css" />
+  <link rel="stylesheet" href="components/tabs.css" />
+  <style>
+    body {
+      font-family: var(--font-family);
+      margin: 0;
+      min-height: 100vh;
+      background: var(--color-background);
+      color: var(--color-text);
+      box-sizing: border-box;
+    }
+    /* App shell: left nav (full height) + right column (header + main) */
+    .app-shell {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      min-height: 100vh;
+    }
+    .app-shell__nav {
+      width: var(--nav-width);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+      left: 0;
+    }
+    .app-shell__nav .nav {
+      min-height: 100%;
+    }
+    .app-shell__right {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+    .app-shell__main {
+      flex: 1;
+      padding: var(--spacing-l);
+      background: var(--color-neutral-100);
+      min-height: 0;
+      overflow: auto;
+    }
+    .report-card {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .report-card.modal {
+      max-height: none;
+    }
+    .report-card .modal__body {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+    .report-header__meta {
+      font-size: var(--font-size-12);
+      color: var(--color-text-muted);
+      margin: 0.25rem 0 0 0;
+    }
+    .report-header__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-s);
+    }
+    .report-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--spacing-s);
+      padding: var(--spacing-m) var(--spacing-l);
+      font-size: var(--font-size-12);
+      color: var(--color-text-muted);
+      background: var(--color-surface);
+      border-bottom: var(--border-width-1) solid var(--color-border);
+    }
+    .report-meta-row a {
+      color: var(--color-brand);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .report-meta-row a:hover { text-decoration: underline; }
+    .report-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--spacing-m);
+      padding: var(--spacing-m) var(--spacing-l);
+      background: var(--color-success-100);
+      border-left: 4px solid var(--color-success-500);
+      font-size: var(--font-size-14);
+      color: var(--color-success-800);
+    }
+    .report-banner__status { font-weight: 600; color: var(--color-success-800); }
+    .report-banner__msg { color: var(--color-success-800); margin: 2px 0 0 0; }
+    .report-banner__reviewer { font-size: var(--font-size-12); color: var(--color-success-700); margin-top: 4px; }
+    .report-tabs-wrap {
+      flex-shrink: 0;
+      background: var(--color-surface);
+      border-bottom: var(--border-width-1) solid var(--color-border);
+    }
+    .report-tabs-wrap .tabs {
+      padding: 0 var(--spacing-l);
+    }
+    .report-panels {
+      flex: 1;
+      overflow: auto;
+      background: var(--color-surface);
+    }
+    .report-panel {
+      display: none;
+      padding: var(--spacing-l);
+      animation: fadeIn 0.2s ease;
+    }
+    .report-panel[aria-hidden="false"] {
+      display: block;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .report-panel__title {
+      font-size: var(--font-size-16);
+      font-weight: 600;
+      margin: 0 0 var(--spacing-m) 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .report-panel__title-num { font-weight: 400; color: var(--color-text-muted); }
+    .report-section {
+      margin-bottom: var(--spacing-xl);
+    }
+    .report-section__title {
+      font-size: var(--font-size-14);
+      font-weight: 600;
+      margin: 0 0 var(--spacing-s) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+    .report-section__title .icon { color: var(--color-text-muted); }
+    .report-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-m);
+    }
+    .report-kv {
+      font-size: var(--font-size-14);
+      margin-bottom: var(--spacing-s);
+    }
+    .report-kv__label { color: var(--color-text-muted); }
+    .report-kv__value { color: var(--color-text); font-weight: 500; }
+    .report-sample-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-l);
+      align-items: start;
+    }
+    @media (max-width: 560px) {
+      .report-sample-layout { grid-template-columns: 1fr; }
+    }
+    .report-sample-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--color-neutral-100);
+      border-radius: var(--radius-m);
+      object-fit: cover;
+    }
+    .report-barcode {
+      text-align: center;
+      padding: var(--spacing-m);
+      background: var(--color-neutral-50);
+      border-radius: var(--radius-s);
+      margin-top: var(--spacing-m);
+    }
+    .report-barcode img { height: 48px; display: block; margin: 0 auto 4px; }
+    .report-barcode-num { font-size: 11px; font-family: monospace; color: var(--color-text-muted); }
+    .report-pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: var(--font-size-12);
+      font-weight: 500;
+      margin-top: var(--spacing-s);
+    }
+    .report-pill--pending { background: var(--color-warning-100); color: var(--color-warning-800); }
+    .nutrient-boxes {
+      display: flex;
+      gap: var(--spacing-m);
+      flex-wrap: wrap;
+      margin-bottom: var(--spacing-m);
+    }
+    .nutrient-box {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-m);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: var(--font-size-14);
+    }
+    .nutrient-box--n { background: var(--color-success-100); color: var(--color-success-800); }
+    .nutrient-box--p { background: var(--color-success-200); color: var(--color-success-800); }
+    .nutrient-box--k { background: var(--color-success-200); color: var(--color-success-800); }
+    .nutrient-box span:first-child { font-size: 18px; }
+    .measurement-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(to right, var(--color-danger-400) 0%, var(--color-warning-400) 25%, #eab308 50%, var(--color-success-400) 75%, var(--color-success-600) 100%);
+      margin-bottom: var(--spacing-s);
+    }
+    .measurement-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+    .soil-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-m);
+    }
+    @media (max-width: 560px) {
+      .soil-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .soil-card {
+      padding: var(--spacing-m);
+      background: var(--color-neutral-50);
+      border-radius: var(--radius-m);
+      border: 1px solid var(--color-border);
+      font-size: var(--font-size-12);
+    }
+    .soil-card__name { color: var(--color-text-muted); margin-bottom: 4px; }
+    .soil-card__value { font-weight: 600; font-size: var(--font-size-14); color: var(--color-text); }
+    .soil-card__meta { font-size: 11px; color: var(--color-text-muted); margin-top: 2px; }
+    .report-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-s);
+      margin-bottom: var(--spacing-m);
+    }
+    .report-filters a {
+      font-size: var(--font-size-12);
+      color: var(--color-text-muted);
+      text-decoration: none;
+    }
+    .report-filters a:hover, .report-filters a.active { color: var(--color-brand); font-weight: 500; }
+    .report-card .modal__footer { border-top: var(--border-width-1) solid var(--color-border); }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-shell__nav" aria-label="Main">
+      <nav class="nav" aria-label="Main">
+        <a href="#" class="nav__item">
+          <span class="nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+          <span class="nav__label">Home</span>
+        </a>
+        <a href="#" class="nav__item" aria-current="page">
+          <span class="nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <span class="nav__label">Fields</span>
+        </a>
+        <a href="#" class="nav__item">
+          <span class="nav__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></span>
+          <span class="nav__label">Reports</span>
+        </a>
+      </nav>
+    </aside>
+    <div class="app-shell__right">
+      <header class="header" role="banner">
+        <div class="header__left">
+          <a href="#" class="header__logo" aria-label="Home"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a>
+          <button type="button" class="btn btn--secondary header__back" aria-label="Go back">
+            <span class="btn__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></span>
+            Back
+          </button>
+        </div>
+        <div class="header__center">
+          <div class="header__search-wrap">
+            <span class="header__search-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </span>
+            <input type="search" class="header__search" placeholder="Search…" aria-label="Search" />
+          </div>
+        </div>
+        <div class="header__right">
+          <span class="header__user-name">Jordan Smith</span>
+          <div class="header__avatar" aria-hidden="true">JS</div>
+          <button type="button" class="header__notifications-btn" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="header__notifications-badge">84</span></button>
+          <div class="header__flag-wrap">
+            <button type="button" class="header__flag-btn" aria-label="Language or region">
+              <span class="header__flag-btn-inner">
+                <span class="header__flag-display">🇺🇸</span>
+                <span class="header__flag-arrow"><svg viewBox="0 0 24 24"><path d="M7 10l5 6 5-6H7z" fill="currentColor"/></svg></span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </header>
+      <main class="app-shell__main">
+        <div class="report-card modal" role="region" aria-labelledby="report-title">
+          <header class="modal__header">
+        <div style="flex: 1; min-width: 0;">
+          <h1 id="report-title" class="modal__title">South Shop</h1>
+          <p class="report-header__meta">South Shop, Campbell farms.</p>
+          <p class="report-header__meta">664.9 ac &bull; 11/5 &nbsp;|&nbsp; Corn</p>
+        </div>
+        <div class="report-header__actions">
+          <button type="button" class="btn btn--secondary">Create PDF</button>
+          <button type="button" class="btn">Virtual scout</button>
+          <button type="button" class="modal__close" aria-label="Close">
+            <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="report-meta-row">
+        <span>Created by: John Brooks &nbsp; Date: 7/11 &nbsp; Hybrid / Variety: Placeholder &nbsp; Planted on: 24/11</span>
+        <a href="#">Add summary</a>
+      </div>
+
+      <div class="report-banner">
+        <div>
+          <div class="report-banner__status">Approved</div>
+          <p class="report-banner__msg">This scouting report has been approved and is now publicly available to the customer.</p>
+          <div class="report-banner__reviewer">Reviewed by: John Junior</div>
+        </div>
+        <button type="button" class="btn btn--secondary">Reopen</button>
+      </div>
+
+      <div class="report-tabs-wrap">
+        <div class="tabs tabs--text" role="tablist" aria-label="Report sections">
+          <button type="button" class="tabs__item" role="tab" id="tab-soil" aria-selected="true" aria-controls="panel-soil">
+            <span class="tabs__label">Soil Sample</span>
+          </button>
+          <button type="button" class="tabs__item" role="tab" id="tab-nutrients" aria-selected="false" aria-controls="panel-nutrients">
+            <span class="tabs__label">Nutrient ratings</span>
+          </button>
+          <button type="button" class="tabs__item" role="tab" id="tab-analysis" aria-selected="false" aria-controls="panel-analysis">
+            <span class="tabs__label">Soil analysis</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="report-panels">
+        <!-- Panel 1: Soil Sample -->
+        <div class="report-panel" id="panel-soil" role="tabpanel" aria-labelledby="tab-soil" aria-hidden="false">
+          <h2 class="report-panel__title">Soil Sample <span class="report-panel__title-num">1/12</span></h2>
+          <p style="font-size: 14px; color: var(--color-text); margin: 0 0 1rem 0;">PorchCam camera does not seem to be responding to any motion; other functionalities are not impacted.</p>
+          <div class="report-sample-layout">
+            <div>
+              <div class="report-grid-2">
+                <div>
+                  <div class="report-kv"><span class="report-kv__label">Trial</span><br><span class="report-kv__value">25-ZEAMX-US750-IA02-HOCK</span></div>
+                  <div class="report-kv"><span class="report-kv__label">Soil depth</span><br><span class="report-kv__value">28 in</span></div>
+                  <div class="report-kv"><span class="report-kv__label">Growth stage</span><br><span class="report-kv__value">VE</span></div>
+                </div>
+                <div>
+                  <div class="report-kv"><span class="report-kv__label">Treatment zone</span><br><span class="report-kv__value">PRVN + 100% N</span></div>
+                  <div class="report-kv"><span class="report-kv__label">Lab</span><br><span class="report-kv__value">Next Level AG.LLC</span></div>
+                </div>
+              </div>
+              <div class="report-kv"><span class="report-kv__label">Barcode Number</span><br><span class="report-kv__value">000000-0000000</span></div>
+              <div class="report-barcode">
+                <div style="height:48px;background:repeating-linear-gradient(90deg,#000,#000 2px,transparent 2px,transparent 4px);margin-bottom:4px;"></div>
+                <span class="report-barcode-num">072825-1055332</span>
+              </div>
+              <span class="report-pill report-pill--pending">Pending analysis</span>
+            </div>
+            <div>
+              <img class="report-sample-img" src="https://placehold.co/400x300/c8e6c9/2e7d32?text=Corn+field" alt="Soil sample" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Nutrient ratings -->
+        <div class="report-panel" id="panel-nutrients" role="tabpanel" aria-labelledby="tab-nutrients" aria-hidden="true">
+          <h2 class="report-panel__title">Overall nutrient ratings</h2>
+          <div class="nutrient-boxes">
+            <div class="nutrient-box nutrient-box--n"><span>N</span><span>3.1</span></div>
+            <div class="nutrient-box nutrient-box--p"><span>P</span><span>4.4</span></div>
+            <div class="nutrient-box nutrient-box--k"><span>K</span><span>4.5</span></div>
+          </div>
+          <div class="report-section">
+            <div class="report-section__title">Measurement Rating</div>
+            <div class="measurement-bar"></div>
+            <div class="measurement-labels">
+              <span>Very low</span>
+              <span>Low</span>
+              <span>Med</span>
+              <span>High</span>
+              <span>Very high</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Soil analysis -->
+        <div class="report-panel" id="panel-analysis" role="tabpanel" aria-labelledby="tab-analysis" aria-hidden="true">
+          <h2 class="report-panel__title">Soil analysis results</h2>
+          <div class="report-filters">
+            <a href="#" class="active">See all</a>
+            <a href="#">Nitrogen</a>
+            <a href="#">Biology</a>
+            <a href="#">Phosphorous</a>
+            <a href="#">Other nutrients</a>
+          </div>
+          <div class="soil-grid">
+            <div class="soil-card"><div class="soil-card__name">Nitrate</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">lbs &bull; range</div></div>
+            <div class="soil-card"><div class="soil-card__name">WEOC</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">WEON</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">C:N Ratio</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">CEC</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">OM</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">pH</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">Buffer pH</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">Bray P</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">Olsen P</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">Potassium (K)</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+            <div class="soil-card"><div class="soil-card__name">Sulfur (S)</div><div class="soil-card__value">10.4</div><div class="soil-card__meta">000</div></div>
+          </div>
+        </div>
+      </div>
+
+          <footer class="modal__footer">
+            <button type="button" class="btn btn--secondary">Edit</button>
+            <button type="button" class="btn" style="background: transparent; color: var(--color-danger-500);">Delete</button>
+          </footer>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var tablist = document.querySelector('.report-tabs-wrap [role="tablist"]');
+      var tabs = document.querySelectorAll('.report-tabs-wrap [role="tab"]');
+      var panels = document.querySelectorAll('.report-panel');
+
+      function showPanel(id) {
+        tabs.forEach(function(t) {
+          t.setAttribute('aria-selected', t.getAttribute('aria-controls') === id ? 'true' : 'false');
+        });
+        panels.forEach(function(p) {
+          var visible = p.id === id;
+          p.setAttribute('aria-hidden', visible ? 'false' : 'true');
+        });
+      }
+
+      tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+          showPanel(this.getAttribute('aria-controls'));
+        });
+        tab.addEventListener('keydown', function(e) {
+          var idx = Array.prototype.indexOf.call(tabs, this);
+          if (e.key === 'ArrowRight' && idx < tabs.length - 1) {
+            tabs[idx + 1].focus();
+            showPanel(tabs[idx + 1].getAttribute('aria-controls'));
+          } else if (e.key === 'ArrowLeft' && idx > 0) {
+            tabs[idx - 1].focus();
+            showPanel(tabs[idx - 1].getAttribute('aria-controls'));
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgMRI — Disease Risk (iOS)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a2e;
+      font-family: -apple-system, 'SF Pro Text', 'Figtree', BlinkMacSystemFont, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 32px 0 48px;
+      color: #1a1a1a;
+    }
+
+    /* ── Demo bar ── */
+    .demo-bar {
+      width: 390px;
+      background: #0f1923;
+      border-radius: 12px 12px 0 0;
+      padding: 10px 16px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; color: rgba(255,255,255,0.6);
+      margin-bottom: 0;
+    }
+    .demo-bar strong { color: #fff; font-size: 12px; }
+    .demo-toggle {
+      display: inline-flex; background: rgba(255,255,255,0.1); border-radius: 14px; padding: 2px;
+      margin-left: auto;
+    }
+    .demo-toggle__btn {
+      padding: 4px 11px; border-radius: 12px; border: none;
+      background: none; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.55);
+      font-family: inherit; cursor: pointer; transition: all 0.15s;
+    }
+    .demo-toggle__btn.active { background: #fff; color: #1a1a1a; }
+
+    /* ── iPhone frame ── */
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      background: #fff;
+      border-radius: 0 0 48px 48px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      height: 44px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      justify-content: space-between;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .status-bar__time {
+      font-size: 15px; font-weight: 600; letter-spacing: -0.3px;
+    }
+    .status-bar__icons {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .status-bar__icons svg { width: 16px; height: 12px; }
+
+    /* Dynamic island notch area */
+    .status-bar::after {
+      content: '';
+      position: absolute;
+      top: 10px; left: 50%;
+      transform: translateX(-50%);
+      width: 120px; height: 34px;
+      background: #000;
+      border-radius: 20px;
+    }
+
+    /* ── iOS Nav bar ── */
+    .ios-nav-bar {
+      height: 44px;
+      background: #fff;
+      border-bottom: 0.5px solid rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 0;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .ios-nav-bar__back {
+      display: flex; align-items: center; gap: 3px;
+      color: #c0392b; font-size: 17px; font-weight: 400;
+      background: none; border: none; font-family: inherit;
+      cursor: pointer; padding: 0;
+    }
+    .ios-nav-bar__back svg { width: 10px; height: 17px; }
+    .ios-nav-bar__title {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-size: 17px; font-weight: 600; letter-spacing: -0.4px;
+      white-space: nowrap;
+    }
+    .ios-nav-bar__actions {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .ios-nav-bar__actions svg { width: 22px; height: 22px; color: #c0392b; }
+
+    /* ── Scrollable content ── */
+    .ios-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #f2f2f7;
+      padding-bottom: 90px; /* tab bar + safe area */
+    }
+    .ios-scroll::-webkit-scrollbar { display: none; }
+
+    /* ── Segmented control ── */
+    .segment-wrap {
+      background: #fff;
+      padding: 10px 16px 0;
+      border-bottom: 0.5px solid rgba(0,0,0,0.1);
+    }
+    .segment-control {
+      display: flex;
+      gap: 0;
+    }
+    .segment-btn {
+      flex: 1; padding: 10px 0;
+      font-size: 14px; font-weight: 500; color: #666;
+      background: none; border: none; border-bottom: 2px solid transparent;
+      font-family: inherit; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .segment-btn.active { color: #c0392b; border-bottom-color: #c0392b; font-weight: 600; }
+
+    /* ── Field card ── */
+    .field-card {
+      background: #fff;
+      margin: 0 0 8px;
+      padding: 14px 16px;
+      border-bottom: 0.5px solid rgba(0,0,0,0.1);
+    }
+    .field-card__row1 {
+      display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;
+    }
+    .field-thumb {
+      width: 46px; height: 46px; border-radius: 10px;
+      background: #f0f0f0; border: 1.5px solid #ddd;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .field-thumb svg { width: 24px; height: 24px; opacity: 0.3; }
+    .field-name {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.5px;
+      margin-bottom: 2px;
+    }
+    .field-grower { font-size: 13px; color: #555; }
+    .field-grower a { color: #c0392b; text-decoration: none; }
+    .field-badge-row {
+      display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 10px;
+    }
+    .field-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #f2f2f7; border-radius: 8px;
+      padding: 4px 8px; font-size: 12px; color: #555; font-weight: 500;
+    }
+    .field-badge--amber .badge-val { color: #d68910; font-weight: 700; }
+    .field-badge--red .badge-val { color: #c0392b; }
+    .field-flight-row {
+      display: flex; gap: 14px; font-size: 12px; color: #888;
+    }
+    .field-flight-row span { display: flex; align-items: center; gap: 4px; }
+
+    /* ── Predictive Disease section ── */
+    .disease-section {
+      background: #fff;
+      border-radius: 12px;
+      margin: 0 16px 8px;
+      overflow: hidden;
+    }
+    .disease-section__header {
+      padding: 13px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 0.5px solid rgba(0,0,0,0.08);
+    }
+    .disease-section__title {
+      font-size: 15px; font-weight: 700;
+      display: flex; align-items: center; gap: 6px; letter-spacing: -0.3px;
+    }
+    .disease-section__title svg { width: 15px; height: 15px; color: #555; }
+    .disease-section__controls { display: flex; align-items: center; gap: 8px; }
+    .btn-ios-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #f2f2f7; border-radius: 8px;
+      border: none; padding: 5px 10px; font-size: 12px; color: #555; font-weight: 500;
+      font-family: inherit; cursor: pointer;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 52px 20px;
+      gap: 14px;
+    }
+    .empty-state__icon {
+      width: 72px; height: 72px;
+      color: #c7c7cc;
+    }
+    .empty-state__text {
+      font-size: 14px;
+      color: #c7c7cc;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.4;
+      max-width: 220px;
+    }
+
+    /* ── Timeline (mobile scroll) ── */
+    .timeline-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .timeline-scroll::-webkit-scrollbar { display: none; }
+
+    .timeline {
+      min-width: 700px;
+      font-size: 11px;
+    }
+
+    .tl-date-row {
+      display: grid;
+      grid-template-columns: 120px repeat(14, 1fr);
+      background: #f9f9f9;
+      border-bottom: 0.5px solid #e8e8e8;
+    }
+    .tl-date-cell {
+      padding: 5px 3px;
+      text-align: center;
+      font-size: 9px; color: #888; line-height: 1.3;
+      border-right: 0.5px solid #f0f0f0;
+    }
+    .tl-date-cell .day-num { font-size: 11px; font-weight: 700; display: block; }
+    .tl-date-cell--today { background: #eef5fe; color: #1a6bb5; font-weight: 700; }
+    .tl-date-cell--past { color: #bbb; }
+
+    .tl-row {
+      display: grid;
+      grid-template-columns: 120px repeat(14, 1fr);
+      border-bottom: 0.5px solid #f0f0f0;
+      min-height: 34px;
+      align-items: center;
+    }
+    .tl-row--sub { min-height: 22px; background: #fafafa; }
+    .tl-label {
+      padding: 0 10px;
+      font-size: 11px; font-weight: 500; color: #333;
+      line-height: 1.3;
+    }
+    .tl-label--sub { font-size: 10px; color: #aaa; font-weight: 400; padding-left: 16px; }
+    .tl-label--section { font-size: 11px; font-weight: 700; }
+
+    .tl-cell {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 34px;
+      border-right: 0.5px solid #f4f4f4;
+    }
+    .tl-cell--today { background: rgba(26,107,181,0.06); }
+    .tl-cell--sub { min-height: 22px; }
+
+    .tl-dot {
+      width: 13px; height: 13px; border-radius: 50%;
+    }
+    .tl-dot--gray   { background: #d0d0d0; }
+    .tl-dot--blue   { background: #2980b9; }
+    .tl-dot--yellow { background: #d4ac0d; }
+    .tl-dot--red    { background: #c0392b; }
+    .tl-dot--green  { background: #3aaf3a; }
+    .tl-stage-label { font-size: 10px; font-weight: 700; color: #555; }
+
+    /* Action window bar in cells */
+    .tl-cell--action {
+      position: relative;
+    }
+    .aw-line {
+      position: absolute; left: 0; right: 0; top: 50%;
+      height: 1.5px; background: #8e44ad; transform: translateY(-50%);
+    }
+
+    /* ── iOS Tab bar ── */
+    .ios-tab-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 83px;
+      background: rgba(249,249,249,0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 0.5px solid rgba(0,0,0,0.15);
+      display: flex;
+      align-items: flex-start;
+      padding-top: 8px;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 3px;
+      font-size: 10px; font-weight: 500;
+      color: #8e8e93; cursor: pointer;
+      padding: 0;
+    }
+    .tab-item.active { color: #c0392b; }
+    .tab-item svg { width: 24px; height: 24px; }
+    .tab-item span { font-size: 10px; }
+
+    .hidden { display: none !important; }
+
+    /* Label on top of action window */
+    .aw-label {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      font-size: 8px; color: #8e44ad; font-weight: 600; white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Demo toggle -->
+  <div class="demo-bar">
+    <strong>Demo:</strong> Disease data
+    <div class="demo-toggle">
+      <button class="demo-toggle__btn active" onclick="setDiseaseState('populated')">With data</button>
+      <button class="demo-toggle__btn" onclick="setDiseaseState('empty')">Empty state</button>
+    </div>
+  </div>
+
+  <!-- iPhone frame -->
+  <div class="phone-frame">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-bar__time">9:41</span>
+      <div class="status-bar__icons">
+        <!-- Signal -->
+        <svg viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5"/><rect x="9" y="3" width="3" height="9" rx="0.5"/><rect x="13.5" y="0" width="3" height="12" rx="0.5" opacity="0.3"/></svg>
+        <!-- Wifi -->
+        <svg viewBox="0 0 16 12" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="12">
+          <path d="M8 10.5 L8 10.5" stroke-linecap="round" stroke-width="2"/>
+          <path d="M5.5 8 Q8 6 10.5 8" stroke-linecap="round"/>
+          <path d="M3 5.5 Q8 2 13 5.5" stroke-linecap="round"/>
+        </svg>
+        <!-- Battery -->
+        <svg viewBox="0 0 25 12" fill="currentColor" width="25" height="12">
+          <rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none"/>
+          <rect x="22" y="3.5" width="2" height="5" rx="1" fill="currentColor" opacity="0.4"/>
+          <rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- iOS Nav bar -->
+    <div class="ios-nav-bar">
+      <button class="ios-nav-bar__back">
+        <svg viewBox="0 0 10 17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="8,1 2,8.5 8,16"/>
+        </svg>
+        Fields
+      </button>
+      <div class="ios-nav-bar__title">Robinson 400</div>
+      <div class="ios-nav-bar__actions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="ios-scroll">
+
+      <!-- Segmented control -->
+      <div class="segment-wrap">
+        <div class="segment-control">
+          <button class="segment-btn">Overview</button>
+          <button class="segment-btn active">Risk summary</button>
+        </div>
+      </div>
+
+      <!-- Field card -->
+      <div class="field-card">
+        <div class="field-card__row1">
+          <div class="field-thumb">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 8h18M8 3v18"/>
+            </svg>
+          </div>
+          <div>
+            <div class="field-name">Robinson 400</div>
+            <div class="field-grower">Williams Farms · <a href="#">Michael Williams</a> ★</div>
+          </div>
+        </div>
+        <div class="field-badge-row">
+          <div class="field-badge">Acres <span class="badge-val" style="color:#1a1a1a;">944.3 ac</span></div>
+          <div class="field-badge">Stage <span class="badge-val" style="color:#1a1a1a;">Tassling</span></div>
+          <div class="field-badge">🌽 Corn</div>
+        </div>
+        <div class="field-flight-row">
+          <span>🔥 Last scout <strong style="color:#c0392b;">11/23</strong></span>
+          <span>✈ Latest flight <strong style="color:#d68910;">169 days ago</strong></span>
+        </div>
+      </div>
+
+      <!-- Action chips -->
+      <div style="display:flex;gap:8px;padding:10px 16px 2px;background:#f2f2f7;">
+        <button style="flex:1;padding:10px;background:#fff;border:none;border-radius:12px;font-family:inherit;font-size:13px;color:#555;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 1px 3px rgba(0,0,0,0.07);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Disease correlation
+        </button>
+        <button style="flex:1;padding:10px;background:#c0392b;border:none;border-radius:12px;font-family:inherit;font-size:13px;color:#fff;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="12" r="3"/><circle cx="18" cy="12" r="3"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+          Virtual scout
+        </button>
+      </div>
+
+      <!-- Predictive Disease card -->
+      <div style="padding:10px 16px 0;">
+        <div class="disease-section">
+
+          <!-- Header — always shown -->
+          <div class="disease-section__header">
+            <div class="disease-section__title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              Predictive Disease
+            </div>
+            <div class="disease-section__controls">
+              <button class="btn-ios-pill">
+                2026
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- EMPTY STATE -->
+          <div id="disease-empty" class="empty-state hidden">
+            <svg class="empty-state__icon" viewBox="0 0 80 80" fill="none">
+              <!-- Calendar grid -->
+              <rect x="8" y="14" width="46" height="44" rx="5" stroke="#c7c7cc" stroke-width="3" fill="none"/>
+              <line x1="8" y1="26" x2="54" y2="26" stroke="#c7c7cc" stroke-width="2.5"/>
+              <line x1="21" y1="14" x2="21" y2="26" stroke="#c7c7cc" stroke-width="2"/>
+              <line x1="41" y1="14" x2="41" y2="26" stroke="#c7c7cc" stroke-width="2"/>
+              <!-- Calendar dots -->
+              <circle cx="20" cy="37" r="4" fill="#d1d1d6"/>
+              <circle cx="31" cy="37" r="4" fill="#d1d1d6"/>
+              <circle cx="42" cy="37" r="4" fill="#d1d1d6"/>
+              <circle cx="20" cy="49" r="4" fill="#d1d1d6"/>
+              <circle cx="31" cy="49" r="4" fill="#d1d1d6"/>
+              <circle cx="42" cy="49" r="4" fill="#d1d1d6"/>
+              <!-- Magnifying glass -->
+              <circle cx="58" cy="57" r="14" stroke="#c7c7cc" stroke-width="3.5" fill="none"/>
+              <line x1="68" y1="67" x2="76" y2="75" stroke="#c7c7cc" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="49" y1="48" x2="67" y2="66" stroke="#d1d1d6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div class="empty-state__text">No disease predictions available for selected season</div>
+          </div>
+
+          <!-- POPULATED: Timeline -->
+          <div id="disease-populated" class="timeline-scroll">
+            <div class="timeline">
+
+              <!-- Date header -->
+              <div class="tl-date-row">
+                <div class="tl-date-cell" style="text-align:left;padding-left:10px;"></div>
+                <div class="tl-date-cell tl-date-cell--past"><span class="day-num">01</span><span>Wed</span></div>
+                <div class="tl-date-cell tl-date-cell--past"><span class="day-num">03</span><span>Fri</span></div>
+                <div class="tl-date-cell tl-date-cell--past"><span class="day-num">05</span><span>Sun</span></div>
+                <div class="tl-date-cell tl-date-cell--past"><span class="day-num">07</span><span>Tue</span></div>
+                <div class="tl-date-cell tl-date-cell--past"><span class="day-num">09</span><span>Thu</span></div>
+                <div class="tl-date-cell tl-date-cell--past"><span class="day-num">11</span><span>Sat</span></div>
+                <div class="tl-date-cell tl-date-cell--past"><span class="day-num">12</span><span>Sun</span></div>
+                <div class="tl-date-cell tl-date-cell--today"><span class="day-num">13</span><span>Today</span></div>
+                <div class="tl-date-cell"><span class="day-num">14</span><span>Wed</span></div>
+                <div class="tl-date-cell"><span class="day-num">15</span><span>Thu</span></div>
+                <div class="tl-date-cell"><span class="day-num">16</span><span>Fri</span></div>
+                <div class="tl-date-cell"><span class="day-num">17</span><span>Sat</span></div>
+                <div class="tl-date-cell"><span class="day-num">18</span><span>Sun</span></div>
+                <div class="tl-date-cell"><span class="day-num">19</span><span>Mon</span></div>
+              </div>
+
+              <!-- Growth Stage -->
+              <div class="tl-row" style="background:#f9f9f9;">
+                <div class="tl-label" style="color:#888;font-weight:400;">Growth Stage</div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><span class="tl-stage-label">VT</span></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><span class="tl-stage-label">R1</span></div>
+                <div class="tl-cell tl-cell--today"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+                <div class="tl-cell"><span class="tl-stage-label">R2</span></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray" style="width:10px;height:10px;"></div></div>
+              </div>
+
+              <!-- Disease Stress -->
+              <div class="tl-row">
+                <div class="tl-label tl-label--section">Disease Stress</div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--gray"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+                <div class="tl-cell tl-cell--today"><div class="tl-dot tl-dot--yellow"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+              </div>
+
+              <!-- Action Window sub-row -->
+              <div class="tl-row tl-row--sub">
+                <div class="tl-label tl-label--sub">Action Window</div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub tl-cell--today tl-cell--action" style="position:relative;">
+                  <div class="aw-line"></div>
+                  <span class="aw-label">Action Window</span>
+                </div>
+                <div class="tl-cell tl-cell--sub tl-cell--action" style="position:relative;"><div class="aw-line"></div></div>
+                <div class="tl-cell tl-cell--sub tl-cell--action" style="position:relative;"><div class="aw-line"></div></div>
+                <div class="tl-cell tl-cell--sub tl-cell--action" style="position:relative;"><div class="aw-line"></div></div>
+                <div class="tl-cell tl-cell--sub tl-cell--action" style="position:relative;"><div class="aw-line"></div></div>
+                <div class="tl-cell tl-cell--sub tl-cell--action" style="position:relative;"><div class="aw-line"></div></div>
+                <div class="tl-cell tl-cell--sub tl-cell--action" style="position:relative;"><div class="aw-line"></div></div>
+              </div>
+
+              <!-- N. Corn Leaf Blight -->
+              <div class="tl-row" style="background:#fafafa;">
+                <div class="tl-label" style="font-size:10px;line-height:1.3;">N. corn<br>leaf blight</div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--blue" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell tl-cell--today"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--red" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+              </div>
+              <div class="tl-row tl-row--sub">
+                <div class="tl-label tl-label--sub">Infection</div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ccc"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ccc"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ccc"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub tl-cell--today"><svg width="8" height="6" viewBox="0 0 10 8" fill="#aaa"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+              </div>
+
+              <!-- Gray leaf spot -->
+              <div class="tl-row">
+                <div class="tl-label">Gray leaf spot</div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--green" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell tl-cell--today"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+              </div>
+              <div class="tl-row tl-row--sub">
+                <div class="tl-label tl-label--sub">Infection</div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ddd"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ddd"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ccc"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ccc"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub tl-cell--today"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+              </div>
+
+              <!-- Tar spot -->
+              <div class="tl-row" style="background:#fafafa;">
+                <div class="tl-label">Tar spot</div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--blue" style="width:11px;height:11px;background:#2471a3;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--blue" style="width:11px;height:11px;background:#2471a3;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--blue" style="width:11px;height:11px;background:#2471a3;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell tl-cell--today"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+              </div>
+              <div class="tl-row tl-row--sub" style="background:#f4f4f4;">
+                <div class="tl-label tl-label--sub">Infection</div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ddd"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ddd"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ccc"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub tl-cell--today"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+              </div>
+
+              <!-- Septoria brown spot -->
+              <div class="tl-row">
+                <div class="tl-label" style="font-size:10px;line-height:1.3;">Septoria<br>brown spot</div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--blue" style="width:11px;height:11px;background:#2471a3;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--blue" style="width:11px;height:11px;background:#2471a3;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--blue" style="width:11px;height:11px;background:#2471a3;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell tl-cell--today"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+                <div class="tl-cell"><div class="tl-dot tl-dot--yellow" style="width:11px;height:11px;"></div></div>
+              </div>
+              <div class="tl-row tl-row--sub">
+                <div class="tl-label tl-label--sub">Infection</div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ddd"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ccc"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"><svg width="8" height="6" viewBox="0 0 10 8" fill="#ccc"><polygon points="5,0 10,8 0,8"/></svg></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub tl-cell--today"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+                <div class="tl-cell tl-cell--sub"></div>
+              </div>
+
+            </div>
+          </div><!-- /timeline-scroll -->
+
+        </div><!-- /disease-section -->
+      </div>
+
+    </div><!-- /ios-scroll -->
+
+    <!-- iOS Tab bar -->
+    <div class="ios-tab-bar">
+      <div class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Home</span>
+      </div>
+      <div class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span>Alerts</span>
+      </div>
+      <div class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+        </svg>
+        <span>Fields</span>
+      </div>
+      <div class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span>Scout</span>
+      </div>
+      <div class="tab-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Disease</span>
+      </div>
+    </div>
+
+  </div><!-- /phone-frame -->
+
+<script>
+  function setDiseaseState(state) {
+    const empty = document.getElementById('disease-empty');
+    const populated = document.getElementById('disease-populated');
+    const btns = document.querySelectorAll('.demo-toggle__btn');
+    if (state === 'empty') {
+      empty.classList.remove('hidden');
+      populated.classList.add('hidden');
+      btns[0].classList.remove('active');
+      btns[1].classList.add('active');
+    } else {
+      empty.classList.add('hidden');
+      populated.classList.remove('hidden');
+      btns[0].classList.add('active');
+      btns[1].classList.remove('active');
+    }
+  }
+</script>
+</body>
+</html>
