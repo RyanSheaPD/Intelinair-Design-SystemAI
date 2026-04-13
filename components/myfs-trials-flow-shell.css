@@ -132,6 +132,14 @@ body {
   padding: 6px 0 6px 20px;
 }
 
+.mitrials-treatment-menu__trial-row--selected {
+  margin: 2px 0;
+  padding: 8px 8px 8px 17px;
+  border-radius: 8px;
+  background: rgba(var(--color-myfs-rgb, 196, 30, 58), 0.08);
+  box-shadow: inset 3px 0 0 var(--color-myfs-500, #c41e3a);
+}
+
 .mitrials-treatment-menu__trial-row .mitrials-treatment-menu__cb {
   margin-top: 2px;
 }
@@ -341,11 +349,19 @@ body {
   justify-content: center;
 }
 
-/* MiTrials layer chip — MyFS logo (opens trials popover / flow). */
+/* MiTrials layer chip — MiField® FS wordmark (horizontal; pill wider than round 50px chips). */
+.map-layers .map-layers__btn.map-layers__btn--mitrials {
+  width: auto;
+  min-width: 50px;
+  height: 50px;
+  padding: 0 11px;
+  border-radius: 999px;
+}
+
 .map-layers__btn--mitrials .map-layers__mitrials-logo {
   width: auto;
-  height: 22px;
-  max-width: 36px;
+  height: 20px;
+  max-width: min(118px, 42vw);
   object-fit: contain;
   object-position: center;
   flex-shrink: 0;
@@ -353,7 +369,7 @@ body {
   pointer-events: none;
 }
 
-/* Open / pressed: dark chip; keep logo readable on dark background */
+/* Open / pressed: dark chip; invert full-color wordmark for contrast */
 .map-layers__btn--mitrials.map-layers__btn--mitrials-open {
   background: rgba(22, 22, 22, 0.92);
 }
@@ -363,7 +379,7 @@ body {
 }
 
 .map-layers__btn--mitrials.map-layers__btn--mitrials-open .map-layers__mitrials-logo {
-  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.35));
+  filter: brightness(0) invert(1);
 }
 
 
@@ -1229,6 +1245,15 @@ body {
 
 .trial-drawer__treatments-row:hover {
   background: var(--color-neutral-50, #fafafa);
+}
+
+.trial-drawer__treatments-row--selected {
+  background: rgba(var(--color-myfs-rgb, 196, 30, 58), 0.09);
+  box-shadow: inset 3px 0 0 var(--color-myfs-500, #c41e3a);
+}
+
+.trial-drawer__treatments-row--selected:hover {
+  background: rgba(var(--color-myfs-rgb, 196, 30, 58), 0.12);
 }
 
 .trial-drawer__treatments-row-label {

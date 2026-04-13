@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AgMRI — Weather (iOS field list, light)</title>
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <!-- Figma HTML→Design: capture with #figmacapture=… from MCP (generate_figma_design). -->
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    /*
+     * SF Pro: use PostScript names first so macOS Safari resolves the installed system fonts
+     * (Figma capture on Mac). In Figma, set missing fonts to “SF Pro Text” / “SF Pro Display”.
+     */
+    html {
+      font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--color-neutral-100, #f5f5f5);
+      font-family: inherit;
+    }
+    /* AGMRI skin + iOS light UI: grouped background, white surfaces, brand accents */
+    .agmri-ios-shell {
+      --ios-bg: #f2f2f7;
+      --ios-surface: #ffffff;
+      --ios-border: rgba(60, 60, 67, 0.12);
+      --ios-text: #1c1c1e;
+      --ios-muted: rgba(60, 60, 67, 0.55);
+      --ios-brand: var(--color-brand-500, #3c84c7);
+      --ios-brand-soft: rgba(60, 132, 199, 0.12);
+      --ios-tab-inactive: rgba(60, 60, 67, 0.45);
+      --ios-icon-chrome: rgba(60, 60, 67, 0.35);
+      --ios-radius-card: 14px;
+      --ios-radius-pill: 10px;
+      min-height: 100dvh;
+      max-width: 430px;
+      margin: 0 auto;
+      background: var(--ios-bg);
+      color: var(--ios-text);
+      font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.35;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      padding-top: env(safe-area-inset-top, 0);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .agmri-ios-main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* —— Layer tabs —— */
+    .ios-layer-tabs {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 10px 12px 0;
+      background: var(--ios-surface);
+      border-bottom: 1px solid var(--ios-border);
+      flex-shrink: 0;
+    }
+
+    .agmri-ios-shell button {
+      font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    }
+
+    .ios-layer-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 4px 10px;
+      background: none;
+      border: none;
+      color: var(--ios-tab-inactive);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      position: relative;
+    }
+
+    .ios-layer-tab__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(60, 60, 67, 0.06);
+      color: inherit;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .ios-layer-tab__icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .ios-layer-tab[aria-selected="true"] {
+      color: var(--ios-text);
+    }
+
+    .ios-layer-tab[aria-selected="true"] .ios-layer-tab__icon {
+      background: var(--ios-brand-soft);
+      color: var(--ios-brand);
+    }
+
+    .ios-layer-tab[aria-selected="true"]::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 12%;
+      right: 12%;
+      height: 3px;
+      border-radius: 2px 2px 0 0;
+      background: var(--ios-brand);
+    }
+
+    /* —— Filter bar —— */
+    .ios-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ios-muted);
+      background: var(--ios-surface);
+      border-bottom: 1px solid var(--ios-border);
+      flex-shrink: 0;
+    }
+
+    .ios-filter-bar__seg {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .ios-filter-bar__seg--grow {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .ios-filter-bar svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+
+    .ios-chevron {
+      width: 12px !important;
+      height: 12px !important;
+      opacity: 0.55;
+    }
+
+    /* —— Scroll list —— */
+    .ios-field-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 14px 8px;
+    }
+
+    .ios-field-card {
+      background: var(--ios-surface);
+      border-radius: var(--ios-radius-card);
+      border: 1px solid var(--ios-border);
+      padding: 14px 14px 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .ios-field-card__head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .ios-field-card__thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: var(--color-neutral-100, #f5f5f5);
+      border: 1px solid var(--ios-border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ios-muted);
+    }
+
+    .ios-field-card__thumb svg {
+      width: 28px;
+      height: 28px;
+      opacity: 0.85;
+    }
+
+    .ios-field-card__titles {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ios-field-card__name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 2px;
+    }
+
+    .ios-field-card__loc {
+      margin: 0;
+      font-size: 13px;
+      color: var(--ios-muted);
+      font-weight: 500;
+    }
+
+    .ios-field-card__scout {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 10px;
+      background: var(--ios-brand-soft);
+      color: var(--ios-brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .ios-field-card__scout svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .ios-inline-ico {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--ios-muted);
+    }
+
+    .ios-inline-ico svg {
+      flex-shrink: 0;
+    }
+
+    .ios-field-card__meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+      font-size: 13px;
+      margin-bottom: 12px;
+      color: var(--ios-text);
+    }
+
+    .ios-field-card__sep {
+      color: rgba(60, 60, 67, 0.25);
+      font-weight: 300;
+    }
+
+    .ios-field-card__gdd {
+      color: var(--color-warning-500, #f59e0b);
+      font-weight: 600;
+    }
+
+    .ios-field-card__weather-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .ios-wx-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--ios-text);
+    }
+
+    .ios-wx-item svg {
+      width: 16px;
+      height: 16px;
+      color: var(--ios-muted);
+      flex-shrink: 0;
+    }
+
+    .ios-field-card__rain-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--ios-muted);
+    }
+
+    .ios-rain-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ios-rain-cell svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.65;
+    }
+
+    .ios-rain-cell strong {
+      color: var(--ios-text);
+      font-weight: 700;
+    }
+
+    .ios-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 10px;
+      border-top: 1px solid var(--ios-border);
+    }
+
+    .ios-status-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .ios-status-item__lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ios-muted);
+      text-transform: capitalize;
+      max-width: 88px;
+      line-height: 1.2;
+    }
+
+    .ios-bar-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      width: 28px;
+      flex-shrink: 0;
+    }
+
+    .ios-bar-stack span {
+      display: block;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(60, 60, 67, 0.12);
+    }
+
+    .ios-bar-stack--gw span:nth-child(3) {
+      background: var(--color-success-600, #16a34a);
+    }
+
+    .ios-bar-stack--spray span:nth-child(1) {
+      background: var(--color-warning-500, #f59e0b);
+    }
+
+    .ios-bar-stack--spray span:nth-child(3) {
+      background: var(--color-warning-500, #f59e0b);
+    }
+
+    /* —— Bottom nav —— */
+    .ios-bottom-nav {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-around;
+      padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0));
+      border-top: 1px solid var(--ios-border);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      flex-shrink: 0;
+    }
+
+    .ios-bottom-nav a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 4px;
+      text-decoration: none;
+      color: var(--ios-tab-inactive);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      border-radius: 10px;
+      min-width: 0;
+    }
+
+    .ios-bottom-nav a svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .ios-bottom-nav a[aria-current="page"] {
+      color: var(--ios-brand);
+    }
+
+    .ios-bottom-nav a[aria-current="page"] svg {
+      color: var(--ios-brand);
+    }
+
+    .ios-bottom-nav a {
+      position: relative;
+    }
+
+    .ios-bottom-nav__active-ring::before {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid rgba(60, 132, 199, 0.28);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="agmri-ios-shell">
+    <main class="agmri-ios-main">
+      <div class="ios-layer-tabs" role="tablist" aria-label="Weather map layer">
+        <button type="button" class="ios-layer-tab" role="tab" aria-selected="true">
+          <span class="ios-layer-tab__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+          </span>
+          Radar
+        </button>
+        <button type="button" class="ios-layer-tab" role="tab" aria-selected="false">
+          <span class="ios-layer-tab__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+              <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+            </svg>
+          </span>
+          Temperature
+        </button>
+        <button type="button" class="ios-layer-tab" role="tab" aria-selected="false">
+          <span class="ios-layer-tab__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+              <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10 0h2.5a2 2 0 0 1 1.94 2.5M2 12h6.5"/><path d="M2 16h9a2 2 0 1 0 1.8-2.2M18 8h1.5a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H16"/>
+            </svg>
+          </span>
+          Wind
+        </button>
+        <button type="button" class="ios-layer-tab" role="tab" aria-selected="false">
+          <span class="ios-layer-tab__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v2M8 10h10a4 4 0 0 1 0 8H9"/><path d="M6 18H4a2 2 0 0 1-2-2v-1a4 4 0 0 1 4-4h10"/>
+            </svg>
+          </span>
+          Rain acc.
+        </button>
+      </div>
+
+      <div class="ios-filter-bar">
+        <div class="ios-filter-bar__seg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>All growers</span>
+          <svg class="ios-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="ios-filter-bar__seg ios-filter-bar__seg--grow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4v16M17 4v16M4 8h5M15 8h5M4 16h5M15 16h5"/></svg>
+          <span>No sorting</span>
+          <svg class="ios-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <button type="button" class="ios-filter-bar__seg" style="border:none;background:none;padding:0;color:inherit;cursor:pointer" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="ios-field-scroll">
+        <article class="ios-field-card">
+          <div class="ios-field-card__head">
+            <div class="ios-field-card__thumb" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="6,22 14,8 24,12 26,24 10,26"/></svg>
+            </div>
+            <div class="ios-field-card__titles">
+              <h2 class="ios-field-card__name">Zoysia Icon</h2>
+              <p class="ios-field-card__loc">Ft. Pierce, Bethel Farms</p>
+            </div>
+            <button type="button" class="ios-field-card__scout" aria-label="Scout field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </div>
+          <div class="ios-field-card__meta">
+            <span>60.4 ac</span>
+            <span class="ios-field-card__sep">|</span>
+            <span class="ios-inline-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22c4-4 8-10 8-16a8 8 0 0 0-16 0c0 6 4 12 8 16z"/></svg> N/A</span>
+            <span class="ios-field-card__sep">|</span>
+            <span class="ios-field-card__gdd">GDD: N/A</span>
+          </div>
+          <div class="ios-field-card__weather-row">
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41"/></svg>76 °F</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="currentColor" opacity="0.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>65%</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2"/></svg>ENE 15 mph</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>72 °F</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26"/></svg>0.152</span>
+          </div>
+          <div class="ios-field-card__rain-row">
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>24h <strong>1.31 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>72h <strong>2.44 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>7 days <strong>1 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>YTD 1/1 <strong>9.9</strong></div>
+          </div>
+          <div class="ios-status-row">
+            <div class="ios-status-item">
+              <div class="ios-bar-stack ios-bar-stack--gw" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="ios-status-item__lbl">Ground workability</span>
+            </div>
+            <div class="ios-status-item">
+              <div class="ios-bar-stack ios-bar-stack--spray" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="ios-status-item__lbl">Spray outlook</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ios-field-card">
+          <div class="ios-field-card__head">
+            <div class="ios-field-card__thumb" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="8,24 18,10 28,14 24,28 6,26"/></svg>
+            </div>
+            <div class="ios-field-card__titles">
+              <h2 class="ios-field-card__name">Bimini Bermuda</h2>
+              <p class="ios-field-card__loc">Ft. Pierce, Bethel Farms</p>
+            </div>
+            <button type="button" class="ios-field-card__scout" aria-label="Scout field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </div>
+          <div class="ios-field-card__meta">
+            <span>42.1 ac</span>
+            <span class="ios-field-card__sep">|</span>
+            <span class="ios-inline-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22c4-4 8-10 8-16a8 8 0 0 0-16 0c0 6 4 12 8 16z"/></svg> N/A</span>
+            <span class="ios-field-card__sep">|</span>
+            <span class="ios-field-card__gdd">GDD: N/A</span>
+          </div>
+          <div class="ios-field-card__weather-row">
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>74 °F</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="currentColor" opacity="0.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>62%</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2"/></svg>E 12 mph</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/></svg>70 °F</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26"/></svg>0.148</span>
+          </div>
+          <div class="ios-field-card__rain-row">
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>24h <strong>0.9 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>72h <strong>1.8 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>7 days <strong>0.8 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>YTD 1/1 <strong>8.2</strong></div>
+          </div>
+          <div class="ios-status-row">
+            <div class="ios-status-item">
+              <div class="ios-bar-stack ios-bar-stack--gw" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="ios-status-item__lbl">Ground workability</span>
+            </div>
+            <div class="ios-status-item">
+              <div class="ios-bar-stack ios-bar-stack--spray" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="ios-status-item__lbl">Spray outlook</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="ios-field-card">
+          <div class="ios-field-card__head">
+            <div class="ios-field-card__thumb" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2"><polygon points="4,18 20,6 28,20 12,28"/></svg>
+            </div>
+            <div class="ios-field-card__titles">
+              <h2 class="ios-field-card__name">St. Aug Floratam</h2>
+              <p class="ios-field-card__loc">Ft. Pierce, Bethel Farms</p>
+            </div>
+            <button type="button" class="ios-field-card__scout" aria-label="Scout field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </div>
+          <div class="ios-field-card__meta">
+            <span>55.0 ac</span>
+            <span class="ios-field-card__sep">|</span>
+            <span class="ios-inline-ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22c4-4 8-10 8-16a8 8 0 0 0-16 0c0 6 4 12 8 16z"/></svg> N/A</span>
+            <span class="ios-field-card__sep">|</span>
+            <span class="ios-field-card__gdd">GDD: N/A</span>
+          </div>
+          <div class="ios-field-card__weather-row">
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg>75 °F</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="currentColor" opacity="0.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>68%</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2"/></svg>NE 14 mph</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/></svg>71 °F</span>
+            <span class="ios-wx-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26"/></svg>0.151</span>
+          </div>
+          <div class="ios-field-card__rain-row">
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>24h <strong>1.1 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>72h <strong>2.1 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>7 days <strong>0.9 in</strong></div>
+            <div class="ios-rain-cell"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>YTD 1/1 <strong>9.1</strong></div>
+          </div>
+          <div class="ios-status-row">
+            <div class="ios-status-item">
+              <div class="ios-bar-stack ios-bar-stack--gw" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="ios-status-item__lbl">Ground workability</span>
+            </div>
+            <div class="ios-status-item">
+              <div class="ios-bar-stack ios-bar-stack--spray" aria-hidden="true"><span></span><span></span><span></span></div>
+              <span class="ios-status-item__lbl">Spray outlook</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <nav class="ios-bottom-nav" aria-label="Primary">
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Fields
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Scout
+      </a>
+      <a href="#" aria-current="page" class="ios-bottom-nav__active-ring">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+        Weather
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        More
+      </a>
+    </nav>
+  </div>
+</body>
+</html>

@@ -42,6 +42,10 @@
   <link rel="stylesheet" href="../components/tabs.css" />
   <link rel="stylesheet" href="../components/filter-pill.css" />
   <link rel="stylesheet" href="css/weather-hover-export.css" />
+  <link rel="stylesheet" href="css/weather-field-detail-modal.css" />
+  <link rel="stylesheet" href="css/weather-tooltips-ios.css" />
+  <!-- Figma HTML→Design: load with URL hash from generate_figma_design (existingFile) to push this screen into Figma -->
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; font-family: var(--font-family-web); background: #f5f5f5; color: var(--color-text); }
@@ -333,20 +337,67 @@
       height: 100%;
       display: block;
     }
+    /* Base hit target; fill/stroke come from GW tier modifiers (matches map mockup field variation). */
     .weather-map-field-hit {
-      fill: rgba(34, 197, 94, 0.2);
-      stroke: rgba(21, 128, 61, 0.5);
       stroke-width: 0.35;
       vector-effect: non-scaling-stroke;
       cursor: pointer;
       transition: fill 0.14s ease, stroke 0.14s ease, stroke-width 0.14s ease, filter 0.14s ease;
     }
-    .weather-map-field-hit:hover,
-    .weather-map-field-hit.is-hover {
-      fill: rgba(34, 197, 94, 0.5);
+    .weather-map-field-hit--good {
+      fill: rgba(21, 128, 61, 0.26);
+      stroke: rgba(21, 128, 61, 0.52);
+    }
+    .weather-map-field-hit--mostly-fit {
+      fill: rgba(202, 138, 4, 0.22);
+      stroke: rgba(161, 98, 7, 0.55);
+    }
+    .weather-map-field-hit--marginal {
+      fill: rgba(234, 88, 12, 0.24);
+      stroke: rgba(194, 65, 12, 0.58);
+    }
+    .weather-map-field-hit--not-fit {
+      fill: rgba(196, 30, 58, 0.26);
+      stroke: rgba(153, 27, 27, 0.62);
+    }
+    .weather-map-field-hit--na {
+      fill: rgba(156, 163, 175, 0.2);
+      stroke: rgba(107, 114, 128, 0.5);
+    }
+    .weather-map-field-hit--good:hover,
+    .weather-map-field-hit--good.is-hover {
+      fill: rgba(21, 128, 61, 0.5);
       stroke: rgba(21, 128, 61, 0.92);
       stroke-width: 0.65;
-      filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.35));
+      filter: drop-shadow(0 0 4px rgba(21, 128, 61, 0.35));
+    }
+    .weather-map-field-hit--mostly-fit:hover,
+    .weather-map-field-hit--mostly-fit.is-hover {
+      fill: rgba(202, 138, 4, 0.48);
+      stroke: rgba(161, 98, 7, 0.9);
+      stroke-width: 0.65;
+      filter: drop-shadow(0 0 4px rgba(202, 138, 4, 0.35));
+    }
+    .weather-map-field-hit--marginal:hover,
+    .weather-map-field-hit--marginal.is-hover {
+      fill: rgba(234, 88, 12, 0.5);
+      stroke: rgba(194, 65, 12, 0.92);
+      stroke-width: 0.65;
+      filter: drop-shadow(0 0 4px rgba(234, 88, 12, 0.35));
+    }
+    .weather-map-field-hit--not-fit:hover,
+    .weather-map-field-hit--not-fit.is-hover {
+      fill: rgba(196, 30, 58, 0.52);
+      stroke: rgba(153, 27, 27, 0.92);
+      stroke-width: 0.65;
+      filter: drop-shadow(0 0 4px rgba(196, 30, 58, 0.35));
+    }
+    .weather-map-field-hit--na:hover,
+    .weather-map-field-hit--na.is-hover {
+      fill: rgba(156, 163, 175, 0.42);
+      stroke: rgba(75, 85, 99, 0.85);
+      stroke-width: 0.65;
+      filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.12));
     }
     .weather-map-field-hit:focus {
       outline: none;
@@ -465,7 +516,7 @@
       border-left: 1px solid #ececec;
     }
 
-    /* Ground workability / spray outlook — stacked bar glyphs (hover/tap for breakdown) */
+    /* Ground workability / spray outlook — stacked bar glyphs (click for breakdown on desktop; tap opens sheet on touch) */
     .status-cell-wrap { vertical-align: middle !important; }
     .status-cell {
       display: flex;
@@ -475,7 +526,7 @@
       max-width: 128px;
       padding: 6px 8px;
       margin: -2px -8px;
-      cursor: help;
+      cursor: pointer;
       outline: none;
       border-radius: 6px;
       transition: background 0.15s ease, box-shadow 0.15s ease;
@@ -839,10 +890,33 @@
       box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
     }
     html.weather-figma-capture .weather-map-fields-svg .weather-map-field-hit:first-of-type {
-      fill: rgba(34, 197, 94, 0.5);
-      stroke: rgba(21, 128, 61, 0.92);
       stroke-width: 0.65;
-      filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.35));
+      filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.18));
+    }
+    html.weather-figma-capture .weather-map-fields-svg .weather-map-field-hit--good:first-of-type {
+      fill: rgba(21, 128, 61, 0.5);
+      stroke: rgba(21, 128, 61, 0.92);
+      filter: drop-shadow(0 0 4px rgba(21, 128, 61, 0.35));
+    }
+    html.weather-figma-capture .weather-map-fields-svg .weather-map-field-hit--mostly-fit:first-of-type {
+      fill: rgba(202, 138, 4, 0.48);
+      stroke: rgba(161, 98, 7, 0.9);
+      filter: drop-shadow(0 0 4px rgba(202, 138, 4, 0.35));
+    }
+    html.weather-figma-capture .weather-map-fields-svg .weather-map-field-hit--marginal:first-of-type {
+      fill: rgba(234, 88, 12, 0.5);
+      stroke: rgba(194, 65, 12, 0.92);
+      filter: drop-shadow(0 0 4px rgba(234, 88, 12, 0.35));
+    }
+    html.weather-figma-capture .weather-map-fields-svg .weather-map-field-hit--not-fit:first-of-type {
+      fill: rgba(196, 30, 58, 0.52);
+      stroke: rgba(153, 27, 27, 0.92);
+      filter: drop-shadow(0 0 4px rgba(196, 30, 58, 0.35));
+    }
+    html.weather-figma-capture .weather-map-fields-svg .weather-map-field-hit--na:first-of-type {
+      fill: rgba(156, 163, 175, 0.42);
+      stroke: rgba(75, 85, 99, 0.85);
+      filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.12));
     }
     html.weather-figma-capture #view-toggle-btn {
       color: var(--color-text);
@@ -1031,7 +1105,7 @@
                     <span class="sort-indicator">Grower <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
                   </th>
                   <th class="th-sortable" scope="col" data-sort-key="gdo">
-                    <span class="sort-indicator">GDO <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                    <span class="sort-indicator">GDD <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
                   </th>
                   <th class="th-sortable th-sortable--active" scope="col" data-sort-key="air_temp_f">
                     <span class="sort-indicator">Air temp <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span>
@@ -1143,7 +1217,7 @@
   </div>
 </div>
 
-<!-- GW / Spray outlook — tap detail (coarse pointer); same markup source as map popovers -->
+<!-- GW / Spray outlook — list: click toggles floating tooltip (fine pointer) or this sheet (coarse). Map: hover tooltip + click opens field sheet. Body from buildMapFieldGwSoClickSheetHTML for map-field sheet. -->
 <div id="gw-so-scrim" class="bottom-sheet-scrim gw-so-sheet-layer" hidden aria-hidden="true"></div>
 <div id="gw-so-sheet" class="bottom-sheet gw-so-sheet-layer" hidden role="dialog" aria-modal="true" aria-labelledby="gw-so-sheet-title" aria-hidden="true">
   <div class="bottom-sheet__handle" aria-hidden="true">

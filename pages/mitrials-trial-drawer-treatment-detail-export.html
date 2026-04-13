@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiTrials — treatment zone detail (Figma export)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/myfs-trials-flow-shell.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    body.mitrials-treatment-detail-export {
+      margin: 0;
+      padding: 28px 24px 48px;
+      background: #a1a1aa;
+      font-family: var(--font-family-web, system-ui, sans-serif);
+      color: var(--color-text);
+    }
+
+    .mitrials-treatment-detail-export__doc {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .mitrials-treatment-detail-export__title {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #18181b;
+    }
+
+    .mitrials-treatment-detail-export__lede {
+      margin: 0 0 28px;
+      font-size: 13px;
+      color: #3f3f46;
+      max-width: 72ch;
+      line-height: 1.45;
+    }
+
+    .mitrials-treatment-detail-export__grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px 32px;
+      align-items: flex-start;
+    }
+
+    .mitrials-treatment-detail-export__sample {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+
+    .mitrials-treatment-detail-export__label {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #27272a;
+    }
+
+    .mitrials-treatment-detail-export .trial-drawer.trial-drawer--export-panel {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 320px !important;
+      max-width: 320px !important;
+      min-height: 720px;
+      height: auto;
+      overflow: visible;
+      pointer-events: auto;
+      background: #fff;
+      border-right: 1px solid var(--color-border);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .mitrials-treatment-detail-export .trial-drawer.trial-drawer--export-panel .trial-drawer__inner {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mitrials-treatment-detail-export .trial-drawer.trial-drawer--export-panel .trial-drawer-treatment {
+      flex: 1;
+      min-height: 0;
+    }
+  </style>
+</head>
+<body class="mitrials-treatment-detail-export">
+  <div class="mitrials-treatment-detail-export__doc">
+    <h1 class="mitrials-treatment-detail-export__title">MiTrials — treatment zone detail</h1>
+    <p class="mitrials-treatment-detail-export__lede">
+      Drill-in after selecting a treatment row (<code>#trial-drawer-treatment-detail</code> in <code>pages/myfs-mitrials.html</code>).
+      Overview stack is hidden; zone editor is visible. Serve repo root over HTTP for HTML→Design.
+    </p>
+
+    <div class="mitrials-treatment-detail-export__grid">
+      <!-- D: Treated — typical filled state -->
+      <div class="mitrials-treatment-detail-export__sample">
+        <p class="mitrials-treatment-detail-export__label">D · Treated — G3 OS (complimentary tag)</p>
+        <aside class="trial-drawer trial-drawer--open trial-drawer--export-panel" aria-label="Treatment detail export D">
+          <div class="trial-drawer__inner">
+            <div class="trial-drawer__overview-stack" id="trial-drawer-overview-stack-d" hidden></div>
+
+            <div class="trial-drawer-treatment" id="trial-drawer-treatment-detail-d">
+              <header class="trial-drawer-treatment__header">
+                <button type="button" class="trial-drawer-treatment__back" aria-label="Back to trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </button>
+                <h2 class="trial-drawer-treatment__title">Treated — G3 OS</h2>
+                <button type="button" class="trial-drawer-treatment__delete" aria-label="Delete zone" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                </button>
+              </header>
+              <div class="trial-drawer-treatment__rule" aria-hidden="true"></div>
+              <div class="trial-drawer-treatment__body">
+                <fieldset class="trial-drawer-treatment__radios">
+                  <legend class="trial-drawer-treatment__legend-visually-hidden">Zone type</legend>
+                  <label class="trial-drawer-treatment__radio-label">
+                    <input type="radio" name="trial-zone-type-d" value="treated" class="trial-drawer-treatment__radio" checked tabindex="-1" />
+                    <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
+                    Treated
+                  </label>
+                  <label class="trial-drawer-treatment__radio-label">
+                    <input type="radio" name="trial-zone-type-d" value="untreated" class="trial-drawer-treatment__radio" tabindex="-1" />
+                    <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
+                    Untreated
+                  </label>
+                </fieldset>
+
+                <div class="trial-drawer-treatment__field">
+                  <label class="trial-drawer-treatment__label" for="trial-zone-product-d">Product <span class="trial-drawer-treatment__req" aria-hidden="true">*</span></label>
+                  <select id="trial-zone-product-d" class="trial-drawer-treatment__select" tabindex="-1">
+                    <option value="g3" selected>G3 OS</option>
+                    <option value="g2">G2 Hybrid</option>
+                    <option value="other">Other product</option>
+                  </select>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <span class="trial-drawer-treatment__label" id="trial-add-product-label-d">
+                    Add product <span class="trial-drawer-treatment__req" aria-hidden="true">*</span><span class="trial-drawer-treatment__label-optional"> (optional)</span>
+                  </span>
+                  <div class="trial-drawer-treatment__complimentary-row">
+                    <input type="text" class="trial-drawer-treatment__input" id="trial-add-product-input-d" placeholder="Type to add" aria-labelledby="trial-add-product-label-d" autocomplete="off" tabindex="-1" />
+                    <button type="button" class="trial-drawer-treatment__add-link" tabindex="-1">Add</button>
+                  </div>
+                  <div class="trial-drawer-treatment__tags" role="list"></div>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <label class="trial-drawer-treatment__label" for="trial-zone-nfactor-d">N-Factor</label>
+                  <select id="trial-zone-nfactor-d" class="trial-drawer-treatment__select" tabindex="-1">
+                    <option value="gsp" selected>GSP</option>
+                    <option value="standard">Standard</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <span class="trial-drawer-treatment__label" id="trial-complimentary-label-d">Complimentary products</span>
+                  <div class="trial-drawer-treatment__complimentary-row">
+                    <input type="text" class="trial-drawer-treatment__input" id="trial-complimentary-input-d" placeholder="Type to add" aria-labelledby="trial-complimentary-label-d" tabindex="-1" />
+                    <button type="button" class="trial-drawer-treatment__add-link" tabindex="-1">Add</button>
+                  </div>
+                  <div class="trial-drawer-treatment__tags" id="trial-complimentary-tags-d" role="list">
+                    <span class="trial-drawer-treatment__tag" role="listitem">
+                      Starter Fertilizer
+                      <button type="button" class="trial-drawer-treatment__tag-remove" aria-label="Remove Starter Fertilizer" tabindex="-1">
+                        <span class="material-symbols-outlined" aria-hidden="true">close</span>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="trial-drawer-treatment__field trial-drawer-treatment__field--exclude">
+                  <label class="trial-drawer-treatment__check-label" for="trial-exclude-treatment-d">
+                    <input type="checkbox" id="trial-exclude-treatment-d" class="trial-drawer-treatment__check" tabindex="-1" />
+                    <span class="trial-drawer-treatment__check-text">Exclude treatment</span>
+                  </label>
+                </div>
+
+                <div class="trial-drawer-treatment__field trial-drawer-treatment__exclude-comment-field">
+                  <label class="trial-drawer-treatment__label" for="trial-exclude-comment-d">Exclusion comment</label>
+                  <textarea
+                    id="trial-exclude-comment-d"
+                    class="trial-drawer-treatment__textarea"
+                    rows="3"
+                    disabled
+                    placeholder="Explain why this treatment area is excluded…"
+                    aria-label="Reason for excluding this treatment area"
+                    tabindex="-1"
+                  ></textarea>
+                  <p class="trial-drawer-treatment__exclude-hint" id="trial-exclude-comment-hint-d" hidden>
+                    Add a comment describing why this zone is excluded.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- E: Untreated zone -->
+      <div class="mitrials-treatment-detail-export__sample">
+        <p class="mitrials-treatment-detail-export__label">E · Untreated zone</p>
+        <aside class="trial-drawer trial-drawer--open trial-drawer--export-panel" aria-label="Treatment detail export E">
+          <div class="trial-drawer__inner">
+            <div class="trial-drawer__overview-stack" hidden></div>
+
+            <div class="trial-drawer-treatment" id="trial-drawer-treatment-detail-e">
+              <header class="trial-drawer-treatment__header">
+                <button type="button" class="trial-drawer-treatment__back" aria-label="Back to trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </button>
+                <h2 class="trial-drawer-treatment__title">Untreated</h2>
+                <button type="button" class="trial-drawer-treatment__delete" aria-label="Delete zone" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                </button>
+              </header>
+              <div class="trial-drawer-treatment__rule" aria-hidden="true"></div>
+              <div class="trial-drawer-treatment__body">
+                <fieldset class="trial-drawer-treatment__radios">
+                  <legend class="trial-drawer-treatment__legend-visually-hidden">Zone type</legend>
+                  <label class="trial-drawer-treatment__radio-label">
+                    <input type="radio" name="trial-zone-type-e" value="treated" class="trial-drawer-treatment__radio" tabindex="-1" />
+                    <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
+                    Treated
+                  </label>
+                  <label class="trial-drawer-treatment__radio-label">
+                    <input type="radio" name="trial-zone-type-e" value="untreated" class="trial-drawer-treatment__radio" checked tabindex="-1" />
+                    <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
+                    Untreated
+                  </label>
+                </fieldset>
+
+                <div class="trial-drawer-treatment__field">
+                  <label class="trial-drawer-treatment__label" for="trial-zone-product-e">Product <span class="trial-drawer-treatment__req" aria-hidden="true">*</span></label>
+                  <select id="trial-zone-product-e" class="trial-drawer-treatment__select" tabindex="-1">
+                    <option value="g3">G3 OS</option>
+                    <option value="g2">G2 Hybrid</option>
+                    <option value="other" selected>Other product</option>
+                  </select>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <span class="trial-drawer-treatment__label" id="trial-add-product-label-e">
+                    Add product <span class="trial-drawer-treatment__req" aria-hidden="true">*</span><span class="trial-drawer-treatment__label-optional"> (optional)</span>
+                  </span>
+                  <div class="trial-drawer-treatment__complimentary-row">
+                    <input type="text" class="trial-drawer-treatment__input" id="trial-add-product-input-e" placeholder="Type to add" aria-labelledby="trial-add-product-label-e" autocomplete="off" tabindex="-1" />
+                    <button type="button" class="trial-drawer-treatment__add-link" tabindex="-1">Add</button>
+                  </div>
+                  <div class="trial-drawer-treatment__tags" role="list"></div>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <label class="trial-drawer-treatment__label" for="trial-zone-nfactor-e">N-Factor</label>
+                  <select id="trial-zone-nfactor-e" class="trial-drawer-treatment__select" tabindex="-1">
+                    <option value="gsp" selected>GSP</option>
+                    <option value="standard">Standard</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <span class="trial-drawer-treatment__label" id="trial-complimentary-label-e">Complimentary products</span>
+                  <div class="trial-drawer-treatment__complimentary-row">
+                    <input type="text" class="trial-drawer-treatment__input" id="trial-complimentary-input-e" placeholder="Type to add" aria-labelledby="trial-complimentary-label-e" tabindex="-1" />
+                    <button type="button" class="trial-drawer-treatment__add-link" tabindex="-1">Add</button>
+                  </div>
+                  <div class="trial-drawer-treatment__tags" role="list"></div>
+                </div>
+
+                <div class="trial-drawer-treatment__field trial-drawer-treatment__field--exclude">
+                  <label class="trial-drawer-treatment__check-label" for="trial-exclude-treatment-e">
+                    <input type="checkbox" id="trial-exclude-treatment-e" class="trial-drawer-treatment__check" tabindex="-1" />
+                    <span class="trial-drawer-treatment__check-text">Exclude treatment</span>
+                  </label>
+                </div>
+
+                <div class="trial-drawer-treatment__field trial-drawer-treatment__exclude-comment-field">
+                  <label class="trial-drawer-treatment__label" for="trial-exclude-comment-e">Exclusion comment</label>
+                  <textarea
+                    id="trial-exclude-comment-e"
+                    class="trial-drawer-treatment__textarea"
+                    rows="3"
+                    disabled
+                    placeholder="Explain why this treatment area is excluded…"
+                    aria-label="Reason for excluding this treatment area"
+                    tabindex="-1"
+                  ></textarea>
+                  <p class="trial-drawer-treatment__exclude-hint" hidden>Add a comment describing why this zone is excluded.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- F: Exclude checked + comment -->
+      <div class="mitrials-treatment-detail-export__sample">
+        <p class="mitrials-treatment-detail-export__label">F · Exclude treatment (comment active)</p>
+        <aside class="trial-drawer trial-drawer--open trial-drawer--export-panel" aria-label="Treatment detail export F">
+          <div class="trial-drawer__inner">
+            <div class="trial-drawer__overview-stack" hidden></div>
+
+            <div class="trial-drawer-treatment" id="trial-drawer-treatment-detail-f">
+              <header class="trial-drawer-treatment__header">
+                <button type="button" class="trial-drawer-treatment__back" aria-label="Back to trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+                </button>
+                <h2 class="trial-drawer-treatment__title">Treated — G3 OS</h2>
+                <button type="button" class="trial-drawer-treatment__delete" aria-label="Delete zone" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                </button>
+              </header>
+              <div class="trial-drawer-treatment__rule" aria-hidden="true"></div>
+              <div class="trial-drawer-treatment__body">
+                <fieldset class="trial-drawer-treatment__radios">
+                  <legend class="trial-drawer-treatment__legend-visually-hidden">Zone type</legend>
+                  <label class="trial-drawer-treatment__radio-label">
+                    <input type="radio" name="trial-zone-type-f" value="treated" class="trial-drawer-treatment__radio" checked tabindex="-1" />
+                    <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
+                    Treated
+                  </label>
+                  <label class="trial-drawer-treatment__radio-label">
+                    <input type="radio" name="trial-zone-type-f" value="untreated" class="trial-drawer-treatment__radio" tabindex="-1" />
+                    <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
+                    Untreated
+                  </label>
+                </fieldset>
+
+                <div class="trial-drawer-treatment__field">
+                  <label class="trial-drawer-treatment__label" for="trial-zone-product-f">Product <span class="trial-drawer-treatment__req" aria-hidden="true">*</span></label>
+                  <select id="trial-zone-product-f" class="trial-drawer-treatment__select" tabindex="-1">
+                    <option value="g3" selected>G3 OS</option>
+                    <option value="g2">G2 Hybrid</option>
+                    <option value="other">Other product</option>
+                  </select>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <span class="trial-drawer-treatment__label" id="trial-add-product-label-f">
+                    Add product <span class="trial-drawer-treatment__req" aria-hidden="true">*</span><span class="trial-drawer-treatment__label-optional"> (optional)</span>
+                  </span>
+                  <div class="trial-drawer-treatment__complimentary-row">
+                    <input type="text" class="trial-drawer-treatment__input" id="trial-add-product-input-f" placeholder="Type to add" aria-labelledby="trial-add-product-label-f" autocomplete="off" tabindex="-1" />
+                    <button type="button" class="trial-drawer-treatment__add-link" tabindex="-1">Add</button>
+                  </div>
+                  <div class="trial-drawer-treatment__tags" role="list"></div>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <label class="trial-drawer-treatment__label" for="trial-zone-nfactor-f">N-Factor</label>
+                  <select id="trial-zone-nfactor-f" class="trial-drawer-treatment__select" tabindex="-1">
+                    <option value="gsp" selected>GSP</option>
+                    <option value="standard">Standard</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+
+                <div class="trial-drawer-treatment__field">
+                  <span class="trial-drawer-treatment__label" id="trial-complimentary-label-f">Complimentary products</span>
+                  <div class="trial-drawer-treatment__complimentary-row">
+                    <input type="text" class="trial-drawer-treatment__input" id="trial-complimentary-input-f" placeholder="Type to add" aria-labelledby="trial-complimentary-label-f" tabindex="-1" />
+                    <button type="button" class="trial-drawer-treatment__add-link" tabindex="-1">Add</button>
+                  </div>
+                  <div class="trial-drawer-treatment__tags" role="list"></div>
+                </div>
+
+                <div class="trial-drawer-treatment__field trial-drawer-treatment__field--exclude">
+                  <label class="trial-drawer-treatment__check-label" for="trial-exclude-treatment-f">
+                    <input type="checkbox" id="trial-exclude-treatment-f" class="trial-drawer-treatment__check" checked tabindex="-1" />
+                    <span class="trial-drawer-treatment__check-text">Exclude treatment</span>
+                  </label>
+                </div>
+
+                <div class="trial-drawer-treatment__field trial-drawer-treatment__exclude-comment-field">
+                  <label class="trial-drawer-treatment__label" for="trial-exclude-comment-f">Exclusion comment</label>
+                  <textarea
+                    id="trial-exclude-comment-f"
+                    class="trial-drawer-treatment__textarea"
+                    rows="3"
+                    placeholder="Explain why this treatment area is excluded…"
+                    aria-label="Reason for excluding this treatment area"
+                    tabindex="-1"
+                  >West end of field flooded; zone not valid for comparison.</textarea>
+                  <p class="trial-drawer-treatment__exclude-hint" id="trial-exclude-comment-hint-f">
+                    Add a comment describing why this zone is excluded.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

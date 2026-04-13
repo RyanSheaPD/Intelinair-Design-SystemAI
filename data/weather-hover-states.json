@@ -1,6 +1,6 @@
 {
   "source_page": "pages/agmri-weather.html",
-  "export_document": "pages/weather-hover-states-export.html",
+  "export_document": "pages/weather-hover-states.html",
   "gw_spray_map_tooltip_cards_export": "pages/weather-gw-spray-cards-export.html",
   "gw_spray_tooltip_options_gallery": "pages/weather-gw-spray-tooltip-options.html",
   "stylesheet": "pages/css/weather-hover-export.css",
@@ -8,9 +8,12 @@
   "optional_params": {
     "field": "1–8 with figmaHover=map-field (polygon index)",
     "layer": "temp | wind | rain | clouds | forecast with figmaHover=layer-tab",
-    "mapTooltip": "mini | full — map polygon hover/sheet: mini = field header + GW/SO status rows only (see weather-list-init.js)"
+    "mapTooltip": "mini | full — map polygon hover/sheet: mini = field header + GW/SO status rows only (see weather-list-init.js)",
+    "fieldDetailSheet": "field-detail-sheet — auto-opens map field modal; field=1–8 → fld-demo-0N (default 8). Use with view=map for Figma export."
   },
   "states": [
+    { "id": "field-detail-sheet", "label": "Map — Field detail modal (open, reference layout)", "query": "view=map&figmaHover=field-detail-sheet&field=8" },
+    { "id": "field-detail-sheet", "label": "Map — Field detail modal (demo field 1)", "query": "view=map&figmaHover=field-detail-sheet&field=1" },
     { "id": "map-card", "label": "Map — panel card hover", "query": "view=map&figmaHover=map-card" },
     { "id": "map-field", "label": "Map — field polygon 1", "query": "view=map&figmaHover=map-field" },
     { "id": "map-field", "label": "Map — field polygon 2", "query": "view=map&figmaHover=map-field&field=2" },

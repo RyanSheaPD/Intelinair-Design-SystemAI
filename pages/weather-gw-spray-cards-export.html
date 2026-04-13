@@ -6,6 +6,7 @@
   <title>AgMRI Weather — GW &amp; spray map tooltip cards (export)</title>
   <link rel="stylesheet" href="../design-tokens/tokens.css" />
   <link rel="stylesheet" href="css/weather-gw-spray-cards-export.css" />
+  <link rel="stylesheet" href="css/weather-tooltips-ios.css" />
   <!-- Figma MCP html-to-design: open this page with #figmacapture=… (see Figma capture instructions) -->
   <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 </head>
@@ -303,7 +304,7 @@
         var mini = useExportMiniTooltip();
         slotEl.innerHTML =
           '<div class="weather-tooltip weather-tooltip--rich' +
-          (mini ? ' weather-tooltip--mini' : '') +
+          (mini ? ' weather-tooltip--mini' : ' weather-tooltip--ios') +
           '" role="region" aria-label="' +
           esc(field.field_name) +
           ': ground workability and spray outlook">' +

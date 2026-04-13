@@ -4,14 +4,12 @@
 (function () {
   'use strict';
 
-  var L = window.WeatherGroundSprayLogic;
-  if (!L) return;
+  /** Set on init from window.WeatherGroundSprayLogic (after scripts load). */
+  var L;
 
   var SORT_ICONS_BOTH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg>';
   var SORT_ICON_DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>';
   var SORT_ICON_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
-
-  var DATASET_URL = '../data/weather-ground-spray-dataset.json';
 
   var sortState = { key: 'air_temp_f', dir: 'desc' };
   var rowsData = [];
@@ -63,6 +61,36 @@
       .replace(/"/g, '&quot;');
   }
 
+  function showBootstrapError() {
+    var tbody = document.getElementById('weather-tbody');
+    var msg =
+      'Weather did not initialize: <code>weather-ground-spray-logic.js</code> did not run. ' +
+      'Serve the repository over <strong>HTTP from its root</strong> (for example run <code>python3 -m http.server</code> in the project folder), ' +
+      'then open <code>/pages/agmri-weather.html</code>. Opening the HTML file directly as <code>file://</code> often prevents scripts or JSON from loading. ' +
+      'Check the browser console and Network tab for failed requests.';
+    if (tbody) {
+      tbody.innerHTML =
+        '<tr><td colspan="13" class="text-na" style="padding:24px;line-height:1.5;">' + msg + '</td></tr>';
+    }
+    console.error('[weather-list-init] WeatherGroundSprayLogic is missing after load.');
+  }
+
+  function scheduleInit() {
+    if (window.WeatherGroundSprayLogic) {
+      init();
+      return;
+    }
+    if (document.readyState === 'complete') {
+      showBootstrapError();
+      return;
+    }
+    window.addEventListener('load', function onWeatherScriptsLoad() {
+      window.removeEventListener('load', onWeatherScriptsLoad);
+      if (window.WeatherGroundSprayLogic) init();
+      else showBootstrapError();
+    });
+  }
+
   function formatNa(val, gdoStyle) {
     if (val == null || val === '') {
       return gdoStyle ? '<span class="text-gdo-na">N/A</span>' : '<span class="text-na">N/A</span>';
@@ -98,7 +126,7 @@
     var ariaPrefix = kind === 'spray' ? 'Spray outlook' : 'Ground workability';
     var hint = isCoarsePointerUi()
       ? ' Tap for values and per-metric status.'
-      : ' Hover or focus for soil moisture index, values, and per-metric status.';
+      : ' Click or press Enter for soil moisture index, values, and per-metric status.';
     var bars =
       kind === 'gw' ? L.listViewGwBarStackHTML(gwOrSpray) : L.listViewSprayBarStackHTML(gwOrSpray);
     return (
@@ -174,6 +202,7 @@
   }
 
   function redrawTable() {
+    closeListCellTooltip();
     var tbody = document.getElementById('weather-tbody');
     if (!tbody) return;
     sortRows();
@@ -198,19 +227,26 @@
     return null;
   }
 
-  function detailHtmlForFieldKind(field, kind) {
+  function detailHtmlForFieldKind(field, kind, opts) {
+    opts = opts || {};
     if (!field) return '';
     if (kind === 'spray') {
       return L.buildSprayDetailHTML(L.analyzeSprayOutlook(field), field.spray_outlook_last_updated);
     }
-    return L.buildWorkabilityDetailHTML(L.classifyGroundWorkability(field.soil_moisture_index), field.ground_workability_last_updated);
+    return L.buildWorkabilityDetailHTML(
+      L.classifyGroundWorkability(field.soil_moisture_index),
+      field.ground_workability_last_updated,
+      opts.gwFieldEyebrow
+    );
   }
 
   function detailHtmlForCell(cell) {
     var holder = cell.closest('[data-field-id]');
     if (!holder) return '';
     var field = fieldById(holder.dataset.fieldId);
-    return detailHtmlForFieldKind(field, cell.dataset.tooltipKind);
+    var kind = cell.dataset.tooltipKind;
+    var eyebrow = kind === 'gw' && field.field_name ? field.field_name : undefined;
+    return detailHtmlForFieldKind(field, kind, { gwFieldEyebrow: eyebrow });
   }
 
   function ensureTooltip() {
@@ -228,6 +264,7 @@
     var el = ensureTooltip();
     var mini = opts && opts.mini === true;
     el.classList.toggle('weather-tooltip--mini', mini);
+    el.classList.toggle('weather-tooltip--ios', !mini);
     clearTimeout(hideTimer);
     el.innerHTML = html;
     el.hidden = false;
@@ -241,6 +278,55 @@
         tooltipEl.hidden = true;
       }
     }, 120);
+  }
+
+  var listTooltipOpenCell = null;
+  var listTooltipDocClick = null;
+  var listTooltipEscapeHandler = null;
+
+  function closeListCellTooltip() {
+    clearTimeout(hideTimer);
+    if (listTooltipDocClick) {
+      document.removeEventListener('click', listTooltipDocClick, true);
+      listTooltipDocClick = null;
+    }
+    if (listTooltipEscapeHandler) {
+      document.removeEventListener('keydown', listTooltipEscapeHandler, true);
+      listTooltipEscapeHandler = null;
+    }
+    if (tooltipEl) tooltipEl.hidden = true;
+    if (listTooltipOpenCell) {
+      listTooltipOpenCell.setAttribute('aria-expanded', 'false');
+      listTooltipOpenCell = null;
+    }
+  }
+
+  function toggleListCellTooltip(cell) {
+    var alreadyOpen = listTooltipOpenCell === cell && tooltipEl && !tooltipEl.hidden;
+    if (alreadyOpen) {
+      closeListCellTooltip();
+      return;
+    }
+    closeListCellTooltip();
+    listTooltipOpenCell = cell;
+    cell.setAttribute('aria-expanded', 'true');
+    var r = cell.getBoundingClientRect();
+    showTooltip(detailHtmlForCell(cell), r.right, r.top);
+    listTooltipDocClick = function (ev) {
+      if (!listTooltipOpenCell) return;
+      if (listTooltipOpenCell.contains(ev.target)) return;
+      closeListCellTooltip();
+    };
+    listTooltipEscapeHandler = function (ev) {
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        closeListCellTooltip();
+      }
+    };
+    requestAnimationFrame(function () {
+      document.addEventListener('click', listTooltipDocClick, true);
+      document.addEventListener('keydown', listTooltipEscapeHandler, true);
+    });
   }
 
   function getGwSoSheetEls() {
@@ -258,6 +344,7 @@
     var els = getGwSoSheetEls();
     if (els.scrim) els.scrim.hidden = true;
     if (els.sheet) {
+      els.sheet.classList.remove('gw-so-sheet--field-card');
       els.sheet.hidden = true;
       els.sheet.setAttribute('aria-hidden', 'true');
     }
@@ -288,6 +375,11 @@
       if (els.subtitle) els.subtitle.textContent = fieldName || '';
     }
     els.body.innerHTML = innerHTML;
+    if (kind === 'map-field') {
+      els.sheet.classList.add('gw-so-sheet--field-card');
+    } else {
+      els.sheet.classList.remove('gw-so-sheet--field-card');
+    }
     els.scrim.hidden = false;
     els.sheet.hidden = false;
     els.sheet.setAttribute('aria-hidden', 'false');
@@ -303,6 +395,32 @@
     document.addEventListener('keydown', sheetEscapeHandler);
   }
 
+  /** Map polygon tap/click: same bottom-sheet body as touch (`buildMapFieldGwSoClickSheetHTML`). */
+  function openMapFieldDetailSheet(field) {
+    if (!field) return;
+    closeListCellTooltip();
+    var subParts = [];
+    if (field.farm) subParts.push(field.farm);
+    if (field.grower) subParts.push(field.grower);
+    openGwSoSheet('map-field', field.field_name, L.buildMapFieldGwSoClickSheetHTML(field), {
+      title: field.field_name,
+      subtitle: subParts.join(' · ')
+    });
+  }
+
+  /** Figma / QA: `?figmaHover=field-detail-sheet&field=8` opens map field modal on load (serve over HTTP). */
+  function maybeAutoOpenFieldDetailSheet() {
+    try {
+      var q = new URLSearchParams(window.location.search || '');
+      if (String(q.get('figmaHover') || '').toLowerCase() !== 'field-detail-sheet') return;
+      var n = parseInt(q.get('field'), 10);
+      if (isNaN(n) || n < 1 || n > 99) n = 8;
+      var fid = 'fld-demo-' + (n < 10 ? '0' : '') + n;
+      var f = fieldById(fid);
+      if (f) setTimeout(function () { openMapFieldDetailSheet(f); }, 350);
+    } catch (e) {}
+  }
+
   function bindInteractionHandlers(root) {
     if (!root) return;
     var coarse = isCoarsePointerUi();
@@ -314,21 +432,26 @@
       }
 
       if (!coarse) {
-        cell.addEventListener('mouseenter', function (e) {
-          showTooltip(detailHtmlForCell(cell), e.clientX, e.clientY);
+        cell.setAttribute('role', 'button');
+        cell.setAttribute('aria-expanded', 'false');
+        cell.setAttribute('aria-haspopup', 'true');
+        cell.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          toggleListCellTooltip(cell);
         });
-        cell.addEventListener('mousemove', function (e) {
-          if (tooltipEl && !tooltipEl.hidden) {
-            tooltipEl.style.left = Math.min(e.clientX + 12, window.innerWidth - tooltipEl.offsetWidth - 16) + 'px';
-            tooltipEl.style.top = Math.min(e.clientY + 12, window.innerHeight - tooltipEl.offsetHeight - 16) + 'px';
-          }
+        cell.addEventListener('keydown', function (ev) {
+          if (ev.key !== 'Enter' && ev.key !== ' ') return;
+          ev.preventDefault();
+          toggleListCellTooltip(cell);
         });
-        cell.addEventListener('mouseleave', hideTooltip);
-        cell.addEventListener('focus', function () {
-          var r = cell.getBoundingClientRect();
-          showTooltip(detailHtmlForCell(cell), r.right, r.top);
+        cell.addEventListener('blur', function () {
+          requestAnimationFrame(function () {
+            if (listTooltipOpenCell !== cell) return;
+            if (cell.contains(document.activeElement)) return;
+            closeListCellTooltip();
+          });
         });
-        cell.addEventListener('blur', hideTooltip);
       } else {
         cell.addEventListener('click', function (ev) {
           ev.preventDefault();
@@ -395,23 +518,31 @@
 
       hit.setAttribute('role', 'button');
       hit.setAttribute('tabindex', '0');
+
+      hit.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        var f = fieldById(fid);
+        if (!f) return;
+        openMapFieldDetailSheet(f);
+      });
+
+      hit.addEventListener('keydown', function (ev) {
+        if (ev.key !== 'Enter' && ev.key !== ' ') return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        var f = fieldById(fid);
+        if (!f) return;
+        openMapFieldDetailSheet(f);
+      });
+
       if (coarse) {
         hit.setAttribute('aria-label', fname + ': open ground workability and spray outlook');
-        hit.addEventListener('click', function (ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          var f = fieldById(fid);
-          if (!f) return;
-          var subParts = [];
-          if (f.farm) subParts.push(f.farm);
-          if (f.grower) subParts.push(f.grower);
-          openGwSoSheet('map-field', f.field_name, L.buildMapFieldGwSoClickSheetHTML(f), {
-            title: f.field_name,
-            subtitle: subParts.join(' · ')
-          });
-        });
       } else {
-        hit.setAttribute('aria-label', fname + ': hover for ground workability and spray outlook');
+        hit.setAttribute(
+          'aria-label',
+          fname + ': hover for summary; click or press Enter for ground workability and spray outlook'
+        );
         hit.addEventListener('mouseenter', function (e) {
           var f = fieldById(fid);
           if (!f) return;
@@ -473,6 +604,15 @@
     }
   }
 
+  function mapFieldGwHitModifier(gw) {
+    var s = gw && gw.status;
+    if (s === L.GW_STATUS.GOOD) return 'weather-map-field-hit--good';
+    if (s === L.GW_STATUS.MOSTLY_FIT) return 'weather-map-field-hit--mostly-fit';
+    if (s === L.GW_STATUS.MARGINAL) return 'weather-map-field-hit--marginal';
+    if (s === L.GW_STATUS.NOT_FIT) return 'weather-map-field-hit--not-fit';
+    return 'weather-map-field-hit--na';
+  }
+
   function renderMapFields() {
     var svg = document.getElementById('weather-map-fields-svg');
     if (!svg || rowsData.length === 0) return;
@@ -486,8 +626,11 @@
     svg.innerHTML = '';
     MAP_FIELD_POLYGONS.forEach(function (spec) {
       if (!idsPresent[spec.field_id]) return;
+      var field = fieldById(spec.field_id);
+      var gw = field ? L.classifyGroundWorkability(field.soil_moisture_index) : null;
+      var tier = gw ? mapFieldGwHitModifier(gw) : 'weather-map-field-hit--na';
       var poly = document.createElementNS(NS, 'polygon');
-      poly.setAttribute('class', 'weather-map-field-hit');
+      poly.setAttribute('class', 'weather-map-field-hit ' + tier);
       poly.setAttribute('points', spec.points);
       poly.setAttribute('data-field-id', spec.field_id);
       svg.appendChild(poly);
@@ -496,6 +639,7 @@
   }
 
   function setView(view) {
+    closeListCellTooltip();
     currentView = view === 'map' ? 'map' : 'list';
     var listPane = document.getElementById('weather-list-pane');
     var mapPane = document.getElementById('weather-map-pane');
@@ -527,7 +671,7 @@
     field_name: 'Field',
     farm: 'Farm',
     grower: 'Grower',
-    gdo: 'GDO',
+    gdo: 'GDD',
     air_temp_f: 'Air temp',
     season_precip_in: 'Season precip.',
     precip_24h_in: 'Precip. 24h | 48h',
@@ -568,24 +712,61 @@
     });
   }
 
-  function loadDataset() {
-    return fetch(DATASET_URL)
+  /** Try several URLs so the table still loads if the dev server root or path differs. */
+  function datasetCandidateUrls() {
+    var href = window.location.href;
+    var list = [];
+    function add(u) {
+      if (u && list.indexOf(u) === -1) list.push(u);
+    }
+    try {
+      add(new URL('../data/weather-ground-spray-dataset.json', href).href);
+    } catch (e) {}
+    try {
+      add(new URL('data/weather-ground-spray-dataset.json', href).href);
+    } catch (e2) {}
+    try {
+      var u = new URL(href);
+      if (u.protocol === 'http:' || u.protocol === 'https:') {
+        add(u.origin + '/data/weather-ground-spray-dataset.json');
+      }
+    } catch (e3) {}
+    return list;
+  }
+
+  function fetchDatasetFromUrls(urls, index) {
+    if (!urls || index >= urls.length) {
+      return Promise.reject(new Error('no dataset url'));
+    }
+    return fetch(urls[index], { credentials: 'same-origin' })
       .then(function (r) {
-        if (!r.ok) throw new Error('fetch failed');
+        if (!r.ok) throw new Error('bad status');
         return r.json();
       })
       .then(function (data) {
-        return data.fields || [];
+        var fields = data && data.fields;
+        return Array.isArray(fields) ? fields : [];
       })
       .catch(function () {
-        return window.__WEATHER_GROUND_SPRAY_FALLBACK_FIELDS__ || FALLBACK_FIELDS;
+        return fetchDatasetFromUrls(urls, index + 1);
       });
+  }
+
+  function loadDataset() {
+    return fetchDatasetFromUrls(datasetCandidateUrls(), 0).catch(function () {
+      return window.__WEATHER_GROUND_SPRAY_FALLBACK_FIELDS__ || FALLBACK_FIELDS;
+    });
   }
 
   /** Mirrors data/weather-ground-spray-dataset.json when fetch is unavailable (file://). */
   var FALLBACK_FIELDS = [{"field_id":"fld-demo-01","field_name":"Demo field 1","farm":"North Farm","grower":"Alpha Cooperative","gdo":null,"air_temp_f":39,"season_precip_in":null,"precip_24h_in":0,"precip_48h_in":0,"humidity_pct":79,"soil_temp_f":51,"soil_moisture_index":0.335,"wind_speed_12hr_mph":16,"wind_label":"ENE 16 mph","daily_high_temp_f":42,"daily_low_temp_f":34,"ground_workability_last_updated":"2026-04-07T17:00:00.000Z","spray_outlook_last_updated":"2026-04-07T17:00:00.000Z"},{"field_id":"fld-demo-02","field_name":"Demo field 2","farm":"North Farm","grower":"Alpha Cooperative","gdo":null,"air_temp_f":41,"season_precip_in":null,"precip_24h_in":0,"precip_48h_in":0,"humidity_pct":76,"soil_temp_f":50,"soil_moisture_index":0.324,"wind_speed_12hr_mph":14,"wind_label":"ENE 14 mph","daily_high_temp_f":44,"daily_low_temp_f":36,"ground_workability_last_updated":"2026-04-07T17:00:00.000Z","spray_outlook_last_updated":"2026-04-07T17:00:00.000Z"},{"field_id":"fld-demo-03","field_name":"Demo field 3","farm":"West Farm","grower":"Beta Farms","gdo":null,"air_temp_f":37,"season_precip_in":null,"precip_24h_in":0,"precip_48h_in":0.1,"humidity_pct":82,"soil_temp_f":49,"soil_moisture_index":0.33,"wind_speed_12hr_mph":12,"wind_label":"N 12 mph","daily_high_temp_f":40,"daily_low_temp_f":30,"ground_workability_last_updated":"2026-04-07T17:00:00.000Z","spray_outlook_last_updated":"2026-04-07T17:00:00.000Z"},{"field_id":"fld-demo-04","field_name":"Demo field 4","farm":"East Farm","grower":"Gamma LLC","gdo":null,"air_temp_f":40,"season_precip_in":null,"precip_24h_in":0,"precip_48h_in":0,"humidity_pct":77,"soil_temp_f":52,"soil_moisture_index":0.314,"wind_speed_12hr_mph":18,"wind_label":"ESE 18 mph","daily_high_temp_f":72,"daily_low_temp_f":45,"ground_workability_last_updated":"2026-04-07T17:00:00.000Z","spray_outlook_last_updated":"2026-04-07T17:00:00.000Z"},{"field_id":"fld-demo-05","field_name":"Demo field 5","farm":"South Farm","grower":"Beta Farms","gdo":null,"air_temp_f":38,"season_precip_in":null,"precip_24h_in":0,"precip_48h_in":0,"humidity_pct":81,"soil_temp_f":50,"soil_moisture_index":0.318,"wind_speed_12hr_mph":8,"wind_label":"NE 8 mph","daily_high_temp_f":68,"daily_low_temp_f":38,"ground_workability_last_updated":"2026-04-07T17:00:00.000Z","spray_outlook_last_updated":"2026-04-07T17:00:00.000Z"},{"field_id":"fld-demo-06","field_name":"Demo field 6","farm":"East Farm","grower":"Gamma LLC","gdo":null,"air_temp_f":55,"season_precip_in":null,"precip_24h_in":0,"precip_48h_in":0,"humidity_pct":38,"soil_temp_f":54,"soil_moisture_index":0.31,"wind_speed_12hr_mph":7,"wind_label":"SW 7 mph","daily_high_temp_f":78,"daily_low_temp_f":48,"ground_workability_last_updated":"2026-04-07T17:00:00.000Z","spray_outlook_last_updated":"2026-04-07T17:00:00.000Z"},{"field_id":"fld-demo-07","field_name":"Demo field 7","farm":"West Farm","grower":"Beta Farms","gdo":null,"air_temp_f":48,"season_precip_in":null,"precip_24h_in":0.6,"precip_48h_in":0.6,"humidity_pct":92,"soil_temp_f":48,"soil_moisture_index":0.34,"wind_speed_12hr_mph":5,"wind_label":"S 5 mph","daily_high_temp_f":55,"daily_low_temp_f":42,"ground_workability_last_updated":"2026-04-07T17:00:00.000Z","spray_outlook_last_updated":"2026-04-07T17:00:00.000Z"},{"field_id":"fld-demo-08","field_name":"Demo field 8","farm":"South Farm","grower":"Beta Farms","gdo":null,"air_temp_f":52,"season_precip_in":null,"precip_24h_in":0.15,"precip_48h_in":0.2,"humidity_pct":52,"soil_temp_f":53,"soil_moisture_index":0.323,"wind_speed_12hr_mph":12,"wind_label":"NW 12 mph","daily_high_temp_f":70,"daily_low_temp_f":44,"ground_workability_last_updated":"2026-04-07T17:00:00.000Z","spray_outlook_last_updated":"2026-04-07T17:00:00.000Z"}];
 
   function init() {
+    L = window.WeatherGroundSprayLogic;
+    if (!L) {
+      showBootstrapError();
+      return;
+    }
     currentView = parseInitialView();
     wireGwSoSheetChrome();
     wireMapLayerToolbar();
@@ -606,6 +787,7 @@
       wireSortHeaders();
       redrawTable();
       setView(currentView);
+      maybeAutoOpenFieldDetailSheet();
       window.__WEATHER_LIST_EXPORT_FOR_LLM__ = function () {
         return {
           source_file: 'data/weather-ground-spray-dataset.json',
@@ -640,8 +822,8 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', scheduleInit);
   } else {
-    init();
+    scheduleInit();
   }
 })();

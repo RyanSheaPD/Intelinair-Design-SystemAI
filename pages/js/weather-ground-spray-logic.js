@@ -51,16 +51,6 @@
     }
   }
 
-  /** Drop trailing "(Status)." from band copy when status is already shown in the header. */
-  function bandExplanationCompact(bandExplanation, status) {
-    if (!bandExplanation) return '';
-    var s = String(bandExplanation).trim();
-    if (!status) return s;
-    var escaped = status.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    var re = new RegExp('\\s*\\(' + escaped + '\\)\\.?$', 'i');
-    return s.replace(re, '.');
-  }
-
   function metricShortName(m) {
     var L = m.label || '';
     if (/Wind/i.test(L)) return 'Wind';
@@ -76,6 +66,13 @@
     if (band === 'Good') return 'good';
     if (band === 'Marginal') return 'marginal';
     return 'at-risk';
+  }
+
+  /** Uppercase pill labels for iOS-style spray metric rows */
+  function sprayPillTextUpper(band) {
+    if (band === 'At Risk') return 'AT RISK';
+    if (band === 'Marginal') return 'MARGINAL';
+    return 'GOOD';
   }
 
   /**
@@ -325,13 +322,16 @@
 
   /**
    * Rich HTML for web tooltip + mobile sheet (Ground workability).
-   * Compact: one status row, non-redundant band line, single footer.
+   * Compact: status row + SMI; no gray band-explanation line (Figma parity).
+   * @param {string} [fieldEyebrow] — optional caps label above the card (list hover only).
    */
-  function buildWorkabilityDetailHTML(gw, lastUpdated) {
+  function buildWorkabilityDetailHTML(gw, lastUpdated, fieldEyebrow) {
     var idx = typeof gw.soil_moisture_index === 'number' ? gw.soil_moisture_index.toFixed(3) : '—';
-    var bandLine = bandExplanationCompact(gw.bandExplanation, gw.status);
     var parts = [];
-    parts.push('<div class="gw-so-detail gw-so-detail--gw gw-so-detail--compact">');
+    if (fieldEyebrow) {
+      parts.push('<p class="gw-so-ios-field-eyebrow">' + escHtml(fieldEyebrow) + '</p>');
+    }
+    parts.push('<div class="gw-so-detail gw-so-detail--gw gw-so-detail--compact gw-so-detail--ios">');
     parts.push('<div class="gw-so-detail__brand">Ground workability</div>');
     parts.push('<div class="gw-so-compact-head">');
     parts.push('<span class="gw-so-detail__swatch gw-so-detail__swatch--compact" style="background-color:' + escHtml(gw.hex) + '" aria-hidden="true"></span>');
@@ -339,9 +339,6 @@
     parts.push('<span class="gw-so-detail__status gw-so-detail__status--compact" style="color:' + escHtml(gw.hex) + '">' + escHtml(gw.status) + '</span>');
     parts.push('<span class="gw-so-compact-inline-meta">SMI ' + escHtml(idx) + '</span>');
     parts.push('</div></div>');
-    if (bandLine) {
-      parts.push('<p class="gw-so-fact gw-so-fact--compact">' + escHtml(bandLine) + '</p>');
-    }
     parts.push('<p class="gw-so-foot">IBM soil moisture index');
     if (lastUpdated) {
       parts.push(' · ' + formatUpdated(lastUpdated));
@@ -353,7 +350,8 @@
 
   /**
    * Rich HTML for web tooltip + mobile sheet (Spray outlook).
-   * Compact: consolidated status; full rows only for non-Good metrics; Good summarized in one line.
+   * Compact: consolidated status; limiting metrics show label / value / pill only (no gray detail line).
+   * iOS-style pills (AT RISK / MARGINAL) and metric rows via gw-so-ios-* classes.
    */
   function buildSprayDetailHTML(analysis, lastUpdated) {
     var c = analysis.consolidated;
@@ -365,7 +363,7 @@
       return m.band === 'Good';
     });
     var parts = [];
-    parts.push('<div class="gw-so-detail gw-so-detail--spray gw-so-detail--compact">');
+    parts.push('<div class="gw-so-detail gw-so-detail--spray gw-so-detail--compact gw-so-detail--ios">');
     parts.push('<div class="gw-so-detail__brand">Spray outlook</div>');
     parts.push('<div class="gw-so-compact-head">');
     parts.push('<span class="gw-so-detail__swatch gw-so-detail__swatch--compact" style="background-color:' + escHtml(c.hex) + '" aria-hidden="true"></span>');
@@ -376,29 +374,40 @@
 
     if (good.length > 0) {
       parts.push(
-        '<p class="gw-so-compact-good" role="status"><span class="gw-so-compact-good__k">OK:</span> ' +
+        '<p class="gw-so-ios-summary gw-so-ios-summary--ok" role="status"><span class="gw-so-ios-summary__k">OK:</span> ' +
           escHtml(good.map(metricShortName).join(', ')) +
           '</p>'
       );
     }
 
     if (bad.length > 0) {
-      parts.push('<ul class="gw-so-metric-list gw-so-metric-list--compact">');
+      parts.push('<ul class="gw-so-ios-metric-list">');
       bad.forEach(function (m) {
         var mod = sprayPillModifier(m.band);
-        var riskMod = m.band === 'At Risk' ? ' gw-so-metric--risk' : '';
-        parts.push('<li class="gw-so-metric gw-so-metric--compact gw-so-metric--limiting' + riskMod + '">');
-        parts.push('<div class="gw-so-metric__row gw-so-metric__row--compact">');
-        parts.push('<span class="gw-so-metric__label">' + escHtml(m.label) + '</span>');
-        parts.push('<span class="gw-so-metric__value">' + escHtml(m.valueDisplay) + '</span>');
-        parts.push('<span class="gw-so-pill gw-so-pill--compact gw-so-pill--' + mod + '">' + escHtml(m.band) + '</span>');
-        parts.push('</div>');
-        parts.push('<p class="gw-so-metric__detail gw-so-metric__detail--compact">' + escHtml(m.detail) + '</p>');
-        parts.push('</li>');
+        var tone = m.band === 'At Risk' ? 'at-risk' : 'marginal';
+        parts.push('<li class="gw-so-ios-metric gw-so-ios-metric--' + tone + '">');
+        parts.push('<span class="gw-so-ios-metric__accent" aria-hidden="true"></span>');
+        if (m.band === 'At Risk') {
+          parts.push('<div class="gw-so-ios-metric__body gw-so-ios-metric__body--row">');
+          parts.push('<span class="gw-so-ios-metric__label">' + escHtml(m.label) + '</span>');
+          parts.push('<span class="gw-so-ios-metric__value">' + escHtml(m.valueDisplay) + '</span>');
+        } else {
+          parts.push('<div class="gw-so-ios-metric__body">');
+          parts.push('<div class="gw-so-ios-metric__copy">');
+          parts.push('<span class="gw-so-ios-metric__label">' + escHtml(m.label) + '</span>');
+          parts.push('<span class="gw-so-ios-metric__value">' + escHtml(m.valueDisplay) + '</span>');
+          parts.push('</div>');
+        }
+        parts.push(
+          '<span class="gw-so-ios-metric__pill gw-so-ios-metric__pill--' + mod + '">' +
+            escHtml(sprayPillTextUpper(m.band)) +
+            '</span>'
+        );
+        parts.push('</div></li>');
       });
       parts.push('</ul>');
     } else {
-      parts.push('<p class="gw-so-compact-all-good" role="status">All five metrics are Good.</p>');
+      parts.push('<p class="gw-so-ios-summary gw-so-ios-summary--all-good" role="status">All five metrics are Good.</p>');
     }
 
     parts.push('<p class="gw-so-foot">Wind 12h · daily high/low · 24h precip · humidity');
@@ -456,6 +465,9 @@
    * Footer line for map field sheet: latest of GW/SO update times, formatted in US Eastern.
    */
   function formatWeatherDataCollectedFooterET(field) {
+    if (field && field.weather_collected_footer) {
+      return escHtml(field.weather_collected_footer);
+    }
     var gw = field.ground_workability_last_updated;
     var sp = field.spray_outlook_last_updated;
     var iso = null;
@@ -483,51 +495,253 @@
     }
   }
 
-  function fieldClickThreeBarStack(activeHex) {
+  /** 0 = top bar, 1 = middle, 2 = bottom (column flex order). */
+  function fieldClickThreeBarStack(activeHex, activeSlot) {
     var inact = FIELD_CLICK_STACK_INACTIVE;
+    var slot = typeof activeSlot === 'number' && activeSlot >= 0 && activeSlot <= 2 ? activeSlot : 2;
+    var bars = [];
+    for (var i = 0; i < 3; i++) {
+      var on = i === slot;
+      var bg = on ? activeHex : inact;
+      bars.push(
+        '<span class="weather-field-click-gwso__stack-bar' +
+          (on ? ' weather-field-click-gwso__stack-bar--active' : '') +
+          '" style="background:' +
+          escHtml(bg) +
+          '"></span>'
+      );
+    }
+    return '<div class="weather-field-click-gwso__stack" aria-hidden="true">' + bars.join('') + '</div>';
+  }
+
+  function gwMapSheetBarSlot(gw) {
+    if (gw.status === GW_STATUS.GOOD) return 2;
+    if (gw.status === GW_STATUS.MOSTLY_FIT) return 1;
+    if (gw.status === GW_STATUS.MARGINAL) return 1;
+    if (gw.status === GW_STATUS.NOT_FIT) return 2;
+    return 1;
+  }
+
+  function sprayMapSheetBarSlot(c) {
+    if (c.status === SPRAY_STATUS.GOOD) return 2;
+    if (c.status === SPRAY_STATUS.MARGINAL) return 1;
+    if (c.status === SPRAY_STATUS.AT_RISK) return 2;
+    return 1;
+  }
+
+  function sprayOutlookSheetLabel(status) {
+    if (status === SPRAY_STATUS.AT_RISK) return 'At risk';
+    return status;
+  }
+
+  function mapFieldHeroSvg(fieldId) {
+    var pid = 'wfd-h-' + String(fieldId || 'x').replace(/[^a-zA-Z0-9_-]/g, '');
     return (
-      '<div class="weather-field-click-gwso__stack" aria-hidden="true">' +
-      '<span class="weather-field-click-gwso__stack-bar" style="background:' +
-      escHtml(inact) +
-      '"></span>' +
-      '<span class="weather-field-click-gwso__stack-bar" style="background:' +
-      escHtml(inact) +
-      '"></span>' +
-      '<span class="weather-field-click-gwso__stack-bar weather-field-click-gwso__stack-bar--active" style="background:' +
-      escHtml(activeHex) +
-      '"></span>' +
-      '</div>'
+      '<div class="weather-field-detail__hero">' +
+        '<svg class="weather-field-detail__hero-svg" viewBox="0 0 280 140" aria-hidden="true">' +
+        '<defs>' +
+        '<pattern id="' +
+        pid +
+        '" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">' +
+        '<line x1="0" y1="0" x2="0" y2="6" stroke="#bfdbfe" stroke-width="3"/>' +
+        '</pattern></defs>' +
+        '<polygon fill="url(#' +
+        pid +
+        ')" stroke="#2563eb" stroke-width="2" ' +
+        'points="32,98 128,22 228,38 248,92 168,118 48,112"/>' +
+        '</svg></div>'
     );
   }
 
+  function mapFieldDetailSubtitle(field) {
+    if (field.detail_subtitle) return escHtml(field.detail_subtitle);
+    var bits = [];
+    if (field.farm) bits.push(field.farm);
+    if (field.grower) bits.push(field.grower);
+    return escHtml(bits.join(' · '));
+  }
+
+  function mapFieldAcresHtml(field) {
+    if (field.field_area_acres != null && typeof field.field_area_acres === 'number') {
+      return escHtml(String(field.field_area_acres)) + ' ac';
+    }
+    return '<span class="weather-field-detail__meta-na">—</span>';
+  }
+
+  function mapFieldSoyGddHtml(field) {
+    if (field.soy_gdd != null && field.soy_gdd !== '') {
+      return escHtml(String(field.soy_gdd));
+    }
+    return '<span class="weather-field-detail__meta-muted">N/A</span>';
+  }
+
+  function mapFieldCornHtml(field) {
+    var label = field.corn_crop_label != null ? String(field.corn_crop_label) : 'Crop unknown';
+    return '<span class="weather-field-detail__corn">' + escHtml(label) + '</span>';
+  }
+
+  function mapFieldGddHtml(field) {
+    if (field.gdo != null && field.gdo !== '') {
+      return 'GDD: ' + escHtml(String(field.gdo));
+    }
+    return '<span class="weather-field-detail__gdd-na">GDD: N/A</span>';
+  }
+
+  function mapFieldIconLeaf() {
+    return (
+      '<svg class="weather-field-detail__ico" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">' +
+        '<path d="M12 22c4-4 8-10 8-16a8 8 0 0 0-16 0c0 6 4 12 8 16z"/>' +
+      '</svg>'
+    );
+  }
+
+  function mapFieldIconCorn() {
+    return (
+      '<svg class="weather-field-detail__ico" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">' +
+        '<path d="M12 2v4M8 6h8M10 10c0 4 2 10 4 12M14 10c0 4-2 10-4 12M9 14h6"/>' +
+      '</svg>'
+    );
+  }
+
+  function mapFieldIconDroplet() {
+    return (
+      '<svg class="weather-field-detail__ico weather-field-detail__ico--muted" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' +
+        '<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/>' +
+      '</svg>'
+    );
+  }
+
+  function mapFieldIconBinoculars() {
+    return (
+      '<svg class="weather-field-detail__ico-inline" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">' +
+        '<path d="M10 10h4"/><circle cx="7" cy="14" r="3"/><circle cx="17" cy="14" r="3"/>' +
+      '</svg>'
+    );
+  }
+
+  function mapPrecip24v48(field) {
+    var a = field.precip_24h_in;
+    var b = field.precip_48h_in;
+    var sa = typeof a === 'number' ? a + ' in' : '—';
+    var sb = typeof b === 'number' ? b + ' in' : '—';
+    return escHtml(sa) + ' | ' + escHtml(sb);
+  }
+
+  function mapSeasonPrecipHtml(field) {
+    if (field.season_precip_in == null || field.season_precip_in === '') {
+      return '<span class="weather-field-detail__meta-muted">N/A</span>';
+    }
+    return escHtml(String(field.season_precip_in)) + ' in';
+  }
+
   /**
-   * Map field tap (bottom sheet body): two columns — ground workability | spray outlook —
-   * with three-bar stack + bold status (reference UI). Footer: weather collected time ET.
+   * Map field click/tap — bottom sheet body: hero, summary, weather grid, GW/SO outlook, actions.
+   * Optional field keys: detail_subtitle, field_area_acres, soy_gdd, corn_crop_label, weather_collected_footer.
    */
   function buildMapFieldGwSoClickSheetHTML(field) {
     if (!field) return '';
     var gw = classifyGroundWorkability(field.soil_moisture_index);
     var sp = analyzeSprayOutlook(field).consolidated;
+    var fid = field.field_id || 'field';
     var parts = [];
-    parts.push('<div class="weather-field-click-gwso">');
-    parts.push('<div class="weather-field-click-gwso__cols">');
 
+    parts.push('<div class="weather-field-detail">');
+    parts.push(mapFieldHeroSvg(fid));
+
+    parts.push('<h2 class="weather-field-detail__title">' + escHtml(field.field_name || 'Field') + '</h2>');
+    parts.push('<p class="weather-field-detail__subtitle">' + mapFieldDetailSubtitle(field) + '</p>');
+
+    parts.push('<div class="weather-field-detail__meta-row" role="group" aria-label="Field summary">');
+    parts.push('<span class="weather-field-detail__meta-item">' + mapFieldAcresHtml(field) + '</span>');
+    parts.push('<span class="weather-field-detail__meta-sep" aria-hidden="true">|</span>');
+    parts.push(
+      '<span class="weather-field-detail__meta-item weather-field-detail__meta-item--ico">' +
+        mapFieldIconLeaf() +
+        mapFieldSoyGddHtml(field) +
+        '</span>'
+    );
+    parts.push('<span class="weather-field-detail__meta-sep" aria-hidden="true">|</span>');
+    parts.push(
+      '<span class="weather-field-detail__meta-item weather-field-detail__meta-item--ico">' +
+        mapFieldIconCorn() +
+        mapFieldCornHtml(field) +
+        '</span>'
+    );
+    parts.push('<span class="weather-field-detail__meta-sep" aria-hidden="true">|</span>');
+    parts.push('<span class="weather-field-detail__meta-item">' + mapFieldGddHtml(field) + '</span>');
+    parts.push('</div>');
+
+    parts.push('<hr class="weather-field-detail__rule" />');
+
+    parts.push('<div class="weather-field-detail__grid">');
+    parts.push(
+      '<div class="weather-field-detail__cell"><span class="weather-field-detail__lbl">Air temp</span><span class="weather-field-detail__val">' +
+        (typeof field.air_temp_f === 'number' ? escHtml(String(field.air_temp_f)) + ' °F' : '—') +
+        '</span></div>'
+    );
+    parts.push(
+      '<div class="weather-field-detail__cell"><span class="weather-field-detail__lbl">Wind</span><span class="weather-field-detail__val">' +
+        escHtml(field.wind_label || '—') +
+        '</span></div>'
+    );
+    parts.push(
+      '<div class="weather-field-detail__cell"><span class="weather-field-detail__lbl">Humidity</span><span class="weather-field-detail__val">' +
+        (typeof field.humidity_pct === 'number' ? escHtml(String(field.humidity_pct)) + '%' : '—') +
+        '</span></div>'
+    );
+    parts.push(
+      '<div class="weather-field-detail__cell weather-field-detail__cell--wide"><span class="weather-field-detail__lbl">Precip. 24h | 48h</span><span class="weather-field-detail__val weather-field-detail__val--row">' +
+        mapFieldIconDroplet() +
+        mapFieldIconDroplet() +
+        mapPrecip24v48(field) +
+        '</span></div>'
+    );
+    parts.push(
+      '<div class="weather-field-detail__cell"><span class="weather-field-detail__lbl">Season precip.</span><span class="weather-field-detail__val weather-field-detail__val--row">' +
+        mapFieldIconDroplet() +
+        mapSeasonPrecipHtml(field) +
+        '</span></div>'
+    );
+    parts.push(
+      '<div class="weather-field-detail__cell"><span class="weather-field-detail__lbl">Soil temp</span><span class="weather-field-detail__val">' +
+        (typeof field.soil_temp_f === 'number' ? escHtml(String(field.soil_temp_f)) + ' °F' : '—') +
+        '</span></div>'
+    );
+    parts.push(
+      '<div class="weather-field-detail__cell"><span class="weather-field-detail__lbl">Soil moisture</span><span class="weather-field-detail__val">' +
+        (typeof field.soil_moisture_index === 'number' ? escHtml(String(field.soil_moisture_index)) : '—') +
+        '</span></div>'
+    );
+    parts.push('</div>');
+
+    parts.push('<div class="weather-field-click-gwso weather-field-detail__outlook">');
+    parts.push('<div class="weather-field-click-gwso__cols">');
     parts.push('<div class="weather-field-click-gwso__col">');
     parts.push('<div class="weather-field-click-gwso__heading">Ground workability</div>');
     parts.push('<div class="weather-field-click-gwso__status-row">');
-    parts.push(fieldClickThreeBarStack(gw.hex));
+    parts.push(fieldClickThreeBarStack(gw.hex, gwMapSheetBarSlot(gw)));
     parts.push('<span class="weather-field-click-gwso__status-text">' + escHtml(gw.status) + '</span>');
     parts.push('</div></div>');
-
     parts.push('<div class="weather-field-click-gwso__col">');
     parts.push('<div class="weather-field-click-gwso__heading">Spray outlook</div>');
     parts.push('<div class="weather-field-click-gwso__status-row">');
-    parts.push(fieldClickThreeBarStack(sp.hex));
-    parts.push('<span class="weather-field-click-gwso__status-text">' + escHtml(sp.status) + '</span>');
+    parts.push(fieldClickThreeBarStack(sp.hex, sprayMapSheetBarSlot(sp)));
+    parts.push(
+      '<span class="weather-field-click-gwso__status-text">' + escHtml(sprayOutlookSheetLabel(sp.status)) + '</span>'
+    );
     parts.push('</div></div>');
-
     parts.push('</div>');
     parts.push('<p class="weather-field-click-gwso__footer">' + formatWeatherDataCollectedFooterET(field) + '</p>');
+    parts.push('</div>');
+
+    parts.push('<hr class="weather-field-detail__rule" />');
+    parts.push('<div class="weather-field-detail__actions">');
+    parts.push('<a href="#" class="weather-field-detail__action">Field card</a>');
+    parts.push(
+      '<a href="#" class="weather-field-detail__action">' + mapFieldIconBinoculars() + 'View field</a>'
+    );
+    parts.push('</div>');
+
     parts.push('</div>');
     return parts.join('');
   }
