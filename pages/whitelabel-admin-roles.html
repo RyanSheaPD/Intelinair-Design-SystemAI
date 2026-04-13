@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page Design — Whitelabel Admin Roles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../design-tokens/tokens.css" />
+    <link rel="stylesheet" href="../components/nav.css" />
+    <link rel="stylesheet" href="../components/header.css" />
+    <style>
+        :root {
+            /* Neutrals */
+            --color-neutral-0: #ffffff;
+            --color-neutral-50: #fafafa;
+            --color-neutral-100: #f5f5f5;
+            --color-neutral-200: #e5e5e5;
+            --color-neutral-300: #d4d4d4;
+            --color-neutral-400: #a3a3a3;
+            --color-neutral-500: #737373;
+            --color-neutral-600: #525252;
+            --color-neutral-700: #404040;
+            --color-neutral-800: #262626;
+            --color-neutral-900: #171717;
+
+            /* AgMRI Brand */
+            --color-brand-100: #d4e6f5;
+            --color-brand-200: #a9cce9;
+            --color-brand-300: #7fb3de;
+            --color-brand-400: #5499d2;
+            --color-brand-500: #3c84c7;
+            --color-brand-600: #306a9f;
+            --color-brand-700: #244f77;
+            --color-brand-800: #183550;
+            --color-brand-900: #0c1a28;
+
+            /* MyFS Red */
+            --color-myfs-100: #f4d0d6;
+            --color-myfs-200: #e8a0ac;
+            --color-myfs-300: #dd7183;
+            --color-myfs-400: #d14159;
+            --color-myfs-500: #c41e3a;
+
+            /* PB Blue (Pivot Bio / Nutrivize) */
+            --color-pb-50: #eef1f4;
+            --color-pb-100: #d5dbe3;
+            --color-pb-200: #aab7c7;
+            --color-pb-300: #8093ab;
+            --color-pb-400: #556f8f;
+            --color-pb-500: #2B3A4D;
+            --color-pb-600: #222e3e;
+            --color-pb-700: #1a232e;
+            --color-pb-800: #11171f;
+            --color-pb-900: #090c0f;
+
+            /* Holganix Green */
+            --color-hgx-50: #e8f5e9;
+            --color-hgx-100: #c8e6c9;
+            --color-hgx-200: #a5d6a7;
+            --color-hgx-300: #81c784;
+            --color-hgx-400: #66bb6a;
+            --color-hgx-500: #43a047;
+            --color-hgx-600: #388e3c;
+            --color-hgx-700: #2e7d32;
+            --color-hgx-800: #1b5e20;
+            --color-hgx-900: #0d3010;
+
+            /* Semantic */
+            --color-success-500: #22c55e;
+            --color-warning-500: #f59e0b;
+            --color-error-500: #ef4444;
+            --color-info-500: #3b82f6;
+
+            /* Primitives */
+            --color-primitive-500: #3B82F6;
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-s: 5px;
+            --spacing-m: 10px;
+            --spacing-l: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            --spacing-4xl: 48px;
+
+            /* Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 15px;
+            --radius-2xl: 20px;
+            --radius-pill: 20px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.05);
+
+            /* Font */
+            --font-family: 'Figtree', system-ui, -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--color-neutral-50);
+            color: var(--color-neutral-800);
+            line-height: 1.6;
+        }
+
+        /* ── Sticky top nav ── */
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--color-neutral-900);
+            color: var(--color-neutral-0);
+            padding: 0 var(--spacing-3xl);
+            display: flex;
+            align-items: center;
+            height: 56px;
+            gap: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+        }
+        .top-nav .logo { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; }
+        .top-nav .logo span { color: var(--color-primitive-500); }
+        .top-nav a {
+            color: var(--color-neutral-300);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            transition: all 0.2s;
+        }
+        .top-nav a:hover, .top-nav a.active { background: rgba(255,255,255,0.1); color: var(--color-neutral-0); }
+        .top-nav .nav-right { margin-left: auto; display: flex; gap: 8px; }
+
+        /* ── Hero section ── */
+        .hero {
+            background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-700));
+            color: #fff;
+            padding: 64px var(--spacing-3xl) 48px;
+        }
+        .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .hero p { font-size: 16px; opacity: 0.85; max-width: 700px; }
+        .hero .meta-row {
+            display: flex; gap: 24px; margin-top: 20px; font-size: 13px; opacity: 0.7;
+        }
+        .hero .meta-row span { display: flex; align-items: center; gap: 6px; }
+
+        /* ── Container ── */
+        .container { max-width: 1280px; margin: 0 auto; padding: var(--spacing-3xl); }
+
+        /* ── Section headers ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-m);
+            margin: 48px 0 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+        .section-header .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-200);
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .section-header h2 { font-size: 22px; font-weight: 700; }
+
+        /* ── TOC ── */
+        .toc {
+            background: var(--color-neutral-0);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            margin-bottom: 32px;
+        }
+        .toc h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-neutral-500); margin-bottom: 12px; }
+        .toc ol { padding-left: 20px; }
+        .toc li { margin-bottom: 6px; }
+        .toc a { color: var(--color-brand-500); text-decoration: none; font-weight: 500; font-size: 14px; }
+        .toc a:hover { text-decoration: underline; }
+
+        /* ── Tabs ── */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--color-neutral-200);
+            margin-bottom: 32px;
+            margin-top: 32px;
+            overflow-x: auto;
+        }
+        .tab {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-neutral-500);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .tab:hover { color: var(--color-neutral-700); }
+        .tab.active { color: var(--color-brand-500); border-bottom-color: var(--color-brand-500); }
+        .tab.active-pb { color: var(--color-pb-500); border-bottom-color: var(--color-pb-500); }
+        .tab.active-hgx { color: var(--color-hgx-600); border-bottom-color: var(--color-hgx-600); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ── Cards ── */
+        .card {
+            background: var(--color-neutral-0);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-l);
+        }
+        .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .card p { font-size: 14px; color: var(--color-neutral-600); }
+
+        /* ── Epic Cards ── */
+        .epic-card {
+            background: var(--color-neutral-0);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+            transition: box-shadow 0.2s;
+        }
+        .epic-card:hover { box-shadow: var(--shadow-lg); }
+        .epic-card .epic-header {
+            padding: 20px 24px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            border-bottom: 1px solid var(--color-neutral-100);
+        }
+        .epic-icon {
+            width: 44px; height: 44px;
+            border-radius: var(--radius-lg);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .epic-card .epic-header .title-area { flex: 1; }
+        .epic-card .epic-header h3 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+        .epic-card .epic-header .epic-id {
+            font-size: 11px; font-weight: 600; color: var(--color-neutral-400);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .epic-card .epic-body { padding: 20px 24px; }
+        .epic-card .epic-body p { font-size: 14px; color: var(--color-neutral-600); line-height: 1.7; }
+
+        .story-list { list-style: none; padding: 0; margin-top: 16px; }
+        .story-list li {
+            position: relative;
+            padding: 10px 0 10px 24px;
+            font-size: 13px;
+            color: var(--color-neutral-700);
+            border-bottom: 1px solid var(--color-neutral-100);
+        }
+        .story-list li:last-child { border-bottom: none; }
+        .story-list li::before {
+            content: '';
+            position: absolute; left: 0; top: 16px;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--color-primitive-500);
+        }
+        .story-list li strong { font-weight: 600; color: var(--color-neutral-800); }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .tag-role { background: #ede9fe; color: #6d28d9; }
+        .tag-feature { background: #dbeafe; color: #2563eb; }
+        .tag-whitelabel { background: #fef3c7; color: #d97706; }
+        .tag-priority-high { background: #fee2e2; color: #dc2626; }
+        .tag-priority-med { background: #fff7ed; color: #ea580c; }
+        .tag-new { background: #dcfce7; color: #16a34a; }
+
+        /* ── Feature flag table ── */
+        .flag-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 16px;
+        }
+        .flag-table th {
+            text-align: left;
+            padding: 10px 12px;
+            background: var(--color-neutral-100);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--color-neutral-500);
+            border-bottom: 2px solid var(--color-neutral-200);
+        }
+        .flag-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--color-neutral-100);
+            color: var(--color-neutral-700);
+        }
+        .flag-table tr:hover td { background: var(--color-neutral-50); }
+        .check { color: var(--color-success-500); font-weight: 700; }
+        .cross { color: var(--color-neutral-300); }
+
+        /* ── Mockup frame ── */
+        .mockup-frame {
+            background: var(--color-neutral-100);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            margin: 24px 0;
+        }
+        .mockup-chrome {
+            background: var(--color-neutral-200);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .mockup-dot.red { background: #ef4444; }
+        .mockup-dot.yellow { background: #f59e0b; }
+        .mockup-dot.green { background: #22c55e; }
+        .mockup-url {
+            flex: 1;
+            background: var(--color-neutral-0);
+            border-radius: var(--radius-sm);
+            padding: 4px 12px;
+            font-size: 12px;
+            color: var(--color-neutral-500);
+            margin-left: 8px;
+        }
+        .mockup-body { display: flex; min-height: 520px; }
+
+        /* ── Sidebar mockup ── */
+        .mock-sidebar {
+            width: 72px; min-height: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 16px 0; gap: 4px;
+        }
+        .mock-sidebar .nav-item {
+            width: 52px; height: 48px;
+            border-radius: var(--radius-md);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 9px; font-weight: 600; gap: 3px;
+            cursor: default; transition: all 0.2s;
+        }
+        .mock-sidebar .nav-item .icon { font-size: 18px; }
+        .mock-sidebar .nav-item .nav-svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+            object-fit: contain;
+        }
+        .theme-pb .mock-sidebar .nav-item:not(.active-item) .nav-svg,
+        .theme-hgx .mock-sidebar .nav-item:not(.active-item) .nav-svg {
+            filter: brightness(0) invert(1);
+        }
+        .theme-pb .mock-sidebar .nav-item.active-item .nav-svg,
+        .theme-hgx .mock-sidebar .nav-item.active-item .nav-svg {
+            filter: none;
+        }
+        .theme-pb .mock-sidebar .nav-item:not(.active-item) .nav-svg--stroke,
+        .theme-hgx .mock-sidebar .nav-item:not(.active-item) .nav-svg--stroke {
+            filter: brightness(0) invert(1);
+            color: #fff;
+        }
+        .theme-pb .mock-sidebar .nav-item.active-item .nav-svg--stroke,
+        .theme-hgx .mock-sidebar .nav-item.active-item .nav-svg--stroke {
+            filter: none;
+            color: inherit;
+        }
+        .mock-sidebar .nav-item .nav-svg--stroke {
+            width: 20px;
+            height: 20px;
+            display: block;
+            flex-shrink: 0;
+        }
+        .mock-sidebar .nav-item.active-item { background: rgba(255,255,255,0.2); }
+
+        /* Design-system dashboard shells (AgMRI / MyFS / Pivot) — matches index.html pattern */
+        .dashboard-brand-demos {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(260px, 1fr));
+            gap: 20px;
+            align-items: stretch;
+            margin-top: 16px;
+        }
+        @media (max-width: 1100px) {
+            .dashboard-brand-demos { grid-template-columns: 1fr; }
+        }
+        .dashboard-brand-demo {
+            border: 1px solid var(--color-border, var(--color-neutral-200));
+            border-radius: var(--radius-lg, 12px);
+            overflow: hidden;
+            background: var(--color-surface, var(--color-neutral-0));
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .dashboard-brand-demo__label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--color-text-muted, var(--color-neutral-500));
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--color-border, var(--color-neutral-200));
+            background: var(--color-neutral-50);
+        }
+        .dashboard-brand-demo__shell {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            min-height: 340px;
+        }
+        .dashboard-brand-demo .nav { min-height: 100%; }
+        .dashboard-brand-demo .nav__icon img {
+            width: 22px;
+            height: 22px;
+            display: block;
+            object-fit: contain;
+        }
+        .dashboard-brand-demo .nav__item:not([aria-current="page"]) .nav__icon img {
+            filter: brightness(0) invert(1);
+        }
+        .dashboard-brand-demo .nav__item[aria-current="page"] .nav__icon img {
+            filter: none;
+        }
+        .dashboard-brand-demo .nav__item:not([aria-current="page"]) .nav__icon svg {
+            color: #fff;
+        }
+        .dashboard-brand-demo .nav__item[aria-current="page"] .nav__icon svg {
+            color: inherit;
+        }
+        .dashboard-brand-demo__main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--color-border, var(--color-neutral-200));
+        }
+        .dashboard-brand-demo .header { flex-shrink: 0; }
+        .dashboard-brand-demo .header__logo img {
+            height: 22px;
+            width: auto;
+            max-width: 132px;
+            display: block;
+        }
+        .dashboard-brand-demo.theme-pb .header__logo img {
+            max-width: 148px;
+            height: 24px;
+        }
+        .dashboard-widget-tabs-bar {
+            background: var(--color-neutral-100);
+            padding: 12px 14px;
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            overflow-x: auto;
+            flex: 1;
+            min-height: 140px;
+        }
+        .widget-title-icon {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        /* ── Content area ── */
+        .mock-content {
+            flex: 1; background: var(--color-neutral-50);
+            padding: var(--spacing-xl);
+        }
+
+        .mock-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--color-neutral-200);
+            margin-bottom: 20px;
+        }
+        .mock-header-bar .greeting h2 { font-size: 20px; font-weight: 700; }
+        .mock-header-bar .greeting .sub { font-size: 13px; color: var(--color-neutral-500); }
+        .mock-header-bar .stats { display: flex; gap: 20px; }
+        .stat-pill {
+            background: var(--color-neutral-0);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-pill);
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .stat-pill .num { font-size: 16px; font-weight: 700; }
+
+        /* Widget grid */
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .widget-grid.two-col { grid-template-columns: repeat(2, 1fr); }
+        .widget {
+            background: var(--color-neutral-0);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            min-height: 160px;
+            display: flex; flex-direction: column;
+        }
+        .widget .widget-title {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .widget .widget-title h4 { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .widget .widget-title .icon { font-size: 16px; }
+        .widget .widget-body { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .widget .placeholder-chart {
+            width: 100%; height: 80px;
+            background: linear-gradient(135deg, var(--color-neutral-100), var(--color-neutral-50));
+            border-radius: var(--radius-md);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-neutral-400); font-size: 12px; font-style: italic;
+        }
+        .widget.span-2 { grid-column: span 2; }
+
+        /* ── Role matrix ── */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .role-card {
+            background: var(--color-neutral-0);
+            border: 1px solid var(--color-neutral-200);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            text-align: center;
+        }
+        .role-card .role-icon {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .role-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .role-card p { font-size: 12px; color: var(--color-neutral-500); }
+
+        /* ── Theme variants ── */
+        .theme-pb .mock-sidebar { background: var(--color-pb-500); color: #fff; }
+        .theme-pb .mock-sidebar .nav-item.active-item { background: rgba(255,255,255,0.15); }
+        .theme-pb .stat-pill .num { color: var(--color-pb-500); }
+        .theme-pb .widget .widget-title h4 .icon { color: var(--color-pb-500); }
+
+        .theme-hgx .mock-sidebar { background: var(--color-hgx-700); color: #fff; }
+        .theme-hgx .mock-sidebar .nav-item.active-item { background: rgba(255,255,255,0.15); }
+        .theme-hgx .stat-pill .num { color: var(--color-hgx-600); }
+        .theme-hgx .widget .widget-title h4 .icon { color: var(--color-hgx-600); }
+
+        .theme-agmri .mock-sidebar { background: var(--color-brand-500); color: #fff; }
+        .theme-agmri .stat-pill .num { color: var(--color-brand-500); }
+
+        /* ── Info boxes ── */
+        .info-box {
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        .info-box.note { background: #eff6ff; border-left: 4px solid var(--color-info-500); }
+        .info-box.warn { background: #fffbeb; border-left: 4px solid var(--color-warning-500); }
+        .info-box.success { background: #f0fdf4; border-left: 4px solid var(--color-success-500); }
+        .info-box strong { display: block; font-size: 13px; margin-bottom: 4px; }
+
+        /* ── Flow diagram ── */
+        .flow-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 8px 0; flex-wrap: wrap;
+        }
+        .flow-box {
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px; font-weight: 600;
+            border: 1px solid var(--color-neutral-200);
+            background: var(--color-neutral-0);
+        }
+        .flow-arrow { color: var(--color-neutral-400); font-size: 18px; }
+        .flow-box.highlight { background: var(--color-brand-500); color: #fff; border-color: var(--color-brand-500); }
+        .flow-box.highlight-pb { background: var(--color-pb-500); color: #fff; border-color: var(--color-pb-500); }
+        .flow-box.highlight-hgx { background: var(--color-hgx-600); color: #fff; border-color: var(--color-hgx-600); }
+
+        /* ── Comparison table ── */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .comparison-col {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            border: 1px solid var(--color-neutral-200);
+        }
+        .comparison-col .col-header {
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+        }
+        .comparison-col .col-body { padding: 16px 20px; background: var(--color-neutral-0); }
+        .comparison-col .col-body ul { padding-left: 18px; font-size: 13px; }
+        .comparison-col .col-body li { margin-bottom: 6px; color: var(--color-neutral-700); }
+
+        .accent-divider {
+            height: 4px;
+            border-radius: 2px;
+            margin: 48px 0 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .widget-grid { grid-template-columns: 1fr 1fr; }
+            .role-grid { grid-template-columns: 1fr 1fr; }
+            .comparison-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .widget-grid { grid-template-columns: 1fr; }
+            .role-grid { grid-template-columns: 1fr; }
+            .container { padding: var(--spacing-l); }
+        }
+
+        .print-only { display: none; }
+        @media print {
+            .top-nav { position: static; }
+            .print-only { display: block; }
+            .tab-content { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════ TOP NAV ═══════════════════ -->
+<nav class="top-nav">
+    <div class="logo">AgMRI <span>Design</span></div>
+    <div class="nav-right">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#brand-demos">Brand shells</a>
+        <a href="#epics">Epics</a>
+        <a href="#pivot-bio">Pivot Bio</a>
+        <a href="#holganix">Holganix</a>
+        <a href="#matrix">Comparison</a>
+    </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+    <h1>Home Page — Whitelabel Admin Design</h1>
+    <p>Epic-level requirements and visual design for a universal, role-aware, feature-flag-driven home page. Focused on <strong>Pivot Bio (Nutrivize)</strong> and <strong>Holganix Horizons</strong> admin roles.</p>
+    <div class="meta-row">
+        <span>📋 Document version 1.0</span>
+        <span>📅 April 13, 2026</span>
+        <span>🎯 Target: All whitelabel partners</span>
+    </div>
+</section>
+
+<div class="container">
+
+<!-- ═══════════════════ TOC ═══════════════════ -->
+<div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+        <li><a href="#overview">Executive Overview &amp; Architecture</a></li>
+        <li><a href="#brand-demos">Brand dashboard shells (AgMRI · MyFS · Pivot Bio)</a></li>
+        <li><a href="#roles">Roles &amp; Feature Flag Framework</a></li>
+        <li><a href="#epics">Epic-Level Requirements (Universal Home Page)</a></li>
+        <li><a href="#pivot-bio">Pivot Bio Admin — Home Page Design</a></li>
+        <li><a href="#holganix">Holganix Horizons Admin — Home Page Design</a></li>
+        <li><a href="#matrix">Whitelabel Comparison Matrix</a></li>
+        <li><a href="#flow">Login → Home Navigation Flow</a></li>
+        <li><a href="#flags">Feature Flag Mapping per Whitelabel</a></li>
+    </ol>
+</div>
+
+<!-- ═══════════════════ 1. OVERVIEW ═══════════════════ -->
+<div id="overview" class="section-header">
+    <span class="badge">Section 1</span>
+    <h2>Executive Overview &amp; Architecture</h2>
+</div>
+
+<div class="card">
+    <h3>Current State</h3>
+    <p>The MyFS home page (<code>/retailer/home</code>) is powered by <code>NewDashboardComponent</code> — an Angular component that renders a <strong>backend-configured widget grid</strong>. The widget catalog is served from <code>ui-conf/widgets</code>, and visibility is governed by the intersection of <strong>whitelabel app features</strong> and <strong>user role-based features</strong>.</p>
+    <div class="info-box note">
+        <strong>Key Insight</strong>
+        There is no separate admin home template today. Admin vs. regular user differences are entirely data-driven (which widgets the backend returns, plus the <code>growers</code> permission gating on summary stats).
+    </div>
+</div>
+
+<div class="card">
+    <h3>Proposed Architecture</h3>
+    <p>The new home page should be a <strong>single, flexible component</strong> that adapts based on three axes:</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:16px;">
+        <div style="background:var(--color-neutral-50); padding:16px; border-radius:var(--radius-lg); text-align:center;">
+            <div style="font-size:28px; margin-bottom:8px;">🏷️</div>
+            <strong style="font-size:13px;">Whitelabel Theme</strong>
+            <p style="font-size:12px; color:var(--color-neutral-500); margin-top:4px;">Brand colors, logos, nav, terminology</p>
+        </div>
+        <div style="background:var(--color-neutral-50); padding:16px; border-radius:var(--radius-lg); text-align:center;">
+            <div style="font-size:28px; margin-bottom:8px;">👤</div>
+            <strong style="font-size:13px;">User Role</strong>
+            <p style="font-size:12px; color:var(--color-neutral-500); margin-top:4px;">Admin, WL Admin, Junior Admin, User, Grower</p>
+        </div>
+        <div style="background:var(--color-neutral-50); padding:16px; border-radius:var(--radius-lg); text-align:center;">
+            <div style="font-size:28px; margin-bottom:8px;">🚩</div>
+            <strong style="font-size:13px;">Feature Flags</strong>
+            <p style="font-size:12px; color:var(--color-neutral-500); margin-top:4px;">AppFeature keys enable/disable widgets &amp; sections</p>
+        </div>
+    </div>
+</div>
+
+<div id="brand-demos" class="card">
+    <h3>Brand dashboard shells</h3>
+    <p style="margin-top:8px; font-size:14px; color:var(--color-neutral-600);">Home layout preview using design-system <code>.nav</code>, <code>.header</code>, and SVG assets from <code>../assets/icons/nav/</code> and <code>../assets/icons/timeline/</code>. Pivot Bio header uses <code>../assets/icons/pb-logo-header.svg</code>.</p>
+    <div class="dashboard-brand-demos">
+
+      <div class="dashboard-brand-demo">
+        <div class="dashboard-brand-demo__label">AgMRI — Home</div>
+        <div class="dashboard-brand-demo__shell">
+          <nav class="nav" aria-label="AgMRI dashboard nav">
+            <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><img src="../assets/icons/nav/home-filled.svg" alt="" /></span><span class="nav__label">Home</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/growers-hollow.svg" alt="" /></span><span class="nav__label">Growers</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/map-hollow.svg" alt="" /></span><span class="nav__label">Fields</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/scout-hollow.svg" alt="" /></span><span class="nav__label">Scout</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/timeline/satellite.svg" alt="" /></span><span class="nav__label">Weather</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/notifications-hollow.svg" alt="" /></span><span class="nav__label">Alerts</span></a>
+            <div class="nav__spacer"></div>
+            <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Settings</span></a>
+          </nav>
+          <div class="dashboard-brand-demo__main">
+            <header class="header" role="banner">
+              <div class="header__left"><a href="#" class="header__logo" aria-label="AgMRI home"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a></div>
+              <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
+              <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
+            </header>
+            <div class="dashboard-widget-tabs-bar">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><img src="../assets/icons/timeline/plant.svg" alt="" style="width:26px;height:26px;" /></div><span style="font-size:10px;font-weight:600;color:var(--color-text);">Crop growth</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/notifications-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Alerts</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/satellite.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Weather</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/field.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Fields</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/scout-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Scouting</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/drone.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Droning</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/region-report.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Reports</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/planting.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Spore cam</span></div>
+              <div style="margin-left:auto;display:flex;gap:8px;flex-shrink:0;">
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Reset layout"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Cancel"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Confirm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-brand-demo">
+        <div class="dashboard-brand-demo__label">MyFS — Home</div>
+        <div class="dashboard-brand-demo__shell">
+          <nav class="nav nav--myfs" aria-label="MyFS dashboard nav">
+            <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><img src="../assets/icons/nav/home-filled.svg" alt="" /></span><span class="nav__label">Home</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/growers-hollow.svg" alt="" /></span><span class="nav__label">Growers</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/map-hollow.svg" alt="" /></span><span class="nav__label">Fields</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/scout-hollow.svg" alt="" /></span><span class="nav__label">Scout</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/timeline/satellite.svg" alt="" /></span><span class="nav__label">Weather</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/notifications-hollow.svg" alt="" /></span><span class="nav__label">Alerts</span></a>
+            <div class="nav__spacer"></div>
+            <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Settings</span></a>
+          </nav>
+          <div class="dashboard-brand-demo__main">
+            <header class="header header--myfs" role="banner">
+              <div class="header__left"><a href="#" class="header__logo" aria-label="MyFS home"><img src="https://myfs-test.intelinair.dev/assets/myfs-theme/img/logo.png" alt="MyFS" /></a></div>
+              <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
+              <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
+            </header>
+            <div class="dashboard-widget-tabs-bar">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><img src="../assets/icons/timeline/plant.svg" alt="" style="width:26px;height:26px;" /></div><span style="font-size:10px;font-weight:600;color:var(--color-text);">Crop growth</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/notifications-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Alerts</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/satellite.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Weather</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/field.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Fields</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/scout-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Scouting</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/drone.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Droning</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/region-report.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Reports</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/planting.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Spore cam</span></div>
+              <div style="margin-left:auto;display:flex;gap:8px;flex-shrink:0;">
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Reset layout"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Cancel"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Confirm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-brand-demo theme-pb">
+        <div class="dashboard-brand-demo__label">Pivot Bio — Home</div>
+        <div class="dashboard-brand-demo__shell">
+          <nav class="nav" aria-label="Pivot Bio dashboard nav">
+            <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><img src="../assets/icons/nav/home-filled.svg" alt="" /></span><span class="nav__label">Home</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/growers-hollow.svg" alt="" /></span><span class="nav__label">Growers</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/map-hollow.svg" alt="" /></span><span class="nav__label">Fields</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/scout-hollow.svg" alt="" /></span><span class="nav__label">Scout</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/timeline/satellite.svg" alt="" /></span><span class="nav__label">Weather</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="../assets/icons/nav/notifications-hollow.svg" alt="" /></span><span class="nav__label">Alerts</span></a>
+            <div class="nav__spacer"></div>
+            <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Settings</span></a>
+          </nav>
+          <div class="dashboard-brand-demo__main">
+            <header class="header header--pb" role="banner">
+              <div class="header__left"><a href="#" class="header__logo" aria-label="Pivot Bio home"><img src="../assets/icons/pb-logo-header.svg" alt="Pivot Bio" /></a></div>
+              <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
+              <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
+            </header>
+            <div class="dashboard-widget-tabs-bar">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><img src="../assets/icons/timeline/plant.svg" alt="" style="width:26px;height:26px;" /></div><span style="font-size:10px;font-weight:600;color:var(--color-text);">Crop growth</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/notifications-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Alerts</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/satellite.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Weather</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/field.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Fields</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/scout-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Scouting</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/drone.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Droning</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/nav/region-report.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Reports</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="../assets/icons/timeline/planting.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Spore cam</span></div>
+              <div style="margin-left:auto;display:flex;gap:8px;flex-shrink:0;">
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Reset layout"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Cancel"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Confirm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+</div>
+
+<!-- ═══════════════════ 2. ROLES ═══════════════════ -->
+<div id="roles" class="section-header">
+    <span class="badge">Section 2</span>
+    <h2>Roles &amp; Feature Flag Framework</h2>
+</div>
+
+<div class="role-grid">
+    <div class="role-card">
+        <div class="role-icon" style="background:#ede9fe;">👑</div>
+        <h4>Super Admin</h4>
+        <p><code>ROLE_ADMIN</code></p>
+        <p style="margin-top:6px;">Full cross-whitelabel access. Sees all widgets, all companies, all settings.</p>
+    </div>
+    <div class="role-card">
+        <div class="role-icon" style="background:#dbeafe;">🏢</div>
+        <h4>Company Admin</h4>
+        <p><code>ROLE_COMPANY_ADMIN</code></p>
+        <p style="margin-top:6px;">Manages all companies in their hierarchy. User management, contracts, integrations.</p>
+    </div>
+    <div class="role-card">
+        <div class="role-icon" style="background:#fef3c7;">🏷️</div>
+        <h4>WhiteLabel Admin</h4>
+        <p><code>ROLE_WHITE_LABEL_ADMIN</code></p>
+        <p style="margin-top:6px;">Manages users within their whitelabel. Can assign roles per RoleManagement rules.</p>
+    </div>
+    <div class="role-card">
+        <div class="role-icon" style="background:#dcfce7;">📋</div>
+        <h4>Junior Admin</h4>
+        <p><code>ROLE_JUNIOR_ADMIN</code></p>
+        <p style="margin-top:6px;">Limited admin with subset of role management capabilities.</p>
+    </div>
+</div>
+
+<div class="info-box warn" style="margin-top:20px;">
+    <strong>Admin-Specific Home Page Behavior (Current)</strong>
+    When <code>isCompanyAdmin()</code> or <code>isAdminRole()</code> (WhiteLabelAdmin / JuniorAdmin) and the user has <code>showWizard=true</code> with a default company alias, login redirects to <code>/integration</code> (onboarding wizard) instead of <code>/retailer/home</code>.
+</div>
+
+<!-- ═══════════════════ 3. EPICS ═══════════════════ -->
+<div id="epics" class="section-header">
+    <span class="badge">Section 3</span>
+    <h2>Epic-Level Requirements — Universal Home Page</h2>
+</div>
+
+<!-- Epic 1 -->
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: #ede9fe; color: #7c3aed;">🏠</div>
+        <div class="title-area">
+            <div class="epic-id">Epic HP-001</div>
+            <h3>Whitelabel-Aware Home Shell</h3>
+        </div>
+        <span class="tag tag-priority-high">High Priority</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> The home page shell (header, sidebar nav, greeting, summary stats) must dynamically apply the correct whitelabel branding (colors, logo, terminology) based on the authenticated user's whitelabel association.</p>
+        <ul class="story-list">
+            <li><strong>HP-001-01:</strong> Load brand theme tokens (CSS variables) based on <code>user.whiteLabel.keyName</code> — e.g. <code>nutrivize</code> applies PB Blue palette, <code>holganix_horizons</code> applies AG Green palette. <span class="tag tag-whitelabel">Whitelabel</span></li>
+            <li><strong>HP-001-02:</strong> Header logo, favicon, and document title sourced from <code>WhiteLabel.metadata.templates</code> and <code>ThemePipe</code> asset resolution. <span class="tag tag-whitelabel">Whitelabel</span></li>
+            <li><strong>HP-001-03:</strong> Sidebar navigation items filtered by user's <code>appFeatureKeys</code> (intersection of WL + role features). <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-001-04:</strong> Greeting header shows localized "Hello, {firstName}" with company name and date. <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-001-05:</strong> Summary stat pills (Growers, Alerts, Fields) conditionally visible — Growers requires <code>growers</code> permission. <span class="tag tag-role">Role</span></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Epic 2 -->
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: #dbeafe; color: #2563eb;">📊</div>
+        <div class="title-area">
+            <div class="epic-id">Epic HP-002</div>
+            <h3>Role-Adaptive Widget Dashboard</h3>
+        </div>
+        <span class="tag tag-priority-high">High Priority</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> The widget grid renders a curated set of widgets based on the combination of whitelabel features and user role. Admins see operational + management widgets; standard users see field-level insights only.</p>
+        <ul class="story-list">
+            <li><strong>HP-002-01:</strong> Backend <code>ui-conf/widgets</code> returns widget configs filtered by user's effective features (<code>WL features ∩ role features</code>). <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-002-02:</strong> <strong>Admin-exclusive widgets:</strong> User Management overview, Platform Health, Company Contracts summary, Integration Status. <span class="tag tag-role">Role</span> <span class="tag tag-new">New</span></li>
+            <li><strong>HP-002-03:</strong> Shared widgets rendered for all roles: Alerts Overview, Crop Growth, Weather, Fields Outlook, Scouting, Ten Worst Fields. Visibility per WL feature assignment.</li>
+            <li><strong>HP-002-04:</strong> Widget layout supports drag-and-drop reordering with persist-to-backend (existing capability). Grid columns adapt: 3-col on desktop, 2-col on tablet, 1-col on mobile.</li>
+            <li><strong>HP-002-05:</strong> Partner-specific widgets: <code>hgxVintage</code> (Holganix only), Pivot Bio Product/NFactor widget (Nutrivize only). <span class="tag tag-whitelabel">Whitelabel</span> <span class="tag tag-new">New</span></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Epic 3 -->
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: #fef3c7; color: #d97706;">⚡</div>
+        <div class="title-area">
+            <div class="epic-id">Epic HP-003</div>
+            <h3>Admin Quick Actions &amp; Shortcuts</h3>
+        </div>
+        <span class="tag tag-priority-med">Medium Priority</span>
+        <span class="tag tag-new">New</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> Admin-role users get a dedicated "Quick Actions" section on the home page providing fast access to their most common administrative tasks, eliminating extra navigation clicks.</p>
+        <ul class="story-list">
+            <li><strong>HP-003-01:</strong> Quick Action cards for: Invite User, Manage Roles, Connect Fields (Integration), View Company Contracts, Manage Feature Flags. <span class="tag tag-role">Role</span></li>
+            <li><strong>HP-003-02:</strong> Only visible for <code>ADMIN_ROLES</code> (Admin, CompanyAdmin, WhiteLabelAdmin, JuniorAdmin). Specific actions further gated by <code>admin_settings</code> feature flag.</li>
+            <li><strong>HP-003-03:</strong> Junior Admins see a subset based on <code>RoleManagement</code> configuration (cannot see role assignment if not authorized). <span class="tag tag-role">Role</span></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Epic 4 -->
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: #dcfce7; color: #16a34a;">📢</div>
+        <div class="title-area">
+            <div class="epic-id">Epic HP-004</div>
+            <h3>Notifications &amp; Communication Hub</h3>
+        </div>
+        <span class="tag tag-priority-med">Medium Priority</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> Surface recent notifications, messages, and communication activity directly on the home page for users with the <code>communications_platform</code> feature flag.</p>
+        <ul class="story-list">
+            <li><strong>HP-004-01:</strong> Notification feed widget showing recent alerts, scouting assignments, and system notifications. Gated by <code>communications_platform</code>. <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-004-02:</strong> Unread message badge count in sidebar and home widget, pulling from communication-service. <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-004-03:</strong> Admin-specific: "Pending User Requests" count for <code>user_request_management</code> feature. <span class="tag tag-role">Role</span> <span class="tag tag-new">New</span></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Epic 5 -->
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: #fee2e2; color: #dc2626;">📈</div>
+        <div class="title-area">
+            <div class="epic-id">Epic HP-005</div>
+            <h3>Analytics &amp; Campaign Widgets</h3>
+        </div>
+        <span class="tag tag-priority-med">Medium Priority</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> Provide data-rich dashboard widgets for analytics features (Analyze, Carbon MRV, Crop Models) and ad campaign management, each gated by their respective feature flags.</p>
+        <ul class="story-list">
+            <li><strong>HP-005-01:</strong> Analyze summary widget visible when <code>analyze</code> feature flag is active. Shows top-line metrics (stress, nutrient deficiency, emergence scores). <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-005-02:</strong> Carbon MRV summary widget visible when <code>carbon_mrv</code> is active. <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-005-03:</strong> Ad Campaign carousel for <code>ads_banner_widget1</code> / <code>ads_banner_widget2</code> (existing). <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-005-04:</strong> Market prices &amp; News widgets for partners with <code>markets_widget</code> / <code>latest_news_widget</code> features.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Epic 6 -->
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: #f0fdf4; color: #15803d;">🤖</div>
+        <div class="title-area">
+            <div class="epic-id">Epic HP-006</div>
+            <h3>AI Assistant &amp; Intelligent Insights</h3>
+        </div>
+        <span class="tag tag-priority-med">Medium Priority</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> The AI chat assistant (<code>llm_chat</code> / <code>ai_chat</code> feature flags) should have a prominent entry point on the home page, plus contextual insight cards powered by AI analysis.</p>
+        <ul class="story-list">
+            <li><strong>HP-006-01:</strong> Floating AI assistant chip on retailer shell (existing — <code>*ngxPermissionsOnly="eFeatureFlag.llmChat"</code>). <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HP-006-02:</strong> "AI Insights" home widget showing auto-generated weekly summary of field health, anomalies, and recommended actions. <span class="tag tag-new">New</span></li>
+            <li><strong>HP-006-03:</strong> AI sidebar chat entry point in left navigation when <code>ai_chat</code> is enabled.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ═══════════════════ 4. PIVOT BIO ═══════════════════ -->
+<div id="pivot-bio" class="accent-divider" style="background: linear-gradient(90deg, var(--color-pb-500), var(--color-pb-300));"></div>
+
+<div class="section-header">
+    <span class="badge" style="background: var(--color-pb-50); color: var(--color-pb-500); border-color: var(--color-pb-200);">Pivot Bio</span>
+    <h2>Pivot Bio (Nutrivize) — Admin Home Page</h2>
+</div>
+
+<div class="card">
+    <h3>Whitelabel Context</h3>
+    <p><strong>Key:</strong> <code>nutrivize</code> &nbsp;|&nbsp; <strong>Display:</strong> Nutrivize &nbsp;|&nbsp; <strong>URL:</strong> nutrivize.pivotbio.com &nbsp;|&nbsp; <strong>Support:</strong> support@pivotbio.com</p>
+    <p style="margin-top:8px;">Pivot Bio focuses on <strong>nitrogen management and biological crop products</strong>. Their admin users need visibility into product trials, N-Factor data, and scouting specific to their biological product lines.</p>
+
+    <div class="info-box note" style="margin-top:16px;">
+        <strong>Active Feature Flags for Nutrivize</strong>
+        Core widget features (crop_growth_widget, alerts_overview_widget, weather_overview_widget, scouting_widget, fields_outlook_widget, ten_worst_fields_widget) are assigned. Does NOT include <code>droning_widget</code>. Includes Pivot Bio-specific scouting categories.
+    </div>
+    <p style="margin-top:12px; font-size:13px; color:var(--color-neutral-600);">The shared retailer shell (sidebar, app header, home widget tray) for <strong>AgMRI</strong>, <strong>MyFS</strong>, and <strong>Pivot Bio</strong> is shown in <a href="#brand-demos">Brand dashboard shells</a> in Section 1, aligned with the design system.</p>
+</div>
+
+<!-- PB Mockup -->
+<div class="mockup-frame theme-pb">
+    <div class="mockup-chrome">
+        <div class="mockup-dot red"></div>
+        <div class="mockup-dot yellow"></div>
+        <div class="mockup-dot green"></div>
+        <div class="mockup-url">nutrivize.pivotbio.com/retailer/home</div>
+    </div>
+    <div class="mockup-body">
+        <div class="mock-sidebar">
+            <div style="margin-bottom:10px; display:flex; justify-content:center;"><img src="../assets/icons/pb-logo-header.svg" alt="" style="width:48px; height:auto; filter: brightness(0) invert(1); opacity: 0.92;" /></div>
+            <div class="nav-item active-item"><img class="nav-svg" src="../assets/icons/nav/home-filled.svg" alt="" />Home</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/growers-hollow.svg" alt="" />Growers</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/map-hollow.svg" alt="" />Fields</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/scout-hollow.svg" alt="" />Scout</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/timeline/satellite.svg" alt="" />Weather</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/notifications-hollow.svg" alt="" />Alerts</div>
+            <div class="nav-item"><svg class="nav-svg nav-svg--stroke" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Settings</div>
+        </div>
+        <div class="mock-content">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                <img src="../assets/icons/pb-logo-header.svg" alt="Pivot Bio" style="height:22px; width:auto; max-width:148px;" />
+            </div>
+            <div class="mock-header-bar">
+                <div class="greeting">
+                    <h2>Hello, Sarah 👋</h2>
+                    <div class="sub">April 13, 2026 &nbsp;·&nbsp; Pivot Bio Midwest Region</div>
+                </div>
+                <div class="stats">
+                    <div class="stat-pill"><span class="num">142</span> Growers</div>
+                    <div class="stat-pill"><span class="num">23</span> Alerts</div>
+                    <div class="stat-pill"><span class="num">1,847</span> Fields</div>
+                </div>
+            </div>
+
+            <!-- Admin Quick Actions -->
+            <div style="margin-bottom:20px;">
+                <div style="font-size:13px; font-weight:700; color:var(--color-neutral-500); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Admin Quick Actions</div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <div style="background:var(--color-pb-50); border:1px solid var(--color-pb-100); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-pb-500); cursor:pointer; display:flex; align-items:center; gap:6px;">➕ Invite User</div>
+                    <div style="background:var(--color-pb-50); border:1px solid var(--color-pb-100); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-pb-500); cursor:pointer; display:flex; align-items:center; gap:6px;">👤 Manage Roles</div>
+                    <div style="background:var(--color-pb-50); border:1px solid var(--color-pb-100); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-pb-500); cursor:pointer; display:flex; align-items:center; gap:6px;">🔗 Connect Fields</div>
+                    <div style="background:var(--color-pb-50); border:1px solid var(--color-pb-100); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-pb-500); cursor:pointer; display:flex; align-items:center; gap:6px;">📊 View Trials</div>
+                    <div style="background:var(--color-pb-50); border:1px solid var(--color-pb-100); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-pb-500); cursor:pointer; display:flex; align-items:center; gap:6px;">🧪 PB Products</div>
+                </div>
+            </div>
+
+            <!-- Widget grid -->
+            <div class="widget-grid">
+                <div class="widget span-2">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/nav/notifications-hollow.svg" alt="" /> Alerts Overview</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Alerts by field count · Total acreage · % Acres affected</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/plant.svg" alt="" /> Crop Growth Stages</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Growth stage distribution</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/spray.svg" alt="" /> PB Product Performance</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart" style="background:linear-gradient(135deg,var(--color-pb-50),#fff);">N-Factor scores · Product trials</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/satellite.svg" alt="" /> Weather Overview</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Temperature · Precipitation · Wind</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/nav/scout-hollow.svg" alt="" /> Scouting Activity</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Total reports · New reports by interval</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/field.svg" alt="" /> Fields Outlook</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Field health map overview</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/nav/map-hollow.svg" alt="" /> Ten Worst Fields</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Fields sorted by severity</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/nav/growers-hollow.svg" alt="" /> User Management</h4> <span class="tag tag-role">Admin</span></div>
+                    <div class="widget-body"><div class="placeholder-chart" style="background:linear-gradient(135deg,#ede9fe,#fff);">Active users · Pending invites · Roles</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PB Epic Requirements -->
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: var(--color-pb-50); color: var(--color-pb-500);">🔵</div>
+        <div class="title-area">
+            <div class="epic-id">Epic PB-001</div>
+            <h3>Pivot Bio Admin Home — Product &amp; Trial Insights</h3>
+        </div>
+        <span class="tag tag-whitelabel">Nutrivize</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> Pivot Bio admin users need a home page that combines standard agronomic dashboard capabilities with Pivot Bio-specific product performance and trial management features.</p>
+        <ul class="story-list">
+            <li><strong>PB-001-01:</strong> <strong>PB Product Performance Widget</strong> — New widget displaying N-Factor scores and product trial results from <code>/api/v2/pivotBio/product</code> and <code>/api/v2/pivotBio/nFactor</code> endpoints. Admins see cross-company data; regular users see only their WL-scoped data. <span class="tag tag-new">New</span></li>
+            <li><strong>PB-001-02:</strong> <strong>Trial Management Quick Action</strong> — Admin shortcut to view/manage active trials (<code>manage_trials</code> feature flag). Links to <code>/retailer/trials</code>.</li>
+            <li><strong>PB-001-03:</strong> <strong>PB-Specific Scouting Categories</strong> — Scouting widget pre-filtered to Nutrivize-specific scouting categories (biological product observations, N response assessments). Categories seeded via <code>ScoutingCategory:whitelabel:pivotbio</code>.</li>
+            <li><strong>PB-001-04:</strong> <strong>Nitrogen Management Insights</strong> — Summary tile showing N application status across managed fields, leveraging analyze filters (<code>nitrogenPractice</code>). Gated by <code>analyze</code> feature. <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>PB-001-05:</strong> <strong>Theme Application</strong> — PB Blue (<code>#2B3A4D</code>) applied to nav, buttons, stat pill accents, and active states via <code>.theme-pb</code> CSS class.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: var(--color-pb-50); color: var(--color-pb-500);">🛡️</div>
+        <div class="title-area">
+            <div class="epic-id">Epic PB-002</div>
+            <h3>Pivot Bio Admin — User &amp; Access Management</h3>
+        </div>
+        <span class="tag tag-whitelabel">Nutrivize</span>
+        <span class="tag tag-role">Role</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> WhiteLabel Admin and Junior Admin users in the Nutrivize tenant need admin-specific home widgets and actions to manage their organization.</p>
+        <ul class="story-list">
+            <li><strong>PB-002-01:</strong> <strong>User Overview Widget</strong> — Displays active user count, pending invitations, recently added users. Visible only to <code>ROLE_WHITE_LABEL_ADMIN</code> and above. <span class="tag tag-role">Role</span> <span class="tag tag-new">New</span></li>
+            <li><strong>PB-002-02:</strong> <strong>Company Contracts Widget</strong> — Summary of active contracts for admin hierarchy. Links to contract management. <span class="tag tag-role">Role</span></li>
+            <li><strong>PB-002-03:</strong> <strong>Integration Status</strong> — Quick view of equipment provider connections (Raven Slingshot status when <code>raven_slingshot</code> is enabled). <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>PB-002-04:</strong> <strong>Self-Signup Request Queue</strong> — Badge count of pending user registration requests when <code>user_request_management</code> is active. <span class="tag tag-feature">Feature Flag</span> <span class="tag tag-new">New</span></li>
+        </ul>
+    </div>
+</div>
+
+<!-- ═══════════════════ 5. HOLGANIX ═══════════════════ -->
+<div id="holganix" class="accent-divider" style="background: linear-gradient(90deg, var(--color-hgx-600), var(--color-hgx-400));"></div>
+
+<div class="section-header">
+    <span class="badge" style="background: var(--color-hgx-50); color: var(--color-hgx-700); border-color: var(--color-hgx-200);">Holganix</span>
+    <h2>Holganix Horizons — Admin Home Page</h2>
+</div>
+
+<div class="card">
+    <h3>Whitelabel Context</h3>
+    <p><strong>Key:</strong> <code>holganix_horizons</code> &nbsp;|&nbsp; <strong>Display:</strong> Holganix Horizons &nbsp;|&nbsp; <strong>Theme:</strong> AG Green</p>
+    <p style="margin-top:8px;">Holganix focuses on <strong>soil biology, plant health, and sustainable agriculture</strong>. Their platform includes unique features like HGX Vintage tracking, droning capabilities, and soil-focused analytics.</p>
+
+    <div class="info-box success" style="margin-top:16px;">
+        <strong>Active Feature Flags for Holganix</strong>
+        All core widget features PLUS <code>droning_widget</code> (unique to Holganix among whitelabel partners). Also includes <code>hgxVintage</code> widget for product vintage tracking. Full disease and scouting capabilities are enabled.
+    </div>
+</div>
+
+<!-- HGX Mockup -->
+<div class="mockup-frame theme-hgx">
+    <div class="mockup-chrome">
+        <div class="mockup-dot red"></div>
+        <div class="mockup-dot yellow"></div>
+        <div class="mockup-dot green"></div>
+        <div class="mockup-url">app.holganixhorizons.com/retailer/home</div>
+    </div>
+    <div class="mockup-body">
+        <div class="mock-sidebar">
+            <div style="margin-bottom:8px; display:flex; justify-content:center;"><img src="../assets/icons/timeline/plant.svg" alt="" style="width:26px; height:26px; filter: brightness(0) invert(1); opacity: 0.95;" /></div>
+            <div style="font-size:10px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px; color:#fff; opacity:0.9;">HGX</div>
+            <div class="nav-item active-item"><img class="nav-svg" src="../assets/icons/nav/home-filled.svg" alt="" />Home</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/growers-hollow.svg" alt="" />Growers</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/map-hollow.svg" alt="" />Fields</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/scout-hollow.svg" alt="" />Scout</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/timeline/satellite.svg" alt="" />Weather</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/notifications-hollow.svg" alt="" />Disease</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/timeline/drone.svg" alt="" />Droning</div>
+            <div class="nav-item"><img class="nav-svg" src="../assets/icons/nav/search-hollow.svg" alt="" />Connect</div>
+            <div class="nav-item"><svg class="nav-svg nav-svg--stroke" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>Settings</div>
+        </div>
+        <div class="mock-content">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <img src="../assets/icons/timeline/plant.svg" alt="" style="width:24px; height:24px;" />
+                <span style="font-weight:700; font-size:15px; color:var(--color-hgx-700);">Holganix Horizons</span>
+            </div>
+            <div class="mock-header-bar">
+                <div class="greeting">
+                    <h2>Hello, Michael 👋</h2>
+                    <div class="sub">April 13, 2026 &nbsp;·&nbsp; Holganix Horizons East Coast</div>
+                </div>
+                <div class="stats">
+                    <div class="stat-pill"><span class="num">89</span> Growers</div>
+                    <div class="stat-pill"><span class="num">17</span> Alerts</div>
+                    <div class="stat-pill"><span class="num">956</span> Fields</div>
+                </div>
+            </div>
+
+            <!-- Admin Quick Actions -->
+            <div style="margin-bottom:20px;">
+                <div style="font-size:13px; font-weight:700; color:var(--color-neutral-500); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Admin Quick Actions</div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <div style="background:var(--color-hgx-50); border:1px solid var(--color-hgx-200); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-hgx-700); cursor:pointer; display:flex; align-items:center; gap:6px;">➕ Invite User</div>
+                    <div style="background:var(--color-hgx-50); border:1px solid var(--color-hgx-200); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-hgx-700); cursor:pointer; display:flex; align-items:center; gap:6px;">👤 Manage Roles</div>
+                    <div style="background:var(--color-hgx-50); border:1px solid var(--color-hgx-200); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-hgx-700); cursor:pointer; display:flex; align-items:center; gap:6px;">🔗 Connect Fields</div>
+                    <div style="background:var(--color-hgx-50); border:1px solid var(--color-hgx-200); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-hgx-700); cursor:pointer; display:flex; align-items:center; gap:6px;">🚁 Manage Droning</div>
+                    <div style="background:var(--color-hgx-50); border:1px solid var(--color-hgx-200); border-radius:var(--radius-md); padding:10px 16px; font-size:12px; font-weight:600; color:var(--color-hgx-700); cursor:pointer; display:flex; align-items:center; gap:6px;">🧬 HGX Vintage</div>
+                </div>
+            </div>
+
+            <!-- Widget grid -->
+            <div class="widget-grid">
+                <div class="widget span-2">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/nav/notifications-hollow.svg" alt="" /> Alerts Overview</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Alerts by field count · Total acreage · % Acres affected</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/plant.svg" alt="" /> Crop Growth Stages</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Growth stage distribution</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/planting.svg" alt="" /> HGX Vintage</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart" style="background:linear-gradient(135deg,var(--color-hgx-50),#fff);">Product vintage tracking · Batch data</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/drone.svg" alt="" /> Droning Overview</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart" style="background:linear-gradient(135deg,var(--color-hgx-50),#fff);">Drone missions · Coverage · Status</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/spray.svg" alt="" /> Disease Presence</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Pathogen presence by fields · Spores</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/satellite.svg" alt="" /> Weather Overview</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Temperature · Precipitation · Wind</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/nav/scout-hollow.svg" alt="" /> Scouting Activity</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Total reports · New reports by interval</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/timeline/field.svg" alt="" /> Fields Outlook</h4></div>
+                    <div class="widget-body"><div class="placeholder-chart">Field health map overview</div></div>
+                </div>
+                <div class="widget">
+                    <div class="widget-title"><h4><img class="widget-title-icon" src="../assets/icons/nav/growers-hollow.svg" alt="" /> User Management</h4> <span class="tag tag-role">Admin</span></div>
+                    <div class="widget-body"><div class="placeholder-chart" style="background:linear-gradient(135deg,#ede9fe,#fff);">Active users · Pending invites · Roles</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HGX Epic Requirements -->
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: var(--color-hgx-50); color: var(--color-hgx-700);">🟢</div>
+        <div class="title-area">
+            <div class="epic-id">Epic HGX-001</div>
+            <h3>Holganix Admin Home — Soil Biology &amp; Product Insights</h3>
+        </div>
+        <span class="tag tag-whitelabel">Holganix</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> Holganix admin users need home page visibility into soil biology products, drone operations, disease monitoring, and HGX vintage tracking alongside standard dashboard features.</p>
+        <ul class="story-list">
+            <li><strong>HGX-001-01:</strong> <strong>HGX Vintage Widget</strong> — Display product vintage data (existing <code>hgxVintage</code> widget type). Needs <code>ngSwitchCase</code> implementation in <code>new-dashboard.component.html</code> for full rendering. Currently the widget key exists but may lack a template case. <span class="tag tag-new">Verify</span></li>
+            <li><strong>HGX-001-02:</strong> <strong>Droning Overview Widget</strong> — Drone mission status, coverage percentage, upcoming flights. Holganix is the only whitelabel with <code>droning_widget</code> feature. <span class="tag tag-whitelabel">Whitelabel</span></li>
+            <li><strong>HGX-001-03:</strong> <strong>Disease Presence Widget</strong> — Pathogen presence by field count and spore count. Pre-configured for Holganix disease taxonomies. <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HGX-001-04:</strong> <strong>Soil Health Summary</strong> — New widget aggregating soil productivity scores and biological activity metrics across managed fields. <span class="tag tag-new">New</span></li>
+            <li><strong>HGX-001-05:</strong> <strong>Theme Application</strong> — AG Green (<code>#2e7d32</code>) applied to nav, buttons, stat pill accents, and active states.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="epic-card">
+    <div class="epic-header">
+        <div class="epic-icon" style="background: var(--color-hgx-50); color: var(--color-hgx-700);">🛡️</div>
+        <div class="title-area">
+            <div class="epic-id">Epic HGX-002</div>
+            <h3>Holganix Admin — Operations &amp; Team Management</h3>
+        </div>
+        <span class="tag tag-whitelabel">Holganix</span>
+        <span class="tag tag-role">Role</span>
+    </div>
+    <div class="epic-body">
+        <p><strong>Goal:</strong> Admin-role users in the Holganix tenant need operational dashboards covering drone fleet management, user administration, and integration health.</p>
+        <ul class="story-list">
+            <li><strong>HGX-002-01:</strong> <strong>User Overview Widget</strong> — Same structure as PB-002-01 but themed with AG Green. Active users, pending invitations, role distribution. <span class="tag tag-role">Role</span> <span class="tag tag-new">New</span></li>
+            <li><strong>HGX-002-02:</strong> <strong>Drone Fleet Quick Action</strong> — Direct link to droning management for scheduling, reviewing missions, and assigning coverage areas. <span class="tag tag-whitelabel">Whitelabel</span></li>
+            <li><strong>HGX-002-03:</strong> <strong>Spore Cam Monitoring</strong> — Widget linking to spore camera management when <code>spore_cam</code> widget is active. Disease-focused monitoring unique to Holganix's biological focus. <span class="tag tag-feature">Feature Flag</span></li>
+            <li><strong>HGX-002-04:</strong> <strong>Contract &amp; Integration Status</strong> — Integration health dashboard. Holganix has special contract integration handling in <code>IntegrationService</code>.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ═══════════════════ 6. COMPARISON MATRIX ═══════════════════ -->
+<div id="matrix" class="accent-divider" style="background: linear-gradient(90deg, var(--color-brand-500), var(--color-pb-500), var(--color-hgx-600));"></div>
+
+<div class="section-header">
+    <span class="badge">Section 6</span>
+    <h2>Whitelabel Comparison Matrix</h2>
+</div>
+
+<div class="comparison-grid">
+    <div class="comparison-col">
+        <div class="col-header" style="background:var(--color-brand-500);">AgMRI (Default)</div>
+        <div class="col-body">
+            <ul>
+                <li>Full widget catalog available</li>
+                <li>All feature flags configurable per company</li>
+                <li>Blue brand theme (AgMRI Blue #3c84c7)</li>
+                <li>All admin roles supported</li>
+                <li>Ad campaign carousel support</li>
+                <li>News & Markets widgets</li>
+                <li>Carbon MRV when enabled</li>
+                <li>AI Chat when enabled</li>
+            </ul>
+        </div>
+    </div>
+    <div class="comparison-col">
+        <div class="col-header" style="background:var(--color-pb-500);">Pivot Bio (Nutrivize)</div>
+        <div class="col-body">
+            <ul>
+                <li>6 core dashboard widgets</li>
+                <li>NO droning widget</li>
+                <li>PB Product & N-Factor data widgets</li>
+                <li>PB-specific scouting categories</li>
+                <li>Dark navy theme (PB Blue #2B3A4D)</li>
+                <li>Trial management features</li>
+                <li>Nitrogen practice analytics</li>
+                <li>"Connect fields" hidden in sidebar</li>
+            </ul>
+        </div>
+    </div>
+    <div class="comparison-col">
+        <div class="col-header" style="background:var(--color-hgx-600);">Holganix Horizons</div>
+        <div class="col-body">
+            <ul>
+                <li>7 core widgets + droning widget</li>
+                <li>HGX Vintage tracking widget</li>
+                <li>Full disease & spore cam suite</li>
+                <li>Drone fleet management</li>
+                <li>Green brand theme (AG Green #2e7d32)</li>
+                <li>Soil biology focus</li>
+                <li>Special contract integration</li>
+                <li>Boundary review PDF branding</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════ 7. FEATURE FLAG TABLE ═══════════════════ -->
+<div id="flags" class="section-header" style="margin-top:48px;">
+    <span class="badge">Section 7</span>
+    <h2>Feature Flag Mapping per Whitelabel</h2>
+</div>
+
+<div class="card" style="overflow-x:auto;">
+    <table class="flag-table">
+        <thead>
+            <tr>
+                <th>Feature / Widget</th>
+                <th>Flag Key</th>
+                <th>AgMRI</th>
+                <th>Pivot Bio</th>
+                <th>Holganix</th>
+                <th>Home Page Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Crop Growth Widget</td>
+                <td><code>crop_growth_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid</td>
+            </tr>
+            <tr>
+                <td>Alerts Overview Widget</td>
+                <td><code>alerts_overview_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid</td>
+            </tr>
+            <tr>
+                <td>Weather Overview Widget</td>
+                <td><code>weather_overview_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid</td>
+            </tr>
+            <tr>
+                <td>Scouting Widget</td>
+                <td><code>scouting_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid</td>
+            </tr>
+            <tr>
+                <td>Fields Outlook Widget</td>
+                <td><code>fields_outlook_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid</td>
+            </tr>
+            <tr>
+                <td>Ten Worst Fields Widget</td>
+                <td><code>ten_worst_fields_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid</td>
+            </tr>
+            <tr style="background:var(--color-hgx-50);">
+                <td><strong>Droning Widget</strong></td>
+                <td><code>droning_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid (HGX unique)</td>
+            </tr>
+            <tr style="background:var(--color-hgx-50);">
+                <td><strong>HGX Vintage Widget</strong></td>
+                <td><code>hgxVintage</code></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid (HGX exclusive)</td>
+            </tr>
+            <tr>
+                <td>Disease Presence Widget</td>
+                <td><code>disease_presence_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td>—</td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid</td>
+            </tr>
+            <tr>
+                <td>Spore Cam Widget</td>
+                <td><code>spore_cam_widget</code></td>
+                <td><span class="check">✓</span></td>
+                <td>—</td>
+                <td><span class="check">✓</span></td>
+                <td>Widget grid</td>
+            </tr>
+            <tr>
+                <td>Growers Management</td>
+                <td><code>growers</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Summary stat pill + sidebar</td>
+            </tr>
+            <tr>
+                <td>Admin Settings</td>
+                <td><code>admin_settings</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td>Quick Actions + "Connect Fields"</td>
+            </tr>
+            <tr>
+                <td>Communications</td>
+                <td><code>communications_platform</code></td>
+                <td><span class="check">✓</span></td>
+                <td>Varies</td>
+                <td>Varies</td>
+                <td>Chat sidebar + notification widget</td>
+            </tr>
+            <tr>
+                <td>AI Chat</td>
+                <td><code>llm_chat</code> / <code>ai_chat</code></td>
+                <td><span class="check">✓</span></td>
+                <td>Varies</td>
+                <td>Varies</td>
+                <td>Floating assistant + sidebar</td>
+            </tr>
+            <tr>
+                <td>Ad Campaigns</td>
+                <td><code>ads_banner_widget1/2</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td><span class="cross">✗</span></td>
+                <td>Campaign carousel widget</td>
+            </tr>
+            <tr>
+                <td>Analyze</td>
+                <td><code>analyze</code></td>
+                <td><span class="check">✓</span></td>
+                <td>Varies</td>
+                <td>Varies</td>
+                <td>Analytics summary widget</td>
+            </tr>
+            <tr>
+                <td>Carbon MRV</td>
+                <td><code>carbon_mrv</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td>Varies</td>
+                <td>Carbon program widget</td>
+            </tr>
+            <tr>
+                <td>Trials Management</td>
+                <td><code>manage_trials</code></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="check">✓</span></td>
+                <td><span class="cross">✗</span></td>
+                <td>Quick Action link</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ═══════════════════ 8. FLOW ═══════════════════ -->
+<div id="flow" class="section-header" style="margin-top:48px;">
+    <span class="badge">Section 8</span>
+    <h2>Login → Home Navigation Flow</h2>
+</div>
+
+<div class="card">
+    <h3>Authentication → Home Page Routing</h3>
+    <p>How users reach their home page after login, accounting for admin onboarding:</p>
+
+    <div style="margin-top:20px;">
+        <div style="font-size:13px; font-weight:700; color:var(--color-neutral-500); margin-bottom:8px;">Standard User Flow</div>
+        <div class="flow-row">
+            <div class="flow-box">Login</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Auth Token (incl. app_feature_keys + roles)</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">RetailerGuard</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box highlight">/retailer/home</div>
+        </div>
+    </div>
+
+    <div style="margin-top:16px;">
+        <div style="font-size:13px; font-weight:700; color:var(--color-neutral-500); margin-bottom:8px;">Admin User Flow (First Login / showWizard=true)</div>
+        <div class="flow-row">
+            <div class="flow-box">Login</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">isAdminRole() &amp;&amp; showWizard</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box" style="background:var(--color-warning-500); color:#fff; border-color:var(--color-warning-500);">/integration (Wizard)</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box highlight">/retailer/home</div>
+        </div>
+    </div>
+
+    <div style="margin-top:16px;">
+        <div style="font-size:13px; font-weight:700; color:var(--color-pb-500); margin-bottom:8px;">Pivot Bio Admin</div>
+        <div class="flow-row">
+            <div class="flow-box">Login @ nutrivize.pivotbio.com</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">WL resolved: nutrivize</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Features: WL ∩ Role</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box highlight-pb">/retailer/home (PB theme)</div>
+        </div>
+    </div>
+
+    <div style="margin-top:16px;">
+        <div style="font-size:13px; font-weight:700; color:var(--color-hgx-600); margin-bottom:8px;">Holganix Admin</div>
+        <div class="flow-row">
+            <div class="flow-box">Login @ holganixhorizons.com</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">WL resolved: holganix_horizons</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box">Features: WL ∩ Role</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-box highlight-hgx">/retailer/home (HGX theme)</div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top:24px;">
+    <h3>Widget Resolution Flow</h3>
+    <p>How widgets are determined for the home page dashboard grid:</p>
+    <div class="flow-row" style="margin-top:12px;">
+        <div class="flow-box">User authenticates</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">JWT includes <code>app_feature_keys</code></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">GET <code>/ui-conf/widgets</code></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Filter by <code>defaultStyle</code></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box highlight">Render widget grid</div>
+    </div>
+    <div class="info-box note" style="margin-top:16px;">
+        <strong>Feature Resolution Formula</strong>
+        Effective features = <code>(AppFeatures for user's WhiteLabel where isDynamicCalculated=false) ∩ (AppFeatures for user's Roles)</code> + dynamic features (e.g., <code>hide_imagery_data</code>). This intersection ensures a user only sees widgets that both their whitelabel allows and their role grants.
+    </div>
+</div>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<div style="text-align:center; padding:48px 0 32px; color:var(--color-neutral-400); font-size:12px;">
+    <p>Home Page Design Document · Prepared for Product Review · April 2026</p>
+    <p style="margin-top:4px;">Based on analysis of: ag-mri-web-app, intelinair-webapp, <a href="https://github.com/RyanSheaPD/Intelinair-Design-SystemAI" style="color:var(--color-brand-500);">Intelinair Design System</a></p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+document.querySelectorAll('.top-nav a').forEach(a => {
+    a.addEventListener('click', function(e) {
+        document.querySelectorAll('.top-nav a').forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Region Report — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-family);
+      background: var(--color-background);
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-xl, 32px);
+    }
+    .box {
+      max-width: 32rem;
+      padding: var(--spacing-xl, 32px);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl, 16px);
+      box-shadow: var(--shadow-sm);
+    }
+    h1 { font-size: var(--font-size-22); margin: 0 0 var(--spacing-s, 8px); }
+    p { margin: 0 0 var(--spacing-m, 16px); color: var(--color-text-muted); font-size: var(--font-size-14); line-height: 1.5; }
+    a { color: var(--color-brand-500); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Region Report</h1>
+    <p>The full-page region report prototype is not in this repository yet. The design system still links here so the URL stays stable when the demo is added.</p>
+    <p><a href="../index.html#layouts">Back to design system — Example layouts</a></p>
+  </div>
+</body>
+</html>

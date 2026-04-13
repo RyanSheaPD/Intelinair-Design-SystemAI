@@ -485,6 +485,95 @@
       max-width: 100%;
     }
 
+    /* Dashboard — AgMRI / MyFS / Pivot Bio shells + design-system nav SVGs */
+    .dashboard-brand-demos {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(260px, 1fr));
+      gap: 20px;
+      align-items: stretch;
+    }
+    @media (max-width: 1100px) {
+      .dashboard-brand-demos {
+        grid-template-columns: 1fr;
+      }
+    }
+    .dashboard-brand-demo {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .dashboard-brand-demo__label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-neutral-50);
+    }
+    .dashboard-brand-demo__shell {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      min-height: 340px;
+    }
+    .dashboard-brand-demo .nav {
+      min-height: 100%;
+    }
+    .dashboard-brand-demo .nav__icon img {
+      width: 22px;
+      height: 22px;
+      display: block;
+      object-fit: contain;
+    }
+    .dashboard-brand-demo .nav__item:not([aria-current="page"]) .nav__icon img {
+      filter: brightness(0) invert(1);
+    }
+    .dashboard-brand-demo .nav__item[aria-current="page"] .nav__icon img {
+      filter: none;
+    }
+    .dashboard-brand-demo .nav__item:not([aria-current="page"]) .nav__icon svg {
+      color: #fff;
+    }
+    .dashboard-brand-demo .nav__item[aria-current="page"] .nav__icon svg {
+      color: inherit;
+    }
+    .dashboard-brand-demo__main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--color-border);
+    }
+    .dashboard-brand-demo .header {
+      flex-shrink: 0;
+    }
+    .dashboard-brand-demo .header__logo img {
+      height: 22px;
+      width: auto;
+      max-width: 132px;
+      display: block;
+    }
+    .dashboard-brand-demo.theme-pb .header__logo img {
+      max-width: 148px;
+      height: 24px;
+    }
+    .dashboard-widget-tabs-bar {
+      background: var(--color-neutral-100);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      overflow-x: auto;
+      flex: 1;
+      min-height: 140px;
+    }
+
     /* Header demo: show Web headers only on Web; show iOS/Android placeholder headers when platform switched */
     .header-demo--ios,
     .header-demo--android {
@@ -2273,22 +2362,127 @@
   <details class="demo-details demo-section">
     <summary class="demo-details__summary"><h2 class="type-title3">Dashboard widget tabs</h2></summary>
     <div class="demo-details__content">
-    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.75rem;">Home dashboard icon tab bar for widget panels: Crop growth, Alerts, Weather, Fields, Scouting, Ten worst fields, Droning, Disease presence, Spore cam. Active tab gets full opacity + shadow. Edit mode (reset, cancel, confirm) allows reordering.</p>
-    <div style="background: var(--color-neutral-100); border-radius: var(--radius-lg); padding: 16px 20px; display: flex; align-items: flex-end; gap: 12px; overflow-x: auto;">
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-sm);"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-neutral-700)" stroke-width="1.5" width="26" height="26"><path d="M11 20c-3 0-6-2-6-6 0-2 1-4 3-5M12 4v16M12 4c2 0 4 2 4 5s-2 5-4 5M12 9c2 0 4 1.5 4 4s-2 4-4 4"/></svg></div><span style="font-size: 10px; font-weight: 600; color: var(--color-text);">Crop growth</span></div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.55;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><span style="font-size: 10px; font-weight: 500; color: var(--color-text-muted);">Alerts</span></div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.55;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2"/></svg></div><span style="font-size: 10px; font-weight: 500; color: var(--color-text-muted);">Weather</span></div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.55;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div><span style="font-size: 10px; font-weight: 500; color: var(--color-text-muted);">Fields</span></div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.55;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><span style="font-size: 10px; font-weight: 500; color: var(--color-text-muted);">Scouting</span></div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.55;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span style="font-size: 10px; font-weight: 500; color: var(--color-text-muted);">Ten worst</span></div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.55;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span style="font-size: 10px; font-weight: 500; color: var(--color-text-muted);">Droning</span></div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.55;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></svg></div><span style="font-size: 10px; font-weight: 500; color: var(--color-text-muted);">Disease</span></div>
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; opacity: 0.55;"><div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><circle cx="12" cy="15" r="2" fill="currentColor"/></svg></div><span style="font-size: 10px; font-weight: 500; color: var(--color-text-muted);">Spore cam</span></div>
-      <div style="margin-left: auto; display: flex; gap: 8px; flex-shrink: 0;">
-        <button style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--color-border); background: var(--color-surface); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>
-        <button style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--color-border); background: var(--color-surface); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-        <button style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--color-border); background: var(--color-surface); display: flex; align-items: center; justify-content: center; cursor: pointer;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></button>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.75rem;">Home dashboard shell in three brands: <strong>AgMRI</strong> (default green), <strong>MyFS</strong> (red nav + header), <strong>Pivot Bio</strong> (<code>.theme-pb</code> on the card for nav tokens + <code>.header--pb</code>). Side nav uses SVG assets from <code>assets/icons/nav/</code> (and timeline assets for widget tiles). Active widget tab: full opacity + shadow; edit controls unchanged.</p>
+
+    <div class="dashboard-brand-demos">
+
+      <!-- AgMRI -->
+      <div class="dashboard-brand-demo">
+        <div class="dashboard-brand-demo__label">AgMRI — Home</div>
+        <div class="dashboard-brand-demo__shell">
+          <nav class="nav" aria-label="AgMRI dashboard nav">
+            <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><img src="assets/icons/nav/home-filled.svg" alt="" /></span><span class="nav__label">Home</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/growers-hollow.svg" alt="" /></span><span class="nav__label">Growers</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/map-hollow.svg" alt="" /></span><span class="nav__label">Fields</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/scout-hollow.svg" alt="" /></span><span class="nav__label">Scout</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/timeline/satellite.svg" alt="" /></span><span class="nav__label">Weather</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/notifications-hollow.svg" alt="" /></span><span class="nav__label">Alerts</span></a>
+            <div class="nav__spacer"></div>
+            <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Settings</span></a>
+          </nav>
+          <div class="dashboard-brand-demo__main">
+            <header class="header" role="banner">
+              <div class="header__left"><a href="#" class="header__logo" aria-label="AgMRI home"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a></div>
+              <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
+              <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
+            </header>
+            <div class="dashboard-widget-tabs-bar">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><img src="assets/icons/timeline/plant.svg" alt="" style="width:26px;height:26px;" /></div><span style="font-size:10px;font-weight:600;color:var(--color-text);">Crop growth</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/notifications-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Alerts</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/satellite.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Weather</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/field.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Fields</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/scout-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Scouting</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/drone.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Droning</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/region-report.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Reports</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/planting.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Spore cam</span></div>
+              <div style="margin-left:auto;display:flex;gap:8px;flex-shrink:0;">
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Reset layout"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Cancel"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Confirm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- MyFS -->
+      <div class="dashboard-brand-demo">
+        <div class="dashboard-brand-demo__label">MyFS — Home</div>
+        <div class="dashboard-brand-demo__shell">
+          <nav class="nav nav--myfs" aria-label="MyFS dashboard nav">
+            <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><img src="assets/icons/nav/home-filled.svg" alt="" /></span><span class="nav__label">Home</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/growers-hollow.svg" alt="" /></span><span class="nav__label">Growers</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/map-hollow.svg" alt="" /></span><span class="nav__label">Fields</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/scout-hollow.svg" alt="" /></span><span class="nav__label">Scout</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/timeline/satellite.svg" alt="" /></span><span class="nav__label">Weather</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/notifications-hollow.svg" alt="" /></span><span class="nav__label">Alerts</span></a>
+            <div class="nav__spacer"></div>
+            <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Settings</span></a>
+          </nav>
+          <div class="dashboard-brand-demo__main">
+            <header class="header header--myfs" role="banner">
+              <div class="header__left"><a href="#" class="header__logo" aria-label="MyFS home"><img src="https://myfs-test.intelinair.dev/assets/myfs-theme/img/logo.png" alt="MyFS" /></a></div>
+              <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
+              <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
+            </header>
+            <div class="dashboard-widget-tabs-bar">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><img src="assets/icons/timeline/plant.svg" alt="" style="width:26px;height:26px;" /></div><span style="font-size:10px;font-weight:600;color:var(--color-text);">Crop growth</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/notifications-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Alerts</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/satellite.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Weather</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/field.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Fields</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/scout-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Scouting</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/drone.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Droning</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/region-report.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Reports</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/planting.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Spore cam</span></div>
+              <div style="margin-left:auto;display:flex;gap:8px;flex-shrink:0;">
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Reset layout"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Cancel"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Confirm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pivot Bio -->
+      <div class="dashboard-brand-demo theme-pb">
+        <div class="dashboard-brand-demo__label">Pivot Bio — Home</div>
+        <div class="dashboard-brand-demo__shell">
+          <nav class="nav" aria-label="Pivot Bio dashboard nav">
+            <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><img src="assets/icons/nav/home-filled.svg" alt="" /></span><span class="nav__label">Home</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/growers-hollow.svg" alt="" /></span><span class="nav__label">Growers</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/map-hollow.svg" alt="" /></span><span class="nav__label">Fields</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/scout-hollow.svg" alt="" /></span><span class="nav__label">Scout</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/timeline/satellite.svg" alt="" /></span><span class="nav__label">Weather</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/notifications-hollow.svg" alt="" /></span><span class="nav__label">Alerts</span></a>
+            <div class="nav__spacer"></div>
+            <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Settings</span></a>
+          </nav>
+          <div class="dashboard-brand-demo__main">
+            <header class="header header--pb" role="banner">
+              <div class="header__left"><a href="#" class="header__logo" aria-label="Pivot Bio home"><img src="assets/icons/pb-logo-header.svg" alt="Pivot Bio" /></a></div>
+              <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
+              <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
+            </header>
+            <div class="dashboard-widget-tabs-bar">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><img src="assets/icons/timeline/plant.svg" alt="" style="width:26px;height:26px;" /></div><span style="font-size:10px;font-weight:600;color:var(--color-text);">Crop growth</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/notifications-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Alerts</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/satellite.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Weather</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/field.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Fields</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/scout-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Scouting</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/drone.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Droning</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/region-report.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Reports</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/planting.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Spore cam</span></div>
+              <div style="margin-left:auto;display:flex;gap:8px;flex-shrink:0;">
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Reset layout"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Cancel"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Confirm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
     <p class="type-footnote" style="color: var(--color-text-muted); margin-top: 0.5rem;"><strong>Needs definition:</strong> (1) Are widget tabs user-configurable (drag to reorder, show/hide)? Edit mode icons suggest yes. (2) Collapsed state — Figma shows truncated labels with diamond prefix — mobile variant? (3) 3 icon sizes in Figma grid — responsive breakpoints or different contexts? (4) Should this be a new <code>.widget-tabs</code> component or a variant of <code>.tabs--category</code>?</p>
     </div>
@@ -3149,6 +3343,11 @@
         <h4 style="font-size:14px; font-weight:600; margin:0 0 4px;">Map View</h4>
         <p style="font-size:12px; color:var(--color-text-muted); margin:0 0 10px;">Map view with field overlays, timeline, harvest/application info modals, yield calibration edit, spray edit, and trial panels.</p>
         <a href="pages/map-view.html" target="_blank" rel="noopener" style="font-size:13px; font-weight:600; color:var(--color-brand-500); text-decoration:none;">Open page &rarr;</a>
+      </div>
+      <div style="border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:16px; background:var(--color-surface);">
+        <h4 style="font-size:14px; font-weight:600; margin:0 0 4px;">MyFS — Mitrials</h4>
+        <p style="font-size:12px; color:var(--color-text-muted); margin:0 0 10px;">MyFS shell with fields map (layers, timeline, trials popover, side panels) and trials table below.</p>
+        <a href="pages/myfs-mitrials.html" target="_blank" rel="noopener" style="font-size:13px; font-weight:600; color:var(--color-brand-500); text-decoration:none;">Open page &rarr;</a>
       </div>
       <div style="border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:16px; background:var(--color-surface);">
         <h4 style="font-size:14px; font-weight:600; margin:0 0 4px;">Standard Page Layout</h4>
