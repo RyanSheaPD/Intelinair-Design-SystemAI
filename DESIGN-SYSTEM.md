@@ -82,11 +82,11 @@ CSS lives in **`components/`**. Compose pages by linking `tokens.css` first, the
 | `loading.css` | **Spinner** (indeterminate): modals, widgets, panels — not on tables. **Linear bar** + `.loading-linear--table`: **only** above `<table>` (with `data-table.css` shell). Native: system UI (see demo) |
 | `progress.css` | Optional determinate **circular** ring (`--progress-indicator-progress` 0–1); not the table bar |
 | `data-table.css` | Web data tables — MDC retailer parity; `.ds-data-table-shell` + optional top loading bar from `loading.css` |
-| `ai-assistant-widget.css` | Floating LLM assistant: type or mic (STT); demo `pages/ai-assistant-widget-demo.html` |
+| `ai-assistant-widget.css` | Floating LLM assistant: type or mic (STT); demo `pages/demos/ai-assistant-widget-demo.html` |
 | `header.css` | App / page headers |
 | `nav.css` | Navigation patterns |
 | `tabs.css` | Tabbed interfaces |
-| `view-switcher.css` | Fields toolbar view menu (map / list / thumbnail) — AGMRI `mapViewIcon` + `arrowCollapseIcon` trigger, `mat-menu`–style panel; see `pages/map-view.html` |
+| `view-switcher.css` | Fields toolbar view menu (map / list / thumbnail) — AGMRI `mapViewIcon` + `arrowCollapseIcon` trigger, `mat-menu`–style panel; see `pages/fields/map-view.html` |
 | `menu.css` | Menus and menu items |
 | `dropdown.css` | Dropdown triggers and panels |
 | `filter-pill.css` | Filter / tag pills |
@@ -97,7 +97,7 @@ CSS lives in **`components/`**. Compose pages by linking `tokens.css` first, the
 | `counter-badge.css` | Numeric badges on tabs/icons |
 | `triangle-icons.css` | Directional / status triangle icons |
 | `myfs-trials-flow-shell.css` | **MyFS trials / treatments:** MyFS `:root` (incl. map field brand), `.myfs-trials-flow*` — pair with `field-map-view-shell.css` — [docs/myfs-trials-treatments-flow.md](./docs/myfs-trials-treatments-flow.md) |
-| `field-map-view-shell.css` | **Fields map view:** `.page-shell`, toolbar, `.map-container`, timeline, controls — shared by `pages/map-view.html` and MyFS MiTrials |
+| `field-map-view-shell.css` | **Fields map view:** `.page-shell`, toolbar, `.map-container`, timeline, controls — shared by `pages/fields/map-view.html` and MyFS MiTrials |
 
 Add new components here with a short description in this table when you introduce them.
 
@@ -110,9 +110,9 @@ Add new components here with a short description in this table when you introduc
 | `index.html` | Main gallery: colors, typography, components, example layouts |
 | `pages/` | Standalone demos (scouting, wheat field card, analytics, disease risk, etc.) |
 | Root HTML files | e.g. `yield-forecast-card.html`, `test-brand-cards.html`, brand-specific previews |
-| `pages/ios-assistant-widget-screens.html` | iOS-style widget gallery + home placement + assistant sheet interaction |
-| `pages/csv-data-table.html` | Default `data/adam_ford_s170.csv` (paginated, optional hide geometry cols); file picker or any CSV → `data-table.css` |
-| `pages/myfs-mitrials.html` | **Default starter** for MyFS MiTrials (4th layer chip + inline trials SVG replaces grid; Fields toolbar) + `myfs-trials-flow-shell.css` + `field-map-view-shell.css` |
+| `pages/demos/ios-assistant-widget-screens.html` | iOS-style widget gallery + home placement + assistant sheet interaction |
+| `pages/analytics/csv-data-table.html` | Default `data/adam_ford_s170.csv` (paginated, optional hide geometry cols); file picker or any CSV → `data-table.css` |
+| `pages/trials/myfs-mitrials.html` | **Default starter** for MyFS MiTrials (4th layer chip + inline trials SVG replaces grid; Fields toolbar) + `myfs-trials-flow-shell.css` + `field-map-view-shell.css` |
 
 Link new demos from `index.html` when they represent approved patterns.
 

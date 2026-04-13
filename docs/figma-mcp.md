@@ -71,9 +71,9 @@ After that, the design system (or the captured page) will appear in your Figma f
 
 - **`index.html`** includes the Figma capture script so the main design system demo is ready to be captured.
 - **`design-tokens/tokens.css`** and **`tokens.json`** align with the Figma Variable Design System so tokens stay in sync when you export from Figma and update the repo.
-- **`pages/variable-design-system.html`** — mirrors the Figma **Variable Design System (test)** variables (see file link in page header); capture with MCP for parity checks against node `26:571` (or your current frame).
-- **`pages/`** (e.g. YP1K Analysis, field card demos) can be captured the same way by opening their URLs (e.g. `http://localhost:3000/pages/yp1k-analysis-2024.html`) and using the MCP/capture flow.
-- **`pages/myfs-mitrials.html`** — MyFS Mitrials (map + trials table). Serve the repo, then open `http://localhost:<port>/pages/myfs-mitrials.html` and run the same MCP capture or **html.to.design** `import-url` so the frame lands on **Test layouts** in [Variable Design System (test)](https://www.figma.com/design/0njyFuWX2qzunGeGrKHyHi/Variable-Design-System--test-?m=dev).
+- **`pages/demos/variable-design-system.html`** — mirrors the Figma **Variable Design System (test)** variables (see file link in page header); capture with MCP for parity checks against node `26:571` (or your current frame).
+- **`pages/`** (e.g. YP1K Analysis, field card demos) can be captured the same way by opening their URLs (e.g. `http://localhost:3000/pages/analytics/yp1k-analysis-2024.html`) and using the MCP/capture flow.
+- **`pages/trials/myfs-mitrials.html`** — MyFS Mitrials (map + trials table). Serve the repo, then open `http://localhost:<port>/pages/trials/myfs-mitrials.html` and run the same MCP capture or **html.to.design** `import-url` so the frame lands on **Test layouts** in [Variable Design System (test)](https://www.figma.com/design/0njyFuWX2qzunGeGrKHyHi/Variable-Design-System--test-?m=dev).
 
 ## If the MCP isn’t responding
 

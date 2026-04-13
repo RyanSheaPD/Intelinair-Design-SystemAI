@@ -8,7 +8,7 @@
 
 This document captures **UI design requirements** for integrating Applicolor POMA capabilities into AGMRI Virtual Scout and scouting workflows. Use it alongside [DESIGN-SYSTEM.md](../DESIGN-SYSTEM.md) for tokens, components, and accessibility principles.
 
-**Static UI demo:** [pages/poma-pilot-ui-demo.html](../pages/poma-pilot-ui-demo.html) (open in a browser from the repo root).
+**Static UI demo:** [pages/trials/poma-pilot-ui-demo.html](../pages/trials/poma-pilot-ui-demo.html) (open in a browser from the repo root).
 
 ---
 

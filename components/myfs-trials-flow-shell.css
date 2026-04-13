@@ -2,7 +2,7 @@
  * MyFS — Trials / treatments / field-research flow
  *
  * Brand token overrides + flow content blocks. Use with field-map-view-shell.css
- * for the map-view page layout (see pages/myfs-mitrials.html).
+ * for the map-view page layout (see pages/trials/myfs-mitrials.html).
  * See docs/myfs-trials-treatments-flow.md.
  */
 
@@ -528,7 +528,7 @@ body {
 }
 
 /*
- * Layer chips + legend — hug main column / nav seam (pages/myfs-mitrials.html).
+ * Layer chips + legend — hug main column / nav seam (pages/trials/myfs-mitrials.html).
  * Legend aligns with chip row; no extra inset from tag rail so it stays beside the nav.
  */
 .map-top-left-stack {

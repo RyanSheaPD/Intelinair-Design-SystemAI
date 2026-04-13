@@ -1,6 +1,6 @@
 /**
  * Fields map view — layout shell, toolbar, map canvas, controls, timeline.
- * Shared by pages/map-view.html, pages/myfs-mitrials.html, and other field-map demos.
+ * Shared by pages/fields/map-view.html, pages/trials/myfs-mitrials.html, and other field-map demos.
  * Pair with brand overrides in page or myfs-trials-flow-shell.css (MyFS / AgMRI).
  */
 

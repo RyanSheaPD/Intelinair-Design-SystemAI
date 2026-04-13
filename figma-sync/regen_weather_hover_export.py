@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Validate data/weather-hover-states.json.
 
-Hover export UI is built client-side in pages/weather-hover-states.html (table + TOC + iframes).
-Edit the JSON manifest and reload that page; legacy pages/weather-hover-states-export.html redirects there.
+Hover export UI is built client-side in pages/weather/weather-hover-states.html (table + TOC + iframes).
+Edit the JSON manifest and reload that page; legacy pages/exports/weather-hover-states-export.html redirects there.
 """
 import json
 import sys
@@ -24,7 +24,7 @@ def main() -> int:
             print(f"error: states[{i}] needs label and query", file=sys.stderr)
             return 1
     print("OK:", path, f"({len(states)} states)")
-    print("Open pages/weather-hover-states.html over HTTP to view export.")
+    print("Open pages/weather/weather-hover-states.html over HTTP to view export.")
     return 0
 
 

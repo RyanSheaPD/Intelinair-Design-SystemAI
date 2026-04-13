@@ -5,7 +5,7 @@
 - **14 stages**
 - Zadoks scale begins at germination. Feekes scale begins at emergence.
 
-Use this as the canonical copy for UI (cards, tables, tooltips). Feekes and GDD columns live in `pages/wheat-growth-table.html`; card layout in `pages/wheat-growth-stage-cards.html` (Spring · Zadoks tab).
+Use this as the canonical copy for UI (cards, tables, tooltips). Feekes and GDD columns live in `pages/crop/wheat-growth-table.html`; card layout in `pages/crop/wheat-growth-stage-cards.html` (Spring · Zadoks tab).
 
 | # | Growth phase | Zadoks | Description |
 |---|----------------|--------|-------------|

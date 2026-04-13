@@ -66,7 +66,7 @@
     var msg =
       'Weather did not initialize: <code>weather-ground-spray-logic.js</code> did not run. ' +
       'Serve the repository over <strong>HTTP from its root</strong> (for example run <code>python3 -m http.server</code> in the project folder), ' +
-      'then open <code>/pages/agmri-weather.html</code>. Opening the HTML file directly as <code>file://</code> often prevents scripts or JSON from loading. ' +
+      'then open <code>/pages/weather/agmri-weather.html</code>. Opening the HTML file directly as <code>file://</code> often prevents scripts or JSON from loading. ' +
       'Check the browser console and Network tab for failed requests.';
     if (tbody) {
       tbody.innerHTML =

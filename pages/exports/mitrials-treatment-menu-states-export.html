@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiTrials — treatment menu states (Figma export)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../../components/myfs-trials-flow-shell.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    body.mitrials-menu-states-export {
+      margin: 0;
+      padding: 28px 22px 56px;
+      background: #d4d4d8;
+      font-family: var(--font-family-web, system-ui, sans-serif);
+      color: var(--color-text);
+    }
+
+    .mitrials-menu-states-export__doc {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .mitrials-menu-states-export__title {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .mitrials-menu-states-export__lede {
+      margin: 0 0 28px;
+      font-size: 13px;
+      color: var(--color-text-muted, #525252);
+      max-width: 56ch;
+      line-height: 1.45;
+    }
+
+    .mitrials-menu-states-export__section-title {
+      margin: 36px 0 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #3f3f46;
+      letter-spacing: -0.01em;
+    }
+
+    .mitrials-menu-states-export__section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .mitrials-menu-states-export__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(308px, 1fr));
+      gap: 28px 24px;
+      align-items: start;
+    }
+
+    .mitrials-menu-states-export__grid--drawer {
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    }
+
+    .mitrials-menu-states-export .trial-drawer__treatments--export {
+      flex: none;
+      min-height: 0;
+      margin-bottom: 0;
+    }
+
+    /* Match drawer column height for empty / undetermined panels */
+    .mitrials-menu-states-export .trial-drawer__treatments--export.trial-drawer__treatments--export-tall {
+      min-height: 220px;
+    }
+
+    .mitrials-menu-states-export__sample {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mitrials-menu-states-export__label {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #525252;
+    }
+
+    /* Static copies: not absolutely positioned on the map */
+    .mitrials-menu-states-export .mitrials-treatment-menu.mitrials-treatment-menu--export {
+      position: static;
+      top: auto;
+      left: auto;
+      right: auto;
+      z-index: auto;
+      display: block !important;
+      margin: 0;
+    }
+  </style>
+</head>
+<body class="mitrials-menu-states-export">
+  <div class="mitrials-menu-states-export__doc">
+    <h1 class="mitrials-menu-states-export__title">MiTrials — treatment menu states</h1>
+    <p class="mitrials-menu-states-export__lede">
+      Map popover (<code>.mitrials-treatment-menu</code>), trial drawer <strong>left treatments column</strong> empty vs added
+      (<code>#trial-treatments-placeholder</code>, <code>#trial-treatments-undetermined</code>,
+      <code>#trial-treatments-predetermined</code>), and list selection (<code>.trial-drawer__treatments-row--selected</code>) match
+      <code>pages/trials/myfs-mitrials.html</code>. Serve over HTTP; HTML→Design with <code>#figmacapture=…</code>.
+    </p>
+
+    <h2 class="mitrials-menu-states-export__section-title">Map layer popover</h2>
+    <div class="mitrials-menu-states-export__grid">
+      <!-- 1. Default: list expanded, Trials on map off, trial row off -->
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">1 · List expanded · trials off · row off</p>
+        <div class="mitrials-treatment-menu mitrials-treatment-menu--export" aria-label="Trials and treatments">
+          <div class="mitrials-treatment-menu__card" role="region">
+            <div class="mitrials-treatment-menu__head">
+              <div class="mitrials-treatment-menu__head-left">
+                <input type="checkbox" id="export-s1-head" class="mitrials-treatment-menu__cb" aria-label="Trials on map" />
+                <label for="export-s1-head" class="mitrials-treatment-menu__head-title">Trials</label>
+              </div>
+              <button type="button" class="mitrials-treatment-menu__collapse" aria-expanded="true" aria-label="Collapse trial list" tabindex="-1">
+                <span class="material-symbols-outlined mitrials-treatment-menu__collapse-icon" aria-hidden="true">expand_less</span>
+              </button>
+            </div>
+            <div class="mitrials-treatment-menu__body">
+              <div class="mitrials-treatment-menu__trial-row">
+                <input type="checkbox" id="export-s1-trial" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" />
+                <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1">
+                  26-ZEAMX-US800-IL04-FRON
+                </button>
+                <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
+            <button type="button" class="mitrials-treatment-menu__add" tabindex="-1">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add trial
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Trials on map checked -->
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">2 · Trials on map on · row off</p>
+        <div class="mitrials-treatment-menu mitrials-treatment-menu--export" aria-label="Trials and treatments">
+          <div class="mitrials-treatment-menu__card" role="region">
+            <div class="mitrials-treatment-menu__head">
+              <div class="mitrials-treatment-menu__head-left">
+                <input type="checkbox" id="export-s2-head" class="mitrials-treatment-menu__cb" aria-label="Trials on map" checked />
+                <label for="export-s2-head" class="mitrials-treatment-menu__head-title">Trials</label>
+              </div>
+              <button type="button" class="mitrials-treatment-menu__collapse" aria-expanded="true" aria-label="Collapse trial list" tabindex="-1">
+                <span class="material-symbols-outlined mitrials-treatment-menu__collapse-icon" aria-hidden="true">expand_less</span>
+              </button>
+            </div>
+            <div class="mitrials-treatment-menu__body">
+              <div class="mitrials-treatment-menu__trial-row">
+                <input type="checkbox" id="export-s2-trial" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" />
+                <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1">
+                  26-ZEAMX-US800-IL04-FRON
+                </button>
+                <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
+            <button type="button" class="mitrials-treatment-menu__add" tabindex="-1">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add trial
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Trial row checked (zones on field) -->
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">3 · Trials on map on · trial / zones on</p>
+        <div class="mitrials-treatment-menu mitrials-treatment-menu--export" aria-label="Trials and treatments">
+          <div class="mitrials-treatment-menu__card" role="region">
+            <div class="mitrials-treatment-menu__head">
+              <div class="mitrials-treatment-menu__head-left">
+                <input type="checkbox" id="export-s3-head" class="mitrials-treatment-menu__cb" aria-label="Trials on map" checked />
+                <label for="export-s3-head" class="mitrials-treatment-menu__head-title">Trials</label>
+              </div>
+              <button type="button" class="mitrials-treatment-menu__collapse" aria-expanded="true" aria-label="Collapse trial list" tabindex="-1">
+                <span class="material-symbols-outlined mitrials-treatment-menu__collapse-icon" aria-hidden="true">expand_less</span>
+              </button>
+            </div>
+            <div class="mitrials-treatment-menu__body">
+              <div class="mitrials-treatment-menu__trial-row">
+                <input type="checkbox" id="export-s3-trial" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" checked />
+                <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1">
+                  26-ZEAMX-US800-IL04-FRON
+                </button>
+                <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
+            <button type="button" class="mitrials-treatment-menu__add" tabindex="-1">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add trial
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. List collapsed -->
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">4 · Trial list collapsed</p>
+        <div class="mitrials-treatment-menu mitrials-treatment-menu--export" aria-label="Trials and treatments">
+          <div class="mitrials-treatment-menu__card" role="region">
+            <div class="mitrials-treatment-menu__head">
+              <div class="mitrials-treatment-menu__head-left">
+                <input type="checkbox" id="export-s4-head" class="mitrials-treatment-menu__cb" aria-label="Trials on map" />
+                <label for="export-s4-head" class="mitrials-treatment-menu__head-title">Trials</label>
+              </div>
+              <button type="button" class="mitrials-treatment-menu__collapse" aria-expanded="false" aria-label="Expand trial list" tabindex="-1">
+                <span class="material-symbols-outlined mitrials-treatment-menu__collapse-icon" aria-hidden="true">expand_more</span>
+              </button>
+            </div>
+            <div class="mitrials-treatment-menu__body" hidden>
+              <div class="mitrials-treatment-menu__trial-row">
+                <input type="checkbox" id="export-s4-trial" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" />
+                <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1">
+                  26-ZEAMX-US800-IL04-FRON
+                </button>
+                <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
+            <button type="button" class="mitrials-treatment-menu__add" tabindex="-1">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add trial
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Collapsed + trials on map + trial checked (dense state) -->
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">5 · Collapsed · map on · row on (selection held)</p>
+        <div class="mitrials-treatment-menu mitrials-treatment-menu--export" aria-label="Trials and treatments">
+          <div class="mitrials-treatment-menu__card" role="region">
+            <div class="mitrials-treatment-menu__head">
+              <div class="mitrials-treatment-menu__head-left">
+                <input type="checkbox" id="export-s5-head" class="mitrials-treatment-menu__cb" aria-label="Trials on map" checked />
+                <label for="export-s5-head" class="mitrials-treatment-menu__head-title">Trials</label>
+              </div>
+              <button type="button" class="mitrials-treatment-menu__collapse" aria-expanded="false" aria-label="Expand trial list" tabindex="-1">
+                <span class="material-symbols-outlined mitrials-treatment-menu__collapse-icon" aria-hidden="true">expand_more</span>
+              </button>
+            </div>
+            <div class="mitrials-treatment-menu__body" hidden>
+              <div class="mitrials-treatment-menu__trial-row">
+                <input type="checkbox" id="export-s5-trial" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" checked />
+                <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1">
+                  26-ZEAMX-US800-IL04-FRON
+                </button>
+                <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
+            <button type="button" class="mitrials-treatment-menu__add" tabindex="-1">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add trial
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Popover: treatment row selected (active) · zones on -->
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">6 · Treatment row selected · map on · zones on</p>
+        <div class="mitrials-treatment-menu mitrials-treatment-menu--export" aria-label="Trials and treatments">
+          <div class="mitrials-treatment-menu__card" role="region">
+            <div class="mitrials-treatment-menu__head">
+              <div class="mitrials-treatment-menu__head-left">
+                <input type="checkbox" id="export-s6-head" class="mitrials-treatment-menu__cb" aria-label="Trials on map" checked />
+                <label for="export-s6-head" class="mitrials-treatment-menu__head-title">Trials</label>
+              </div>
+              <button type="button" class="mitrials-treatment-menu__collapse" aria-expanded="true" aria-label="Collapse trial list" tabindex="-1">
+                <span class="material-symbols-outlined mitrials-treatment-menu__collapse-icon" aria-hidden="true">expand_less</span>
+              </button>
+            </div>
+            <div class="mitrials-treatment-menu__body">
+              <div class="mitrials-treatment-menu__trial-row mitrials-treatment-menu__trial-row--selected">
+                <input type="checkbox" id="export-s6-trial" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" checked />
+                <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1" aria-current="true">
+                  26-ZEAMX-US800-IL04-FRON
+                </button>
+                <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
+            <button type="button" class="mitrials-treatment-menu__add" tabindex="-1">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add trial
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Popover: treatment row selected · zones off (row active for edit) -->
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">7 · Treatment row selected · map on · zones off</p>
+        <div class="mitrials-treatment-menu mitrials-treatment-menu--export" aria-label="Trials and treatments">
+          <div class="mitrials-treatment-menu__card" role="region">
+            <div class="mitrials-treatment-menu__head">
+              <div class="mitrials-treatment-menu__head-left">
+                <input type="checkbox" id="export-s7-head" class="mitrials-treatment-menu__cb" aria-label="Trials on map" checked />
+                <label for="export-s7-head" class="mitrials-treatment-menu__head-title">Trials</label>
+              </div>
+              <button type="button" class="mitrials-treatment-menu__collapse" aria-expanded="true" aria-label="Collapse trial list" tabindex="-1">
+                <span class="material-symbols-outlined mitrials-treatment-menu__collapse-icon" aria-hidden="true">expand_less</span>
+              </button>
+            </div>
+            <div class="mitrials-treatment-menu__body">
+              <div class="mitrials-treatment-menu__trial-row mitrials-treatment-menu__trial-row--selected">
+                <input type="checkbox" id="export-s7-trial" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" />
+                <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1" aria-current="true">
+                  26-ZEAMX-US800-IL04-FRON
+                </button>
+                <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                </button>
+              </div>
+            </div>
+            <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
+            <button type="button" class="mitrials-treatment-menu__add" tabindex="-1">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add trial
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="mitrials-menu-states-export__section-title">Trial drawer — left column (empty)</h2>
+    <div class="mitrials-menu-states-export__grid mitrials-menu-states-export__grid--drawer">
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">E1 · No protocol selected</p>
+        <div class="trial-drawer__treatments trial-drawer__treatments--export trial-drawer__treatments--export-tall">
+          <div class="trial-drawer__treatments-panel">
+            <div class="trial-drawer__treatments-empty trial-drawer__treatments-empty--muted">
+              <span class="material-symbols-outlined trial-drawer__treatments-icon" aria-hidden="true">assignment</span>
+              <p class="trial-drawer__treatments-msg">Select a protocol to define treatments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">E2 · Protocol set — no treatments yet</p>
+        <div class="trial-drawer__treatments trial-drawer__treatments--export trial-drawer__treatments--export-tall">
+          <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--undetermined">
+            <div class="trial-drawer__treatments-empty">
+              <span class="material-symbols-outlined trial-drawer__treatments-icon" aria-hidden="true">texture</span>
+              <p class="trial-drawer__treatments-msg">No treatments created</p>
+              <p class="trial-drawer__treatments-sub">Add one or more zones for this trial.</p>
+            </div>
+            <div class="trial-drawer__treatments-actions">
+              <button type="button" class="trial-drawer__add-treatment" tabindex="-1">+ Add treatment</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="mitrials-menu-states-export__section-title">Trial drawer — left column (treatments added)</h2>
+    <div class="mitrials-menu-states-export__grid mitrials-menu-states-export__grid--drawer">
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">D1 · List · no row selected</p>
+        <div class="trial-drawer__treatments trial-drawer__treatments--export">
+          <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--predetermined">
+            <div class="trial-drawer__treatments-predetermined-inner">
+              <p class="trial-drawer__treatments-list-title">Treatments</p>
+              <ul class="trial-drawer__treatments-list" role="list">
+                <li>
+                  <button type="button" class="trial-drawer__treatments-row" tabindex="-1">
+                    <span class="trial-drawer__treatments-row-label">Treated — G3 OS</span>
+                    <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="trial-drawer__treatments-row" tabindex="-1">
+                    <span class="trial-drawer__treatments-row-label">Untreated</span>
+                    <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
+                  </button>
+                </li>
+              </ul>
+              <p class="trial-drawer__treatments-hint">Define where each zone is on the map.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">D2 · List · Treated — G3 OS selected</p>
+        <div class="trial-drawer__treatments trial-drawer__treatments--export">
+          <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--predetermined">
+            <div class="trial-drawer__treatments-predetermined-inner">
+              <p class="trial-drawer__treatments-list-title">Treatments</p>
+              <ul class="trial-drawer__treatments-list" role="list">
+                <li>
+                  <button type="button" class="trial-drawer__treatments-row trial-drawer__treatments-row--selected" aria-current="true" tabindex="-1">
+                    <span class="trial-drawer__treatments-row-label">Treated — G3 OS</span>
+                    <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="trial-drawer__treatments-row" tabindex="-1">
+                    <span class="trial-drawer__treatments-row-label">Untreated</span>
+                    <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
+                  </button>
+                </li>
+              </ul>
+              <p class="trial-drawer__treatments-hint">Define where each zone is on the map.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">D3 · List · Untreated selected</p>
+        <div class="trial-drawer__treatments trial-drawer__treatments--export">
+          <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--predetermined">
+            <div class="trial-drawer__treatments-predetermined-inner">
+              <p class="trial-drawer__treatments-list-title">Treatments</p>
+              <ul class="trial-drawer__treatments-list" role="list">
+                <li>
+                  <button type="button" class="trial-drawer__treatments-row" tabindex="-1">
+                    <span class="trial-drawer__treatments-row-label">Treated — G3 OS</span>
+                    <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
+                  </button>
+                </li>
+                <li>
+                  <button type="button" class="trial-drawer__treatments-row trial-drawer__treatments-row--selected" aria-current="true" tabindex="-1">
+                    <span class="trial-drawer__treatments-row-label">Untreated</span>
+                    <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
+                  </button>
+                </li>
+              </ul>
+              <p class="trial-drawer__treatments-hint">Define where each zone is on the map.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

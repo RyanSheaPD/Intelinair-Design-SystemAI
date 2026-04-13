@@ -50,7 +50,7 @@ No composite “spray score” or numeric rank in the UI.
 
 **Copy rules:** Describe values and bands only. No “you should spray” / “wait until…” language.
 
-**Reference:** `pages/agmri-weather.html` + `pages/js/weather-list-init.js` (hover path) + `buildWorkabilityDetailHTML` / `buildSprayDetailHTML` in `pages/js/weather-ground-spray-logic.js`.
+**Reference:** `pages/weather/agmri-weather.html` + `pages/js/weather-list-init.js` (hover path) + `buildWorkabilityDetailHTML` / `buildSprayDetailHTML` in `pages/js/weather-ground-spray-logic.js`.
 
 ---
 
@@ -64,7 +64,7 @@ No composite “spray score” or numeric rank in the UI.
 
 **Dismiss:** Scrim tap, close control, `Escape`. `aria-expanded` returns to `false` on the active cell.
 
-**Reference:** `#gw-so-scrim`, `#gw-so-sheet` in `pages/agmri-weather.html`.
+**Reference:** `#gw-so-scrim`, `#gw-so-sheet` in `pages/weather/agmri-weather.html`.
 
 ---
 
@@ -96,5 +96,5 @@ Use the **same** `buildWorkabilityDetailHTML` / `buildSprayDetailHTML` output in
 |------|------|
 | `pages/js/weather-ground-spray-logic.js` | Thresholds, AND logic, `buildWorkabilityDetailHTML`, `buildSprayDetailHTML` |
 | `pages/js/weather-list-init.js` | Hover vs coarse routing, sheet open/close |
-| `pages/agmri-weather.html` | Tooltip + sheet styles, sheet DOM |
+| `pages/weather/agmri-weather.html` | Tooltip + sheet styles, sheet DOM |
 | `data/weather-ground-spray-dataset.json` | Demo rows |

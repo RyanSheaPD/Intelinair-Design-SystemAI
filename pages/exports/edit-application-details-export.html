@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" class="figma-capture-mode">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Application Details — Export</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link rel="stylesheet" href="../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../../components/typography.css" />
+  <link rel="stylesheet" href="../../components/button.css" />
+  <link rel="stylesheet" href="../../components/input.css" />
+  <link rel="stylesheet" href="../../components/radio.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-family-web);
+      background: #e8ecf0;
+      color: var(--color-text);
+      min-height: 100vh;
+      padding: 48px 24px;
+    }
+
+    .export-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .app-edit {
+      background: #fff;
+      border-radius: var(--radius-xl, 12px);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+    }
+
+    .app-edit__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      background: #b8d9f0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .app-edit__title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .app-edit__title-row .material-symbols-outlined {
+      font-size: 22px;
+      color: var(--color-text);
+    }
+
+    .app-edit__close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: rgba(255,255,255,0.5);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text);
+    }
+
+    .app-edit__close svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .app-edit__summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      padding: 12px 20px;
+      background: var(--color-neutral-100);
+      font-size: 13px;
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .app-edit__summary strong { font-weight: 600; }
+
+    .app-edit__body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .app-edit__row--trial {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .app-edit__trial-label {
+      font-size: var(--font-size-12);
+      font-weight: var(--font-weight-regular);
+      margin-right: 4px;
+    }
+
+    .product-block {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      background: var(--color-neutral-50);
+    }
+
+    .product-block__grid {
+      display: grid;
+      grid-template-columns: 1.4fr 0.7fr 0.65fr 0.85fr auto;
+      gap: 10px 12px;
+      align-items: end;
+    }
+
+    @media (max-width: 700px) {
+      .product-block__grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .product-block__grid .product-del {
+        grid-column: 1 / -1;
+        justify-self: end;
+      }
+    }
+
+    .product-del {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: none;
+      color: #dc2626;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+
+    .product-del:hover { background: rgba(220, 38, 38, 0.08); }
+
+    select.input {
+      appearance: auto;
+      cursor: pointer;
+    }
+
+    .app-edit__add {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: var(--color-brand);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+
+    .app-edit__footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      border-top: 1px solid var(--color-border);
+      background: #fafbfc;
+    }
+
+    .app-edit__note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--color-text-muted);
+      max-width: 360px;
+      line-height: 1.45;
+    }
+
+    .app-edit__note .material-symbols-outlined {
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: var(--color-brand);
+    }
+
+    .app-edit__actions {
+      display: flex;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .btn-ghost-outline {
+      background: #fff;
+      border: 1px solid var(--color-brand);
+      color: var(--color-brand);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+    }
+
+    .product-block--first .product-del {
+      visibility: hidden;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="export-wrap">
+    <div class="app-edit" aria-label="Edit Application Details">
+      <header class="app-edit__header">
+        <div class="app-edit__title-row">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          Edit Application Details
+        </div>
+        <button type="button" class="app-edit__close" aria-label="Close">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </header>
+
+      <div class="app-edit__summary">
+        <span><strong>0712-Kessler Rd</strong></span>
+        <span>159.7 ac</span>
+        <span>Crop unknown</span>
+        <span>9/5, 5:21 PM</span>
+      </div>
+
+      <div class="app-edit__body">
+        <div class="input-group">
+          <label class="input__title" for="app-title">Title *</label>
+          <input class="input" id="app-title" type="text" value="Post emergence nutrient" />
+        </div>
+
+        <div class="input-group">
+          <label class="input__title" for="app-timing">Application timing</label>
+          <select class="input" id="app-timing">
+            <option>At planting</option>
+            <option>Pre-plant</option>
+            <option>Post emergence</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label class="input__title" for="app-type">Application type</label>
+          <select class="input" id="app-type">
+            <option selected>Dry</option>
+            <option>Liquid</option>
+          </select>
+        </div>
+
+        <div class="app-edit__row--trial">
+          <span class="input__title" style="margin:0;">Product trial</span>
+          <label class="radio">
+            <input class="radio__input" type="radio" name="trial" />
+            <span class="radio__outer" aria-hidden="true"></span>
+            <span class="radio__label">Yes</span>
+          </label>
+          <label class="radio">
+            <input class="radio__input" type="radio" name="trial" checked />
+            <span class="radio__outer" aria-hidden="true"></span>
+            <span class="radio__label">No</span>
+          </label>
+        </div>
+
+        <datalist id="product-name-suggestions">
+          <option value="Artazene"></option>
+          <option value="Trivolt 250Gal"></option>
+          <option value="LI 700 LECITECH 275"></option>
+        </datalist>
+
+        <div id="app-edit-products">
+        <div class="product-block product-block--first">
+          <div class="product-block__grid">
+            <div class="input-group">
+              <label class="input__title" for="p1-name">Product name *</label>
+              <input id="p1-name" class="input js-product-name" type="text" value="Artazene" list="product-name-suggestions" autocomplete="off" />
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p1-rate">Rate</label>
+              <input id="p1-rate" class="input js-rate" type="text" value="100" inputmode="decimal" />
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p1-unit">Units *</label>
+              <select id="p1-unit" class="input js-unit">
+                <option selected>Lbs</option>
+                <option>Gal</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p1-area">Total area</label>
+              <input id="p1-area" class="input js-area" type="text" value="200" inputmode="numeric" />
+            </div>
+            <button type="button" class="product-del" aria-label="Remove product row" tabindex="-1">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-block">
+          <div class="product-block__grid">
+            <div class="input-group">
+              <label class="input__title" for="p2-name">Product name *</label>
+              <input id="p2-name" class="input js-product-name" type="text" value="Trivolt 250Gal" list="product-name-suggestions" autocomplete="off" />
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p2-rate">Rate</label>
+              <input id="p2-rate" class="input js-rate" type="text" value="200" inputmode="decimal" />
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p2-unit">Units *</label>
+              <select id="p2-unit" class="input js-unit">
+                <option selected>Lbs</option>
+                <option>Gal</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p2-area">Total area</label>
+              <input id="p2-area" class="input js-area" type="text" value="4000" inputmode="numeric" />
+            </div>
+            <button type="button" class="product-del" aria-label="Remove product row">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="product-block">
+          <div class="product-block__grid">
+            <div class="input-group">
+              <label class="input__title" for="p3-name">Product name *</label>
+              <input id="p3-name" class="input js-product-name" type="text" value="LI 700 LECITECH 275" list="product-name-suggestions" autocomplete="off" />
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p3-rate">Rate</label>
+              <input id="p3-rate" class="input js-rate" type="text" value="300" inputmode="decimal" />
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p3-unit">Units *</label>
+              <select id="p3-unit" class="input js-unit">
+                <option selected>Lbs</option>
+                <option>Gal</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input__title" for="p3-area">Total area</label>
+              <input id="p3-area" class="input js-area" type="text" value="371" inputmode="numeric" />
+            </div>
+            <button type="button" class="product-del" aria-label="Remove product row">
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        </div>
+        </div>
+
+        <button type="button" class="app-edit__add" id="app-edit-add-product">
+          <span class="material-symbols-outlined" style="font-size:20px;">add</span>
+          Add product
+        </button>
+      </div>
+
+      <footer class="app-edit__footer">
+        <div class="app-edit__note">
+          <span class="material-symbols-outlined" aria-hidden="true">info</span>
+          <span>Changes will update downstream yield analytics.</span>
+        </div>
+        <div class="app-edit__actions">
+          <button type="button" class="btn-ghost-outline">Cancel</button>
+          <button type="button" class="btn">Save Changes</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var wrap = document.getElementById("app-edit-products");
+      var addBtn = document.getElementById("app-edit-add-product");
+      if (!wrap || !addBtn) return;
+
+      function refreshFirstClass() {
+        var blocks = wrap.querySelectorAll(".product-block");
+        blocks.forEach(function (b, i) {
+          b.classList.toggle("product-block--first", i === 0);
+        });
+      }
+
+      function stripIds(scope) {
+        scope.querySelectorAll("[id]").forEach(function (el) {
+          el.removeAttribute("id");
+        });
+        scope.querySelectorAll("label[for]").forEach(function (lab) {
+          lab.removeAttribute("for");
+        });
+      }
+
+      function bindRow(block) {
+        var del = block.querySelector(".product-del");
+        if (!del) return;
+        del.addEventListener("click", function () {
+          if (wrap.querySelectorAll(".product-block").length <= 1) return;
+          block.remove();
+          refreshFirstClass();
+        });
+      }
+
+      wrap.querySelectorAll(".product-block").forEach(bindRow);
+
+      addBtn.addEventListener("click", function () {
+        var sample = wrap.querySelector(".product-block:last-of-type");
+        if (!sample) return;
+        var row = sample.cloneNode(true);
+        row.classList.remove("product-block--first");
+        stripIds(row);
+        row.querySelectorAll(".js-product-name").forEach(function (el) {
+          el.value = "";
+        });
+        row.querySelectorAll(".js-rate").forEach(function (el) {
+          el.value = "";
+        });
+        row.querySelectorAll(".js-area").forEach(function (el) {
+          el.value = "";
+        });
+        row.querySelectorAll(".js-unit").forEach(function (el) {
+          el.selectedIndex = 0;
+        });
+        wrap.appendChild(row);
+        bindRow(row);
+        refreshFirstClass();
+        var inp = row.querySelector(".js-product-name");
+        if (inp) inp.focus();
+      });
+
+      refreshFirstClass();
+    })();
+  </script>
+</body>
+</html>

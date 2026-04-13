@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adam Ford S170 — CSV table</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../../components/loading.css" />
+  <link rel="stylesheet" href="../../components/data-table.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-family);
+      background: var(--color-neutral-100);
+      color: var(--color-text);
+      min-height: 100vh;
+      padding: 28px 20px 48px;
+    }
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    .lede {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+      margin: 0 0 8px;
+      max-width: 720px;
+    }
+    .meta {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin: 0 0 20px;
+    }
+    .meta code { font-size: 12px; background: var(--color-neutral-200); padding: 2px 6px; border-radius: 4px; }
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg, 12px);
+      padding: 16px;
+      overflow: auto;
+      box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.06));
+    }
+    .status-line {
+      font-size: 13px;
+      margin: 0 0 12px;
+      min-height: 1.25em;
+    }
+    .status-line--err { color: var(--color-error); }
+    .status-line--ok { color: var(--color-status-success); }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .toolbar label {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toolbar input[type="file"] {
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .btn-reload, .pager button {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-md, 8px);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text);
+      cursor: pointer;
+    }
+    .btn-reload:hover, .pager button:hover:not(:disabled) {
+      background: var(--color-neutral-100);
+    }
+    .pager button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .pager {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--color-text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Adam Ford — zone yield CSV</h1>
+    <p class="lede">Loads <code>data/adam_ford_s170.csv</code> (Desktop export): field zones with hybrid, drainage class, yield, seeding rate, and geometry. Large files are <strong>paginated</strong> so the browser stays responsive.</p>
+    <p class="meta">Default: <code>adam_ford_s170.csv</code> · <strong>Load CSV…</strong> overrides locally · Geometry columns can be hidden for a compact table.</p>
+
+    <div class="toolbar">
+      <button type="button" class="btn-reload" id="btn-reload">Reload adam_ford_s170.csv</button>
+      <label>
+        Load CSV…
+        <input type="file" id="file-csv" accept=".csv,text/csv,text/plain" />
+      </label>
+      <label>
+        <input type="checkbox" id="hide-geom" checked />
+        Hide Zone Centroid &amp; Zone Geom
+      </label>
+    </div>
+    <p class="status-line" id="status" aria-live="polite"></p>
+
+    <div class="pager" id="pager" hidden>
+      <button type="button" id="page-prev" aria-label="Previous page">Previous</button>
+      <span id="page-info"></span>
+      <button type="button" id="page-next" aria-label="Next page">Next</button>
+    </div>
+
+    <div class="card">
+      <div class="ds-data-table-shell" id="table-shell" style="max-height: min(70vh, 620px); border-radius: var(--radius-md, 8px);">
+        <div id="table-loading-bar" class="loading-linear loading-linear--indeterminate loading-linear--table" role="progressbar" aria-label="Loading table data" aria-busy="false" hidden>
+          <div class="loading-linear__track">
+            <div class="loading-linear__bar"></div>
+          </div>
+        </div>
+        <div class="ds-data-table-shell__scroll">
+          <div id="table-host"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fallback when fetch fails (file://): same schema, tiny sample -->
+  <script id="embedded-csv" type="text/plain">
+Field Name,Planting Speed (mph),Company ID,Company Name,Unique County,Drclassdcd,Hybrid,Crop,Seed Brand,Zone Centroid,Zone Geom,Yield (bu/ac),Average of Seeding Rate,Average Planting Speed (mph),Average of Nccpi3all,Average of Slope Mean
+17-1,,105434,Adam Ford,IL - LaSalle,Well drained,P31Z32E,soybeans,Pioneer,POINT(-89.13 41.24),"(POLYGON …)",81.1228,139982.4375,6.739,0.923,1.3
+17-1,,105434,Adam Ford,IL - LaSalle,Poorly drained,XO 3105E,soybeans,Xitavo,POINT(-89.13 41.24),"(POLYGON …)",73.4666,139732.9531,6.5873,0.8319,1.31
+  </script>
+
+  <script>
+    var DEFAULT_CSV = '../../data/adam_ford_s170.csv';
+    var PAGE_SIZE = 75;
+
+    var state = {
+      allRows: null,
+      sourceLabel: '',
+      page: 0
+    };
+
+    function setTableLoading(active) {
+      var bar = document.getElementById('table-loading-bar');
+      if (!bar) return;
+      bar.hidden = !active;
+      bar.setAttribute('aria-busy', active ? 'true' : 'false');
+    }
+
+    function parseCSVLine(line) {
+      var out = [];
+      var cur = '';
+      var inQ = false;
+      for (var i = 0; i < line.length; i++) {
+        var c = line[i];
+        if (c === '"') {
+          inQ = !inQ;
+          continue;
+        }
+        if (!inQ && c === ',') {
+          out.push(cur.trim());
+          cur = '';
+          continue;
+        }
+        cur += c;
+      }
+      out.push(cur.trim());
+      return out;
+    }
+
+    function parseCSV(text) {
+      var lines = text.replace(/^\uFEFF/, '').split(/\r?\n/).filter(function (ln) {
+        return ln.trim().length > 0;
+      });
+      return lines.map(parseCSVLine);
+    }
+
+    function escapeHtml(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function getVisibleIndices(headers, hideGeometry) {
+      var skip = { 'Zone Centroid': true, 'Zone Geom': true };
+      return headers.map(function (h, i) {
+        if (hideGeometry && skip[h.trim()]) return -1;
+        return i;
+      }).filter(function (i) {
+        return i >= 0;
+      });
+    }
+
+    function renderPage() {
+      var rows = state.allRows;
+      var host = document.getElementById('table-host');
+      var pagerEl = document.getElementById('pager');
+      if (!rows || !rows.length) {
+        host.innerHTML = '<p class="type-footnote">No data.</p>';
+        pagerEl.hidden = true;
+        return;
+      }
+
+      var headers = rows[0];
+      var hideGeom = document.getElementById('hide-geom').checked;
+      var visIdx = getVisibleIndices(headers, hideGeom);
+      var body = rows.slice(1);
+      var total = body.length;
+      var totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (state.page >= totalPages) state.page = totalPages - 1;
+      if (state.page < 0) state.page = 0;
+
+      var start = state.page * PAGE_SIZE;
+      var slice = body.slice(start, start + PAGE_SIZE);
+
+      var html = '<table class="ds-data-table ds-data-table--fixed-height"><thead><tr>';
+      visIdx.forEach(function (colIndex, j) {
+        var h = headers[colIndex];
+        var sticky = j === 0 ? ' class="ds-data-table__cell--sticky"' : '';
+        html += '<th scope="col"' + sticky + '><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">' + escapeHtml(h) + '</span></div></th>';
+      });
+      html += '</tr></thead><tbody>';
+
+      slice.forEach(function (row) {
+        html += '<tr>';
+        visIdx.forEach(function (colIndex, j) {
+          var cell = row[colIndex] != null ? row[colIndex] : '';
+          var sticky = j === 0 ? ' class="ds-data-table__cell--sticky"' : '';
+          html += '<td' + sticky + '><div class="ds-data-table__cell-inner"><span class="ds-data-table__text">' + escapeHtml(cell) + '</span></div></td>';
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      host.innerHTML = html;
+
+      if (total > PAGE_SIZE) {
+        pagerEl.hidden = false;
+        var end = Math.min(start + slice.length, total);
+        document.getElementById('page-info').textContent =
+          'Page ' + (state.page + 1) + ' of ' + totalPages + ' · rows ' + (start + 1) + '–' + end + ' of ' + total.toLocaleString();
+        document.getElementById('page-prev').disabled = state.page <= 0;
+        document.getElementById('page-next').disabled = state.page >= totalPages - 1;
+      } else {
+        pagerEl.hidden = true;
+      }
+    }
+
+    function setStatus(msg, isErr) {
+      var el = document.getElementById('status');
+      el.textContent = msg;
+      el.className = 'status-line' + (isErr ? ' status-line--err' : ' status-line--ok');
+    }
+
+    function applyLoadedRows(rows, sourceLabel) {
+      if (rows.length < 2) {
+        setStatus('CSV needs a header row and at least one data row.', true);
+        state.allRows = null;
+        document.getElementById('table-host').innerHTML = '';
+        document.getElementById('pager').hidden = true;
+        return;
+      }
+      state.allRows = rows;
+      state.sourceLabel = sourceLabel;
+      state.page = 0;
+      var n = rows.length - 1;
+      setStatus(
+        'Loaded ' + n.toLocaleString() + ' data rows from ' + sourceLabel + '. Showing ' + PAGE_SIZE + ' rows per page.',
+        false
+      );
+      renderPage();
+    }
+
+    function loadFromText(text, sourceLabel) {
+      setTableLoading(true);
+      try {
+        var rows = parseCSV(text);
+        applyLoadedRows(rows, sourceLabel);
+      } catch (e) {
+        setStatus('Parse error: ' + e.message, true);
+      } finally {
+        setTableLoading(false);
+      }
+    }
+
+    function loadEmbedded() {
+      var el = document.getElementById('embedded-csv');
+      loadFromText(el.textContent.trim(), 'embedded sample (use local server for full CSV)');
+    }
+
+    function loadDefaultFetch() {
+      setTableLoading(true);
+      fetch(DEFAULT_CSV)
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status + ' ' + r.statusText);
+          return r.text();
+        })
+        .then(function (text) {
+          loadFromText(text, 'data/adam_ford_s170.csv');
+        })
+        .catch(function () {
+          loadEmbedded();
+          setStatus('Could not fetch data/adam_ford_s170.csv — serve the folder over HTTP, or use Load CSV…. Showing embedded sample.', true);
+        });
+    }
+
+    document.getElementById('btn-reload').addEventListener('click', loadDefaultFetch);
+
+    document.getElementById('hide-geom').addEventListener('change', function () {
+      state.page = 0;
+      if (state.allRows) renderPage();
+    });
+
+    document.getElementById('page-prev').addEventListener('click', function () {
+      if (state.page > 0) {
+        state.page--;
+        renderPage();
+      }
+    });
+    document.getElementById('page-next').addEventListener('click', function () {
+      if (!state.allRows) return;
+      var totalPages = Math.ceil((state.allRows.length - 1) / PAGE_SIZE);
+      if (state.page < totalPages - 1) {
+        state.page++;
+        renderPage();
+      }
+    });
+
+    document.getElementById('file-csv').addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        loadFromText(String(reader.result), f.name);
+      };
+      setTableLoading(true);
+      reader.readAsText(f);
+      e.target.value = '';
+    });
+
+    loadDefaultFetch();
+  </script>
+</body>
+</html>

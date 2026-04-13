@@ -45,7 +45,7 @@ Demos use wrapper class names such as `.app-shell`, `.app-nav`, `.app-main`, and
 </div>
 ```
 
-**Live references:** `pages/dashboard.html`, `pages/grower-fields.html`.
+**Live references:** `pages/home/dashboard.html`, `pages/fields/grower-fields.html`.
 
 ---
 
@@ -70,7 +70,7 @@ For small viewports, primary nav often moves to a **bottom bar** instead of a le
 - `.nav.nav--bottom.nav--bottom-dark` — darker bar variant.
 - Brand variants (e.g. `.nav--myfs`) apply to rail or bottom nav as needed.
 
-**Reference:** `pages/agmri-advanced-analytics.html` (bottom nav example), `pages/myfs-scouting.html` (full-height rail with MyFS variant).
+**Reference:** `pages/analytics/agmri-advanced-analytics.html` (bottom nav example), `pages/scout/myfs-scouting.html` (full-height rail with MyFS variant).
 
 ---
 

@@ -7,7 +7,7 @@
 
 ## Entry point (not left navigation)
 
-**MiTrials does not appear as its own item in the left sidebar.** Entry **replaces the fourth map layer chip** (the old four-square / grid control) in the top-left layer row — see [`pages/myfs-mitrials.html`](../pages/myfs-mitrials.html). The chip uses the product **inline SVG** (16×16 viewBox, trials / plot grid glyph, `currentColor`). Same **map-view layout** as [`pages/map-view.html`](../pages/map-view.html) (toolbar **Fields** + map + timeline). **Fields** is the active nav item; the chip toggles the MiTrials overlay / panel. (Legacy PNGs `assets/mitrials-map-fab-*.png` remain in repo for reference only.)
+**MiTrials does not appear as its own item in the left sidebar.** Entry **replaces the fourth map layer chip** (the old four-square / grid control) in the top-left layer row — see [`pages/trials/myfs-mitrials.html`](../pages/trials/myfs-mitrials.html). The chip uses the product **inline SVG** (16×16 viewBox, trials / plot grid glyph, `currentColor`). Same **map-view layout** as [`pages/fields/map-view.html`](../pages/fields/map-view.html) (toolbar **Fields** + map + timeline). **Fields** is the active nav item; the chip toggles the MiTrials overlay / panel. (Legacy PNGs `assets/mitrials-map-fab-*.png` remain in repo for reference only.)
 
 ---
 
@@ -15,7 +15,7 @@
 
 | Artifact | Role |
 |----------|------|
-| [`pages/myfs-mitrials.html`](../pages/myfs-mitrials.html) | **Copy this page** for new MiTrials- or treatment-related screens (MyFS + map shell). |
+| [`pages/trials/myfs-mitrials.html`](../pages/trials/myfs-mitrials.html) | **Copy this page** for new MiTrials- or treatment-related screens (MyFS + map shell). |
 | [`components/field-map-view-shell.css`](../components/field-map-view-shell.css) | **Map layout:** `.page-shell`, `.page-toolbar`, `.map-container`, controls, timeline, layers. Shared with `map-view.html`. |
 | [`components/myfs-trials-flow-shell.css`](../components/myfs-trials-flow-shell.css) | **MyFS brand** `:root` overrides (including `--color-brand-500` / `--color-brand-rgb` for map fields) and **`.myfs-trials-flow*`** content blocks (empty state, overlay on map). |
 

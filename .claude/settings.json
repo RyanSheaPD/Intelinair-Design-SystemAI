@@ -1,9 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(open \"http://localhost:3001/pages/map-view.html?state=trials#figmacapture=1b2cd193-ede0-4067-a5a1-2dceb6b81269&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F1b2cd193-ede0-4067-a5a1-2dceb6b81269%2Fsubmit&figmadelay=3000\")",
-      "Bash(open \"http://localhost:3001/pages/map-view.html?state=trial-add#figmacapture=52216e4c-a1f9-472e-aacc-fa86586f3228&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F52216e4c-a1f9-472e-aacc-fa86586f3228%2Fsubmit&figmadelay=3000\")",
-      "Bash(open \"http://localhost:3001/pages/map-view.html?state=trial-edit#figmacapture=0fbb26e6-f44c-41f4-8ccb-13f173588957&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F0fbb26e6-f44c-41f4-8ccb-13f173588957%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/fields/map-view.html?state=trials#figmacapture=1b2cd193-ede0-4067-a5a1-2dceb6b81269&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F1b2cd193-ede0-4067-a5a1-2dceb6b81269%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/fields/map-view.html?state=trial-add#figmacapture=52216e4c-a1f9-472e-aacc-fa86586f3228&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F52216e4c-a1f9-472e-aacc-fa86586f3228%2Fsubmit&figmadelay=3000\")",
+      "Bash(open \"http://localhost:3001/pages/fields/map-view.html?state=trial-edit#figmacapture=0fbb26e6-f44c-41f4-8ccb-13f173588957&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F0fbb26e6-f44c-41f4-8ccb-13f173588957%2Fsubmit&figmadelay=3000\")",
       "Bash(open \"http://localhost:3001/pages/_icon-export.html#figmacapture=04459b7f-dd78-4534-a844-e0199e6dbe9a&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F04459b7f-dd78-4534-a844-e0199e6dbe9a%2Fsubmit&figmadelay=2000\")"
     ]
   }
