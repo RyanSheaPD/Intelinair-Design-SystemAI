@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wheat Growth Stages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'SF Pro Display', 'SF Pro Text', 'SF Pro', sans-serif !important; }
+
+    body {
+      font-family: 'SF Pro Display', 'SF Pro Text', 'SF Pro', sans-serif;
+      background: #f0f2f0;
+      color: #1a1a1a;
+      padding: 40px 32px 60px;
+      min-height: 100vh;
+    }
+
+    .page-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .page-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: -0.3px;
+    }
+    .page-count {
+      font-size: 14px;
+      color: #aaa;
+      font-weight: 400;
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: #999;
+      font-style: italic;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* ── Tab controls ── */
+    .tab-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .seg-control {
+      display: flex;
+      background: rgba(0,0,0,0.07);
+      border-radius: 9px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .seg-btn {
+      height: 30px;
+      padding: 0 14px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      white-space: nowrap;
+    }
+    .seg-btn--active {
+      background: #fff;
+      color: #111;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+    .seg-divider {
+      width: 1px;
+      height: 30px;
+      background: rgba(0,0,0,0.1);
+      margin: 3px 0;
+      align-self: center;
+    }
+
+    /* ── Tab sections ── */
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 246px);
+      gap: 12px;
+    }
+
+    /* ── Growth stage card ── */
+    .growth-card {
+      display: flex;
+      width: 246px;
+      min-height: 80px;
+      height: 80px;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #e4e9e4;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .growth-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.09);
+      transform: translateY(-1px);
+    }
+
+    /* ── Card icon panel — flush to card edges ── */
+    .card-icon {
+      width: 80px;
+      min-height: 80px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      background: #CDFCFC;
+    }
+    .card-icon img {
+      position: absolute;
+      inset: 6px;
+      width: calc(100% - 12px);
+      height: calc(100% - 12px);
+      object-fit: contain;
+      display: block;
+    }
+
+    /* ── Card content ── */
+    .card-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6px 10px 6px 12px;
+      min-width: 0;
+      gap: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #111;
+      letter-spacing: -0.2px;
+      line-height: 1.25;
+    }
+    .card-title--sm {
+      font-size: 11px;
+      letter-spacing: -0.1px;
+    }
+    .card-zadoks {
+      font-size: 11px;
+      font-weight: 400;
+      color: #888;
+      line-height: 1.3;
+    }
+
+    /* ── Section labels — inline as a grid cell ── */
+    .section-label {
+      width: 246px;
+      height: 80px;
+      display: flex;
+      align-items: flex-end;
+      padding: 0 0 10px 2px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #00b051;
+      border-bottom: 2px solid #00b051;
+    }
+
+    .card-icon--dormancy {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #e8f4fc 0%, #d4e8f7 100%);
+    }
+    .dormancy-snow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 20px;
+      line-height: 1;
+      color: #5a9ec9;
+      user-select: none;
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 24px 16px 48px; }
+      .cards-grid { grid-template-columns: repeat(auto-fill, 246px); }
+    }
+  </style>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+  <div class="page-wrap">
+
+    <div class="page-header">
+      <h1 class="page-title" id="page-title">Spring Wheat &mdash; Zadoks Scale</h1>
+      <span class="page-count" id="page-count">14 stages</span>
+    </div>
+    <p class="page-subtitle" id="page-subtitle">Zadoks scale begins at germination. Feekes scale begins at emergence.</p>
+
+    <!-- Tab controls -->
+    <div class="tab-controls">
+      <div class="seg-control" id="season-control">
+        <button class="seg-btn seg-btn--active" onclick="setSeason('spring')">Spring</button>
+        <button class="seg-btn" onclick="setSeason('winter')">Winter</button>
+      </div>
+      <div class="seg-divider"></div>
+      <div class="seg-control" id="scale-control">
+        <button class="seg-btn seg-btn--active" onclick="setScale('zadoks')">Zadoks</button>
+        <button class="seg-btn" onclick="setScale('feekes')">Feekes</button>
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         TAB: Spring · Zadoks
+    ══════════════════════════════════════════ -->
+    <div class="tab-section active" id="tab-spring-zadoks">
+      <div class="cards-grid">
+
+        <div class="section-label">Early Growth</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/90ff388b-eaf7-4a49-ad73-f9a49b503c45" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Germination / Emergence</p>
+            <p class="card-zadoks">Zadoks 00–09</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/df196118-251a-4b3a-adda-035097ce2482" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Seedling Establishment</p>
+            <p class="card-zadoks">Zadoks 10–13</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/192be3b6-8ffb-4ea0-a30c-2de4d7d09dd6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Early Tillering</p>
+            <p class="card-zadoks">Zadoks 20–22</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/192be3b6-8ffb-4ea0-a30c-2de4d7d09dd6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Late Tillering</p>
+            <p class="card-zadoks">Zadoks 23–29</p>
+</div>
+        </div>
+        <div class="section-label">Stem Extension</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/cc1eba3c-ca97-4a92-aee5-e9213900bb4e" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Pseudostem Erection</p>
+            <p class="card-zadoks">Zadoks 30</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Jointing</p>
+            <p class="card-zadoks">Zadoks 31</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Second Node</p>
+            <p class="card-zadoks">Zadoks 32</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/b55ae739-ad0a-4e1c-b1af-9d71f47d9f59" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Flag Leaf Development</p>
+            <p class="card-zadoks">Zadoks 37–39</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/abf5eda9-e69d-409a-90db-e83d70a71866" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Boot Stage</p>
+            <p class="card-zadoks">Zadoks 41–49</p>
+</div>
+        </div>
+        <div class="section-label">Reproductive</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/30e65096-b227-432e-a0a6-beaa2ea5385c" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Heading</p>
+            <p class="card-zadoks">Zadoks 50–59</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/83cfb979-7260-4303-8b90-f404f9b9b0df" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Flowering (Anthesis)</p>
+            <p class="card-zadoks">Zadoks 60–69</p>
+</div>
+        </div>
+        <div class="section-label">Grain Fill</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/5c02ef9e-62bd-452c-a1bf-97e6ed41f2fe" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Early Grain Fill</p>
+            <p class="card-zadoks">Zadoks 70–77</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/7c075ab4-deca-4e36-92d1-a977e641d33d" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Late Grain Fill</p>
+            <p class="card-zadoks">Zadoks 80–87</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/6c078258-629e-46db-8634-ad8f9644d274" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Ripening / Maturity</p>
+            <p class="card-zadoks">Zadoks 90–99</p>
+</div>
+        </div>
+      </div>
+    </div><!-- /tab-spring-zadoks -->
+
+    <!-- ══════════════════════════════════════════
+         TAB: Spring · Feekes
+    ══════════════════════════════════════════ -->
+    <div class="tab-section" id="tab-spring-feekes">
+      <div class="cards-grid">
+
+        <div class="section-label">Early Growth</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/90ff388b-eaf7-4a49-ad73-f9a49b503c45" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Germination / Emergence</p>
+            <p class="card-zadoks">Feekes N/A</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/df196118-251a-4b3a-adda-035097ce2482" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Seedling Establishment</p>
+            <p class="card-zadoks">Feekes 1</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/192be3b6-8ffb-4ea0-a30c-2de4d7d09dd6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Early Tillering</p>
+            <p class="card-zadoks">Feekes 2</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/192be3b6-8ffb-4ea0-a30c-2de4d7d09dd6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Late Tillering</p>
+            <p class="card-zadoks">Feekes 3</p>
+</div>
+        </div>
+        <div class="section-label">Stem Extension</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/cc1eba3c-ca97-4a92-aee5-e9213900bb4e" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Pseudostem Erection</p>
+            <p class="card-zadoks">Feekes 4–5</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Jointing</p>
+            <p class="card-zadoks">Feekes 6</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Second Node</p>
+            <p class="card-zadoks">Feekes 7</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/b55ae739-ad0a-4e1c-b1af-9d71f47d9f59" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Flag Leaf Development</p>
+            <p class="card-zadoks">Feekes 8–9</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/abf5eda9-e69d-409a-90db-e83d70a71866" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Boot Stage</p>
+            <p class="card-zadoks">Feekes 10</p>
+</div>
+        </div>
+        <div class="section-label">Reproductive</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/30e65096-b227-432e-a0a6-beaa2ea5385c" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Heading</p>
+            <p class="card-zadoks">Feekes 10.1–10.5</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/83cfb979-7260-4303-8b90-f404f9b9b0df" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Flowering (Anthesis)</p>
+            <p class="card-zadoks">Feekes 10.5.1–10.5.3</p>
+</div>
+        </div>
+        <div class="section-label">Grain Fill</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/5c02ef9e-62bd-452c-a1bf-97e6ed41f2fe" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Early Grain Fill</p>
+            <p class="card-zadoks">Feekes 10.5.4 / 11.1</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/7c075ab4-deca-4e36-92d1-a977e641d33d" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Late Grain Fill</p>
+            <p class="card-zadoks">Feekes 11.2</p>
+</div>
+        </div>
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/6c078258-629e-46db-8634-ad8f9644d274" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Ripening / Maturity</p>
+            <p class="card-zadoks">Feekes 11.3–11.4</p>
+</div>
+        </div>
+      </div>
+    </div><!-- /tab-spring-feekes -->
+
+    <!-- ══════════════════════════════════════════
+         TAB: Winter · Zadoks
+    ══════════════════════════════════════════ -->
+    <div class="tab-section" id="tab-winter-zadoks">
+      <div class="cards-grid">
+
+        <div class="section-label">Early Growth</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/90ff388b-eaf7-4a49-ad73-f9a49b503c45" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Germination / Emergence</p>
+            <p class="card-zadoks">Zadoks 00–09</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/df196118-251a-4b3a-adda-035097ce2482" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Seedling Establishment</p>
+            <p class="card-zadoks">Zadoks 10–13</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/192be3b6-8ffb-4ea0-a30c-2de4d7d09dd6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Early Tillering</p>
+            <p class="card-zadoks">Zadoks 20–22</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/192be3b6-8ffb-4ea0-a30c-2de4d7d09dd6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Late Tillering</p>
+            <p class="card-zadoks">Zadoks 23–29</p>
+</div>
+        </div>
+
+        <div class="section-label">Winter dormancy</div>
+
+        <div class="growth-card">
+          <div class="card-icon card-icon--dormancy" aria-hidden="true">
+            <span class="dormancy-snow"><span>❄</span><span>❄</span><span>❄</span></span>
+          </div>
+          <div class="card-content">
+            <p class="card-title">Dormancy</p>
+            <p class="card-zadoks">Zadoks —</p>
+</div>
+        </div>
+
+        <div class="section-label">Spring Regrowth</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/cc1eba3c-ca97-4a92-aee5-e9213900bb4e" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Spring Regrowth / Residual Tillering</p>
+            <p class="card-zadoks">Zadoks 23–30</p>
+</div>
+        </div>
+
+        <div class="section-label">Stem Extension</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/cc1eba3c-ca97-4a92-aee5-e9213900bb4e" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Green-up / Pseudostem Erection</p>
+            <p class="card-zadoks">Zadoks 30</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Jointing (1st Node)</p>
+            <p class="card-zadoks">Zadoks 31</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Second Node</p>
+            <p class="card-zadoks">Zadoks 32</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Third Node</p>
+            <p class="card-zadoks">Zadoks 33</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/b55ae739-ad0a-4e1c-b1af-9d71f47d9f59" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Flag Leaf Node</p>
+            <p class="card-zadoks">Zadoks 34</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/b55ae739-ad0a-4e1c-b1af-9d71f47d9f59" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Flag Leaf Development</p>
+            <p class="card-zadoks">Zadoks 37–39</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/abf5eda9-e69d-409a-90db-e83d70a71866" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Boot Stage</p>
+            <p class="card-zadoks">Zadoks 41–49</p>
+</div>
+        </div>
+
+        <div class="section-label">Reproductive</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/30e65096-b227-432e-a0a6-beaa2ea5385c" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Heading</p>
+            <p class="card-zadoks">Zadoks 50–59</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/83cfb979-7260-4303-8b90-f404f9b9b0df" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Flowering (Anthesis)</p>
+            <p class="card-zadoks">Zadoks 60–69</p>
+</div>
+        </div>
+
+        <div class="section-label">Grain Fill</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/5c02ef9e-62bd-452c-a1bf-97e6ed41f2fe" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Early Grain Fill</p>
+            <p class="card-zadoks">Zadoks 70–77</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/7c075ab4-deca-4e36-92d1-a977e641d33d" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Late Grain Fill</p>
+            <p class="card-zadoks">Zadoks 80–87</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/7c075ab4-deca-4e36-92d1-a977e641d33d" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Ripening / Drydown</p>
+            <p class="card-zadoks">Zadoks 89–90</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/6c078258-629e-46db-8634-ad8f9644d274" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Physiological Maturity</p>
+            <p class="card-zadoks">Zadoks 91–92</p>
+</div>
+        </div>
+
+      </div>
+    </div><!-- /tab-winter-zadoks -->
+
+    <!-- ══════════════════════════════════════════
+         TAB: Winter · Feekes
+    ══════════════════════════════════════════ -->
+    <div class="tab-section" id="tab-winter-feekes">
+      <div class="cards-grid">
+
+        <div class="section-label">Early Growth</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/90ff388b-eaf7-4a49-ad73-f9a49b503c45" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Germination / Emergence</p>
+            <p class="card-zadoks">Feekes N/A</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/df196118-251a-4b3a-adda-035097ce2482" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Seedling Establishment</p>
+            <p class="card-zadoks">Feekes 1</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/192be3b6-8ffb-4ea0-a30c-2de4d7d09dd6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Early Tillering</p>
+            <p class="card-zadoks">Feekes 2</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/192be3b6-8ffb-4ea0-a30c-2de4d7d09dd6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Late Tillering</p>
+            <p class="card-zadoks">Feekes 3</p>
+</div>
+        </div>
+
+        <div class="section-label">Winter dormancy</div>
+
+        <div class="growth-card">
+          <div class="card-icon card-icon--dormancy" aria-hidden="true">
+            <span class="dormancy-snow"><span>❄</span><span>❄</span><span>❄</span></span>
+          </div>
+          <div class="card-content">
+            <p class="card-title">Dormancy</p>
+            <p class="card-zadoks">Feekes —</p>
+</div>
+        </div>
+
+        <div class="section-label">Spring Regrowth</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/cc1eba3c-ca97-4a92-aee5-e9213900bb4e" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Spring Regrowth / Residual Tillering</p>
+            <p class="card-zadoks">Feekes 3–4</p>
+</div>
+        </div>
+
+        <div class="section-label">Stem Extension</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/cc1eba3c-ca97-4a92-aee5-e9213900bb4e" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Green-up / Pseudostem Erection</p>
+            <p class="card-zadoks">Feekes 4–5</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Jointing (1st Node)</p>
+            <p class="card-zadoks">Feekes 6</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/edee5d22-4864-472c-8223-8f0c21663ba6" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Second Node</p>
+            <p class="card-zadoks">Feekes 7</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/b55ae739-ad0a-4e1c-b1af-9d71f47d9f59" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Flag Leaf Development</p>
+            <p class="card-zadoks">Feekes 8–9</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/abf5eda9-e69d-409a-90db-e83d70a71866" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Boot Stage</p>
+            <p class="card-zadoks">Feekes 10</p>
+</div>
+        </div>
+
+        <div class="section-label">Reproductive</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/30e65096-b227-432e-a0a6-beaa2ea5385c" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Heading</p>
+            <p class="card-zadoks">Feekes 10.1–10.5</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/83cfb979-7260-4303-8b90-f404f9b9b0df" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Flowering (Anthesis)</p>
+            <p class="card-zadoks">Feekes 10.5.1–10.5.3</p>
+</div>
+        </div>
+
+        <div class="section-label">Grain Fill</div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/5c02ef9e-62bd-452c-a1bf-97e6ed41f2fe" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Early Grain Fill</p>
+            <p class="card-zadoks">Feekes 10.5.4 / 11.1</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/7c075ab4-deca-4e36-92d1-a977e641d33d" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title">Late Grain Fill</p>
+            <p class="card-zadoks">Feekes 11.2</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/7c075ab4-deca-4e36-92d1-a977e641d33d" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Ripening / Drydown</p>
+            <p class="card-zadoks">Feekes 11.3</p>
+</div>
+        </div>
+
+        <div class="growth-card">
+          <div class="card-icon">
+            <img src="https://www.figma.com/api/mcp/asset/6c078258-629e-46db-8634-ad8f9644d274" alt="">
+          </div>
+          <div class="card-content">
+            <p class="card-title card-title--sm">Physiological Maturity</p>
+            <p class="card-zadoks">Feekes 11.4</p>
+</div>
+        </div>
+
+      </div>
+    </div><!-- /tab-winter-feekes -->
+
+
+    <div style="margin-top:24px;font-size:11px;color:#bbb;text-align:center;">
+      Source: Zadoks et al. (1974); Large (1954) Feekes Scale &mdash; adapted for Spring &amp; Winter Wheat
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <script>
+    var activeSeason = 'spring';
+    var activeScale  = 'zadoks';
+
+    var titles = {
+      'spring-zadoks': 'Spring Wheat \u2014 Zadoks Scale',
+      'spring-feekes': 'Spring Wheat \u2014 Feekes Scale',
+      'winter-zadoks': 'Winter Wheat \u2014 Zadoks Scale',
+      'winter-feekes': 'Winter Wheat \u2014 Feekes Scale'
+    };
+    var counts = {
+      'spring-zadoks': '14 stages',
+      'spring-feekes': '14 stages',
+      'winter-zadoks': '19 stages',
+      'winter-feekes': '17 stages'
+    };
+    var subtitles = {
+      'spring-zadoks': 'Zadoks scale begins at germination. Feekes scale begins at emergence.',
+      'spring-feekes': 'Zadoks scale begins at germination. Feekes scale begins at emergence.',
+      'winter-zadoks': 'Zadoks scale begins at germination. Feekes scale begins at emergence.',
+      'winter-feekes': 'Zadoks scale begins at germination. Feekes scale begins at emergence.'
+    };
+
+    function showTab() {
+      var key = activeSeason + '-' + activeScale;
+      document.querySelectorAll('.tab-section').forEach(function(s) {
+        s.classList.toggle('active', s.id === 'tab-' + key);
+      });
+      document.getElementById('page-title').textContent = titles[key];
+      document.getElementById('page-count').textContent = counts[key];
+      document.getElementById('page-subtitle').textContent = subtitles[key];
+    }
+
+    function setSeason(season) {
+      activeSeason = season;
+      var btns = document.querySelectorAll('#season-control .seg-btn');
+      btns[0].classList.toggle('seg-btn--active', season === 'spring');
+      btns[1].classList.toggle('seg-btn--active', season === 'winter');
+      showTab();
+    }
+
+    function setScale(scale) {
+      activeScale = scale;
+      var btns = document.querySelectorAll('#scale-control .seg-btn');
+      btns[0].classList.toggle('seg-btn--active', scale === 'zadoks');
+      btns[1].classList.toggle('seg-btn--active', scale === 'feekes');
+      showTab();
+    }
+
+    // Auto-select tab from URL param: ?tab=spring-feekes
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var tab = params.get('tab');
+      if (tab) {
+        var parts = tab.split('-');
+        if (parts.length === 2) {
+          setSeason(parts[0]);
+          setScale(parts[1]);
+        }
+      }
+    })();
+  </script>
+
+</body>
+</html>

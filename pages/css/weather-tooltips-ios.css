@@ -1,0 +1,266 @@
+/**
+ * iOS-aligned GW / Spray rich tooltips: SF Pro stack, light cards, spec colors.
+ * Used with .weather-tooltip--ios + .gw-so-detail--ios (see weather-ground-spray-logic.js).
+ */
+
+.weather-tooltip.weather-tooltip--rich.weather-tooltip--ios:not(.weather-tooltip--mini) {
+  padding: 4px 6px;
+  max-width: 268px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'SF Pro Text',
+    'SF Pro Display',
+    'Segoe UI',
+    system-ui,
+    sans-serif;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #222222;
+}
+
+.gw-so-cards-export-page .weather-tooltip.weather-tooltip--rich.weather-tooltip--ios:not(.weather-tooltip--mini) {
+  position: static !important;
+  z-index: auto;
+  pointer-events: auto;
+  padding: 4px 6px !important;
+  max-width: 268px;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.weather-tooltip--ios .weather-map-tooltip__header {
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.weather-tooltip--ios .weather-map-tooltip__meta {
+  font-size: 10px;
+  color: #757575;
+}
+
+.weather-tooltip--ios .gw-so-detail--ios + .gw-so-detail--ios {
+  margin-top: 6px;
+}
+
+/* External field label (list GW column hover) */
+.gw-so-ios-field-eyebrow {
+  margin: 0 0 4px;
+  padding: 0 1px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #757575;
+  line-height: 1.25;
+}
+
+/* Raised card surface */
+.gw-so-detail--ios {
+  padding: 10px 11px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #222222;
+}
+
+.gw-so-detail--ios .gw-so-detail__brand {
+  margin-bottom: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #222222;
+}
+
+.gw-so-detail--ios .gw-so-compact-head {
+  align-items: flex-start;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+
+.gw-so-detail--ios .gw-so-detail__swatch--compact {
+  width: 4px;
+  height: 24px;
+  border-radius: 2px;
+  margin-top: 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.gw-so-detail--ios .gw-so-detail__status--compact {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.gw-so-detail--ios .gw-so-compact-inline-meta {
+  font-size: 10px;
+  font-weight: 400;
+  color: #757575;
+}
+
+.gw-so-detail--ios .gw-so-foot {
+  margin: 6px 0 0;
+  font-size: 9px;
+  line-height: 1.3;
+  color: #757575;
+}
+
+/* Spray OK strip */
+.gw-so-ios-summary--ok {
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  line-height: 1.3;
+  color: #222222;
+  background: #edf7ef;
+  border: 1px solid rgba(62, 123, 70, 0.45);
+  border-radius: 6px;
+}
+
+.gw-so-ios-summary__k {
+  font-weight: 700;
+  color: #3e7b46;
+  margin-right: 4px;
+}
+
+.gw-so-ios-summary--all-good {
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #3e7b46;
+  background: #edf7ef;
+  border: 1px solid rgba(62, 123, 70, 0.35);
+  border-radius: 6px;
+}
+
+/* Metric rows */
+.gw-so-ios-metric-list {
+  list-style: none;
+  margin: 0 0 6px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.gw-so-ios-metric {
+  display: flex;
+  align-items: stretch;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.gw-so-ios-metric--at-risk {
+  background: #fde8e9;
+  border: 1px solid rgba(166, 38, 49, 0.28);
+}
+
+.gw-so-ios-metric--marginal {
+  background: #ffffff;
+  border: 1px solid rgba(211, 97, 39, 0.35);
+}
+
+.gw-so-ios-metric__accent {
+  width: 4px;
+  flex-shrink: 0;
+  align-self: stretch;
+  min-height: 100%;
+}
+
+.gw-so-ios-metric--at-risk .gw-so-ios-metric__accent {
+  background: #a62631;
+}
+
+.gw-so-ios-metric--marginal .gw-so-ios-metric__accent {
+  background: #d36127;
+}
+
+.gw-so-ios-metric__body {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px 8px 6px 7px;
+}
+
+.gw-so-ios-metric__body--row {
+  flex-wrap: nowrap;
+}
+
+.gw-so-ios-metric__body--row .gw-so-ios-metric__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.gw-so-ios-metric__body--row .gw-so-ios-metric__value {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: #222222;
+}
+
+.gw-so-ios-metric__copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.gw-so-ios-metric--marginal .gw-so-ios-metric__copy .gw-so-ios-metric__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #222222;
+}
+
+.gw-so-ios-metric--marginal .gw-so-ios-metric__copy .gw-so-ios-metric__value {
+  font-size: 11px;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: #222222;
+}
+
+.gw-so-ios-metric__pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.gw-so-ios-metric__pill--good {
+  background: rgba(62, 123, 70, 0.18);
+  color: #2d6a4f;
+}
+
+.gw-so-ios-metric__pill--marginal {
+  background: #ffe8dc;
+  color: #b84a1a;
+}
+
+.gw-so-ios-metric__pill--at-risk {
+  background: #f5c9cd;
+  color: #a62631;
+}

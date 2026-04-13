@@ -1,0 +1,267 @@
+/**
+ * Layout for pages/weather-hover-states.html — print / PDF / Figma full-page capture.
+ * (Legacy weather-hover-states-export.html redirects to the same page.)
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0 0 48px;
+  font-family: var(--font-family-web, system-ui, sans-serif);
+  background: var(--color-neutral-100, #f4f4f5);
+  color: var(--color-text, #18181b);
+  line-height: 1.45;
+}
+
+.hover-export-doc {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 24px 20px 0;
+}
+
+.hover-export-doc__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.hover-export-doc__lede {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  max-width: 56rem;
+}
+
+.hover-export-doc__note {
+  margin: 0 0 24px;
+  padding: 12px 14px;
+  font-size: 13px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+}
+
+.hover-export-toc {
+  margin: 0 0 32px;
+  padding: 16px 18px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+}
+
+.hover-export-toc h2 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.hover-export-toc ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 13px;
+  columns: 2;
+  column-gap: 2rem;
+}
+
+@media (max-width: 720px) {
+  .hover-export-toc ol {
+    columns: 1;
+  }
+}
+
+.hover-export-toc a {
+  color: var(--color-brand-500, #2563eb);
+  text-decoration: none;
+}
+
+.hover-export-toc a:hover {
+  text-decoration: underline;
+}
+
+/* URL table (top of unified hover-states page) */
+.hover-export-url-panel {
+  margin: 0 0 28px;
+  padding: 16px 18px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+}
+
+.hover-export-url-panel h2 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.hover-export-url-panel__hint {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.hover-export-url-panel__err {
+  margin: 0 0 12px;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+.hover-export-url-panel__table-wrap {
+  overflow: auto;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--color-border);
+}
+
+.hover-export-url-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.hover-export-url-table th,
+.hover-export-url-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+.hover-export-url-table th {
+  background: var(--color-neutral-50, #fafafa);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.hover-export-url-table tr:last-child td {
+  border-bottom: none;
+}
+
+.hover-export-url-table__query {
+  word-break: break-all;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.hover-export-url-table__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hover-export-url-table__open {
+  color: var(--color-brand-500, #2563eb);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hover-export-url-table__open:hover {
+  text-decoration: underline;
+}
+
+.hover-export-url-table__copy {
+  font-family: inherit;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface, #fff);
+  cursor: pointer;
+}
+
+.hover-export-url-table__copy:hover {
+  background: var(--color-neutral-50, #fafafa);
+}
+
+.hover-export-slab {
+  margin-bottom: 40px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.hover-export-slab__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-neutral-50, #fafafa);
+}
+
+.hover-export-slab__num {
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.hover-export-slab__title {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.hover-export-slab__query {
+  flex: 1 1 100%;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  word-break: break-all;
+}
+
+.hover-export-slab__frame {
+  position: relative;
+  background: #e4e4e7;
+}
+
+.hover-export-slab__frame iframe {
+  display: block;
+  width: 100%;
+  height: min(900px, 92vh);
+  border: 0;
+  background: var(--color-surface);
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .hover-export-url-panel {
+    display: none;
+  }
+
+  .hover-export-doc__note,
+  .hover-export-toc {
+    break-inside: avoid;
+  }
+
+  .hover-export-slab {
+    break-inside: avoid;
+    page-break-after: always;
+    box-shadow: none;
+  }
+
+  .hover-export-slab:last-child {
+    page-break-after: auto;
+  }
+
+  .hover-export-slab__frame iframe {
+    height: 720px;
+  }
+}

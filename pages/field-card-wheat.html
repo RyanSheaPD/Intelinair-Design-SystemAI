@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field Card — Wheat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'SF Pro Text', 'Figtree', BlinkMacSystemFont, sans-serif;
+      background: #1a1a2e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 40px 0 60px;
+      color: #1a1a1a;
+    }
+
+    /* ── Label ── */
+    .demo-label {
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55);
+      letter-spacing: 0.5px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* ── Card wrapper (white on gray bg, like iOS list) ── */
+    .card-scene {
+      width: 390px;
+      background: #f2f2f7;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    /* ── Field card ── */
+    .field-card {
+      background: #fff;
+      padding: 14px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Top: thumbnail + info */
+    .field-card__top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* Field thumbnail */
+    .field-thumb {
+      width: 52px;
+      height: 52px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e0e0e0;
+    }
+
+    /* Info column */
+    .field-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .field-info__title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .field-info__name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a1a1a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .field-info__icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .field-info__subtitle {
+      font-size: 13px;
+      color: #8e8e93;
+      margin-bottom: 0;
+    }
+
+    /* Divider */
+    .field-card__divider {
+      height: 1px;
+      background: #e8e8ed;
+      margin: 0;
+    }
+
+    /* Meta row */
+    .field-card__meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 5px;
+      font-size: 13px;
+      color: #8e8e93;
+      padding: 8px 0;
+      overflow: hidden;
+    }
+
+    .meta-sep {
+      color: #c7c7cc;
+      user-select: none;
+    }
+
+    .meta-crop {
+      color: #4a7a4a; /* wheat brand green */
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .meta-icon {
+      display: inline-flex;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .meta-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Data rows */
+    .field-card__row {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #8e8e93;
+      padding: 8px 0;
+      gap: 0;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .field-card__row span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-sep {
+      color: #c7c7cc;
+      margin: 0 6px;
+      flex-shrink: 0;
+    }
+
+    /* Pills row */
+    .field-card__pills-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 0 2px;
+    }
+
+    .alert-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .alert-pill--rust {
+      background: #fce8e8;
+      color: #c0392b;
+    }
+
+    .alert-pill--weed {
+      background: #fdf3e3;
+      color: #a0620a;
+    }
+
+    .alert-pill--stress {
+      background: #f0ece3;
+      color: #7a6040;
+    }
+
+    .flight-badge {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      color: #8e8e93;
+      font-weight: 500;
+    }
+
+    /* Star */
+    .star-icon {
+      color: #f5a623;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    /* Binoculars icon color */
+    .bino-icon {
+      color: #3a7bd5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-label">Field Card — Wheat</div>
+
+  <div class="card-scene">
+    <div class="field-card">
+
+      <!-- Top: thumbnail + name -->
+      <div class="field-card__top">
+
+        <!-- Thumbnail -->
+        <div class="field-thumb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M3 9h18M3 15h18M9 3v18M15 3v18" opacity="0.4"/>
+          </svg>
+        </div>
+
+        <!-- Name + subtitle -->
+        <div class="field-info">
+          <div class="field-info__title-row">
+            <div class="field-info__name">Supan Farm–Doug/Nancy</div>
+            <div class="field-info__icons">
+              <span class="star-icon">&#9733;</span>
+              <!-- Binoculars -->
+              <svg class="bino-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="6" cy="14" r="4"/><circle cx="18" cy="14" r="4"/>
+                <path d="M6 10V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/>
+                <line x1="10" y1="14" x2="14" y2="14"/>
+              </svg>
+            </div>
+          </div>
+          <div class="field-info__subtitle">Williams Farms, Michael Williams</div>
+        </div>
+
+      </div>
+
+      <div class="field-card__divider"></div>
+
+      <!-- Meta row: ac | plant count | crop | growth stage -->
+      <div class="field-card__meta">
+        <span>150ac</span>
+        <span class="meta-sep">|</span>
+        <!-- Plane/flight icon for plant count -->
+        <span class="meta-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2-1 3-2 3 2 1 1-.5-2.5-2.5-2"/>
+          </svg>
+        </span>
+        <span>5/15</span>
+        <span class="meta-sep">|</span>
+        <!-- Wheat icon (Figma design system asset) -->
+        <span class="meta-crop">
+          <img src="https://www.figma.com/api/mcp/asset/d338f549-7afd-467d-bba3-42f1e7618ea1" width="14" height="14" alt="" style="display:inline-block;vertical-align:middle;" />
+          Wheat
+        </span>
+        <span class="meta-sep">|</span>
+        <span>Feekes 4</span>
+      </div>
+
+      <div class="field-card__divider"></div>
+
+      <!-- Dry yield / Yield forecast -->
+      <div class="field-card__row">
+        <span>Dry yield: 68.2 bu/ac</span>
+        <span class="row-sep">|</span>
+        <span>Yield forecast: 61.4 bu/ac</span>
+      </div>
+
+      <div class="field-card__divider"></div>
+
+      <!-- Last scouted / Variety -->
+      <div class="field-card__row">
+        <span>Last scouted: 3/10 – 3/14</span>
+        <span class="row-sep">|</span>
+        <span>Variety: WB4458</span>
+      </div>
+
+      <div class="field-card__divider"></div>
+
+      <!-- Pills row -->
+      <div class="field-card__pills-row">
+        <!-- Stripe rust alert -->
+        <span class="alert-pill alert-pill--rust">
+          <!-- Fire/warning icon -->
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9zm0 14a2 2 0 0 1-2-2c0-2.5 2-5 2-5s2 2.5 2 5a2 2 0 0 1-2 2z"/></svg>
+          17ac
+        </span>
+        <!-- Weed pressure -->
+        <span class="alert-pill alert-pill--weed">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          17ac
+        </span>
+        <!-- Canopy stress -->
+        <span class="alert-pill alert-pill--stress">
+          <!-- Wheat/leaf icon -->
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12"/><path d="M20 7c-2 4-5.5 5-8 5s-6-1-8-5c2-4 5.5-5 8-5s6 1 8 5z"/></svg>
+          17ac
+        </span>
+        <!-- Flight date -->
+        <div class="flight-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+          5/14
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

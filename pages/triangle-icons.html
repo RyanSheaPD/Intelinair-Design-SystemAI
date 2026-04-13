@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Triangle Icon Set</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: sans-serif;
+      gap: 0;
+    }
+
+    /* ── Swatch rows ── */
+    .swatch {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 32px 48px;
+    }
+    .swatch--dark  { background: #3a3a3a; --icon-bg: #3a3a3a; }
+    .swatch--white { background: #ffffff; --icon-bg: #ffffff; }
+    .swatch--blue  { background: #3c84c7; --icon-bg: #3c84c7; }
+
+    /* ── Disease timeline context ── */
+    .swatch--timeline {
+      background: #f2f4f7;
+      --icon-bg: #ffffff;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 32px 0;
+    }
+
+    /* ─────────────────────────────────────────
+       ICON-WRAP: base rules (desktop + mobile
+       both build on these)
+    ───────────────────────────────────────── */
+    .icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      --triangle-icon-size: 16px;
+    }
+    .icon-wrap svg {
+      display: block;
+      width: var(--triangle-icon-size);
+      height: auto;
+      overflow: visible;
+    }
+    .icon-wrap svg polygon {
+      fill: #D4D4D4;
+      stroke: var(--icon-bg, #3a3a3a);
+      stroke-width: 1;
+      stroke-linejoin: miter;
+      vector-effect: non-scaling-stroke;
+    }
+    .icon-wrap svg polygon.thin {
+      stroke-width: 1;
+    }
+
+    /* On blue, white fill so icons are visible */
+    .swatch--blue .icon-wrap svg polygon {
+      fill: #ffffff;
+    }
+
+    /* ─────────────────────────────────────────
+       MOBILE: ≤768px
+    ───────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .icon-wrap {
+        --triangle-icon-size: 14px;
+      }
+      .icon-wrap svg {
+        width: 14px;
+        height: 14px;
+        max-width: 14px;
+        max-height: 14px;
+        object-fit: contain;
+      }
+      .icon-wrap svg polygon,
+      .icon-wrap svg polygon.thin {
+        stroke-width: 0.5;
+      }
+      /* Optional 44px touch target variant */
+      .icon-wrap--touch {
+        min-width: 44px;
+        min-height: 44px;
+      }
+    }
+
+    /* ─────────────────────────────────────────
+       PHONE SHELL
+    ───────────────────────────────────────── */
+    .phone-frame {
+      width: 375px;
+      background: #ffffff;
+      border-radius: 40px;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.14), inset 0 0 0 1px rgba(0,0,0,0.08);
+    }
+    .phone-status {
+      background: #f2f4f7;
+      padding: 14px 20px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .page-header {
+      background: #f2f4f7;
+      padding: 4px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border-bottom: 1px solid #e0e3e8;
+    }
+    .page-title    { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+    .page-subtitle { font-size: 13px; color: #3c84c7; font-weight: 500; }
+
+    /* ─────────────────────────────────────────
+       DISEASE CARD
+    ───────────────────────────────────────── */
+    .disease-card {
+      background: #ffffff;
+      margin: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .disease-card__header {
+      padding: 10px 14px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .disease-card__title {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; color: #1a1a1a;
+    }
+
+    /* Season + date strip */
+    .season-row {
+      padding: 8px 14px 6px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .season-label { font-size: 16px; font-weight: 700; }
+    .season-picker {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #f0f0f0; border-radius: 20px; padding: 4px 10px;
+      font-size: 13px; font-weight: 500;
+    }
+    .date-strip {
+      display: flex; overflow-x: auto; scrollbar-width: none;
+      padding: 0 14px 8px; gap: 4px;
+    }
+    .date-strip::-webkit-scrollbar { display: none; }
+    .date-cell {
+      flex-shrink: 0; width: 40px;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 6px 4px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; color: #1a1a1a; gap: 1px;
+    }
+    .date-cell span { font-size: 10px; font-weight: 400; color: #888; }
+    .date-cell--active { background: #3c84c7; color: #ffffff; }
+    .date-cell--active span { color: rgba(255,255,255,0.8); }
+
+    /* Timeline rows */
+    .timeline-section { padding: 0 14px 8px; }
+    .timeline-section__label { font-size: 11px; color: #888; padding: 6px 0 4px; }
+    .timeline-row {
+      display: flex; gap: 4px; padding: 2px 0; align-items: flex-end;
+    }
+    .tl-cell {
+      flex-shrink: 0; width: 40px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end; gap: 3px;
+    }
+
+    /* Triangle icons inside timeline cells inherit mobile icon-wrap rules */
+    .tl-cell .icon-wrap {
+      --triangle-icon-size: 14px;
+    }
+
+    /* Status dots */
+    .tl-dot { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; }
+    .tl-dot--green  { background: #4caf50; }
+    .tl-dot--yellow { background: #f5c518; }
+    .tl-dot--red    { background: #e03a3a; }
+    .tl-dot--grey   { background: #d0d0d0; }
+
+    /* Action window */
+    .action-window { margin: 4px 14px 8px; position: relative; }
+    .action-window-bar {
+      height: 3px; background: #7c5cbf; border-radius: 2px;
+      margin-left: 164px; margin-right: 44px;
+    }
+    .action-window-label {
+      font-size: 11px; font-weight: 600; color: #7c5cbf;
+      text-align: center; margin-top: 2px;
+    }
+
+    /* Disease section */
+    .disease-section { border-top: 1px solid #f0f0f0; }
+    .disease-section__header {
+      padding: 8px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; font-weight: 500; color: #444;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Dark background ── -->
+<div class="swatch swatch--dark">
+  <!-- 1 triangle -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+    </svg>
+  </div>
+  <!-- 2 triangles -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+      <polygon class="thin" points="70,40 130,110 10,110"/>
+    </svg>
+  </div>
+  <!-- 3 triangles -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+      <polygon class="thin" points="70,40 130,110 10,110"/>
+      <polygon class="thin" points="70,70 130,140 10,140"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ── White background ── -->
+<div class="swatch swatch--white">
+  <!-- 1 triangle -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+    </svg>
+  </div>
+  <!-- 2 triangles -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+      <polygon class="thin" points="70,40 130,110 10,110"/>
+    </svg>
+  </div>
+  <!-- 3 triangles -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+      <polygon class="thin" points="70,40 130,110 10,110"/>
+      <polygon class="thin" points="70,70 130,140 10,140"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ── Brand blue background ── -->
+<div class="swatch swatch--blue">
+  <!-- 1 triangle -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+    </svg>
+  </div>
+  <!-- 2 triangles -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+      <polygon class="thin" points="70,40 130,110 10,110"/>
+    </svg>
+  </div>
+  <!-- 3 triangles -->
+  <div class="icon-wrap">
+    <svg viewBox="0 0 140 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,10 130,80 10,80"/>
+      <polygon class="thin" points="70,40 130,110 10,110"/>
+      <polygon class="thin" points="70,70 130,140 10,140"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ── Disease timeline context ── -->
+<div class="swatch swatch--timeline">
+  <div class="phone-frame">
+
+    <!-- Status bar -->
+    <div class="phone-status">
+      <span>9:41</span>
+      <span style="display:flex;gap:4px;align-items:center;">
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><rect x="0" y="3" width="3" height="7" rx="1" fill="#1a1a1a"/><rect x="4.5" y="2" width="3" height="8" rx="1" fill="#1a1a1a"/><rect x="9" y="0.5" width="3" height="9.5" rx="1" fill="#1a1a1a"/><rect x="13.5" y="0" width="2.5" height="10" rx="1" fill="#d0d0d0"/></svg>
+        <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M7 2.5C9.2 2.5 11.1 3.5 12.4 5L13.8 3.6C12.1 1.9 9.7 0.8 7 0.8s-5.1 1.1-6.8 2.8L1.6 5C2.9 3.5 4.8 2.5 7 2.5z" fill="#1a1a1a"/><path d="M7 5.5c1.3 0 2.5.6 3.3 1.5l1.4-1.4A6.4 6.4 0 0 0 7 3.8a6.4 6.4 0 0 0-4.7 1.8l1.4 1.4C4.5 6.1 5.7 5.5 7 5.5z" fill="#1a1a1a"/><circle cx="7" cy="9" r="1.5" fill="#1a1a1a"/></svg>
+        <svg width="24" height="12" viewBox="0 0 24 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#1a1a1a" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#1a1a1a"/><path d="M23 4.5v3a1.5 1.5 0 0 1 0-3z" fill="#1a1a1a" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between;padding-bottom:4px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        <div style="text-align:center;">
+          <div class="page-title">Supan Farm–Doug/Nancy</div>
+          <div class="page-subtitle">Michael Williams</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      </div>
+    </div>
+
+    <!-- Disease card -->
+    <div class="disease-card">
+
+      <!-- Card header -->
+      <div class="disease-card__header">
+        <div class="disease-card__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Predictive Disease
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:#888;">
+          <span>Legend</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3c84c7" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+      </div>
+
+      <!-- Season row -->
+      <div class="season-row">
+        <span class="season-label">Season</span>
+        <div class="season-picker">2026 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+
+      <!-- Date strip -->
+      <div class="date-strip">
+        <div class="date-cell"><span>&nbsp;</span>06<span>Jul</span></div>
+        <div class="date-cell"><span>&nbsp;</span>07<span>Jul</span></div>
+        <div class="date-cell"><span>&nbsp;</span>08<span>Jul</span></div>
+        <div class="date-cell"><span>&nbsp;</span>09<span>Jul</span></div>
+        <div class="date-cell"><span>&nbsp;</span>10<span>Jul</span></div>
+        <div class="date-cell date-cell--active"><span>&nbsp;</span>11<span>Jul</span></div>
+        <div class="date-cell"><span>&nbsp;</span>12<span>Jul</span></div>
+        <div class="date-cell"><span>&nbsp;</span>13<span>Jul</span></div>
+        <div class="date-cell"><span>&nbsp;</span>14<span>Jul</span></div>
+      </div>
+
+      <!-- Growth stage row -->
+      <div class="timeline-section">
+        <div class="timeline-section__label">Growth Stage</div>
+        <div class="timeline-row">
+          <div class="tl-cell"><div class="tl-dot tl-dot--grey"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--grey"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--grey"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--grey"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--grey"></div></div>
+          <div class="tl-cell" style="font-size:12px;font-weight:700;color:#1a1a1a;">R1</div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--grey"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--grey"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--grey"></div></div>
+        </div>
+      </div>
+
+      <!-- Disease stress row -->
+      <div class="timeline-section">
+        <div class="timeline-section__label">Disease Stress</div>
+        <div class="timeline-row">
+          <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+          <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+        </div>
+      </div>
+
+      <!-- Action window -->
+      <div class="action-window">
+        <div class="action-window-bar"></div>
+        <div class="action-window-label">Action Window</div>
+      </div>
+
+      <!-- Northern Corn Leaf Blight: 1,1,2,2,1,1,1,1,1 -->
+      <div class="disease-section">
+        <div class="disease-section__header">
+          <span>Northern Corn Leaf Blight</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+        <div class="timeline-section" style="padding-top:0;">
+          <div class="timeline-row" style="align-items:flex-end; margin-bottom:3px;">
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 120" fill="none"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 120" fill="none"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+          </div>
+          <div class="timeline-row" style="margin-bottom:8px;">
+            <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gray Leaf Spot: 1,1,2,3,1,1,1,1,1 -->
+      <div class="disease-section">
+        <div class="disease-section__header">
+          <span>Gray Leaf Spot</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+        <div class="timeline-section" style="padding-top:0;">
+          <div class="timeline-row" style="align-items:flex-end; margin-bottom:3px;">
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 120" fill="none"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 150" fill="none"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/><polygon class="thin" points="70,70 130,140 10,140"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+            <div class="tl-cell"><div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none"><polygon points="70,10 130,80 10,80"/></svg></div></div>
+          </div>
+          <div class="timeline-row" style="margin-bottom:8px;">
+            <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--green"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--yellow"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+            <div class="tl-cell"><div class="tl-dot tl-dot--red"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /disease-card -->
+  </div><!-- /phone-frame -->
+</div>
+
+</body>
+</html>

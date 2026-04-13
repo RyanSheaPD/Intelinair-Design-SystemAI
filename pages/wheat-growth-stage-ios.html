@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wheat Growth Stages (iOS)</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a2e;
+      font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 32px 0 48px;
+      color: #1a1a1a;
+    }
+
+    /* ── iPhone 14 frame ── */
+    .phone-frame {
+      width: 390px;
+      height: 844px;
+      background: #f2f2f7;
+      border-radius: 48px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      height: 54px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      padding: 14px 28px 0;
+      justify-content: space-between;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .status-bar__time { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
+    .status-bar__icons { display: flex; align-items: center; gap: 7px; }
+    .status-bar::after {
+      content: '';
+      position: absolute;
+      top: 12px; left: 50%;
+      transform: translateX(-50%);
+      width: 120px; height: 34px;
+      background: #000;
+      border-radius: 20px;
+    }
+
+    /* ── iOS nav bar ── */
+    .ios-nav-bar {
+      height: 44px;
+      background: #fff;
+      border-bottom: 0.5px solid rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .ios-nav-bar__back {
+      display: flex; align-items: center; gap: 4px;
+      color: #007aff; font-size: 17px; font-weight: 400;
+      background: none; border: none; font-family: inherit; cursor: pointer; padding: 0;
+    }
+    .ios-nav-bar__back svg { width: 10px; height: 17px; stroke: #007aff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .ios-nav-bar__title {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-size: 17px; font-weight: 600; letter-spacing: -0.4px; white-space: nowrap;
+    }
+
+    /* ── Tab controls ── */
+    .tab-controls {
+      background: #fff;
+      border-bottom: 0.5px solid rgba(0,0,0,0.12);
+      padding: 10px 16px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .seg-control {
+      display: flex;
+      background: rgba(118,118,128,0.12);
+      border-radius: 9px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .seg-btn {
+      flex: 1;
+      height: 28px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: #3a3a3c;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .seg-btn--active {
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+    }
+
+    /* ── Scrollable content ── */
+    .ios-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #f2f2f7;
+      padding-bottom: 82px;
+    }
+    .ios-scroll::-webkit-scrollbar { display: none; }
+
+    /* ── Tab sections ── */
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    /* ── Page hero ── */
+    .page-hero {
+      background: #fff;
+      padding: 16px 16px 12px;
+      border-bottom: 0.5px solid rgba(0,0,0,0.1);
+      margin-bottom: 8px;
+    }
+    .page-hero__eyebrow { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #00b051; margin-bottom: 2px; }
+    .page-hero__title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #000; margin-bottom: 3px; }
+    .page-hero__sub { font-size: 13px; color: #6c6c70; font-style: italic; }
+
+    /* ── Section header ── */
+    .ios-section-header {
+      font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+      color: #6c6c70; padding: 16px 16px 6px;
+    }
+
+    /* ── Growth stage card ── */
+    .stage-card {
+      display: flex;
+      width: calc(100% - 32px);
+      height: 80px;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 16px 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.1s;
+    }
+    .stage-card:active { opacity: 0.7; }
+
+    /* icon panel — flush */
+    .stage-card__icon {
+      width: 80px; height: 80px; flex-shrink: 0;
+      position: relative; overflow: hidden;
+    }
+    .stage-card__icon-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .stage-card__plant {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      max-height: 56px; max-width: 52px; width: auto; height: auto; object-fit: contain; display: block;
+    }
+
+    /* card body */
+    .stage-card__body {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: 10px 0 10px 13px; min-width: 0; gap: 3px;
+    }
+    .stage-card__title { font-size: 15px; font-weight: 600; color: #000; letter-spacing: -0.3px; line-height: 1.2; }
+    .stage-card__title--sm { font-size: 13px; }
+    .stage-card__zadoks { font-size: 12px; font-weight: 400; color: #6c6c70; line-height: 1.3; }
+
+    .stage-card__chevron {
+      width: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .stage-card__chevron svg { width: 8px; height: 13px; stroke: #c7c7cc; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── Bottom sheet scrim ── */
+    .sheet-scrim {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.4);
+      z-index: 20; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .sheet-scrim.visible { opacity: 1; pointer-events: all; }
+
+    /* ── Bottom sheet ── */
+    .bottom-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-radius: 16px 16px 0 0;
+      z-index: 30;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      padding-bottom: 34px;
+    }
+    .bottom-sheet.open { transform: translateY(0); }
+
+    .sheet-handle { display: flex; justify-content: center; padding: 12px 0 0; }
+    .sheet-handle__pill { width: 36px; height: 4px; background: #d1d1d6; border-radius: 2px; }
+
+    .sheet-content { padding: 16px 20px 20px; }
+
+    .sheet-hero { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .sheet-icon {
+      width: 72px; height: 72px; border-radius: 12px; overflow: hidden; position: relative; flex-shrink: 0;
+    }
+    .sheet-icon__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .sheet-icon__plant {
+      position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+      max-height: 50px; max-width: 46px; width: auto; height: auto; object-fit: contain;
+    }
+    .sheet-meta { flex: 1; }
+    .sheet-title { font-size: 20px; font-weight: 700; color: #000; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 4px; }
+    .sheet-zadoks { font-size: 15px; color: #6c6c70; font-weight: 400; }
+
+    .sheet-divider { height: 0.5px; background: rgba(0,0,0,0.1); margin-bottom: 14px; }
+
+    .sheet-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #aeaeb2; margin-bottom: 6px; }
+    .sheet-desc { font-size: 15px; color: #3a3a3c; line-height: 1.5; }
+
+    .sheet-close {
+      display: block; width: 100%; margin-top: 20px;
+      background: #f2f2f7; border: none; border-radius: 10px;
+      font-family: inherit; font-size: 17px; font-weight: 600; color: #007aff;
+      padding: 14px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sheet-close:active { background: #e5e5ea; }
+
+    /* ── Bottom tab bar ── */
+    .ios-tab-bar {
+      height: 82px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-top: 0.5px solid rgba(0,0,0,0.15);
+      display: flex; align-items: flex-start; padding-top: 10px; flex-shrink: 0;
+    }
+    .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+    .tab-item svg { width: 24px; height: 24px; }
+    .tab-item__label { font-size: 10px; font-weight: 500; color: #8e8e93; }
+    .tab-item--active .tab-item__label { color: #007aff; }
+  </style>
+</head>
+<body>
+
+  <div class="phone-frame">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-bar__time">9:41</span>
+      <div class="status-bar__icons">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="4.5" y="4" width="3" height="8" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1" opacity="0.3"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"/><path d="M3.5 6.5C5 5 6.4 4.2 8 4.2c1.6 0 3 .8 4.5 2.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M1 4C3.2 1.8 5.5.7 8 .7c2.5 0 4.8 1.1 7 3.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="currentColor" stroke-opacity="0.35"/><rect x="2" y="2" width="16" height="8" rx="2" fill="currentColor"/><path d="M23 4v4a2 2 0 000-4z" fill="currentColor" fill-opacity="0.4"/></svg>
+      </div>
+    </div>
+
+    <!-- Nav bar -->
+    <div class="ios-nav-bar">
+      <button class="ios-nav-bar__back">
+        <svg viewBox="0 0 10 17"><polyline points="9,1 1,8.5 9,16"/></svg>
+        Agronomy
+      </button>
+      <span class="ios-nav-bar__title">Growth Stages</span>
+    </div>
+
+    <!-- Tab controls -->
+    <div class="tab-controls">
+      <div class="seg-control" id="season-control">
+        <button class="seg-btn seg-btn--active" onclick="setSeason('spring')">Spring</button>
+        <button class="seg-btn" onclick="setSeason('winter')">Winter</button>
+      </div>
+      <div class="seg-control" id="scale-control">
+        <button class="seg-btn seg-btn--active" onclick="setScale('zadoks')">Zadoks</button>
+        <button class="seg-btn" onclick="setScale('feekes')">Feekes</button>
+      </div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="ios-scroll">
+
+      <!-- ══════════════════════════════════════════
+           TAB: Spring · Zadoks
+      ══════════════════════════════════════════ -->
+      <div class="tab-section active" id="tab-spring-zadoks">
+
+        <div class="page-hero">
+          <p class="page-hero__eyebrow">Spring Wheat</p>
+          <h1 class="page-hero__title">Zadoks Scale</h1>
+          <p class="page-hero__sub">Scale begins at germination (00) and ends at full maturity (99).</p>
+        </div>
+
+        <div class="ios-section-header">Early Growth</div>
+
+        <div class="stage-card" onclick="openSheet('Germination / Emergence','Zadoks 00–09','Seed germination occurs below the soil surface and the coleoptile begins emerging toward the soil surface.','https://www.figma.com/api/mcp/asset/b6a804df-2130-4b82-8658-d1686927a285','https://www.figma.com/api/mcp/asset/fc612c34-44a6-46f3-bcaf-1eeeefd1373f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/b6a804df-2130-4b82-8658-d1686927a285" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/fc612c34-44a6-46f3-bcaf-1eeeefd1373f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Germination / Emergence</p>
+            <p class="stage-card__zadoks">Zadoks 00–09</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Seedling Establishment','Zadoks 10–13','First leaves appear and the seedling becomes established, developing the early leaf canopy.','https://www.figma.com/api/mcp/asset/37eafb26-6537-4f66-954c-8a085e8b36fe','https://www.figma.com/api/mcp/asset/6f88072d-4d4a-4e3e-91ea-5f0e394b7b37')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/37eafb26-6537-4f66-954c-8a085e8b36fe" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/6f88072d-4d4a-4e3e-91ea-5f0e394b7b37" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Seedling Establishment</p>
+            <p class="stage-card__zadoks">Zadoks 10–13</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Early Tillering','Zadoks 20–22','First tillers begin forming at the base of the plant, increasing shoot density.','https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d','https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Early Tillering</p>
+            <p class="stage-card__zadoks">Zadoks 20–22</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Late Tillering','Zadoks 23–29','Tillers expand and the canopy closes. Maximum tiller number is reached before stem elongation begins.','https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d','https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Late Tillering</p>
+            <p class="stage-card__zadoks">Zadoks 23–29</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Stem Extension</div>
+
+        <div class="stage-card" onclick="openSheet('Pseudostem Erection','Zadoks 30','Stem elongation begins as the plant prepares for reproductive growth. The pseudostem becomes erect.','https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f','https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Pseudostem Erection</p>
+            <p class="stage-card__zadoks">Zadoks 30</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Jointing','Zadoks 31','First node becomes detectable above the soil surface. Rapid stem elongation begins.','https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3','https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Jointing</p>
+            <p class="stage-card__zadoks">Zadoks 31</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Second Node','Zadoks 32','A second node is detectable as stem elongation continues upward through the canopy.','https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3','https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Second Node</p>
+            <p class="stage-card__zadoks">Zadoks 32</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Flag Leaf Development','Zadoks 37–39','The flag leaf — the last and most important leaf — emerges. It contributes significantly to grain fill.','https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327','https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Flag Leaf Development</p>
+            <p class="stage-card__zadoks">Zadoks 37–39</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Boot Stage','Zadoks 41–49','The developing head swells within the flag leaf sheath, creating a visible bulge before emergence.','https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327','https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Boot Stage</p>
+            <p class="stage-card__zadoks">Zadoks 41–49</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Reproductive</div>
+
+        <div class="stage-card" onclick="openSheet('Heading','Zadoks 50–59','The wheat head begins emerging from the boot. Full heading is complete when all heads have emerged.','https://www.figma.com/api/mcp/asset/563e3000-d66b-496d-b67f-a35133c4b603','https://www.figma.com/api/mcp/asset/3de161a1-9a24-4cad-b431-d981c798bba9')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/563e3000-d66b-496d-b67f-a35133c4b603" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/3de161a1-9a24-4cad-b431-d981c798bba9" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Heading</p>
+            <p class="stage-card__zadoks">Zadoks 50–59</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Flowering (Anthesis)','Zadoks 60–69','Anthers emerge and pollination occurs. This stage is critical for setting the number of kernels per head.','https://www.figma.com/api/mcp/asset/5eeb28ea-8e3d-4405-b7d8-15a3ddcc7b1b','https://www.figma.com/api/mcp/asset/133ab7ef-22d8-4d29-9a1d-63f71ac7f328')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/5eeb28ea-8e3d-4405-b7d8-15a3ddcc7b1b" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/133ab7ef-22d8-4d29-9a1d-63f71ac7f328" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Flowering (Anthesis)</p>
+            <p class="stage-card__zadoks">Zadoks 60–69</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Grain Fill</div>
+
+        <div class="stage-card" onclick="openSheet('Early Grain Fill','Zadoks 70–77','Kernels begin filling during the watery and early milk stages. Kernel size and weight increase rapidly.','https://www.figma.com/api/mcp/asset/51d583f8-a469-4f3a-9c32-37d7051e0937','https://www.figma.com/api/mcp/asset/9b1ca31e-a6d6-44ff-871e-83df4450d1c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/51d583f8-a469-4f3a-9c32-37d7051e0937" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/9b1ca31e-a6d6-44ff-871e-83df4450d1c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Early Grain Fill</p>
+            <p class="stage-card__zadoks">Zadoks 70–77</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Late Grain Fill','Zadoks 80–87','Grain transitions through soft and hard dough stages. Dry weight continues to accumulate.','https://www.figma.com/api/mcp/asset/c9218ac6-d196-430b-a613-17383748992e','https://www.figma.com/api/mcp/asset/58bb8b58-dbdc-4495-bef0-d6cc32ddf69b')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c9218ac6-d196-430b-a613-17383748992e" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/58bb8b58-dbdc-4495-bef0-d6cc32ddf69b" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Late Grain Fill</p>
+            <p class="stage-card__zadoks">Zadoks 80–87</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Ripening / Maturity','Zadoks 90–99','Grain dries down and reaches physiological then harvest maturity. Straw begins to dry and lodge.','https://www.figma.com/api/mcp/asset/ae6cc03a-050e-4971-9c55-19620acca438','https://www.figma.com/api/mcp/asset/c7d17b1f-fc3d-4d18-918d-99226291d36e')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/ae6cc03a-050e-4971-9c55-19620acca438" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c7d17b1f-fc3d-4d18-918d-99226291d36e" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Ripening / Maturity</p>
+            <p class="stage-card__zadoks">Zadoks 90–99</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+      </div><!-- /tab-spring-zadoks -->
+
+
+      <!-- ══════════════════════════════════════════
+           TAB: Spring · Feekes
+      ══════════════════════════════════════════ -->
+      <div class="tab-section" id="tab-spring-feekes">
+
+        <div class="page-hero">
+          <p class="page-hero__eyebrow">Spring Wheat</p>
+          <h1 class="page-hero__title">Feekes Scale</h1>
+          <p class="page-hero__sub">Scale begins at emergence (1) and ends at full maturity (11.4).</p>
+        </div>
+
+        <div class="ios-section-header">Early Growth</div>
+
+        <div class="stage-card" onclick="openSheet('Germination / Emergence','Feekes N/A','Seed germination occurs below the soil surface and the coleoptile begins emerging toward the soil surface. Not assigned a Feekes number.','https://www.figma.com/api/mcp/asset/b6a804df-2130-4b82-8658-d1686927a285','https://www.figma.com/api/mcp/asset/fc612c34-44a6-46f3-bcaf-1eeeefd1373f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/b6a804df-2130-4b82-8658-d1686927a285" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/fc612c34-44a6-46f3-bcaf-1eeeefd1373f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Germination / Emergence</p>
+            <p class="stage-card__zadoks">Feekes N/A</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Seedling Establishment','Feekes 1','First leaf emerges through the coleoptile. The seedling is established with its first true leaf visible.','https://www.figma.com/api/mcp/asset/37eafb26-6537-4f66-954c-8a085e8b36fe','https://www.figma.com/api/mcp/asset/6f88072d-4d4a-4e3e-91ea-5f0e394b7b37')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/37eafb26-6537-4f66-954c-8a085e8b36fe" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/6f88072d-4d4a-4e3e-91ea-5f0e394b7b37" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Seedling Establishment</p>
+            <p class="stage-card__zadoks">Feekes 1</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Early Tillering','Feekes 2','First tillers begin forming at the base of the plant, increasing shoot density.','https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d','https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Early Tillering</p>
+            <p class="stage-card__zadoks">Feekes 2</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Late Tillering','Feekes 3','Tillers expand and the canopy closes. Maximum tiller number is reached before stem elongation begins.','https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d','https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Late Tillering</p>
+            <p class="stage-card__zadoks">Feekes 3</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Stem Extension</div>
+
+        <div class="stage-card" onclick="openSheet('Pseudostem Erection','Feekes 4–5','Stem elongation begins as the plant prepares for reproductive growth. The pseudostem becomes erect.','https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f','https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Pseudostem Erection</p>
+            <p class="stage-card__zadoks">Feekes 4–5</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Jointing','Feekes 6','First node becomes detectable above the soil surface. Rapid stem elongation begins.','https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3','https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Jointing</p>
+            <p class="stage-card__zadoks">Feekes 6</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Second Node','Feekes 7','A second node is detectable as stem elongation continues upward through the canopy.','https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3','https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Second Node</p>
+            <p class="stage-card__zadoks">Feekes 7</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Flag Leaf Development','Feekes 8–9','The flag leaf — the last and most important leaf — emerges. It contributes significantly to grain fill.','https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327','https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Flag Leaf Development</p>
+            <p class="stage-card__zadoks">Feekes 8–9</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Boot Stage','Feekes 10','The developing head swells within the flag leaf sheath, creating a visible bulge before emergence.','https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327','https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Boot Stage</p>
+            <p class="stage-card__zadoks">Feekes 10</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Reproductive</div>
+
+        <div class="stage-card" onclick="openSheet('Heading','Feekes 10.1–10.5','The wheat head begins emerging from the boot. Full heading is complete when all heads have emerged.','https://www.figma.com/api/mcp/asset/563e3000-d66b-496d-b67f-a35133c4b603','https://www.figma.com/api/mcp/asset/3de161a1-9a24-4cad-b431-d981c798bba9')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/563e3000-d66b-496d-b67f-a35133c4b603" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/3de161a1-9a24-4cad-b431-d981c798bba9" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Heading</p>
+            <p class="stage-card__zadoks">Feekes 10.1–10.5</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Flowering (Anthesis)','Feekes 10.5.1–10.5.3','Anthers emerge and pollination occurs. This stage is critical for setting the number of kernels per head.','https://www.figma.com/api/mcp/asset/5eeb28ea-8e3d-4405-b7d8-15a3ddcc7b1b','https://www.figma.com/api/mcp/asset/133ab7ef-22d8-4d29-9a1d-63f71ac7f328')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/5eeb28ea-8e3d-4405-b7d8-15a3ddcc7b1b" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/133ab7ef-22d8-4d29-9a1d-63f71ac7f328" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Flowering (Anthesis)</p>
+            <p class="stage-card__zadoks">Feekes 10.5.1–10.5.3</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Grain Fill</div>
+
+        <div class="stage-card" onclick="openSheet('Early Grain Fill','Feekes 10.5.4 / 11.1','Kernels begin filling during the watery and early milk stages. Kernel size and weight increase rapidly.','https://www.figma.com/api/mcp/asset/51d583f8-a469-4f3a-9c32-37d7051e0937','https://www.figma.com/api/mcp/asset/9b1ca31e-a6d6-44ff-871e-83df4450d1c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/51d583f8-a469-4f3a-9c32-37d7051e0937" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/9b1ca31e-a6d6-44ff-871e-83df4450d1c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Early Grain Fill</p>
+            <p class="stage-card__zadoks">Feekes 10.5.4 / 11.1</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Late Grain Fill','Feekes 11.2','Grain transitions through soft and hard dough stages. Dry weight continues to accumulate.','https://www.figma.com/api/mcp/asset/c9218ac6-d196-430b-a613-17383748992e','https://www.figma.com/api/mcp/asset/58bb8b58-dbdc-4495-bef0-d6cc32ddf69b')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c9218ac6-d196-430b-a613-17383748992e" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/58bb8b58-dbdc-4495-bef0-d6cc32ddf69b" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Late Grain Fill</p>
+            <p class="stage-card__zadoks">Feekes 11.2</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Ripening / Maturity','Feekes 11.3–11.4','Grain dries down and reaches physiological then harvest maturity. Straw begins to dry and lodge.','https://www.figma.com/api/mcp/asset/ae6cc03a-050e-4971-9c55-19620acca438','https://www.figma.com/api/mcp/asset/c7d17b1f-fc3d-4d18-918d-99226291d36e')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/ae6cc03a-050e-4971-9c55-19620acca438" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c7d17b1f-fc3d-4d18-918d-99226291d36e" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Ripening / Maturity</p>
+            <p class="stage-card__zadoks">Feekes 11.3–11.4</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+      </div><!-- /tab-spring-feekes -->
+
+
+      <!-- ══════════════════════════════════════════
+           TAB: Winter · Zadoks
+      ══════════════════════════════════════════ -->
+      <div class="tab-section" id="tab-winter-zadoks">
+
+        <div class="page-hero">
+          <p class="page-hero__eyebrow">Winter Wheat</p>
+          <h1 class="page-hero__title">Zadoks Scale</h1>
+          <p class="page-hero__sub">Winter wheat enters dormancy after tillering and resumes growth in spring.</p>
+        </div>
+
+        <div class="ios-section-header">Early Growth</div>
+
+        <div class="stage-card" onclick="openSheet('Germination / Emergence','Zadoks 00–09','Seed germination occurs below the soil surface and the coleoptile begins emerging toward the soil surface.','https://www.figma.com/api/mcp/asset/b6a804df-2130-4b82-8658-d1686927a285','https://www.figma.com/api/mcp/asset/fc612c34-44a6-46f3-bcaf-1eeeefd1373f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/b6a804df-2130-4b82-8658-d1686927a285" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/fc612c34-44a6-46f3-bcaf-1eeeefd1373f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Germination / Emergence</p>
+            <p class="stage-card__zadoks">Zadoks 00–09</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Seedling Establishment','Zadoks 10–13','First leaves appear and the seedling becomes established, developing the early leaf canopy before winter.','https://www.figma.com/api/mcp/asset/37eafb26-6537-4f66-954c-8a085e8b36fe','https://www.figma.com/api/mcp/asset/6f88072d-4d4a-4e3e-91ea-5f0e394b7b37')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/37eafb26-6537-4f66-954c-8a085e8b36fe" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/6f88072d-4d4a-4e3e-91ea-5f0e394b7b37" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Seedling Establishment</p>
+            <p class="stage-card__zadoks">Zadoks 10–13</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Early Tillering','Zadoks 20–22','First tillers form before winter sets in. The plant needs adequate tillers established for overwintering.','https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d','https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Early Tillering</p>
+            <p class="stage-card__zadoks">Zadoks 20–22</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Late Tillering','Zadoks 23–29','Tillers expand before the plant enters dormancy. Adequate tiller density is important for spring yield potential.','https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d','https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Late Tillering</p>
+            <p class="stage-card__zadoks">Zadoks 23–29</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Winter Dormancy</div>
+
+        <div class="stage-card" onclick="openSheet('Dormancy','Zadoks 23–29','Growth slows or ceases during cold winter temperatures. The crown remains protected at or below the soil surface.','https://www.figma.com/api/mcp/asset/72406d66-2f60-418d-b8fd-600114ad5a8b','https://www.figma.com/api/mcp/asset/e527a131-5a3a-4af8-b8e7-264bf171288c')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/72406d66-2f60-418d-b8fd-600114ad5a8b" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/e527a131-5a3a-4af8-b8e7-264bf171288c" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Dormancy</p>
+            <p class="stage-card__zadoks">Zadoks 23–29</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Spring Regrowth','Zadoks 23–30','Warming temperatures break dormancy and new leaf growth resumes. The plant transitions back into active vegetative growth.','https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f','https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Spring Regrowth</p>
+            <p class="stage-card__zadoks">Zadoks 23–30</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Stem Extension</div>
+
+        <div class="stage-card" onclick="openSheet('Green-Up / Pseudostem Erection','Zadoks 30','Active spring growth resumes. The pseudostem erects as the plant transitions to reproductive development.','https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f','https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Green-Up / Pseudostem Erection</p>
+            <p class="stage-card__zadoks">Zadoks 30</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Jointing','Zadoks 31','First node becomes detectable above the soil surface. Rapid stem elongation begins.','https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3','https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Jointing</p>
+            <p class="stage-card__zadoks">Zadoks 31</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Second Node','Zadoks 32','A second node is detectable as stem elongation continues upward through the canopy.','https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3','https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Second Node</p>
+            <p class="stage-card__zadoks">Zadoks 32</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Flag Leaf Development','Zadoks 37–39','The flag leaf — the last and most important leaf — emerges. It contributes significantly to grain fill.','https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327','https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Flag Leaf Development</p>
+            <p class="stage-card__zadoks">Zadoks 37–39</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Boot Stage','Zadoks 41–49','The developing head swells within the flag leaf sheath, creating a visible bulge before emergence.','https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327','https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Boot Stage</p>
+            <p class="stage-card__zadoks">Zadoks 41–49</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Reproductive</div>
+
+        <div class="stage-card" onclick="openSheet('Heading','Zadoks 50–59','The wheat head begins emerging from the boot. Full heading is complete when all heads have emerged.','https://www.figma.com/api/mcp/asset/563e3000-d66b-496d-b67f-a35133c4b603','https://www.figma.com/api/mcp/asset/3de161a1-9a24-4cad-b431-d981c798bba9')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/563e3000-d66b-496d-b67f-a35133c4b603" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/3de161a1-9a24-4cad-b431-d981c798bba9" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Heading</p>
+            <p class="stage-card__zadoks">Zadoks 50–59</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Flowering (Anthesis)','Zadoks 60–69','Anthers emerge and pollination occurs. This stage is critical for setting the number of kernels per head.','https://www.figma.com/api/mcp/asset/5eeb28ea-8e3d-4405-b7d8-15a3ddcc7b1b','https://www.figma.com/api/mcp/asset/133ab7ef-22d8-4d29-9a1d-63f71ac7f328')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/5eeb28ea-8e3d-4405-b7d8-15a3ddcc7b1b" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/133ab7ef-22d8-4d29-9a1d-63f71ac7f328" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Flowering (Anthesis)</p>
+            <p class="stage-card__zadoks">Zadoks 60–69</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Grain Fill</div>
+
+        <div class="stage-card" onclick="openSheet('Early Grain Fill','Zadoks 70–77','Kernels begin filling during the watery and early milk stages. Kernel size and weight increase rapidly.','https://www.figma.com/api/mcp/asset/51d583f8-a469-4f3a-9c32-37d7051e0937','https://www.figma.com/api/mcp/asset/9b1ca31e-a6d6-44ff-871e-83df4450d1c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/51d583f8-a469-4f3a-9c32-37d7051e0937" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/9b1ca31e-a6d6-44ff-871e-83df4450d1c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Early Grain Fill</p>
+            <p class="stage-card__zadoks">Zadoks 70–77</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Late Grain Fill','Zadoks 80–87','Grain transitions through soft and hard dough stages. Dry weight continues to accumulate.','https://www.figma.com/api/mcp/asset/c9218ac6-d196-430b-a613-17383748992e','https://www.figma.com/api/mcp/asset/58bb8b58-dbdc-4495-bef0-d6cc32ddf69b')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c9218ac6-d196-430b-a613-17383748992e" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/58bb8b58-dbdc-4495-bef0-d6cc32ddf69b" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Late Grain Fill</p>
+            <p class="stage-card__zadoks">Zadoks 80–87</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Ripening / Maturity','Zadoks 90–99','Grain dries down and reaches physiological then harvest maturity. Straw begins to dry and lodge.','https://www.figma.com/api/mcp/asset/ae6cc03a-050e-4971-9c55-19620acca438','https://www.figma.com/api/mcp/asset/c7d17b1f-fc3d-4d18-918d-99226291d36e')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/ae6cc03a-050e-4971-9c55-19620acca438" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c7d17b1f-fc3d-4d18-918d-99226291d36e" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Ripening / Maturity</p>
+            <p class="stage-card__zadoks">Zadoks 90–99</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+      </div><!-- /tab-winter-zadoks -->
+
+
+      <!-- ══════════════════════════════════════════
+           TAB: Winter · Feekes
+      ══════════════════════════════════════════ -->
+      <div class="tab-section" id="tab-winter-feekes">
+
+        <div class="page-hero">
+          <p class="page-hero__eyebrow">Winter Wheat</p>
+          <h1 class="page-hero__title">Feekes Scale</h1>
+          <p class="page-hero__sub">Winter wheat enters dormancy after tillering and resumes growth in spring.</p>
+        </div>
+
+        <div class="ios-section-header">Early Growth</div>
+
+        <div class="stage-card" onclick="openSheet('Germination / Emergence','Feekes N/A','Seed germination occurs below the soil surface and the coleoptile begins emerging toward the soil surface. Not assigned a Feekes number.','https://www.figma.com/api/mcp/asset/b6a804df-2130-4b82-8658-d1686927a285','https://www.figma.com/api/mcp/asset/fc612c34-44a6-46f3-bcaf-1eeeefd1373f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/b6a804df-2130-4b82-8658-d1686927a285" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/fc612c34-44a6-46f3-bcaf-1eeeefd1373f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Germination / Emergence</p>
+            <p class="stage-card__zadoks">Feekes N/A</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Seedling Establishment','Feekes 1','First leaf emerges through the coleoptile. The seedling is established with its first true leaf visible before winter.','https://www.figma.com/api/mcp/asset/37eafb26-6537-4f66-954c-8a085e8b36fe','https://www.figma.com/api/mcp/asset/6f88072d-4d4a-4e3e-91ea-5f0e394b7b37')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/37eafb26-6537-4f66-954c-8a085e8b36fe" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/6f88072d-4d4a-4e3e-91ea-5f0e394b7b37" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Seedling Establishment</p>
+            <p class="stage-card__zadoks">Feekes 1</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Early Tillering','Feekes 2','First tillers form before winter sets in. The plant needs adequate tillers established for overwintering.','https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d','https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Early Tillering</p>
+            <p class="stage-card__zadoks">Feekes 2</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Late Tillering','Feekes 3','Tillers expand before the plant enters dormancy. Adequate tiller density is important for spring yield potential.','https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d','https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/34dd0a54-85c0-4969-b5a2-f495fcb6098d" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d1582479-f1f1-4a95-a299-b0ec8ea92779" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Late Tillering</p>
+            <p class="stage-card__zadoks">Feekes 3</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Winter Dormancy</div>
+
+        <div class="stage-card" onclick="openSheet('Dormancy','Feekes 3','Growth slows or ceases during cold winter temperatures. The crown remains protected at or below the soil surface.','https://www.figma.com/api/mcp/asset/72406d66-2f60-418d-b8fd-600114ad5a8b','https://www.figma.com/api/mcp/asset/e527a131-5a3a-4af8-b8e7-264bf171288c')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/72406d66-2f60-418d-b8fd-600114ad5a8b" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/e527a131-5a3a-4af8-b8e7-264bf171288c" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Dormancy</p>
+            <p class="stage-card__zadoks">Feekes 3</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Spring Regrowth','Feekes 3–4','Warming temperatures break dormancy and new leaf growth resumes. The plant transitions back into active vegetative growth.','https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f','https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Spring Regrowth</p>
+            <p class="stage-card__zadoks">Feekes 3–4</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Stem Extension</div>
+
+        <div class="stage-card" onclick="openSheet('Green-Up / Pseudostem Erection','Feekes 4–5','Active spring growth resumes. The pseudostem erects as the plant transitions to reproductive development.','https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f','https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c962f617-8465-406a-b4c7-2dc55885e38f" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c48ddc47-324c-4545-9c5e-69f30ae7246f" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Green-Up / Pseudostem Erection</p>
+            <p class="stage-card__zadoks">Feekes 4–5</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Jointing','Feekes 6','First node becomes detectable above the soil surface. Rapid stem elongation begins.','https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3','https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Jointing</p>
+            <p class="stage-card__zadoks">Feekes 6</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Second Node','Feekes 7','A second node is detectable as stem elongation continues upward through the canopy.','https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3','https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2bf03f75-7770-4372-849e-bd92a28088c3" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/11f5d79a-2ad8-4ec0-98f6-89e2a6575101" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Second Node</p>
+            <p class="stage-card__zadoks">Feekes 7</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Flag Leaf Development','Feekes 8–9','The flag leaf — the last and most important leaf — emerges. It contributes significantly to grain fill.','https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327','https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Flag Leaf Development</p>
+            <p class="stage-card__zadoks">Feekes 8–9</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Boot Stage','Feekes 10','The developing head swells within the flag leaf sheath, creating a visible bulge before emergence.','https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327','https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/2f060dc9-6dbc-46fc-92fd-abc8f7151327" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/d670b08e-cc04-404c-b654-cc710c9228c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Boot Stage</p>
+            <p class="stage-card__zadoks">Feekes 10</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Reproductive</div>
+
+        <div class="stage-card" onclick="openSheet('Heading','Feekes 10.1–10.5','The wheat head begins emerging from the boot. Full heading is complete when all heads have emerged.','https://www.figma.com/api/mcp/asset/563e3000-d66b-496d-b67f-a35133c4b603','https://www.figma.com/api/mcp/asset/3de161a1-9a24-4cad-b431-d981c798bba9')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/563e3000-d66b-496d-b67f-a35133c4b603" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/3de161a1-9a24-4cad-b431-d981c798bba9" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Heading</p>
+            <p class="stage-card__zadoks">Feekes 10.1–10.5</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Flowering (Anthesis)','Feekes 10.5.1–10.5.3','Anthers emerge and pollination occurs. This stage is critical for setting the number of kernels per head.','https://www.figma.com/api/mcp/asset/5eeb28ea-8e3d-4405-b7d8-15a3ddcc7b1b','https://www.figma.com/api/mcp/asset/133ab7ef-22d8-4d29-9a1d-63f71ac7f328')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/5eeb28ea-8e3d-4405-b7d8-15a3ddcc7b1b" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/133ab7ef-22d8-4d29-9a1d-63f71ac7f328" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title stage-card__title--sm">Flowering (Anthesis)</p>
+            <p class="stage-card__zadoks">Feekes 10.5.1–10.5.3</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="ios-section-header">Grain Fill</div>
+
+        <div class="stage-card" onclick="openSheet('Early Grain Fill','Feekes 10.5.4 / 11.1','Kernels begin filling during the watery and early milk stages. Kernel size and weight increase rapidly.','https://www.figma.com/api/mcp/asset/51d583f8-a469-4f3a-9c32-37d7051e0937','https://www.figma.com/api/mcp/asset/9b1ca31e-a6d6-44ff-871e-83df4450d1c5')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/51d583f8-a469-4f3a-9c32-37d7051e0937" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/9b1ca31e-a6d6-44ff-871e-83df4450d1c5" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Early Grain Fill</p>
+            <p class="stage-card__zadoks">Feekes 10.5.4 / 11.1</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Late Grain Fill','Feekes 11.2','Grain transitions through soft and hard dough stages. Dry weight continues to accumulate.','https://www.figma.com/api/mcp/asset/c9218ac6-d196-430b-a613-17383748992e','https://www.figma.com/api/mcp/asset/58bb8b58-dbdc-4495-bef0-d6cc32ddf69b')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/c9218ac6-d196-430b-a613-17383748992e" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/58bb8b58-dbdc-4495-bef0-d6cc32ddf69b" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Late Grain Fill</p>
+            <p class="stage-card__zadoks">Feekes 11.2</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+        <div class="stage-card" onclick="openSheet('Ripening / Maturity','Feekes 11.3–11.4','Grain dries down and reaches physiological then harvest maturity. Straw begins to dry and lodge.','https://www.figma.com/api/mcp/asset/ae6cc03a-050e-4971-9c55-19620acca438','https://www.figma.com/api/mcp/asset/c7d17b1f-fc3d-4d18-918d-99226291d36e')">
+          <div class="stage-card__icon">
+            <img class="stage-card__icon-bg" src="https://www.figma.com/api/mcp/asset/ae6cc03a-050e-4971-9c55-19620acca438" alt="">
+            <img class="stage-card__plant" src="https://www.figma.com/api/mcp/asset/c7d17b1f-fc3d-4d18-918d-99226291d36e" alt="">
+          </div>
+          <div class="stage-card__body">
+            <p class="stage-card__title">Ripening / Maturity</p>
+            <p class="stage-card__zadoks">Feekes 11.3–11.4</p>
+          </div>
+          <div class="stage-card__chevron"><svg viewBox="0 0 8 13"><polyline points="1,1 7,6.5 1,12"/></svg></div>
+        </div>
+
+      </div><!-- /tab-winter-feekes -->
+
+    </div><!-- /ios-scroll -->
+
+    <!-- Bottom sheet scrim -->
+    <div class="sheet-scrim" id="scrim" onclick="closeSheet()"></div>
+
+    <!-- Bottom sheet -->
+    <div class="bottom-sheet" id="sheet">
+      <div class="sheet-handle"><div class="sheet-handle__pill"></div></div>
+      <div class="sheet-content">
+        <div class="sheet-hero">
+          <div class="sheet-icon">
+            <img class="sheet-icon__bg" id="sheet-icon-bg" src="" alt="">
+            <img class="sheet-icon__plant" id="sheet-icon-plant" src="" alt="">
+          </div>
+          <div class="sheet-meta">
+            <p class="sheet-title" id="sheet-title"></p>
+            <p class="sheet-zadoks" id="sheet-zadoks"></p>
+          </div>
+        </div>
+        <div class="sheet-divider"></div>
+        <p class="sheet-label">About this stage</p>
+        <p class="sheet-desc" id="sheet-desc"></p>
+        <button class="sheet-close" onclick="closeSheet()">Done</button>
+      </div>
+    </div>
+
+    <!-- Bottom tab bar -->
+    <div class="ios-tab-bar">
+      <div class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.6" stroke-linecap="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9"/></svg>
+        <span class="tab-item__label">Home</span>
+      </div>
+      <div class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="tab-item__label">Fields</span>
+      </div>
+      <div class="tab-item tab-item--active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+        <span class="tab-item__label">Agronomy</span>
+      </div>
+      <div class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.6" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        <span class="tab-item__label">Analytics</span>
+      </div>
+      <div class="tab-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span class="tab-item__label">Account</span>
+      </div>
+    </div>
+
+  </div><!-- /phone-frame -->
+
+  <script>
+    var activeSeason = 'spring';
+    var activeScale  = 'zadoks';
+
+    function showTab() {
+      var id = 'tab-' + activeSeason + '-' + activeScale;
+      document.querySelectorAll('.tab-section').forEach(function(s) {
+        s.classList.toggle('active', s.id === id);
+      });
+      // scroll to top on switch
+      var scroll = document.querySelector('.ios-scroll');
+      if (scroll) scroll.scrollTop = 0;
+    }
+
+    function setSeason(season) {
+      activeSeason = season;
+      var btns = document.querySelectorAll('#season-control .seg-btn');
+      btns[0].classList.toggle('seg-btn--active', season === 'spring');
+      btns[1].classList.toggle('seg-btn--active', season === 'winter');
+      showTab();
+    }
+
+    function setScale(scale) {
+      activeScale = scale;
+      var btns = document.querySelectorAll('#scale-control .seg-btn');
+      btns[0].classList.toggle('seg-btn--active', scale === 'zadoks');
+      btns[1].classList.toggle('seg-btn--active', scale === 'feekes');
+      showTab();
+    }
+
+    function openSheet(title, zadoks, desc, bgSrc, plantSrc) {
+      document.getElementById('sheet-title').textContent = title;
+      document.getElementById('sheet-zadoks').textContent = zadoks;
+      document.getElementById('sheet-desc').textContent = desc;
+      document.getElementById('sheet-icon-bg').src = bgSrc;
+      document.getElementById('sheet-icon-plant').src = plantSrc;
+      document.getElementById('sheet').classList.add('open');
+      document.getElementById('scrim').classList.add('visible');
+    }
+
+    function closeSheet() {
+      document.getElementById('sheet').classList.remove('open');
+      document.getElementById('scrim').classList.remove('visible');
+    }
+  </script>
+
+</body>
+</html>

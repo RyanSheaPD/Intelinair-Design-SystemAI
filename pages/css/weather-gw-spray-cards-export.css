@@ -1,0 +1,418 @@
+/**
+ * Standalone export: GW + Spray map tooltip cards only (no app chrome).
+ * Mirrors tooltip/detail rules from agmri-weather.html for parity.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body.gw-so-cards-export-page {
+  margin: 0;
+  padding: 32px 24px 64px;
+  font-family: var(--font-family-web, system-ui, sans-serif);
+  background: repeating-conic-gradient(#f4f4f5 0% 25%, #ececf0 0% 50%) 50% / 24px 24px;
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+.gw-so-cards-export-doc {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.gw-so-cards-export-doc__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.gw-so-cards-export-doc__lede {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  max-width: 40rem;
+}
+
+.gw-so-cards-export-doc__note {
+  margin: 0 0 32px;
+  padding: 12px 14px;
+  font-size: 13px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.gw-so-cards-export-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 36px 32px;
+  align-items: start;
+}
+
+.gw-so-cards-export-grid__loading {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.gw-so-cards-export-item__label {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.gw-so-cards-export-item__slot {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.gw-so-cards-export-item__loading {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* Screen capture: map-style tooltip panels only (no page chrome) */
+body.gw-so-cards-export--cards-only {
+  padding: 24px;
+}
+
+body.gw-so-cards-export--cards-only .gw-so-cards-export-doc__title,
+body.gw-so-cards-export--cards-only .gw-so-cards-export-doc__lede,
+body.gw-so-cards-export--cards-only .gw-so-cards-export-doc__note,
+body.gw-so-cards-export--cards-only .gw-so-cards-export-item__label {
+  display: none !important;
+}
+
+body.gw-so-cards-export--cards-only .gw-so-cards-export-doc {
+  max-width: none;
+}
+
+body.gw-so-cards-export--cards-only .gw-so-cards-export-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px 32px;
+}
+
+/* Card panel: same look as map tooltip, but not position:fixed */
+.gw-so-cards-export-page .weather-tooltip {
+  position: static !important;
+  z-index: auto;
+  max-width: 360px;
+  padding: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text);
+  pointer-events: auto;
+}
+
+.gw-so-cards-export-page .weather-tooltip--rich {
+  padding: 10px 12px 12px;
+  max-width: 340px;
+}
+
+.gw-so-cards-export-page .weather-tooltip--mini.weather-tooltip--rich {
+  padding: 8px 10px 10px;
+  max-width: 240px;
+  font-size: 11px;
+}
+
+.gw-so-cards-export-page .weather-tooltip--mini .weather-map-tooltip__header {
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+}
+
+.gw-so-cards-export-page .weather-tooltip--mini.weather-tooltip--rich .gw-so-detail--gw {
+  margin-bottom: 4px;
+}
+
+.gw-so-detail--mini {
+  line-height: 1.25;
+}
+
+.gw-so-mini-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 20px;
+}
+
+.gw-so-mini-kind {
+  flex: 0 0 1.75rem;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.gw-so-detail__swatch--mini {
+  width: 4px;
+  height: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.gw-so-detail__status--mini {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.gw-so-cards-export-page .weather-tooltip strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.weather-map-tooltip__header {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.weather-map-tooltip__meta {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+.weather-tooltip--rich .gw-so-detail--gw {
+  margin-bottom: 8px;
+}
+
+.gw-so-detail {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.gw-so-detail--compact .gw-so-detail__brand {
+  margin-bottom: 6px;
+}
+
+.gw-so-detail__brand {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.gw-so-compact-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.gw-so-compact-head__text {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+}
+
+.gw-so-detail__swatch {
+  width: 12px;
+  height: 44px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.gw-so-detail__swatch--compact {
+  width: 6px;
+  height: 28px;
+  border-radius: 2px;
+  margin-top: 2px;
+}
+
+.gw-so-detail__status {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.gw-so-detail__status--compact {
+  font-size: 14px;
+  display: inline;
+}
+
+.gw-so-compact-inline-meta {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.gw-so-fact--compact {
+  margin: 0 0 6px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.gw-so-foot {
+  margin: 0;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.gw-so-compact-good {
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--color-text);
+  background: rgba(21, 128, 61, 0.08);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(21, 128, 61, 0.2);
+}
+
+.gw-so-compact-good__k {
+  font-weight: 700;
+  color: #15803d;
+  margin-right: 4px;
+}
+
+.gw-so-compact-all-good {
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.gw-so-metric-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gw-so-metric-list--compact {
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.gw-so-metric {
+  padding: 8px 10px;
+  background: var(--color-neutral-50);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.gw-so-metric--compact {
+  padding: 6px 8px 7px;
+}
+
+.gw-so-metric--limiting {
+  border-color: rgba(234, 88, 12, 0.45);
+  box-shadow: inset 3px 0 0 #ea580c;
+  padding-left: 10px;
+}
+
+.gw-so-metric--compact.gw-so-metric--limiting {
+  padding-left: 9px;
+}
+
+.gw-so-metric--limiting.gw-so-metric--risk {
+  border-color: rgba(196, 30, 58, 0.38);
+  box-shadow: inset 3px 0 0 #c41e3a;
+}
+
+.gw-so-metric__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.gw-so-metric__row--compact {
+  gap: 4px 8px;
+}
+
+.gw-so-metric__label {
+  font-weight: 600;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 11px;
+}
+
+.gw-so-metric__value {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  font-size: 11px;
+}
+
+.gw-so-metric__detail {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.gw-so-metric__detail--compact {
+  margin: 4px 0 0;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.gw-so-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.gw-so-pill--compact {
+  padding: 1px 6px;
+  font-size: 9px;
+}
+
+.gw-so-pill--good {
+  background: rgba(21, 128, 61, 0.14);
+  color: #15803d;
+}
+
+.gw-so-pill--marginal {
+  background: rgba(234, 88, 12, 0.16);
+  color: #c2410c;
+}
+
+.gw-so-pill--at-risk {
+  background: rgba(196, 30, 58, 0.14);
+  color: #c41e3a;
+}
+
+@media print {
+  body.gw-so-cards-export-page {
+    background: #fff;
+  }
+
+  .gw-so-cards-export-doc__note {
+    break-inside: avoid;
+  }
+
+  .gw-so-cards-export-item {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harvest details — modal (design system)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/modal.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-family);
+      background: var(--color-neutral-300);
+    }
+  </style>
+</head>
+<body>
+  <!-- Demo: field-info-card parity (AGMRI map pop-up) -->
+  <div
+    class="modal-overlay modal-overlay--harvest modal-overlay--open"
+    id="harvest-overlay"
+    aria-hidden="false"
+    aria-modal="true"
+    role="dialog"
+    aria-labelledby="harvest-modal-title"
+  >
+    <div class="modal modal--harvest-detail">
+      <div class="modal-harvest__header">
+        <div class="modal-harvest__title-row">
+          <h2 class="modal-harvest__title" id="harvest-modal-title">1703-Simp Mansion Rd W 160</h2>
+          <button type="button" class="modal-harvest__icon-btn modal-harvest__icon-btn--star" aria-label="Favorite field" title="Favorite">
+            <span class="material-symbols-outlined" aria-hidden="true">star</span>
+          </button>
+          <button type="button" class="modal-harvest__icon-btn js-copy" data-copy="1703-Simp Mansion Rd W 160" aria-label="Copy field name" title="Copy">
+            <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
+          </button>
+        </div>
+        <div class="modal-harvest__subrow modal-harvest__subrow--app">
+          <span class="modal-harvest__township">New Berlin-PPlains</span>
+          <span class="modal-harvest__farm-group">
+            <span class="modal-harvest__farm">Dowson Farms</span>
+            <button type="button" class="modal-harvest__icon-btn modal-harvest__icon-btn--star" aria-label="Favorite farm" title="Favorite">
+              <span class="material-symbols-outlined" aria-hidden="true">star</span>
+            </button>
+          </span>
+        </div>
+        <p class="modal-harvest__notes">For review (Farm was updated)</p>
+        <div class="modal-harvest__summary modal-harvest__summary--app">
+          <span class="modal-harvest__total-acreage">154.2 ac</span>
+          <span class="modal-harvest__summary-inline">
+            <span class="material-symbols-outlined" aria-hidden="true">grass</span>
+            N/A
+          </span>
+          <span class="modal-harvest__crop-tag">Crop unknown</span>
+          <span class="modal-harvest__gdd">GDD: N/A</span>
+        </div>
+        <div class="modal-harvest__status-bar modal-harvest__status-bar--app">
+          <div class="modal-harvest__status-left">
+            <span class="material-symbols-outlined" aria-hidden="true">agriculture</span>
+            <span>10/11, 11:57 AM</span>
+          </div>
+          <span class="modal-harvest__status-sep" aria-hidden="true"></span>
+          <span class="modal-harvest__status-gdd">Event GDD: 3674</span>
+          <span class="modal-harvest__status-sep" aria-hidden="true"></span>
+          <div class="modal-harvest__status-right">
+            <span>E3IB2X77E</span>
+            <button type="button" class="modal-harvest__icon-btn js-copy" data-copy="E3IB2X77E" aria-label="Copy equipment ID" title="Copy">
+              <span class="material-symbols-outlined" aria-hidden="true">content_copy</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-harvest__body glass">
+        <h3 class="modal-harvest__section-title">Harvest details</h3>
+        <div class="modal-harvest__grid">
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Area Worked</span>
+            <span class="modal-harvest__metric-value">153.6 ac</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Average Speed</span>
+            <span class="modal-harvest__metric-value">4.2 mi/hr</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Average Moisture</span>
+            <span class="modal-harvest__metric-value">14.3 percentage</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Total Distance</span>
+            <span class="modal-harvest__metric-value">69,270.9 m</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Total Dry Mass</span>
+            <span class="modal-harvest__metric-value">2,119,733.4 lb</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Total Wet Mass</span>
+            <span class="modal-harvest__metric-value">2,120,908.6 lb</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Total Dry Volume</span>
+            <span class="modal-harvest__metric-value">37,852.4 bu</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Total Wet Volume</span>
+            <span class="modal-harvest__metric-value">37,873.4 bu</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Average Dry Mass</span>
+            <span class="modal-harvest__metric-value">14,434.8 lb/ac</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Average Wet Mass</span>
+            <span class="modal-harvest__metric-value">14,442.6 lb/ac</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Average Dry Volume</span>
+            <span class="modal-harvest__metric-value">257.8 bu/ac</span>
+          </div>
+          <div class="modal-harvest__metric">
+            <span class="modal-harvest__metric-label">Average Wet Volume</span>
+            <span class="modal-harvest__metric-value">257.9 bu/ac</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.js-copy').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var text = btn.getAttribute('data-copy');
+        if (!text || !navigator.clipboard) return;
+        navigator.clipboard.writeText(text);
+      });
+    });
+  </script>
+</body>
+</html>

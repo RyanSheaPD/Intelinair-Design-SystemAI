@@ -1,0 +1,255 @@
+/**
+ * Activity timeline + chicklets (field map bottom bar — AGMRI-style).
+ *
+ * Timeline icon glyph set (Material Symbols Outlined — use on .activity-chicklet__icon):
+ *
+ * Planting / tillage:  agriculture, front_loader, precision_manufacturing, tractor
+ * Seeding / cover:    grass, spa, eco, local_florist
+ * Application:        water_drop, opacity, spray (if available), science
+ * Satellite / raster:  satellite_alt, satellite, public, map
+ * Aerial / flight:    flight, flight_takeoff, connected_airlines
+ * Scouting / eye:     visibility, photo_camera, inventory_2
+ * Harvest / grain:    agriculture (combine context), grain, warehouse, inventory
+ * Weather:            wb_sunny, thunderstorm, air
+ * Soil / sample:      terrain, layers, compost
+ * Generic / other:    event, calendar_month, more_horiz, flag, place
+ *
+ * Tip: pair a semantic modifier (e.g. .activity-chicklet--flight) with any glyph;
+ * color comes from the modifier unless .activity-chicklet--selected overrides.
+ */
+
+/* ── Timeline / flights strip (AGMRI: .flights-list-container) ── */
+.flights-list-container,
+.activity-timeline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  max-width: 100%;
+  min-height: 56px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  /* AGMRI map strip — matches #0006 (~40% black) */
+  background: rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+}
+
+.activity-timeline__label {
+  flex-shrink: 0;
+  font-family: var(--font-family, var(--font-family-web, system-ui, sans-serif));
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.activity-timeline__track {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 4px 4px;
+  margin: 0;
+  list-style: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+.activity-timeline__item {
+  flex-shrink: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.activity-timeline__track::-webkit-scrollbar {
+  height: 4px;
+}
+
+.activity-timeline__track::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+}
+
+.activity-timeline__action {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-primitive-600, #2563eb);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.activity-timeline__action:hover {
+  background: #fff;
+  transform: scale(1.04);
+}
+
+.activity-timeline__action:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+.activity-timeline__action .material-symbols-outlined {
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* ── Chicklet (AGMRI map tile strip) ── */
+.activity-chicklet {
+  --chicklet-fg: var(--color-neutral-800, #262626);
+  --chicklet-bg: #f5f5f5;
+  --chicklet-border: rgba(255, 255, 255, 0.11);
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  box-sizing: border-box;
+  min-width: 43px;
+  height: 42px;
+  padding: 2px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--chicklet-border);
+  background: var(--chicklet-bg);
+  color: var(--chicklet-fg);
+  cursor: pointer;
+  font-family: var(--font-family, var(--font-family-web, system-ui, sans-serif));
+  font-size: 14px;
+  line-height: 1.1;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.activity-chicklet:hover:not(.activity-chicklet--selected) {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.activity-chicklet:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.45);
+}
+
+.activity-chicklet__icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.activity-chicklet__icon {
+  font-size: 18px !important;
+  width: 18px;
+  height: 18px;
+  line-height: 18px !important;
+  color: var(--chicklet-fg);
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+.activity-chicklet__badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 18px;
+  padding: 0 4px;
+  height: 14px;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 14px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--chicklet-fg);
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.activity-chicklet__date {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--chicklet-fg);
+  max-width: 100%;
+  word-break: break-word;
+}
+
+.activity-chicklet__date--range {
+  font-size: 9px;
+  letter-spacing: -0.02em;
+}
+
+/* Semantic tints (icon + date share --chicklet-fg; surface stays #f5f5f5) */
+.activity-chicklet--planting {
+  --chicklet-fg: #92400e;
+}
+
+.activity-chicklet--seeding {
+  --chicklet-fg: #15803d;
+}
+
+.activity-chicklet--application {
+  --chicklet-fg: #1d4ed8;
+}
+
+.activity-chicklet--satellite {
+  --chicklet-fg: #dc2626;
+}
+
+.activity-chicklet--flight {
+  --chicklet-fg: #6d28d9;
+}
+
+.activity-chicklet--harvest {
+  --chicklet-fg: #a16207;
+}
+
+.activity-chicklet--scout {
+  --chicklet-fg: #0d9488;
+}
+
+.activity-chicklet--weather {
+  --chicklet-fg: #0369a1;
+}
+
+.activity-chicklet--soil {
+  --chicklet-fg: #78350f;
+}
+
+.activity-chicklet--neutral {
+  --chicklet-fg: #525252;
+}
+
+/* Selected: solid indigo, white glyph + label, outer ring */
+.activity-chicklet--selected {
+  --chicklet-fg: #fff;
+  --chicklet-bg: #3730a3;
+  --chicklet-border: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 0 2px #312e81;
+}
+
+.activity-chicklet--selected .activity-chicklet__badge {
+  background: rgba(255, 255, 255, 0.95);
+  color: #3730a3;
+}
+
+.activity-chicklet--selected:hover {
+  box-shadow: 0 0 0 2px #312e81, 0 4px 12px rgba(0, 0, 0, 0.2);
+}

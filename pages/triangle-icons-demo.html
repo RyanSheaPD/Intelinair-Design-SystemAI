@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Triangle icon set — single file</title>
+  <style>
+    /* Triangle icon set
+       Set --icon-bg on the parent container to match whatever surface.
+       Size: --triangle-icon-size (default 16px). Mobile: 14px max.
+       Use .icon-wrap--touch when the icon is a button/link (44px min on mobile).
+    */
+    .icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      --triangle-icon-size: 16px;
+    }
+
+    .icon-wrap svg {
+      display: block;
+      width: var(--triangle-icon-size);
+      height: auto;
+      overflow: visible;
+    }
+
+    @media (max-width: 768px) {
+      .icon-wrap {
+        --triangle-icon-size: 14px;
+      }
+      .icon-wrap svg {
+        width: 14px;
+        height: 14px;
+        max-width: 14px;
+        max-height: 14px;
+        object-fit: contain;
+      }
+      .icon-wrap svg polygon,
+      .icon-wrap svg polygon.thin {
+        stroke-width: 0.5;
+      }
+      .icon-wrap--touch {
+        min-width: 44px;
+        min-height: 44px;
+      }
+    }
+
+    .icon-wrap svg polygon {
+      fill: #D4D4D4;
+      stroke: var(--icon-bg, #3a3a3a);
+      stroke-width: 1;
+      stroke-linejoin: miter;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .icon-wrap svg polygon.thin {
+      stroke-width: 1;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 2rem;
+      background: #f5f5f5;
+      color: #1a1a1a;
+    }
+    .demo {
+      margin-bottom: 1.5rem;
+    }
+    .demo h2 {
+      font-size: 1rem;
+      margin: 0 0 0.5rem 0;
+      color: #666;
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .surface-dark {
+      background: #3a3a3a;
+      --icon-bg: #3a3a3a;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+    }
+    .surface-white {
+      background: #ffffff;
+      --icon-bg: #ffffff;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
+    }
+    button.icon-wrap {
+      background: transparent;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 0;
+    }
+    button.icon-wrap:hover {
+      border-color: #999;
+      background: rgba(0,0,0,0.04);
+    }
+  </style>
+</head>
+<body>
+  <h1>Triangle icon set</h1>
+  <p>Set <code>--icon-bg</code> on the parent to match the surface. Drop the SVGs inline inside <code>&lt;div class="icon-wrap"&gt;</code>.</p>
+
+  <div class="demo">
+    <h2>1 triangle</h2>
+    <div class="demo-row">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,10 130,80 10,80"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo">
+    <h2>2 triangles</h2>
+    <div class="demo-row">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,10 130,80 10,80"/>
+          <polygon class="thin" points="70,40 130,110 10,110"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo">
+    <h2>3 triangles</h2>
+    <div class="demo-row">
+      <div class="icon-wrap">
+        <svg viewBox="0 0 140 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,10 130,80 10,80"/>
+          <polygon class="thin" points="70,40 130,110 10,110"/>
+          <polygon class="thin" points="70,70 130,140 10,140"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo">
+    <h2>On dark surface (default --icon-bg)</h2>
+    <div class="demo-row surface-dark">
+      <div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/></svg></div>
+      <div class="icon-wrap"><svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/></svg></div>
+      <div class="icon-wrap"><svg viewBox="0 0 140 150" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/><polygon class="thin" points="70,70 130,140 10,140"/></svg></div>
+    </div>
+  </div>
+
+  <div class="demo">
+    <h2>On white surface (--icon-bg: #ffffff)</h2>
+    <div class="demo-row surface-white">
+      <div class="icon-wrap"><svg viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/></svg></div>
+      <div class="icon-wrap"><svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/></svg></div>
+      <div class="icon-wrap"><svg viewBox="0 0 140 150" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/><polygon class="thin" points="70,70 130,140 10,140"/></svg></div>
+    </div>
+  </div>
+
+  <div class="demo">
+    <h2>Mobile: touch target (use when icon is a button/link)</h2>
+    <p style="font-size: 0.875rem; color: #666; margin: 0 0 0.75rem 0;">Add <code>icon-wrap--touch</code> so the tap area is at least 44×44px on viewports ≤768px. Icon size is 14px on mobile (max 14×14).</p>
+    <div class="demo-row">
+      <button type="button" class="icon-wrap icon-wrap--touch" aria-label="Expand 1 level">
+        <svg viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/></svg>
+      </button>
+      <button type="button" class="icon-wrap icon-wrap--touch" aria-label="Expand 2 levels">
+        <svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/></svg>
+      </button>
+      <button type="button" class="icon-wrap icon-wrap--touch" aria-label="Expand 3 levels">
+        <svg viewBox="0 0 140 150" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="70,10 130,80 10,80"/><polygon class="thin" points="70,40 130,110 10,110"/><polygon class="thin" points="70,70 130,140 10,140"/></svg>
+      </button>
+    </div>
+    <p style="font-size: 0.75rem; color: #999; margin: 0.5rem 0 0 0;">Resize the window to ≤768px to see the larger icon and 44px touch area.</p>
+  </div>
+</body>
+</html>

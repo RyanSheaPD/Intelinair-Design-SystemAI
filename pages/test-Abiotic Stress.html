@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgMRI — Abiotic Stress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/data-table.css" />
+  <link rel="stylesheet" href="../components/filter-pill.css" />
+  <link rel="stylesheet" href="../components/counter-badge.css" />
+  <link rel="stylesheet" href="../components/tabs.css" />
+  <link rel="stylesheet" href="../components/loading.css" />
+  <link rel="stylesheet" href="../components/empty-state.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: var(--font-family-web); background: #f5f5f5; color: var(--color-text); }
+
+    /* ── App shell ── */
+    .app-shell { display: flex; height: 100vh; overflow: hidden; }
+
+    .app-nav {
+      flex-shrink: 0;
+      height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .app-nav .nav {
+      height: 100%;
+      min-height: 100vh;
+    }
+
+    .app-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--color-surface); }
+
+    .app-content { flex: 1; overflow-y: auto; background: var(--color-surface); }
+
+    /* ── Page title bar ── */
+    .page-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px 0;
+    }
+    .page-title-bar__title {
+      font-size: 20px;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+    }
+
+    /* ── Filter action bar ── */
+    .filter-action-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 24px;
+      flex-wrap: wrap;
+    }
+    .filter-action-bar .btn--secondary {
+      font-size: 12px;
+      padding: 7px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-2xl);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font-weight: 500;
+      gap: 5px;
+    }
+    .filter-action-bar .btn--secondary svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    .filter-action-bar__sep {
+      width: 1px;
+      height: 24px;
+      background: var(--color-border);
+      flex-shrink: 0;
+    }
+
+    /* ── View toggle dropdown ── */
+    .view-toggle {
+      position: relative;
+      margin-left: auto;
+    }
+    .view-toggle__trigger {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .view-toggle__trigger:hover { color: var(--color-text); }
+    .view-toggle__trigger svg { width: 16px; height: 16px; }
+    .view-toggle__caret {
+      width: 14px;
+      height: 14px;
+      color: var(--color-text-muted);
+      transition: transform 0.15s ease;
+    }
+    .view-toggle.is-open .view-toggle__caret { transform: rotate(180deg); }
+    .view-toggle__menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 30;
+      min-width: 160px;
+      padding: 4px 0;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+    }
+    .view-toggle.is-open .view-toggle__menu { display: block; }
+    .view-toggle__option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--color-text);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+    }
+    .view-toggle__option:hover { background: var(--color-neutral-50); }
+    .view-toggle__option.is-active {
+      font-weight: 600;
+      color: var(--color-brand-500);
+    }
+    .view-toggle__option svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .view-toggle__check {
+      width: 14px;
+      height: 14px;
+      margin-left: auto;
+      color: var(--color-brand-500);
+    }
+
+    /* ── Summary stats bar ── */
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .stat-block {
+      text-align: center;
+    }
+    .stat-block__value {
+      font-size: 18px;
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+    .stat-block__label {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    /* ── Stress severity distribution mini-bar ── */
+    .stress-dist {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+    .stress-dist__bar {
+      display: flex;
+      width: 140px;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .stress-dist__seg--low { background: var(--color-success); }
+    .stress-dist__seg--mid { background: var(--color-warning); }
+    .stress-dist__seg--high { background: var(--color-danger); }
+    .stress-dist__legend {
+      display: flex;
+      gap: 10px;
+    }
+    .stress-dist__item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .stress-dist__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .stress-dist__dot--low { background: var(--color-success); }
+    .stress-dist__dot--mid { background: var(--color-warning); }
+    .stress-dist__dot--high { background: var(--color-danger); }
+
+    /* ── Table overrides ── */
+    .fields-table-wrap {
+      flex: 1;
+      overflow: auto;
+      padding: 0;
+    }
+    .fields-table-wrap .ds-data-table {
+      table-layout: auto;
+    }
+    .fields-table-wrap .ds-data-table thead th {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      padding: 10px 12px;
+      white-space: nowrap;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .fields-table-wrap .ds-data-table tbody td {
+      padding: 0 12px;
+      font-size: 13px;
+      height: 50px;
+      vertical-align: middle;
+      border-bottom: 1px solid #ececec;
+    }
+    .fields-table-wrap .ds-data-table tbody tr:hover {
+      background: var(--color-neutral-50);
+    }
+    .fields-table-wrap .ds-data-table tbody tr { cursor: pointer; }
+
+    /* ── Field name cell ── */
+    .field-name-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 50px;
+    }
+    .field-thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      background: var(--color-neutral-100);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .field-thumb svg { width: 24px; height: 24px; opacity: 0.5; }
+    .field-name-link {
+      color: var(--color-brand-500);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .field-name-link:hover { text-decoration: underline; }
+
+    /* ── Stress score badge ── */
+    .field-stress {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+      border-radius: 6px;
+      padding: 3px 9px 3px 7px;
+      flex-shrink: 0;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .field-stress__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: currentColor;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    }
+    .field-stress--low {
+      color: #15803d;
+      background: rgba(22, 163, 74, 0.14);
+    }
+    .field-stress--mid {
+      color: #b45309;
+      background: rgba(245, 158, 11, 0.18);
+    }
+    .field-stress--high {
+      color: #b91c1c;
+      background: rgba(239, 68, 68, 0.14);
+    }
+    /* Accessible text labels alongside color */
+    .field-stress__label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      opacity: 0.8;
+    }
+
+    /* ── Sort indicator ── */
+    .sort-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+    .sort-indicator svg {
+      width: 12px;
+      height: 12px;
+      color: var(--color-neutral-400);
+      flex-shrink: 0;
+    }
+    .th-sortable { cursor: pointer; }
+    .th-sortable:hover { color: var(--color-text); }
+    .th-sortable:hover .sort-indicator svg { color: var(--color-neutral-600); }
+    .th-sortable--active .sort-indicator svg { color: var(--color-brand-500); }
+
+    /* ── Info icon tooltip on stress score header ── */
+    .th-info-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+    }
+    .th-info-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      color: var(--color-neutral-400);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .th-info-btn:hover { color: var(--color-neutral-600); }
+    .th-info-btn svg { width: 14px; height: 14px; }
+    .th-info-tooltip {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      width: 280px;
+      padding: 12px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--color-text-muted);
+      white-space: normal;
+      cursor: default;
+    }
+    .th-info-tooltip strong { color: var(--color-text); }
+    .th-info-tooltip.is-open { display: block; }
+
+    /* ── Growth stage badge ── */
+    .growth-stage {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--color-neutral-50);
+      border: 1px solid var(--color-neutral-200);
+    }
+
+    /* ── Grower icon ── */
+    .grower-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--color-brand-500);
+      flex-shrink: 0;
+    }
+    .grower-icon svg { fill: currentColor; }
+
+    /* ── N/A text ── */
+    .text-na { color: var(--color-text-muted); }
+
+    /* ── Map view layout ── */
+    .map-view-container {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      position: relative;
+    }
+    .map-view-container.is-active { display: flex; }
+
+    .map-area {
+      flex: 1;
+      background: var(--color-neutral-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-width: 0;
+    }
+    .map-placeholder {
+      text-align: center;
+      color: var(--color-text-muted);
+    }
+    .map-placeholder svg { width: 64px; height: 64px; color: var(--color-neutral-300); margin-bottom: 12px; }
+    .map-placeholder__label { font-size: 14px; font-weight: 500; }
+
+    /* ── Field detail panel (right side of map) ── */
+    .field-detail-panel {
+      width: 420px;
+      flex-shrink: 0;
+      background: var(--color-surface);
+      border-left: 1px solid var(--color-border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .field-detail__header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .field-detail__back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      cursor: pointer;
+      color: var(--color-text-muted);
+      flex-shrink: 0;
+    }
+    .field-detail__back svg { width: 16px; height: 16px; }
+    .field-detail__title { font-size: 16px; font-weight: 600; color: var(--color-text); }
+    .field-detail__subtitle { font-size: 12px; color: var(--color-text-muted); }
+
+    .field-detail__meta {
+      display: flex;
+      gap: 16px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--color-border);
+      flex-wrap: wrap;
+    }
+    .field-detail__meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .field-detail__meta-label { font-size: 11px; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+    .field-detail__meta-value { font-size: 14px; font-weight: 600; color: var(--color-text); }
+
+    /* ── Stress timeline chart ── */
+    .stress-timeline {
+      padding: 20px;
+      flex: 1;
+    }
+    .stress-timeline__title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 4px;
+    }
+    .stress-timeline__desc {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    /* Legend */
+    .stress-timeline__legend {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+    .stress-timeline__legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-line {
+      width: 20px;
+      height: 3px;
+      border-radius: 2px;
+    }
+    .legend-line--actual { background: var(--color-brand-500); }
+    .legend-line--predicted { background: var(--color-brand-300); background-image: repeating-linear-gradient(90deg, transparent, transparent 3px, var(--color-surface) 3px, var(--color-surface) 6px); }
+    .legend-dot { width: 6px; height: 6px; border-radius: 50%; border: 2px solid var(--color-neutral-400); }
+
+    /* Chart area */
+    .stress-chart {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      margin-bottom: 8px;
+    }
+    .stress-chart__svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    /* Y-axis grid lines */
+    .stress-chart__grid line { stroke: var(--color-neutral-100); stroke-width: 1; }
+    .stress-chart__grid text { fill: var(--color-text-muted); font-size: 10px; }
+    /* Axis labels */
+    .stress-chart__x-label { fill: var(--color-text-muted); font-size: 10px; font-weight: 400; }
+    .stress-chart__x-label--active { fill: var(--color-text); font-weight: 600; }
+    /* Lines */
+    .stress-chart__line--actual { fill: none; stroke: var(--color-brand-500); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .stress-chart__line--predicted { fill: none; stroke: var(--color-brand-300); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 6 4; }
+    /* Area fills */
+    .stress-chart__area--actual { fill: var(--color-brand-100); opacity: 0.5; }
+    .stress-chart__area--predicted { fill: var(--color-brand-100); opacity: 0.25; }
+    /* Data points */
+    .stress-chart__dot { r: 4; fill: var(--color-surface); stroke-width: 2.5; cursor: pointer; transition: r 0.1s ease; }
+    .stress-chart__dot--actual { stroke: var(--color-brand-500); }
+    .stress-chart__dot--predicted { stroke: var(--color-brand-300); }
+    .stress-chart__dot:hover { r: 6; }
+    /* Current stage marker */
+    .stress-chart__now-line { stroke: var(--color-neutral-400); stroke-width: 1; stroke-dasharray: 4 3; }
+    .stress-chart__now-label { fill: var(--color-text-muted); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    /* Color bands */
+    .stress-chart__band--low { fill: var(--color-success-100); opacity: 0.35; }
+    .stress-chart__band--mid { fill: var(--color-warning-100); opacity: 0.35; }
+    .stress-chart__band--high { fill: var(--color-danger-100); opacity: 0.35; }
+
+    /* Tooltip */
+    .stress-chart__tooltip {
+      display: none;
+      position: absolute;
+      z-index: 10;
+      padding: 8px 10px;
+      background: var(--color-neutral-800);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      line-height: 1.4;
+      pointer-events: none;
+      white-space: nowrap;
+      box-shadow: var(--shadow-sm);
+    }
+    .stress-chart__tooltip.is-visible { display: block; }
+    .stress-chart__tooltip strong { font-weight: 600; }
+    .stress-chart__tooltip__type { opacity: 0.7; font-size: 10px; }
+
+    /* Source note */
+    .stress-timeline__sources {
+      font-size: 10px;
+      color: var(--color-text-muted);
+      padding: 8px 0 0;
+      border-top: 1px solid var(--color-neutral-100);
+      line-height: 1.5;
+    }
+    .stress-timeline__sources strong { color: var(--color-text); font-weight: 500; }
+
+    @media (max-width: 900px) {
+      .map-view-container.is-active { flex-direction: column; }
+      .field-detail-panel { width: 100%; max-height: 50vh; border-left: none; border-top: 1px solid var(--color-border); }
+    }
+
+    /* ── AI Fab ── */
+    .ai-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--color-neutral-900);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      z-index: 100;
+      border: none;
+    }
+    .ai-fab svg { width: 20px; height: 20px; }
+
+    /* Nav settings at bottom */
+    .nav__spacer { flex: 1; }
+    .nav__icon svg { fill: currentColor; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ══ Left Nav ══ -->
+  <aside class="app-nav">
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M3 9.00001L12 2.00001L21 9.00001V20C21 20.5304 20.7893 21.0392 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0392 3 20.5304 3 20V9.00001Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></span>
+        <span class="nav__label">Home</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+        <span class="nav__label">AI Chat</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 12C14.3261 12 15.5975 12.5272 16.5352 13.4648C17.4728 14.4025 18 15.6739 18 17V19C18 19.5523 17.5523 20 17 20C16.4477 20 16 19.5523 16 19V17C16 16.2044 15.6837 15.4415 15.1211 14.8789C14.6289 14.3867 13.9835 14.0829 13.2969 14.0146L13 14H5C4.20435 14 3.44152 14.3163 2.87891 14.8789C2.3163 15.4415 2 16.2044 2 17V19C2 19.5523 1.55228 20 1 20C0.447715 20 0 19.5523 0 19V17C0 15.6739 0.527162 14.4025 1.46484 13.4648C2.40253 12.5272 3.67392 12 5 12H13ZM19.0322 12.8799C19.1703 12.3452 19.7153 12.024 20.25 12.1621C21.3226 12.4391 22.2734 13.0639 22.9521 13.9395C23.6308 14.815 23.9991 15.8913 24 16.999V19C23.9999 19.5522 23.5522 20 23 20C22.4478 20 22.0001 19.5522 22 19V17.001L21.9893 16.7529C21.9411 16.1767 21.7275 15.6248 21.3711 15.165C20.9639 14.6397 20.3936 14.2638 19.75 14.0977C19.2153 13.9595 18.8942 13.4146 19.0322 12.8799ZM9 0C11.7614 0 14 2.23858 14 5C14 7.76142 11.7614 10 9 10C6.23858 10 4 7.76142 4 5C4 2.23858 6.23858 0 9 0ZM15.0312 0.881836C15.1682 0.346814 15.713 0.0241452 16.248 0.161133C17.3236 0.43651 18.2773 1.06244 18.958 1.93945C19.6385 2.81638 20.0078 3.89487 20.0078 5.00488L20.0039 5.21289C19.9608 6.24911 19.5959 7.24827 18.958 8.07031C18.2773 8.94732 17.3236 9.57326 16.248 9.84863C15.713 9.98562 15.1682 9.66295 15.0312 9.12793C14.8943 8.59291 15.2169 8.04812 15.752 7.91113C16.3972 7.74592 16.9695 7.37089 17.3779 6.84473C17.7353 6.38439 17.949 5.8311 17.9971 5.25391L18.0078 5.00488C18.0078 4.33876 17.7864 3.69125 17.3779 3.16504C16.9695 2.63888 16.3972 2.26385 15.752 2.09863C15.2169 1.96164 14.8943 1.41686 15.0312 0.881836ZM9 2C7.34315 2 6 3.34315 6 5C6 6.65685 7.34315 8 9 8C10.6569 8 12 6.65685 12 5C12 3.34315 10.6569 2 9 2Z"/></svg></span>
+        <span class="nav__label">Growers</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+        <span class="nav__label">Groups</span>
+      </a>
+      <a href="#" class="nav__item nav__item--active" aria-current="page">
+        <span class="nav__icon"><svg viewBox="0 0 24 23.041" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M9.05665 12.1943C9.28633 12.2419 9.43399 12.4666 9.38673 12.6963L7.32911 22.6406C7.28167 22.873 7.07705 23.0405 6.83985 23.041H1.00098C0.890057 23.0408 0.781728 23.0022 0.695319 22.9326C0.485729 22.7635 0.453183 22.4569 0.622077 22.2471L8.63477 12.3467C8.70758 12.2562 8.814 12.1989 8.92969 12.1885V12.1875C8.97205 12.1834 9.01498 12.1857 9.05665 12.1943ZM15.0723 12.1875C15.1878 12.1982 15.2943 12.2554 15.3672 12.3457L23.3799 22.2402C23.4535 22.3289 23.4941 22.4404 23.4932 22.5557C23.491 22.8251 23.2705 23.0421 23.001 23.04H17.1621C16.9249 23.0396 16.7203 22.8721 16.6729 22.6396L14.6152 12.6963C14.6067 12.6548 14.6044 12.6124 14.6084 12.5703C14.6309 12.3367 14.8386 12.165 15.0723 12.1875ZM11.9981 12.0391C12.2516 12.039 12.4708 12.2176 12.5225 12.4658L14.5889 22.4395C14.5956 22.4724 14.5986 22.5064 14.5986 22.54C14.5984 22.816 14.3746 23.0391 14.0986 23.0391H9.90137C9.86791 23.0391 9.83456 23.036 9.80176 23.0293C9.5312 22.9741 9.35592 22.71 9.41114 22.4395L11.4756 12.4658C11.5268 12.2179 11.7449 12.0393 11.9981 12.0391ZM5.1045 12.8154C5.2083 12.7904 5.31653 12.8342 5.37305 12.9248C5.43321 13.0159 5.42645 13.136 5.35645 13.2197L0.444342 19.2881C0.397079 19.3462 0.325905 19.3806 0.250983 19.3809C0.112911 19.3812 0.000381827 19.2689 6.4633e-06 19.1309V15.7393C-0.00159755 15.1919 0.295458 14.6868 0.774421 14.4219C2.13989 13.6964 3.59635 13.1564 5.1045 12.8154ZM18.8955 12.8164C20.4037 13.1574 21.8601 13.6983 23.2256 14.4238C23.7046 14.6887 24.0016 15.1939 24 15.7412V19.1279C23.9998 19.2029 23.9654 19.274 23.9072 19.3213C23.8001 19.408 23.6427 19.3921 23.5557 19.2852L18.6436 13.2168C18.5954 13.1568 18.5781 13.0778 18.5957 13.0029C18.6273 12.8687 18.7613 12.7852 18.8955 12.8164ZM6.91407 7.70996C7.69318 4.90046 10.6025 3.2543 13.4121 4.0332C16.2216 4.81231 17.8678 7.72162 17.0889 10.5312C16.9502 11.0111 16.4534 11.2915 15.9707 11.1631C15.4808 11.0326 15.1889 10.53 15.3193 10.04C15.4858 9.43879 15.4858 8.8034 15.3193 8.20215C14.8118 6.36965 12.9146 5.29529 11.082 5.80273C9.24969 6.31035 8.17523 8.20758 8.68262 10.04C8.81116 10.5227 8.53066 11.0195 8.05079 11.1582C7.56371 11.299 7.05493 11.0183 6.91407 10.5312C6.65821 9.60837 6.65821 8.63285 6.91407 7.70996ZM4.88184 8.75098C5.43413 8.75098 5.88184 9.19869 5.88184 9.75098C5.88173 10.3032 5.43407 10.751 4.88184 10.751H3.88184C3.32967 10.7509 2.88195 10.3031 2.88184 9.75098C2.88184 9.19872 3.3296 8.75103 3.88184 8.75098H4.88184ZM20.2422 8.75098C20.7944 8.75105 21.2422 9.19873 21.2422 9.75098C21.2421 10.3031 20.7944 10.7509 20.2422 10.751H19.2422C18.69 10.751 18.2423 10.3032 18.2422 9.75098C18.2422 9.1987 18.6899 8.751 19.2422 8.75098H20.2422ZM5.2588 2.87988C5.64247 2.48263 6.2756 2.47181 6.67286 2.85547L7.38184 3.56348C7.77205 3.95414 7.77226 4.5871 7.38184 4.97754C6.99116 5.36793 6.35728 5.3681 5.9668 4.97754L5.2588 4.26953C4.88458 3.88206 4.88467 3.26741 5.2588 2.87988ZM17.6309 2.85547C18.0184 2.48119 18.633 2.48121 19.0205 2.85547C19.4177 3.23916 19.4286 3.87231 19.0449 4.26953L18.3369 4.97754C17.9464 5.36788 17.3135 5.36786 16.9229 4.97754C16.5323 4.58719 16.5318 3.95425 16.9219 3.56348L17.6309 2.85547ZM12.1504 0C12.7027 0 13.1504 0.447714 13.1504 1V2C13.1504 2.55229 12.7027 3 12.1504 3C11.5983 2.99977 11.1504 2.55215 11.1504 2V1C11.1504 0.447859 11.5983 0.00023457 12.1504 0Z"/></svg></span>
+        <span class="nav__label">Fields</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 25 23" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13.3413 0.809221C14.5774 -0.269739 16.4207 -0.269741 17.6568 0.809221C17.7492 0.889953 17.8262 0.986501 17.8833 1.09438L17.9331 1.20668L19.357 4.94203L20.7066 6.29262C20.7663 6.35239 20.8182 6.41933 20.8609 6.49184L20.9185 6.60512L23.7896 13.3043L23.9497 13.4645L23.8892 13.5221L24.0279 13.7233C25.5021 15.9812 25.2982 19.015 23.4175 21.0592L23.2417 21.2418C20.8986 23.5849 17.1005 23.5848 14.7574 21.2418C13.7987 20.2832 13.2314 19.0812 13.0572 17.8346C13.0325 17.7651 13.0142 17.6924 13.0054 17.6168L12.9995 17.4997V9.00453C12.9325 9.00344 12.8632 9.00124 12.7915 9.00063L11.9995 8.99965V17.9997C11.9995 18.2406 11.9139 18.4618 11.772 18.6344C11.5027 19.5894 10.9941 20.4913 10.2427 21.2428C7.89976 23.5858 4.10055 23.5853 1.75735 21.2428C-0.377096 19.1084 -0.567195 15.7663 1.18704 13.4166L4.07962 6.6686C4.11302 6.59065 4.15685 6.51762 4.20853 6.45082L4.29153 6.35512L5.63821 5.00746L7.06302 1.21156C7.10663 1.09527 7.17117 0.988217 7.25345 0.896135L7.34134 0.809221C8.5774 -0.269741 10.4207 -0.269739 11.6568 0.809221C11.8432 0.971988 11.9617 1.19729 11.9917 1.44008L11.9995 1.56215V5.56215C11.9995 6.11429 11.5516 6.56192 10.9995 6.56215C10.4868 6.56215 10.0633 6.17656 10.0054 5.67934L9.99954 5.56215L9.99856 2.10024L9.8804 2.05824C9.54944 1.9552 9.18533 1.9889 8.87649 2.16078L8.83255 2.18813L7.43509 5.91371C7.39753 6.01379 7.34466 6.10721 7.27786 6.19008L7.20657 6.26918L5.84231 7.63442L4.29349 11.2467C6.23352 10.6733 8.40629 11.1005 9.99954 12.528V9.05824C9.32308 9.13897 9.08296 9.31938 8.89407 9.69692C8.64708 10.1909 8.04625 10.3912 7.55228 10.1442C7.05842 9.89724 6.85826 9.29727 7.10501 8.80336C7.85983 7.29372 8.79659 7.01071 11.399 6.99965H12.5992C15.2018 7.01069 16.1392 7.29365 16.8941 8.80336C17.1406 9.29713 16.9404 9.89716 16.4468 10.1442C15.9528 10.3912 15.352 10.1909 15.105 9.69692C15.0723 9.63148 15.0373 9.57235 14.9995 9.51821V12.5289C16.6011 11.0937 18.7871 10.6696 20.7349 11.2565L19.1558 7.57094L17.7915 6.20668C17.7252 6.14028 17.6687 6.06483 17.6236 5.98305L17.565 5.85512L16.1675 2.1891L16.1216 2.16078C15.8128 1.98891 15.4487 1.95517 15.1177 2.05824L14.9995 2.10024V5.49965C14.9994 6.01238 14.613 6.43505 14.1158 6.49281L13.9995 6.49965C13.4867 6.49965 13.0632 6.1132 13.0054 5.61586L12.9995 5.49965V1.56215C12.9996 1.27355 13.124 0.999059 13.3413 0.809221ZM8.66849 14.0202C7.0981 12.611 4.68142 12.6618 3.17142 14.1715C3.08445 14.2585 3.00163 14.3484 2.92435 14.4411L2.91849 14.4567C2.85416 14.6067 2.75656 14.732 2.63919 14.8297C1.63611 16.3793 1.81348 18.4698 3.17142 19.8278C4.73353 21.3897 7.26563 21.3898 8.82767 19.8278C10.3373 18.3178 10.3881 15.9011 8.97903 14.3307L8.82767 14.1715L8.66849 14.0202ZM21.6685 14.0202C20.0981 12.611 17.6815 12.6619 16.1714 14.1715C14.6094 15.7336 14.6093 18.2657 16.1714 19.8278C17.7335 21.3897 20.2656 21.3898 21.8277 19.8278C23.3373 18.3178 23.3881 15.9011 21.979 14.3307L21.8277 14.1715L21.6685 14.0202Z"/></svg></span>
+        <span class="nav__label">Scout</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
+        <span class="nav__label">Weather</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+        <span class="nav__label">Analyze</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+        <span class="nav__label">Disease</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        <span class="nav__label">Library</span>
+      </a>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+        <span class="nav__label">Crop plan</span>
+      </a>
+      <div class="nav__spacer"></div>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        <span class="nav__label">Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ══ Main ══ -->
+  <div class="app-main">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header__left">
+        <a href="#" class="header__logo">AGMRI</a>
+      </div>
+      <div class="header__center">
+        <div class="header__search-wrap">
+          <span class="header__search-icon">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input class="header__search" type="text" placeholder="Search fields, growers..." />
+        </div>
+      </div>
+      <div class="header__right">
+        <span class="header__user-name">Ryan Shea</span>
+        <span class="header__avatar">RS</span>
+        <div class="header__notifications">
+          <button class="header__notifications-btn">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </button>
+          <span class="header__notifications-badge">12</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page title + view toggle -->
+    <div class="page-title-bar">
+      <span class="page-title-bar__title">Abiotic Stress</span>
+      <div class="filter-action-bar">
+        <button class="btn btn--secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="var(--color-surface)"/><circle cx="16" cy="12" r="2" fill="var(--color-surface)"/><circle cx="10" cy="18" r="2" fill="var(--color-surface)"/></svg>
+          Advanced filters
+        </button>
+        <div class="filter-action-bar__sep"></div>
+        <div class="view-toggle" id="view-toggle">
+          <button type="button" class="view-toggle__trigger" id="view-toggle-btn">
+            <svg id="view-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            <span id="view-toggle-label">List view</span>
+            <svg class="view-toggle__caret" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8l4 4 4-4"/></svg>
+          </button>
+          <div class="view-toggle__menu">
+            <button type="button" class="view-toggle__option is-active" data-view="list">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              List view
+              <svg class="view-toggle__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <button type="button" class="view-toggle__option" data-view="field">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+              Field view
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary stats -->
+    <div class="stats-bar">
+      <div class="stat-block">
+        <div class="stat-block__value">611</div>
+        <div class="stat-block__label">Total fields</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-block__value">47</div>
+        <div class="stat-block__label">Avg. stress</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-block__value">38</div>
+        <div class="stat-block__label">High stress (&ge;67)</div>
+      </div>
+      <!-- Severity distribution bar (Req 1.2: visually scannable) -->
+      <div class="stress-dist">
+        <div class="stress-dist__bar">
+          <div class="stress-dist__seg--low" style="width:45%;" title="Low stress: 275 fields"></div>
+          <div class="stress-dist__seg--mid" style="width:31%;" title="Moderate stress: 189 fields"></div>
+          <div class="stress-dist__seg--high" style="width:24%;" title="High stress: 147 fields"></div>
+        </div>
+        <div class="stress-dist__legend">
+          <span class="stress-dist__item"><span class="stress-dist__dot stress-dist__dot--low"></span> Low</span>
+          <span class="stress-dist__item"><span class="stress-dist__dot stress-dist__dot--mid"></span> Moderate</span>
+          <span class="stress-dist__item"><span class="stress-dist__dot stress-dist__dot--high"></span> High</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ LIST VIEW (Req 1) ═══════════════ -->
+    <div class="fields-table-wrap" id="list-view">
+      <div class="ds-data-table-shell" style="border:none;border-radius:0;">
+        <div class="ds-data-table-shell__scroll">
+          <table class="ds-data-table ds-data-table--fixed-height">
+            <thead>
+              <tr>
+                <th class="th-sortable" style="min-width:200px;" scope="col">
+                  <span class="sort-indicator">Field <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                </th>
+                <!-- Req 1.1: Stress score per field — composite abiotic stress score 1-100 -->
+                <th class="th-sortable th-sortable--active" scope="col">
+                  <span class="sort-indicator">
+                    <span class="th-info-wrap">
+                      Abiotic stress
+                      <button type="button" class="th-info-btn" aria-label="Abiotic stress score info">
+                        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                      </button>
+                      <div class="th-info-tooltip">
+                        <strong>Abiotic stress score (1&ndash;100)</strong><br>
+                        Composite score for the <strong>current growth stage</strong>, aggregating daily water-stress readings across the active stage window (e.g. VE&ndash;R6).<br><br>
+                        <strong>1</strong> = no meaningful stress &middot; <strong>100</strong> = maximum stress<br><br>
+                        Color bands: <strong style="color:#15803d;">1&ndash;33</strong> low &middot; <strong style="color:#b45309;">34&ndash;66</strong> moderate &middot; <strong style="color:#b91c1c;">67&ndash;100</strong> high<br><br>
+                        <em>Aggregation method: TBD &mdash; confirm with data science team before production.</em>
+                      </div>
+                    </span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+                  </span>
+                </th>
+                <th class="th-sortable" scope="col">
+                  <span class="sort-indicator">Growth stage <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                </th>
+                <th class="th-sortable" scope="col">
+                  <span class="sort-indicator">Farm <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                </th>
+                <th class="th-sortable" scope="col">
+                  <span class="sort-indicator">Grower <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                </th>
+                <th class="th-sortable" scope="col">
+                  <span class="sort-indicator">Acres <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                </th>
+                <th class="th-sortable" scope="col">
+                  <span class="sort-indicator">Crop <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                </th>
+                <th class="th-sortable" scope="col">
+                  <span class="sort-indicator">Planted <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- Row 1 — High stress -->
+              <tr data-field-id="willow-creek-south" data-field-stress="91">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">Willow Creek South</a>
+                  </div>
+                </td>
+                <td>
+                  <!-- Req 1.2: numeric label + color indicator + accessible text label -->
+                  <span class="field-stress field-stress--high">
+                    <span class="field-stress__dot" aria-hidden="true"></span>
+                    <span class="field-stress__value">91</span>
+                    <span class="field-stress__label">High</span>
+                  </span>
+                </td>
+                <td><span class="growth-stage">VT</span></td>
+                <td>Home</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    DAVIDSON AG PARTNERS
+                  </div>
+                </td>
+                <td>142</td>
+                <td>Corn</td>
+                <td>Apr 12</td>
+              </tr>
+
+              <!-- Row 2 — High stress -->
+              <tr data-field-id="hawkins-quarter" data-field-stress="78">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">Hawkins Quarter</a>
+                  </div>
+                </td>
+                <td>
+                  <span class="field-stress field-stress--high">
+                    <span class="field-stress__dot" aria-hidden="true"></span>
+                    <span class="field-stress__value">78</span>
+                    <span class="field-stress__label">High</span>
+                  </span>
+                </td>
+                <td><span class="growth-stage">R1</span></td>
+                <td>Home</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    DAVIDSON AG PARTNERS
+                  </div>
+                </td>
+                <td>96</td>
+                <td>Corn</td>
+                <td>Apr 15</td>
+              </tr>
+
+              <!-- Row 3 — High stress -->
+              <tr data-field-id="bottoms-east" data-field-stress="67">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">Bottoms East</a>
+                  </div>
+                </td>
+                <td>
+                  <span class="field-stress field-stress--high">
+                    <span class="field-stress__dot" aria-hidden="true"></span>
+                    <span class="field-stress__value">67</span>
+                    <span class="field-stress__label">High</span>
+                  </span>
+                </td>
+                <td><span class="growth-stage">V12</span></td>
+                <td>River Bottom</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    JAMES THORNTON
+                  </div>
+                </td>
+                <td>210</td>
+                <td>Corn</td>
+                <td>Apr 22</td>
+              </tr>
+
+              <!-- Row 4 — Moderate stress -->
+              <tr data-field-id="sunflower-bend" data-field-stress="52">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">Sunflower Bend 22</a>
+                  </div>
+                </td>
+                <td>
+                  <span class="field-stress field-stress--mid">
+                    <span class="field-stress__dot" aria-hidden="true"></span>
+                    <span class="field-stress__value">52</span>
+                    <span class="field-stress__label">Mod</span>
+                  </span>
+                </td>
+                <td><span class="growth-stage">V8</span></td>
+                <td>Mitchell Farms</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    MITCHELL FARM
+                  </div>
+                </td>
+                <td>180</td>
+                <td>Corn</td>
+                <td>Apr 20</td>
+              </tr>
+
+              <!-- Row 5 — Moderate stress -->
+              <tr data-field-id="cedar-hollow" data-field-stress="44">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">Cedar Hollow</a>
+                  </div>
+                </td>
+                <td>
+                  <span class="field-stress field-stress--mid">
+                    <span class="field-stress__dot" aria-hidden="true"></span>
+                    <span class="field-stress__value">44</span>
+                    <span class="field-stress__label">Mod</span>
+                  </span>
+                </td>
+                <td><span class="growth-stage">V10</span></td>
+                <td>Mitchell Farms</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    MITCHELL FARM
+                  </div>
+                </td>
+                <td>88</td>
+                <td>Corn</td>
+                <td>Apr 18</td>
+              </tr>
+
+              <!-- Row 6 — Low stress -->
+              <tr data-field-id="prairie-view" data-field-stress="33">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">Prairie View</a>
+                  </div>
+                </td>
+                <td>
+                  <span class="field-stress field-stress--low">
+                    <span class="field-stress__dot" aria-hidden="true"></span>
+                    <span class="field-stress__value">33</span>
+                    <span class="field-stress__label">Low</span>
+                  </span>
+                </td>
+                <td><span class="growth-stage">V6</span></td>
+                <td>Mitchell Farms</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    MITCHELL FARM
+                  </div>
+                </td>
+                <td>120</td>
+                <td>Corn</td>
+                <td>Apr 25</td>
+              </tr>
+
+              <!-- Row 7 — Low stress -->
+              <tr data-field-id="meadow-ridge" data-field-stress="18">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">Meadow Ridge</a>
+                  </div>
+                </td>
+                <td>
+                  <span class="field-stress field-stress--low">
+                    <span class="field-stress__dot" aria-hidden="true"></span>
+                    <span class="field-stress__value">18</span>
+                    <span class="field-stress__label">Low</span>
+                  </span>
+                </td>
+                <td><span class="growth-stage">V10</span></td>
+                <td>Thornton</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    JAMES THORNTON
+                  </div>
+                </td>
+                <td>156</td>
+                <td>Corn</td>
+                <td>Apr 18</td>
+              </tr>
+
+              <!-- Row 8 — Low stress -->
+              <tr data-field-id="henderson-hay" data-field-stress="8">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">Henderson Hay</a>
+                  </div>
+                </td>
+                <td>
+                  <span class="field-stress field-stress--low">
+                    <span class="field-stress__dot" aria-hidden="true"></span>
+                    <span class="field-stress__value">8</span>
+                    <span class="field-stress__label">Low</span>
+                  </span>
+                </td>
+                <td><span class="growth-stage">V4</span></td>
+                <td>Mitchell Farms</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    MITCHELL FARM
+                  </div>
+                </td>
+                <td>74</td>
+                <td>Corn</td>
+                <td>May 1</td>
+              </tr>
+
+              <!-- Row 9 — No data (Req 3: null/no-data state) -->
+              <tr data-field-id="north-40" data-field-stress="">
+                <td>
+                  <div class="field-name-cell">
+                    <div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5"><path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4z"/></svg></div>
+                    <a href="#" class="field-name-link">North 40</a>
+                  </div>
+                </td>
+                <td>
+                  <span class="text-na" title="No abiotic stress data available for this field">No data</span>
+                </td>
+                <td class="text-na">--</td>
+                <td>Home</td>
+                <td>
+                  <div class="field-name-cell">
+                    <svg class="grower-icon" viewBox="0 0 23.4 21.53" fill="currentColor"><path d="M12.4849 0.757264C13.6418 -0.252367 15.3672 -0.252476 16.524 0.757264C16.6106 0.832859 16.6825 0.923837 16.7359 1.02484L16.7828 1.12933L18.1148 4.62543L19.3775 5.8891C19.4336 5.94521 19.483 6.00849 19.523 6.0766L19.5758 6.18207L22.2584 12.4428L22.4176 12.602L22.3619 12.6577L22.4908 12.8452C23.8705 14.9584 23.6798 17.7972 21.9195 19.7104L21.7555 19.8823C19.5625 22.0749 16.0069 22.075 13.8141 19.8823C12.9214 18.9895 12.392 17.8709 12.2262 16.7104C12.1994 16.6398 12.1795 16.5653 12.1705 16.4877L12.1646 16.3793V8.42621C12.1034 8.42522 12.0397 8.42384 11.9742 8.42328L11.2301 8.4223V16.8471C11.231 17.0722 11.1506 17.2785 11.0182 17.4399C10.7661 18.3341 10.2891 19.1786 9.58553 19.8823C7.39261 22.0747 3.83694 22.0749 1.64413 19.8823C-0.355159 17.8828 -0.530836 14.7505 1.11581 12.5512L3.82089 6.6686C3.85203 6.59065 3.89198 6.51762 3.94003 6.45082L4.01913 6.35512L5.27889 4.68695L6.6119 1.13422C6.65272 1.02542 6.71362 0.924468 6.79061 0.838319L6.87264 0.757264C8.02947 -0.252368 9.75494 -0.252475 10.9117 0.757264Z"/></svg>
+                    DAVIDSON AG PARTNERS
+                  </div>
+                </td>
+                <td>65</td>
+                <td>Corn</td>
+                <td class="text-na">--</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ FIELD VIEW (Req 2) ═══════════════ -->
+    <div class="map-view-container" id="field-view">
+
+      <!-- Map area -->
+      <div class="map-area">
+        <div class="map-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+          <div class="map-placeholder__label">Select a field to view stress timeline</div>
+        </div>
+      </div>
+
+      <!-- Field detail panel -->
+      <div class="field-detail-panel">
+        <div class="field-detail__header">
+          <button type="button" class="field-detail__back" aria-label="Back to list view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div>
+            <div class="field-detail__title">Willow Creek South</div>
+            <div class="field-detail__subtitle">Home &middot; Davidson Ag Partners</div>
+          </div>
+        </div>
+
+        <!-- Req 2.2: Growth stage metadata; Req 3: data consistency — score matches list view -->
+        <div class="field-detail__meta">
+          <div class="field-detail__meta-item">
+            <span class="field-detail__meta-label">Current stage</span>
+            <span class="field-detail__meta-value">VT</span>
+          </div>
+          <div class="field-detail__meta-item">
+            <span class="field-detail__meta-label">Abiotic stress</span>
+            <span class="field-detail__meta-value">
+              <span class="field-stress field-stress--high">
+                <span class="field-stress__dot" aria-hidden="true"></span>
+                <span class="field-stress__value">91</span>
+                <span class="field-stress__label">High</span>
+              </span>
+            </span>
+          </div>
+          <div class="field-detail__meta-item">
+            <span class="field-detail__meta-label">GDD</span>
+            <span class="field-detail__meta-value">2,180</span>
+          </div>
+          <div class="field-detail__meta-item">
+            <span class="field-detail__meta-label">Planted</span>
+            <span class="field-detail__meta-value">Apr 12</span>
+          </div>
+          <div class="field-detail__meta-item">
+            <span class="field-detail__meta-label">Acres</span>
+            <span class="field-detail__meta-value">142</span>
+          </div>
+        </div>
+
+        <!-- Req 2.1: Stress timeline with actual vs predicted -->
+        <div class="stress-timeline">
+          <div class="stress-timeline__title">Abiotic Stress Timeline</div>
+          <div class="stress-timeline__desc">Water stress by growth stage &mdash; actual (past 10-day simulation) and predicted (7-day IBM Weather forecast)</div>
+
+          <!-- Req 2.1: Legend distinguishing actual vs predicted; Req 3: accessible patterns alongside color -->
+          <div class="stress-timeline__legend">
+            <div class="stress-timeline__legend-item"><span class="legend-line legend-line--actual"></span> Actual (solid)</div>
+            <div class="stress-timeline__legend-item"><span class="legend-line legend-line--predicted"></span> Predicted (dashed)</div>
+            <div class="stress-timeline__legend-item"><span class="legend-dot"></span> Current stage</div>
+          </div>
+
+          <div class="stress-chart" id="stress-chart">
+            <!-- Req 2.4: hover/tap data points for exact values and growth stage labels -->
+            <svg class="stress-chart__svg" viewBox="0 0 380 200" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <clipPath id="chart-clip"><rect x="30" y="10" width="340" height="160"/></clipPath>
+              </defs>
+
+              <!-- Req 3: Accessibility — color bands with labels, not color alone -->
+              <rect class="stress-chart__band--low"  x="30" y="117" width="340" height="53" rx="0"/>
+              <rect class="stress-chart__band--mid"  x="30" y="63"  width="340" height="54" rx="0"/>
+              <rect class="stress-chart__band--high" x="30" y="10"  width="340" height="53" rx="0"/>
+
+              <!-- Y-axis grid & labels -->
+              <g class="stress-chart__grid">
+                <line x1="30" y1="170" x2="370" y2="170"/>
+                <line x1="30" y1="117" x2="370" y2="117"/>
+                <line x1="30" y1="63"  x2="370" y2="63"/>
+                <line x1="30" y1="10"  x2="370" y2="10"/>
+                <text x="24" y="173" text-anchor="end">0</text>
+                <text x="24" y="120" text-anchor="end">33</text>
+                <text x="24" y="67"  text-anchor="end">66</text>
+                <text x="24" y="14"  text-anchor="end">100</text>
+              </g>
+
+              <!-- Req 2.2: Growth stage x-axis — standard corn taxonomy VE through R6 -->
+              <!-- 14 stages: VE, V2, V4, V6, V8, V10, V12, VT, R1, R2, R3, R4, R5, R6 -->
+              <!-- x positions: 42, 67, 92, 117, 142, 167, 192, 218, 243, 268, 293, 318, 343, 365 -->
+              <text class="stress-chart__x-label" x="42"  y="190" text-anchor="middle">VE</text>
+              <text class="stress-chart__x-label" x="67"  y="190" text-anchor="middle">V2</text>
+              <text class="stress-chart__x-label" x="92"  y="190" text-anchor="middle">V4</text>
+              <text class="stress-chart__x-label" x="117" y="190" text-anchor="middle">V6</text>
+              <text class="stress-chart__x-label" x="142" y="190" text-anchor="middle">V8</text>
+              <text class="stress-chart__x-label" x="167" y="190" text-anchor="middle">V10</text>
+              <text class="stress-chart__x-label" x="192" y="190" text-anchor="middle">V12</text>
+              <!-- Req 2.2: Current growth stage clearly indicated (bold/active) -->
+              <text class="stress-chart__x-label stress-chart__x-label--active" x="218" y="190" text-anchor="middle">VT</text>
+              <text class="stress-chart__x-label" x="243" y="190" text-anchor="middle">R1</text>
+              <text class="stress-chart__x-label" x="268" y="190" text-anchor="middle">R2</text>
+              <text class="stress-chart__x-label" x="293" y="190" text-anchor="middle">R3</text>
+              <text class="stress-chart__x-label" x="318" y="190" text-anchor="middle">R4</text>
+              <text class="stress-chart__x-label" x="343" y="190" text-anchor="middle">R5</text>
+              <text class="stress-chart__x-label" x="365" y="190" text-anchor="middle">R6</text>
+
+              <!-- Req 2.2: "Today" / current stage marker — boundary between actual and predicted -->
+              <line class="stress-chart__now-line" x1="218" y1="10" x2="218" y2="170"/>
+              <text class="stress-chart__now-label" x="218" y="6" text-anchor="middle">TODAY</text>
+
+              <!-- Req 2.5: Actual — past 10-day simulation window (VE through VT) -->
+              <polygon class="stress-chart__area--actual" points="42,170 42,160 67,149 92,138 117,117 142,95 167,76 192,51 218,25 218,170" clip-path="url(#chart-clip)"/>
+
+              <!-- Req 2.5: Predicted — 7-day IBM Weather forecast (VT through R6) -->
+              <polygon class="stress-chart__area--predicted" points="218,25 243,35 268,51 293,63 318,76 343,89 365,95 365,170 218,170" clip-path="url(#chart-clip)"/>
+
+              <!-- Req 2.1: Actual line — solid (visually differentiated) -->
+              <polyline class="stress-chart__line--actual" points="42,160 67,149 92,138 117,117 142,95 167,76 192,51 218,25" clip-path="url(#chart-clip)"/>
+
+              <!-- Req 2.1: Predicted line — dashed (visually differentiated) -->
+              <polyline class="stress-chart__line--predicted" points="218,25 243,35 268,51 293,63 318,76 343,89 365,95" clip-path="url(#chart-clip)"/>
+
+              <!-- Req 2.4: Data points — actual (hoverable for exact values) -->
+              <circle class="stress-chart__dot stress-chart__dot--actual" cx="42"  cy="160" data-stage="VE"  data-value="6"  data-type="Actual"/>
+              <circle class="stress-chart__dot stress-chart__dot--actual" cx="67"  cy="149" data-stage="V2"  data-value="13" data-type="Actual"/>
+              <circle class="stress-chart__dot stress-chart__dot--actual" cx="92"  cy="138" data-stage="V4"  data-value="20" data-type="Actual"/>
+              <circle class="stress-chart__dot stress-chart__dot--actual" cx="117" cy="117" data-stage="V6"  data-value="33" data-type="Actual"/>
+              <circle class="stress-chart__dot stress-chart__dot--actual" cx="142" cy="95"  data-stage="V8"  data-value="47" data-type="Actual"/>
+              <circle class="stress-chart__dot stress-chart__dot--actual" cx="167" cy="76"  data-stage="V10" data-value="59" data-type="Actual"/>
+              <circle class="stress-chart__dot stress-chart__dot--actual" cx="192" cy="51"  data-stage="V12" data-value="74" data-type="Actual"/>
+              <circle class="stress-chart__dot stress-chart__dot--actual" cx="218" cy="25"  data-stage="VT"  data-value="91" data-type="Actual"/>
+
+              <!-- Req 2.4: Data points — predicted (hoverable for exact values) -->
+              <circle class="stress-chart__dot stress-chart__dot--predicted" cx="243" cy="35"  data-stage="R1" data-value="84" data-type="Predicted"/>
+              <circle class="stress-chart__dot stress-chart__dot--predicted" cx="268" cy="51"  data-stage="R2" data-value="74" data-type="Predicted"/>
+              <circle class="stress-chart__dot stress-chart__dot--predicted" cx="293" cy="63"  data-stage="R3" data-value="67" data-type="Predicted"/>
+              <circle class="stress-chart__dot stress-chart__dot--predicted" cx="318" cy="76"  data-stage="R4" data-value="59" data-type="Predicted"/>
+              <circle class="stress-chart__dot stress-chart__dot--predicted" cx="343" cy="89"  data-stage="R5" data-value="51" data-type="Predicted"/>
+              <circle class="stress-chart__dot stress-chart__dot--predicted" cx="365" cy="95"  data-stage="R6" data-value="47" data-type="Predicted"/>
+            </svg>
+            <div class="stress-chart__tooltip" id="stress-tooltip"></div>
+          </div>
+
+          <!-- Req 2.5: Data sources documented -->
+          <div class="stress-timeline__sources">
+            <strong>Actual</strong> &mdash; daily simulation, rolling 10-day window of modeled historical water stress<br>
+            <strong>Predicted</strong> &mdash; IBM Weather, 7-day forward forecast from current date<br>
+            <em style="font-size:9px;">Same-day handling: if both simulated and forecast values exist for the current date, the simulated value is displayed. Confirm with engineering.</em>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /app-main -->
+
+  <!-- AI Fab -->
+  <button class="ai-fab" title="AI Assistant">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v1h-8V6a4 4 0 0 1 4-4z"/><rect x="4" y="7" width="16" height="13" rx="2"/><circle cx="9" cy="13" r="1.5" fill="currentColor"/><circle cx="15" cy="13" r="1.5" fill="currentColor"/></svg>
+    <span style="position:absolute;top:2px;right:2px;font-size:8px;color:#f5a623;">AI</span>
+  </button>
+
+</div><!-- /app-shell -->
+
+  <script>
+    (function () {
+      /* ── View toggle: List ↔ Field ── */
+      var toggle = document.getElementById('view-toggle');
+      var toggleBtn = document.getElementById('view-toggle-btn');
+      var toggleLabel = document.getElementById('view-toggle-label');
+      var toggleIcon = document.getElementById('view-toggle-icon');
+      var options = toggle ? toggle.querySelectorAll('.view-toggle__option') : [];
+      var listView = document.getElementById('list-view');
+      var fieldView = document.getElementById('field-view');
+
+      var LIST_ICON = '<svg id="view-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
+      var FIELD_ICON = '<svg id="view-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>';
+      var CHECK_SVG = '<svg class="view-toggle__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          toggle.classList.toggle('is-open');
+        });
+      }
+
+      Array.prototype.forEach.call(options, function (opt) {
+        opt.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var view = opt.getAttribute('data-view');
+
+          Array.prototype.forEach.call(options, function (o) {
+            o.classList.remove('is-active');
+            var chk = o.querySelector('.view-toggle__check');
+            if (chk) chk.remove();
+          });
+          opt.classList.add('is-active');
+          opt.insertAdjacentHTML('beforeend', CHECK_SVG);
+
+          if (view === 'field') {
+            toggleLabel.textContent = 'Field view';
+            toggleIcon.outerHTML = FIELD_ICON;
+            listView.style.display = 'none';
+            fieldView.classList.add('is-active');
+          } else {
+            toggleLabel.textContent = 'List view';
+            toggleIcon.outerHTML = LIST_ICON;
+            listView.style.display = '';
+            fieldView.classList.remove('is-active');
+          }
+
+          toggle.classList.remove('is-open');
+        });
+      });
+
+      document.addEventListener('click', function () {
+        if (toggle) toggle.classList.remove('is-open');
+      });
+
+      /* ── Clicking a table row navigates to field view ── */
+      var tableRows = document.querySelectorAll('#list-view tbody tr[data-field-id]');
+      Array.prototype.forEach.call(tableRows, function (row) {
+        row.addEventListener('click', function () {
+          // In production: load field-specific data; here: just switch to field view
+          var fieldOpt = toggle.querySelector('[data-view="field"]');
+          if (fieldOpt) fieldOpt.click();
+        });
+      });
+
+      /* ── Info-icon tooltip ── */
+      var infoBtn = document.querySelector('.th-info-btn');
+      var tooltip = document.querySelector('.th-info-tooltip');
+      if (infoBtn && tooltip) {
+        document.body.appendChild(tooltip);
+        infoBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var isOpen = tooltip.classList.toggle('is-open');
+          if (isOpen) {
+            var rect = infoBtn.getBoundingClientRect();
+            tooltip.style.top = (rect.bottom + 8) + 'px';
+            tooltip.style.left = rect.left + 'px';
+          }
+        });
+        document.addEventListener('click', function () {
+          tooltip.classList.remove('is-open');
+        });
+        tooltip.addEventListener('click', function (e) { e.stopPropagation(); });
+      }
+
+      /* ── Column sorting (Req 1.2: sortable by stress score ascending/descending) ── */
+      var table = document.querySelector('#list-view table');
+      if (!table) return;
+      var thead = table.querySelector('thead');
+      var tbody = table.querySelector('tbody');
+      var headers = Array.prototype.slice.call(thead.querySelectorAll('th.th-sortable'));
+
+      var ARROW_NEUTRAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l4-4 4 4M16 15l-4 4-4-4"/></svg>';
+      var ARROW_ASC     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+      var ARROW_DESC    = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>';
+
+      var currentCol = null;
+      var currentDir = null;
+
+      function getCellValue(row, colIdx) {
+        var cell = row.cells[colIdx];
+        if (!cell) return '';
+        var stressEl = cell.querySelector('.field-stress__value');
+        if (stressEl) return parseFloat(stressEl.textContent) || 0;
+        var linkEl = cell.querySelector('.field-name-link');
+        if (linkEl) return linkEl.textContent.trim().toLowerCase();
+        var txt = cell.textContent.trim();
+        if (txt === 'No data' || txt === '--' || txt === 'N/A' || txt === '') return null;
+        var num = parseFloat(txt.replace(/,/g, '').replace(/%$/, ''));
+        if (!isNaN(num)) return num;
+        return txt.toLowerCase();
+      }
+
+      function sortTable(colIdx, dir) {
+        var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+        rows.sort(function (a, b) {
+          var va = getCellValue(a, colIdx);
+          var vb = getCellValue(b, colIdx);
+          if (va === null && vb === null) return 0;
+          if (va === null) return 1;
+          if (vb === null) return -1;
+          var cmp = 0;
+          if (typeof va === 'number' && typeof vb === 'number') {
+            cmp = va - vb;
+          } else {
+            va = String(va); vb = String(vb);
+            cmp = va < vb ? -1 : va > vb ? 1 : 0;
+          }
+          return dir === 'asc' ? cmp : -cmp;
+        });
+        rows.forEach(function (r) { tbody.appendChild(r); });
+      }
+
+      function updateArrows(activeIdx, dir) {
+        headers.forEach(function (th, i) {
+          var indicator = th.querySelector('.sort-indicator');
+          if (!indicator) return;
+          var svgs = indicator.querySelectorAll(':scope > svg');
+          if (svgs.length === 0) return;
+          var arrowSvg = svgs[svgs.length - 1];
+          if (i === activeIdx) {
+            th.classList.add('th-sortable--active');
+            arrowSvg.outerHTML = dir === 'asc' ? ARROW_ASC : ARROW_DESC;
+          } else {
+            th.classList.remove('th-sortable--active');
+            arrowSvg.outerHTML = ARROW_NEUTRAL;
+          }
+        });
+      }
+
+      headers.forEach(function (th, idx) {
+        th.addEventListener('click', function (e) {
+          if (e.target.closest('.th-info-btn') || e.target.closest('.th-info-tooltip')) return;
+          var dir;
+          if (currentCol === idx) {
+            dir = currentDir === 'asc' ? 'desc' : 'asc';
+          } else {
+            dir = 'desc';
+          }
+          currentCol = idx;
+          currentDir = dir;
+          sortTable(idx, dir);
+          updateArrows(idx, dir);
+        });
+      });
+
+      // Default sort: stress score descending (highest stress first for prioritization)
+      var stressIdx = headers.findIndex(function (th) {
+        return th.textContent.indexOf('Abiotic stress') !== -1;
+      });
+      if (stressIdx !== -1) {
+        currentCol = stressIdx;
+        currentDir = 'desc';
+        sortTable(stressIdx, 'desc');
+        updateArrows(stressIdx, 'desc');
+      }
+
+      /* ── Stress timeline chart tooltip (Req 2.4) ── */
+      var chartEl = document.getElementById('stress-chart');
+      var tooltipEl = document.getElementById('stress-tooltip');
+      if (chartEl && tooltipEl) {
+        var dots = chartEl.querySelectorAll('.stress-chart__dot');
+        Array.prototype.forEach.call(dots, function (dot) {
+          dot.addEventListener('mouseenter', function () {
+            var stage = dot.getAttribute('data-stage');
+            var value = dot.getAttribute('data-value');
+            var type  = dot.getAttribute('data-type');
+            tooltipEl.innerHTML = '<strong>' + stage + '</strong> &mdash; Stress: <strong>' + value + '</strong><br><span class="stress-chart__tooltip__type">' + type + '</span>';
+            tooltipEl.classList.add('is-visible');
+
+            var chartRect = chartEl.getBoundingClientRect();
+            var dotRect = dot.getBoundingClientRect();
+            var left = dotRect.left - chartRect.left + dotRect.width / 2;
+            var top  = dotRect.top  - chartRect.top - 40;
+            tooltipEl.style.left = left + 'px';
+            tooltipEl.style.top  = top  + 'px';
+            tooltipEl.style.transform = 'translateX(-50%)';
+          });
+          dot.addEventListener('mouseleave', function () {
+            tooltipEl.classList.remove('is-visible');
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

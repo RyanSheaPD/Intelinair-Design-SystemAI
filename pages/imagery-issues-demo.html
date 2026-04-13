@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Imagery issues (Tier 1 / Tier 2) — design demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/checkbox.css" />
+  <link rel="stylesheet" href="../components/activity-chicklet.css" />
+  <link rel="stylesheet" href="../components/map-overlay-controls.css" />
+  <style>
+    :root {
+      --imagery-tier1-cloud: var(--color-warning-600);
+      --imagery-tier2-cloud: var(--color-error);
+      --imagery-banner-tier1-bg: var(--color-warning-100);
+      --imagery-banner-tier1-border: var(--color-warning-300);
+      --imagery-banner-tier1-text: var(--color-warning-900);
+      --imagery-banner-tier2-bg: #fef2f2;
+      --imagery-banner-tier2-border: #fecaca;
+      --imagery-banner-tier2-accent: var(--color-error);
+      --imagery-banner-tier2-text: #7f1d1d;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font-family-web);
+      background: var(--color-neutral-50);
+      color: var(--color-text);
+    }
+
+    .demo-page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    .demo-page__title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .demo-page__lede {
+      margin: 0 0 24px;
+      font-size: 15px;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+      max-width: 72ch;
+    }
+
+    .demo-page__lede a { color: var(--color-action); }
+
+    .demo-section {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .demo-section__title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .demo-section__desc {
+      font-size: 14px;
+      color: var(--color-text-muted);
+      margin: 0 0 20px;
+      max-width: 85ch;
+      line-height: 1.45;
+    }
+
+    .demo-sub {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-muted);
+      margin: 24px 0 12px;
+    }
+
+    /* ── Cloud icon (SVG) — Tier 1 yellow / Tier 2 red, chicklet scale ~22px ── */
+    .imagery-cloud {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .imagery-cloud--tier1 { color: var(--imagery-tier1-cloud); }
+    .imagery-cloud--tier2 { color: var(--imagery-tier2-cloud); }
+
+    /* Chicklet row: [cloud] [provider icon + resolution badge] / date below */
+    .activity-chicklet--imagery-issue {
+      min-width: 52px;
+      padding: 4px 5px;
+    }
+
+    .activity-chicklet__imagery-row {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .activity-chicklet__imagery-row .activity-chicklet__icon-wrap {
+      margin-top: 1px;
+    }
+
+    .activity-chicklet__resolution {
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 7px;
+      font-weight: 700;
+      line-height: 1;
+      padding: 1px 3px;
+      border-radius: 2px;
+      background: var(--color-neutral-700);
+      color: #fff;
+      white-space: nowrap;
+      letter-spacing: -0.02em;
+    }
+
+    .activity-chicklet__icon-wrap--with-res {
+      margin-bottom: 4px;
+    }
+
+    /* Compare mode: wider chip */
+    .activity-chicklet--compare {
+      min-width: 72px;
+    }
+
+    .activity-chicklet__compare-label {
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--color-neutral-600);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 2px;
+    }
+
+    .activity-chicklet__date--compare {
+      font-size: 9px;
+      line-height: 1.2;
+    }
+
+    .timeline-demo-bg {
+      background: linear-gradient(165deg, #2d3a4f 0%, #1a2332 100%);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 8px;
+    }
+
+    .spec-callout {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      background: var(--color-neutral-100);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md, 8px);
+      padding: 10px 12px;
+      margin-top: 12px;
+      font-family: ui-monospace, monospace;
+      line-height: 1.4;
+    }
+
+    /* ── Map + banner mock ── */
+    .map-demo {
+      position: relative;
+      height: 280px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #3d5a45 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath fill='%234a6b52' fill-opacity='0.35' d='M0 40h80M40 0v80'/%3E%3C/svg%3E");
+      border: 1px solid var(--color-border-strong);
+    }
+
+    .map-banner {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      z-index: 4;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border-width: 1px;
+      border-style: solid;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.35;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      /* Reserve space so banner text does not run under map controls (top-right) */
+      margin-right: 200px;
+      max-width: calc(100% - 24px - 200px);
+    }
+
+    .map-banner__icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .map-banner--tier1 {
+      background: var(--imagery-banner-tier1-bg);
+      border-color: var(--imagery-banner-tier1-border);
+      color: var(--imagery-banner-tier1-text);
+    }
+
+    .map-banner--tier2 {
+      background: var(--imagery-banner-tier2-bg);
+      border-color: var(--imagery-banner-tier2-border);
+      color: var(--imagery-banner-tier2-text);
+      border-left-width: 4px;
+      border-left-color: var(--imagery-banner-tier2-accent);
+    }
+
+    .map-banner__title {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .map-demo .map-top-controls {
+      top: 12px;
+      right: 12px;
+      z-index: 10;
+    }
+
+    .map-demo__hit-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .map-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .map-grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .map-legend {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 8px;
+    }
+
+    /* ── Filter menu (Abacus) ── */
+    .filter-demo-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .timeline-filter-menu {
+      width: 280px;
+      background: var(--color-surface);
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.12));
+      overflow: hidden;
+    }
+
+    .timeline-filter-menu__head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .timeline-filter-menu__head .material-symbols-outlined {
+      font-size: 22px;
+      color: var(--color-action);
+    }
+
+    .timeline-filter-menu__body {
+      padding: 10px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .timeline-filter-menu__body .checkbox {
+      padding: 8px 4px;
+      border-radius: 6px;
+    }
+
+    .timeline-filter-menu__body .checkbox:hover {
+      background: var(--color-neutral-50);
+    }
+
+    /* ── Viewport cards ── */
+    .viewport-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .viewport-grid { grid-template-columns: 1fr; }
+    }
+
+    .viewport-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .viewport-card h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .viewport-card p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--color-text-muted);
+      line-height: 1.45;
+    }
+
+    .redline-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .redline-table th,
+    .redline-table td {
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .redline-table th {
+      font-weight: 600;
+      color: var(--color-text-muted);
+      width: 28%;
+    }
+  </style>
+</head>
+<body>
+  <main class="demo-page">
+    <h1 class="demo-page__title">Imagery issues — Tier 1 &amp; Tier 2</h1>
+    <p class="demo-page__lede">
+      Static demo for timeline indicators, in-map banners, and the timeline filter toggle.
+      Pairs with <a href="../docs/imagery-issues-acceptance-criteria.md">acceptance criteria</a>.
+      Uses design tokens and <code>activity-chicklet</code> patterns.
+    </p>
+
+    <section class="demo-section" aria-labelledby="specs">
+      <h2 id="specs" class="demo-section__title">Redlines &amp; tokens (summary)</h2>
+      <p class="demo-section__desc">Web uses inline SVG; iOS/Android would ship PDF/PNG exports at @1x/@2x/@3x per AC.</p>
+      <table class="redline-table">
+        <thead>
+          <tr>
+            <th>Element</th>
+            <th>Spec</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cloud icon</td>
+            <td>22×22px on chicklet · Tier 1 <code>--color-warning-600</code> · Tier 2 <code>--color-error</code></td>
+          </tr>
+          <tr>
+            <td>Cloud placement</td>
+            <td>4px gap from provider icon wrap; aligned top; resolution pill anchored below provider glyph; date row below row group</td>
+          </tr>
+          <tr>
+            <td>Tier 1 banner</td>
+            <td>Top 12px inset · padding 10×14px · type 14px / weight 500 · bg <code>--color-warning-100</code> · border <code>--color-warning-300</code></td>
+          </tr>
+          <tr>
+            <td>Tier 2 banner</td>
+            <td>Same inset + padding · left accent 4px <code>--color-error</code> · bg <code>#fef2f2</code> · text <code>#7f1d1d</code></td>
+          </tr>
+          <tr>
+            <td>Map controls</td>
+            <td>Banner <code>margin-right: 200px</code> so strip clears <code>map-top-controls</code> cluster (z-index 10)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="demo-section" aria-labelledby="timelines">
+      <h2 id="timelines" class="demo-section__title">Timeline indicator (chicklets)</h2>
+      <p class="demo-section__desc">Cloud marks imagery issue tier. Layout: <strong>cloud → provider icon → resolution → date</strong> (resolution as pill under icon).</p>
+
+      <!-- Shared SVG symbol -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true">
+        <defs>
+          <symbol id="icon-cloud-imagery" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M8 18a5 5 0 0 1-1-9.9 6.5 6.5 0 0 1 12.3 1.3A4 4 0 0 1 19 18H8z" />
+          </symbol>
+        </defs>
+      </svg>
+
+      <h3 class="demo-sub">Virtual Scout timeline</h3>
+      <div class="timeline-demo-bg">
+        <nav class="activity-timeline flights-list-container" aria-label="Virtual Scout activity timeline demo">
+          <span class="activity-timeline__label">2025</span>
+          <ul class="activity-timeline__track" role="list">
+            <li class="activity-timeline__item">
+              <button type="button" class="activity-chicklet activity-chicklet--satellite activity-chicklet--imagery-issue" aria-label="May 2 satellite, Tier 1 imagery issue">
+                <div class="activity-chicklet__imagery-row">
+                  <svg class="imagery-cloud imagery-cloud--tier1" aria-hidden="true"><use href="#icon-cloud-imagery" /></svg>
+                  <span class="activity-chicklet__icon-wrap activity-chicklet__icon-wrap--with-res">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">satellite_alt</span>
+                    <span class="activity-chicklet__resolution">20 cm</span>
+                  </span>
+                </div>
+                <span class="activity-chicklet__date">May 2</span>
+              </button>
+            </li>
+            <li class="activity-timeline__item">
+              <button type="button" class="activity-chicklet activity-chicklet--satellite activity-chicklet--imagery-issue" aria-label="May 18 satellite, Tier 2 imagery issue">
+                <div class="activity-chicklet__imagery-row">
+                  <svg class="imagery-cloud imagery-cloud--tier2" aria-hidden="true"><use href="#icon-cloud-imagery" /></svg>
+                  <span class="activity-chicklet__icon-wrap activity-chicklet__icon-wrap--with-res">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">satellite_alt</span>
+                    <span class="activity-chicklet__resolution">10 m</span>
+                  </span>
+                </div>
+                <span class="activity-chicklet__date">May 18</span>
+              </button>
+            </li>
+            <li class="activity-timeline__item">
+              <button type="button" class="activity-chicklet activity-chicklet--flight" aria-label="Jun 1 flight">
+                <span class="activity-chicklet__icon-wrap">
+                  <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">flight</span>
+                </span>
+                <span class="activity-chicklet__date">Jun 1</span>
+              </button>
+            </li>
+          </ul>
+          <button type="button" class="activity-timeline__action" aria-label="Timeline filters">
+            <span class="material-symbols-outlined">calculate</span>
+          </button>
+        </nav>
+      </div>
+      <p class="spec-callout">Virtual Scout: same strip as production; yellow vs red cloud legible at ~42px chicklet height.</p>
+
+      <h3 class="demo-sub">Field Card timeline</h3>
+      <div class="timeline-demo-bg">
+        <nav class="activity-timeline flights-list-container" aria-label="Field card timeline demo">
+          <span class="activity-timeline__label">Field</span>
+          <ul class="activity-timeline__track" role="list">
+            <li class="activity-timeline__item">
+              <button type="button" class="activity-chicklet activity-chicklet--satellite activity-chicklet--imagery-issue" aria-label="Apr 28 satellite, Tier 1">
+                <div class="activity-chicklet__imagery-row">
+                  <svg class="imagery-cloud imagery-cloud--tier1" aria-hidden="true"><use href="#icon-cloud-imagery" /></svg>
+                  <span class="activity-chicklet__icon-wrap activity-chicklet__icon-wrap--with-res">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">satellite_alt</span>
+                    <span class="activity-chicklet__resolution">20 cm</span>
+                  </span>
+                </div>
+                <span class="activity-chicklet__date">Apr 28</span>
+              </button>
+            </li>
+            <li class="activity-timeline__item">
+              <button type="button" class="activity-chicklet activity-chicklet--scout" aria-label="May 10 scout">
+                <span class="activity-chicklet__icon-wrap">
+                  <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">visibility</span>
+                </span>
+                <span class="activity-chicklet__date">May 10</span>
+              </button>
+            </li>
+          </ul>
+          <button type="button" class="activity-timeline__action" aria-label="Timeline filters">
+            <span class="material-symbols-outlined">calculate</span>
+          </button>
+        </nav>
+      </div>
+      <p class="spec-callout">Field Card: identical chicklet anatomy; label may read “Field” or season per product.</p>
+
+      <h3 class="demo-sub">Compare Mode timeline</h3>
+      <div class="timeline-demo-bg">
+        <nav class="activity-timeline flights-list-container" aria-label="Compare mode timeline demo">
+          <span class="activity-timeline__label">Compare</span>
+          <ul class="activity-timeline__track" role="list">
+            <li class="activity-timeline__item">
+              <button type="button" class="activity-chicklet activity-chicklet--satellite activity-chicklet--imagery-issue activity-chicklet--compare" aria-label="Compare A/B, Tier 1 issue on B">
+                <span class="activity-chicklet__compare-label">A / B</span>
+                <div class="activity-chicklet__imagery-row">
+                  <svg class="imagery-cloud imagery-cloud--tier1" aria-hidden="true"><use href="#icon-cloud-imagery" /></svg>
+                  <span class="activity-chicklet__icon-wrap activity-chicklet__icon-wrap--with-res">
+                    <span class="material-symbols-outlined activity-chicklet__icon" aria-hidden="true">satellite_alt</span>
+                    <span class="activity-chicklet__resolution">20 cm</span>
+                  </span>
+                </div>
+                <span class="activity-chicklet__date activity-chicklet__date--compare">Jun 1 vs Jun 8</span>
+              </button>
+            </li>
+          </ul>
+          <button type="button" class="activity-timeline__action" aria-label="Timeline filters">
+            <span class="material-symbols-outlined">calculate</span>
+          </button>
+        </nav>
+      </div>
+      <p class="spec-callout">Compare: optional “A / B” label + two-line date; cloud + provider + resolution unchanged.</p>
+    </section>
+
+    <section class="demo-section" aria-labelledby="banners">
+      <h2 id="banners" class="demo-section__title">In-map banners</h2>
+      <p class="demo-section__desc">Top of map window; controls remain interactive in top-right (higher z-index, banner margin clears stack).</p>
+
+      <div class="map-grid-2">
+        <div>
+          <p class="map-legend">Tier 1 — moderate imagery issue</p>
+          <div class="map-demo" role="img" aria-label="Map mockup with Tier 1 banner">
+            <div class="map-demo__hit-layer" aria-hidden="true"></div>
+            <div class="map-banner map-banner--tier1">
+              <svg class="imagery-cloud imagery-cloud--tier1 map-banner__icon" width="22" height="22" aria-hidden="true"><use href="#icon-cloud-imagery" /></svg>
+              <div>
+                <span class="map-banner__title">Imagery issue (Tier 1)</span>
+                Some pixels may be unreliable. Review against ground truth before decisions.
+              </div>
+            </div>
+            <div class="map-top-controls" role="toolbar" aria-label="Map controls demo">
+              <button type="button" class="map-info-btn" aria-label="Field info">
+                <span class="map-info-btn__glyph" aria-hidden="true">
+                  <span class="material-symbols-outlined">info</span>
+                </span>
+              </button>
+              <div class="map-share-group">
+                <button type="button" class="map-share-group__share">Share</button>
+                <button type="button" class="map-share-group__more" aria-label="More options">
+                  <span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="map-legend">Tier 2 — severe imagery issue</p>
+          <div class="map-demo" role="img" aria-label="Map mockup with Tier 2 banner">
+            <div class="map-demo__hit-layer" aria-hidden="true"></div>
+            <div class="map-banner map-banner--tier2">
+              <svg class="imagery-cloud imagery-cloud--tier2 map-banner__icon" width="22" height="22" aria-hidden="true"><use href="#icon-cloud-imagery" /></svg>
+              <div>
+                <span class="map-banner__title">Imagery issue (Tier 2)</span>
+                Severe artifact or misregistration suspected. Do not rely on this scene for quantitative use.
+              </div>
+            </div>
+            <div class="map-top-controls" role="toolbar" aria-label="Map controls demo">
+              <button type="button" class="map-info-btn" aria-label="Field info">
+                <span class="map-info-btn__glyph" aria-hidden="true">
+                  <span class="material-symbols-outlined">info</span>
+                </span>
+              </button>
+              <div class="map-share-group">
+                <button type="button" class="map-share-group__share">Share</button>
+                <button type="button" class="map-share-group__more" aria-label="More options">
+                  <span class="material-symbols-outlined" aria-hidden="true">more_vert</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="spec-callout">iOS/Android: same inset/padding; tokenized colors; safe-area top = additional margin in implementation.</p>
+    </section>
+
+    <section class="demo-section" aria-labelledby="filter">
+      <h2 id="filter" class="demo-section__title">Timeline filter — “Imagery Issues”</h2>
+      <p class="demo-section__desc">Menu opened from Abacus (<code>calculate</code> glyph) action; checkboxes match existing filter pattern.</p>
+
+      <div class="filter-demo-wrap">
+        <div class="timeline-filter-menu" role="dialog" aria-labelledby="filterMenuTitle">
+          <div class="timeline-filter-menu__head" id="filterMenuTitle">
+            <span class="material-symbols-outlined" aria-hidden="true">calculate</span>
+            Filter timeline
+          </div>
+          <div class="timeline-filter-menu__body">
+            <label class="checkbox">
+              <input type="checkbox" class="checkbox__input" checked />
+              <span class="checkbox__box" aria-hidden="true"></span>
+              <span>Satellite / aerial</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" class="checkbox__input" checked />
+              <span class="checkbox__box" aria-hidden="true"></span>
+              <span>Scouting</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" class="checkbox__input" checked />
+              <span class="checkbox__box" aria-hidden="true"></span>
+              <span>Application</span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" class="checkbox__input" />
+              <span class="checkbox__box" aria-hidden="true"></span>
+              <span><strong>Imagery issues</strong> (Tier 1 &amp; 2)</span>
+            </label>
+          </div>
+        </div>
+        <div>
+          <p class="spec-callout" style="margin-top:0">Placement: last row in filter list · same 18px checkbox + label as siblings · label emphasizes Imagery issues.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-section" aria-labelledby="viewports">
+      <h2 id="viewports" class="demo-section__title">Viewport coverage</h2>
+      <p class="demo-section__desc">This page is web-first; native specs mirror tokens and spacing below.</p>
+      <div class="viewport-grid">
+        <div class="viewport-card">
+          <h4>Web</h4>
+          <p>Banner stack margin-right scales with control cluster width (≥120px). Chicklet strip scrolls horizontally; cloud stays sharp with SVG.</p>
+        </div>
+        <div class="viewport-card">
+          <h4>iOS</h4>
+          <p>PDF vectors for cloud; banner respects safe area notch; filter as sheet or popover per HIG; touch targets ≥44pt for Abacus control.</p>
+        </div>
+        <div class="viewport-card">
+          <h4>Android</h4>
+          <p>PNG/WebP density buckets; Material 3 checkbox in filter menu; banner below status bar with window insets.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

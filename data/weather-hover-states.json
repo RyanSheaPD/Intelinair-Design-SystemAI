@@ -1,0 +1,42 @@
+{
+  "source_page": "pages/agmri-weather.html",
+  "export_document": "pages/weather-hover-states.html",
+  "gw_spray_map_tooltip_cards_export": "pages/weather-gw-spray-cards-export.html",
+  "gw_spray_tooltip_options_gallery": "pages/weather-gw-spray-tooltip-options.html",
+  "stylesheet": "pages/css/weather-hover-export.css",
+  "query_param": "figmaHover",
+  "optional_params": {
+    "field": "1–8 with figmaHover=map-field (polygon index)",
+    "layer": "temp | wind | rain | clouds | forecast with figmaHover=layer-tab",
+    "mapTooltip": "mini | full — map polygon hover/sheet: mini = field header + GW/SO status rows only (see weather-list-init.js)",
+    "fieldDetailSheet": "field-detail-sheet — auto-opens map field modal; field=1–8 → fld-demo-0N (default 8). Use with view=map for Figma export."
+  },
+  "states": [
+    { "id": "field-detail-sheet", "label": "Map — Field detail modal (open, reference layout)", "query": "view=map&figmaHover=field-detail-sheet&field=8" },
+    { "id": "field-detail-sheet", "label": "Map — Field detail modal (demo field 1)", "query": "view=map&figmaHover=field-detail-sheet&field=1" },
+    { "id": "map-card", "label": "Map — panel card hover", "query": "view=map&figmaHover=map-card" },
+    { "id": "map-field", "label": "Map — field polygon 1", "query": "view=map&figmaHover=map-field" },
+    { "id": "map-field", "label": "Map — field polygon 2", "query": "view=map&figmaHover=map-field&field=2" },
+    { "id": "map-field", "label": "Map — field polygon 3", "query": "view=map&figmaHover=map-field&field=3" },
+    { "id": "map-field", "label": "Map — field polygon 4", "query": "view=map&figmaHover=map-field&field=4" },
+    { "id": "map-field", "label": "Map — field polygon 5", "query": "view=map&figmaHover=map-field&field=5" },
+    { "id": "map-field", "label": "Map — field polygon 6", "query": "view=map&figmaHover=map-field&field=6" },
+    { "id": "map-field", "label": "Map — field polygon 7", "query": "view=map&figmaHover=map-field&field=7" },
+    { "id": "map-field", "label": "Map — field polygon 8", "query": "view=map&figmaHover=map-field&field=8" },
+    { "id": "view-toggle", "label": "Toolbar — list/map control hover", "query": "view=map&figmaHover=view-toggle" },
+    { "id": "toolbar-favorite", "label": "Toolbar — Favorite fields button", "query": "view=map&figmaHover=toolbar-favorite" },
+    { "id": "toolbar-advanced", "label": "Toolbar — Advanced filters button", "query": "view=map&figmaHover=toolbar-advanced" },
+    { "id": "layer-tab", "label": "Map — Temperature layer tab (inactive hover)", "query": "view=map&figmaHover=layer-tab&layer=temp" },
+    { "id": "layer-tab", "label": "Map — Wind layer tab (inactive hover)", "query": "view=map&figmaHover=layer-tab&layer=wind" },
+    { "id": "layer-tab", "label": "Map — Rain acc. layer tab (inactive hover)", "query": "view=map&figmaHover=layer-tab&layer=rain" },
+    { "id": "layer-tab", "label": "Map — Clouds layer tab (inactive hover)", "query": "view=map&figmaHover=layer-tab&layer=clouds" },
+    { "id": "layer-tab", "label": "Map — 24h forecast layer tab (inactive hover)", "query": "view=map&figmaHover=layer-tab&layer=forecast" },
+    { "id": "show-fields-pill", "label": "Map — Show fields pill (pressed + hover brightness)", "query": "view=map&figmaHover=show-fields-pill" },
+    { "id": "status-gw", "label": "Table — Ground workability cell (row 1)", "query": "view=list&figmaHover=status-gw" },
+    { "id": "status-spray", "label": "Table — Spray outlook cell (row 1)", "query": "view=list&figmaHover=status-spray" },
+    { "id": "table-row", "label": "Table — First data row hover", "query": "view=list&figmaHover=table-row" },
+    { "id": "th-sortable", "label": "Table — Inactive sortable header hover", "query": "view=list&figmaHover=th-sortable" },
+    { "id": "nav-item", "label": "Sidebar — inactive nav item (Growers)", "query": "view=map&figmaHover=nav-item" },
+    { "id": "header-back", "label": "Header — Back button (secondary hover)", "query": "view=map&figmaHover=header-back" }
+  ]
+}

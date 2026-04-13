@@ -3,44 +3,296 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Assistant Widget — Intelinair Design System</title>
+  <title>AI assistant widget — LLM + speech-to-text</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../design-tokens/tokens.css" />
-  <link rel="stylesheet" href="../components/typography.css" />
-  <link rel="stylesheet" href="../components/button.css" />
+  <link rel="stylesheet" href="../components/ai-assistant-widget.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
     body {
       margin: 0;
       min-height: 100vh;
       font-family: var(--font-family);
-      background: var(--color-background);
+      background: linear-gradient(165deg, var(--color-neutral-100) 0%, var(--color-neutral-50) 45%, #e8f0fa 100%);
       color: var(--color-text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--spacing-xl, 32px);
     }
-    .box {
-      max-width: 32rem;
-      padding: var(--spacing-xl, 32px);
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl, 16px);
-      box-shadow: var(--shadow-sm);
+    .demo-scene {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 32px 20px 120px;
     }
-    h1 { font-size: var(--font-size-22); margin: 0 0 var(--spacing-s, 8px); }
-    p { margin: 0 0 var(--spacing-m, 16px); color: var(--color-text-muted); font-size: var(--font-size-14); line-height: 1.5; }
-    a { color: var(--color-brand-500); font-weight: 600; }
+    .demo-scene h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+    .demo-scene p {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--color-text-muted);
+      margin: 0 0 12px;
+    }
+    .demo-scene ul {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--color-text-muted);
+      padding-left: 1.2rem;
+      margin: 0 0 16px;
+    }
+    .demo-scene code {
+      font-size: 12px;
+      background: var(--color-neutral-200);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .stt-status {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      margin-top: 8px;
+    }
+    .stt-status--err {
+      color: var(--color-error);
+    }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>AI Assistant Widget</h1>
-    <p>The full interactive assistant demo page is not in this repository yet. The component section in the design system still links here so the URL stays stable when the demo is added.</p>
-    <p><a href="../index.html#components">Back to design system — Components</a></p>
+  <div class="demo-scene">
+    <h1>AI assistant widget</h1>
+    <p>Floating control for agronomy / ops apps: users tap <strong>Assistant</strong> to open the chat composer (type to the LLM), or tap the <strong>microphone</strong> for hands-free input (speech-to-text in the browser where supported).</p>
+    <p>In <strong>native</strong> iOS or Android apps, use platform STT (iOS Speech framework / <code>SFSpeechRecognizer</code>; Android <code>SpeechRecognizer</code> or on-device ML). Port these layout and color tokens for parity; avoid relying on the Web Speech API inside WebViews in production unless you explicitly support it.</p>
+    <ul>
+      <li><strong>Assistant</strong> — opens the panel focused on the text field.</li>
+      <li><strong>Mic</strong> (on the strip or in the composer) — starts listening; transcribed text fills the field (demo uses the Web Speech API when available).</li>
+      <li><strong>Send</strong> — appends a user bubble (no real LLM in this static demo).</li>
+    </ul>
+    <p class="stt-status" id="stt-status"></p>
   </div>
+
+  <div class="ai-widget" id="ai-widget" aria-live="polite">
+    <div class="ai-widget__launchers">
+      <button type="button" class="ai-widget__launcher" id="ai-launcher-chat" aria-label="Open assistant — type a message">
+        <span class="ai-widget__launcher-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a7 7 0 0 0-7 7v3l-3 3h7a7 7 0 1 0 0-14z"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </span>
+        Assistant
+      </button>
+      <button type="button" class="ai-widget__mic" id="ai-launcher-mic" aria-label="Open assistant — speak your message" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+    </div>
+
+    <button type="button" class="ai-widget__restore" id="ai-restore" aria-label="Restore assistant">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a7 7 0 0 0-7 7v3l-3 3h7a7 7 0 1 0 0-14z"/></svg>
+    </button>
+
+    <div class="ai-widget__panel" id="ai-panel" role="dialog" aria-label="Assistant" aria-modal="false">
+      <div class="ai-widget__listening-banner" id="ai-listening-banner">
+        <span class="ai-widget__listening-dot" aria-hidden="true"></span>
+        Listening — speak now
+      </div>
+      <header class="ai-widget__header">
+        <h2 class="ai-widget__title">Assistant</h2>
+        <div class="ai-widget__header-actions">
+          <button type="button" class="ai-widget__icon-btn" id="ai-minimize" aria-label="Minimize">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+          </button>
+          <button type="button" class="ai-widget__icon-btn" id="ai-close" aria-label="Close">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </header>
+      <div class="ai-widget__messages" id="ai-messages">
+        <div class="ai-widget__bubble ai-widget__bubble--assistant">
+          Hi — ask about this field, growth stage, or weather. Type below or tap the mic to dictate.
+        </div>
+      </div>
+      <p class="ai-widget__hint">Demo only — connect <code>send</code> to your LLM API and stream replies into the message list.</p>
+      <div class="ai-widget__composer">
+        <textarea class="ai-widget__input" id="ai-input" rows="2" placeholder="Message…" aria-label="Message"></textarea>
+        <button type="button" class="ai-widget__mic" id="ai-composer-mic" aria-label="Speech to text" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+        <button type="button" class="ai-widget__send" id="ai-send" aria-label="Send message" disabled>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.getElementById('ai-widget');
+      var panel = document.getElementById('ai-panel');
+      var input = document.getElementById('ai-input');
+      var messages = document.getElementById('ai-messages');
+      var sendBtn = document.getElementById('ai-send');
+      var launcherChat = document.getElementById('ai-launcher-chat');
+      var launcherMic = document.getElementById('ai-launcher-mic');
+      var composerMic = document.getElementById('ai-composer-mic');
+      var closeBtn = document.getElementById('ai-close');
+      var minBtn = document.getElementById('ai-minimize');
+      var restoreBtn = document.getElementById('ai-restore');
+      var sttStatus = document.getElementById('stt-status');
+
+      var recognition = null;
+      var listening = false;
+
+      function openPanel(fromMic) {
+        root.classList.remove('ai-widget--minimized');
+        root.classList.add('ai-widget--open');
+        launcherMic.setAttribute('aria-pressed', 'false');
+        input.focus();
+        if (fromMic) startListening();
+      }
+
+      function closePanel() {
+        stopListening();
+        root.classList.remove('ai-widget--open', 'ai-widget--minimized');
+      }
+
+      function minimizePanel() {
+        stopListening();
+        root.classList.remove('ai-widget--open');
+        root.classList.add('ai-widget--minimized');
+      }
+
+      function toggleSend() {
+        sendBtn.disabled = !input.value.trim();
+      }
+
+      function appendUserBubble(text) {
+        var el = document.createElement('div');
+        el.className = 'ai-widget__bubble ai-widget__bubble--user';
+        el.textContent = text;
+        messages.appendChild(el);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      function appendAssistantBubble(text) {
+        var el = document.createElement('div');
+        el.className = 'ai-widget__bubble ai-widget__bubble--assistant';
+        el.textContent = text;
+        messages.appendChild(el);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      function initSpeech() {
+        var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SR) {
+          sttStatus.textContent = 'Speech-to-text: not supported in this browser (try Chrome desktop). Mic still shows the listening UI.';
+          sttStatus.classList.add('stt-status--err');
+          return null;
+        }
+        var r = new SR();
+        r.continuous = false;
+        r.interimResults = true;
+        r.lang = 'en-US';
+        r.onresult = function (e) {
+          var interim = '';
+          var final = '';
+          for (var i = e.resultIndex; i < e.results.length; i++) {
+            var t = e.results[i][0].transcript;
+            if (e.results[i].isFinal) final += t;
+            else interim += t;
+          }
+          if (final) {
+            input.value = (input.value ? input.value + ' ' : '') + final.trim();
+            toggleSend();
+          } else if (interim) {
+            /* optional: show interim in placeholder — keep simple and only commit final */
+          }
+        };
+        r.onerror = function (e) {
+          sttStatus.textContent = 'Speech error: ' + (e.error || 'unknown');
+          sttStatus.classList.add('stt-status--err');
+          stopListening();
+        };
+        r.onend = function () {
+          listening = false;
+          setListeningUi(false);
+        };
+        return r;
+      }
+
+      function setListeningUi(on) {
+        root.classList.toggle('ai-widget--listening', on);
+        composerMic.setAttribute('aria-pressed', on ? 'true' : 'false');
+        launcherMic.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
+
+      function startListening() {
+        if (!recognition) recognition = initSpeech();
+        if (!recognition) {
+          setListeningUi(true);
+          setTimeout(function () { setListeningUi(false); }, 2500);
+          return;
+        }
+        listening = true;
+        setListeningUi(true);
+        sttStatus.textContent = 'Speech-to-text: listening…';
+        sttStatus.classList.remove('stt-status--err');
+        try {
+          recognition.start();
+        } catch (e) {
+          /* already started */
+        }
+      }
+
+      function stopListening() {
+        listening = false;
+        setListeningUi(false);
+        if (recognition) {
+          try { recognition.stop(); } catch (e) {}
+        }
+      }
+
+      function toggleComposerMic() {
+        if (root.classList.contains('ai-widget--listening')) stopListening();
+        else startListening();
+      }
+
+      launcherChat.addEventListener('click', function () { openPanel(false); });
+      launcherMic.addEventListener('click', function () { openPanel(true); });
+      restoreBtn.addEventListener('click', function () { openPanel(false); });
+      closeBtn.addEventListener('click', closePanel);
+      minBtn.addEventListener('click', minimizePanel);
+
+      composerMic.addEventListener('click', toggleComposerMic);
+
+      input.addEventListener('input', toggleSend);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          if (!sendBtn.disabled) sendBtn.click();
+        }
+      });
+      sendBtn.addEventListener('click', function () {
+        var t = input.value.trim();
+        if (!t) return;
+        appendUserBubble(t);
+        input.value = '';
+        toggleSend();
+        appendAssistantBubble('(Demo — wire this to your LLM and replace with the model reply.)');
+      });
+
+      toggleSend();
+    })();
+  </script>
 </body>
 </html>

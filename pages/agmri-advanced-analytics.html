@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgMRI — Advanced Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../components/typography.css" />
+  <link rel="stylesheet" href="../components/nav.css" />
+  <link rel="stylesheet" href="../components/header.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-family);
+      background: var(--color-neutral-100);
+      color: var(--color-text);
+    }
+
+    /* ── App shell ── */
+    .app-shell { display: flex; height: 100vh; overflow: hidden; }
+    .app-nav { flex-shrink: 0; height: 100vh; position: sticky; top: 0; z-index: 10; }
+    .app-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #fff; }
+    .app-content { flex: 1; overflow-y: auto; position: relative; }
+
+    /* ─────────────────────────────────────────
+       SCOUT REPORT PAGE
+    ───────────────────────────────────────── */
+
+    /* Top header — NOT blurred, always interactive */
+    .report-chrome {
+      background: #fff;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .report-header {
+      padding: 14px 20px 10px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .report-field-name { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+    .report-field-meta { font-size: 13px; color: #555; margin-bottom: 2px; }
+    .report-field-detail { font-size: 12px; color: #888; display: flex; gap: 6px; align-items: center; }
+
+    .report-header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .btn-create-pdf-page {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: none; border-radius: 6px;
+      padding: 6px 10px; font-size: 13px; color: #555;
+      font-family: var(--font-family); cursor: pointer;
+    }
+    .btn-create-pdf-page:hover { background: #f4f4f4; }
+
+    .btn-virtual-scout {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #1a2a3a; color: #fff; border: none; border-radius: 8px;
+      padding: 7px 14px; font-size: 13px; font-weight: 600;
+      font-family: var(--font-family); cursor: pointer;
+    }
+
+    /* Meta bar */
+    .report-meta-bar {
+      padding: 8px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fafafa; border-top: 1px solid #f0f0f0;
+      font-size: 12px; color: #666; gap: 12px; flex-wrap: wrap;
+    }
+    .report-meta-bar__left { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .report-meta-bar__right { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+
+    .btn-meta-action {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: none; border-radius: 6px;
+      padding: 5px 8px; font-size: 13px; color: #555;
+      font-family: var(--font-family); cursor: pointer;
+    }
+    .btn-meta-action:hover { background: #efefef; }
+
+    .btn-advanced-analytics {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: none; border-radius: 6px;
+      padding: 5px 8px; font-size: 13px; font-weight: 600;
+      color: var(--color-brand-500, #3c84c7);
+      font-family: var(--font-family); cursor: pointer;
+    }
+    .btn-advanced-analytics:hover { background: #f0f6fc; }
+
+    /* ── Data source toggle (on the page) ── */
+    .data-source-bar {
+      padding: 10px 20px;
+      border-top: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toggle-pill {
+      display: inline-flex;
+      background: #f0f0f0;
+      border-radius: 20px;
+      padding: 3px;
+    }
+    .toggle-pill__btn {
+      padding: 5px 16px;
+      border-radius: 16px; border: none;
+      background: none; font-size: 13px; font-weight: 500;
+      font-family: var(--font-family); color: #666;
+      cursor: pointer; transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .toggle-pill__btn--active {
+      background: #fff; color: #1a1a1a; font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    }
+
+    /* ── Report body (lightly faded behind modal) ── */
+    .report-body {
+      padding: 16px 20px 32px;
+      opacity: 0.5;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* View switching */
+    .report-view { display: none; }
+    .report-view--active { display: block; }
+
+    /* Section title */
+    .report-section-title {
+      font-size: 15px; font-weight: 700;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .report-section-counter { font-size: 12px; font-weight: 400; color: #888; }
+    .report-section-text { font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 14px; }
+
+    /* Detail grid */
+    .detail-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px 20px; margin-bottom: 16px;
+    }
+    .detail-item__label { font-size: 11px; color: #888; margin-bottom: 2px; }
+    .detail-item__value { font-size: 13px; font-weight: 500; color: #1a1a1a; }
+
+    /* Approved banner */
+    .approved-banner {
+      background: #f0faf2; border-left: 4px solid #4caf50;
+      border-radius: 8px; padding: 10px 14px;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 12px; margin-bottom: 16px;
+    }
+    .approved-banner__title { font-size: 13px; font-weight: 700; color: #2e7d32; margin-bottom: 2px; }
+    .approved-banner__body { font-size: 12px; color: #555; }
+
+    /* ── Nutrient result cards ── */
+    .nutrient-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px; font-weight: 600; margin-bottom: 12px;
+      padding-bottom: 8px; border-bottom: 1px solid #f0f0f0;
+    }
+    .nutrient-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; margin-bottom: 12px;
+    }
+    .nutrient-card {
+      border-radius: 8px; border: 2px solid #e0e0e0;
+      padding: 8px 10px; text-align: center;
+      background: #fff;
+    }
+    .nutrient-card__symbol { font-size: 11px; font-weight: 600; color: #555; margin-bottom: 2px; }
+    .nutrient-card__value { font-size: 16px; font-weight: 700; color: #1a1a1a; line-height: 1.2; }
+    .nutrient-card__unit { font-size: 10px; color: #888; }
+
+    /* Nutrient card border colors */
+    .nc--yellow  { border-color: #d4a820; }
+    .nc--red     { border-color: #c0584a; }
+    .nc--green   { border-color: #4a8a5a; }
+    .nc--teal    { border-color: #3a8a7a; }
+    .nc--brown   { border-color: #8a6a3a; }
+    .nc--dark    { border-color: #3a4a5a; }
+
+    /* Measurement rating bar */
+    .rating-bar-wrap { margin-bottom: 16px; }
+    .rating-bar-label { font-size: 12px; font-weight: 600; margin-bottom: 6px; text-align: center; color: #444; }
+    .rating-bar {
+      height: 10px; border-radius: 5px;
+      background: linear-gradient(to right, #c0392b, #e67e22, #f1c40f, #27ae60, #1a7a3a);
+      margin-bottom: 4px;
+    }
+    .rating-bar-ticks {
+      display: flex; justify-content: space-between;
+      font-size: 10px; color: #888;
+    }
+
+    /* Leaf tissue chart on page (collapsible) */
+    .collapsible-section {
+      border-top: 1px solid #f0f0f0; margin-top: 8px;
+    }
+    .collapsible-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0 10px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .collapsible-header__left { display: flex; align-items: center; gap: 6px; }
+
+    /* Leaf tissue chart (page version) */
+    .ltissue-chart { width: 100%; }
+    .ltissue-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 8px; min-height: 24px;
+    }
+    .ltissue-label {
+      width: 110px; flex-shrink: 0;
+      font-size: 11px; color: #444;
+      text-align: right; line-height: 1.3;
+    }
+    .ltissue-track {
+      flex: 1; position: relative; height: 22px;
+      display: flex; align-items: center;
+      margin-right: 36px;
+    }
+    .ltissue-track::before {
+      content: '';
+      position: absolute; left: var(--avg-pos); top: 0; bottom: 0;
+      width: 2px; border-left: 2px dashed #999; z-index: 2;
+    }
+    .ltissue-bar {
+      position: absolute; left: 0; height: 18px; border-radius: 2px;
+    }
+    .ltissue-value {
+      position: absolute; right: -32px;
+      font-size: 11px; font-weight: 600; color: #1a1a1a;
+    }
+    .ltissue-avg-header {
+      display: flex; margin-bottom: 4px;
+    }
+    .ltissue-axis-row {
+      display: flex; margin-top: 6px; position: relative; height: 14px;
+    }
+
+    /* ─────────────────────────────────────────
+       MODAL
+    ───────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 200;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 40px 24px; overflow-y: auto;
+    }
+    .modal {
+      background: #fff; border-radius: 16px;
+      width: 100%; max-width: 860px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+    .modal-header { padding: 20px 24px 0; }
+    .modal-title-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .modal-title { font-size: 18px; font-weight: 700; color: var(--color-text); }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 8px; border: none;
+      background: none; cursor: pointer; color: var(--color-text-muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; line-height: 1;
+    }
+    .modal-close:hover { background: var(--color-neutral-100); }
+    .modal-meta-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .modal-sample-date { font-size: 13px; color: var(--color-text-muted); }
+    .btn-create-pdf {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500; font-family: var(--font-family);
+      color: var(--color-text-muted); background: none; border: none;
+      cursor: pointer; padding: 5px 8px; border-radius: 6px;
+    }
+    .btn-create-pdf:hover { background: var(--color-neutral-100); }
+    .btn-create-pdf svg { width: 14px; height: 14px; }
+
+    /* Sample tabs */
+    .sample-tabs {
+      display: flex; border-bottom: 1px solid var(--color-neutral-200);
+      padding: 0 24px;
+    }
+    .sample-tab {
+      padding: 10px 16px; font-size: 13px; font-weight: 500;
+      font-family: var(--font-family); color: var(--color-text-muted);
+      background: none; border: none; cursor: pointer;
+      position: relative; white-space: nowrap;
+    }
+    .sample-tab::after {
+      content: ''; position: absolute;
+      bottom: -1px; left: 0; right: 0; height: 2px;
+      background: transparent; border-radius: 2px 2px 0 0;
+    }
+    .sample-tab--active { color: var(--color-brand-500); font-weight: 600; }
+    .sample-tab--active::after { background: var(--color-brand-500); }
+
+    /* Modal body */
+    .modal-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 16px; }
+    .tab-content { display: none; }
+    .tab-content--active { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Baseline row */
+    .baseline-row { display: flex; flex-direction: column; gap: 4px; }
+    .baseline-label {
+      font-size: 11px; font-weight: 600; color: var(--color-text-muted);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .baseline-select {
+      width: 240px; height: 36px; padding: 0 32px 0 12px;
+      font-size: 13px; font-family: var(--font-family);
+      border: 1px solid var(--color-neutral-300); border-radius: 8px;
+      background: #fff; color: var(--color-text); cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23737373' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+    }
+
+    /* Analytics card */
+    .analytics-card {
+      border: 1px solid var(--color-neutral-200);
+      border-radius: 12px; overflow: hidden;
+    }
+    .analytics-card__title {
+      font-size: 14px; font-weight: 700; color: var(--color-text);
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--color-neutral-100);
+    }
+    .analytics-card__body { padding: 16px; }
+
+    /* Leaf section header in modal */
+    .leaf-section-header {
+      font-size: 12px; font-weight: 700; color: var(--color-text-muted);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 12px 16px 8px; border-bottom: 1px solid var(--color-neutral-100);
+      background: var(--color-neutral-50, #fafafa);
+    }
+
+    /* Leaf tissue chart (modal version) */
+    .ltissue-chart-modal { width: 100%; }
+    .ltissue-row-modal {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px; min-height: 28px;
+    }
+    .ltissue-label-modal {
+      width: 130px; flex-shrink: 0;
+      font-size: 11px; color: var(--color-text);
+      text-align: right; line-height: 1.3;
+    }
+    .ltissue-track-modal {
+      flex: 1; position: relative; height: 26px;
+      display: flex; align-items: center; margin-right: 40px;
+    }
+    .ltissue-track-modal::before {
+      content: ''; position: absolute; left: var(--avg-pos); top: 0; bottom: 0;
+      width: 2px; border-left: 2px dashed var(--color-neutral-400); z-index: 2;
+    }
+    .ltissue-bar-modal {
+      position: absolute; left: 0; height: 22px; border-radius: 2px;
+    }
+    .ltissue-value-modal {
+      position: absolute; right: -34px;
+      font-size: 11px; font-weight: 600; color: var(--color-text);
+    }
+
+    /* Hbar chart */
+    .hbar-chart { width: 100%; }
+    .hbar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; min-height: 28px; }
+    .hbar-label { width: 190px; flex-shrink: 0; font-size: 12px; color: var(--color-text); text-align: right; }
+    .hbar-track { flex: 1; position: relative; height: 28px; display: flex; align-items: center; }
+    .hbar-track::before { content: ''; position: absolute; left: var(--gsp-pos); top: 0; bottom: 0; width: 2px; background: #c8a000; z-index: 2; }
+    .hbar-bar { position: absolute; height: 22px; border-radius: 2px; }
+    .hbar-bar--loss { background: #9a8a2e; }
+    .hbar-bar--win  { background: #4a7fa5; }
+    .chart-legend { display: flex; align-items: center; gap: 16px; margin-top: 12px; margin-left: 198px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--color-text-muted); }
+    .legend-swatch { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+    .legend-swatch--loss   { background: #9a8a2e; }
+    .legend-swatch--parity { background: #c8c8a0; }
+    .legend-swatch--win    { background: #4a7fa5; }
+
+    /* Results table */
+    .results-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--font-family); }
+    .results-table thead th { padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; color: var(--color-text-muted); border-bottom: 1px solid var(--color-neutral-200); white-space: nowrap; }
+    .results-table tbody tr { border-bottom: 1px solid var(--color-neutral-100); }
+    .results-table tbody tr:hover { background: var(--color-neutral-50); }
+    .results-table tbody td { padding: 9px 10px; color: var(--color-text); vertical-align: middle; }
+
+    /* Modal footer */
+    .modal-footer {
+      padding: 12px 24px; border-top: 1px solid var(--color-neutral-100);
+      display: flex; justify-content: flex-end;
+    }
+    .btn-close {
+      font-size: 13px; font-weight: 500; font-family: var(--font-family);
+      color: var(--color-text-muted); background: none;
+      border: 1px solid var(--color-neutral-300); border-radius: 8px;
+      padding: 7px 20px; cursor: pointer;
+    }
+    .btn-close:hover { background: var(--color-neutral-50); }
+
+    /* ── Modal empty states ── */
+    .modal-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 24px;
+      gap: 16px;
+    }
+    .modal-empty-state__icon { width: 72px; height: 72px; }
+    .modal-empty-state__text {
+      font-size: 14px; color: #bbb; font-weight: 500;
+      text-align: center; max-width: 280px; line-height: 1.5;
+    }
+
+    /* Section-level empty (inside an analytics card) */
+    .section-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 16px;
+      gap: 12px;
+    }
+    .section-empty-state__icon { width: 52px; height: 52px; }
+    .section-empty-state__text {
+      font-size: 13px; color: #bbb; font-weight: 500; text-align: center;
+    }
+
+    /* Demo controls in modal */
+    .modal-demo-bar {
+      background: #f9f9f9;
+      border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 6px 24px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 11px; color: #888; flex-shrink: 0;
+    }
+    .modal-demo-select {
+      font-size: 11px; color: #444; font-family: var(--font-family);
+      background: #fff; border: 1px solid #ddd; border-radius: 5px;
+      padding: 3px 8px; cursor: pointer;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── Tissue trial sub-tab strip ── */
+    .tissue-trial-bar {
+      display: flex; gap: 4px; padding: 12px 0 0; margin-bottom: 14px;
+      border-bottom: 1px solid var(--color-neutral-200);
+    }
+    .tissue-trial-btn {
+      padding: 7px 16px; font-size: 12px; font-weight: 500;
+      font-family: var(--font-family); color: var(--color-text-muted);
+      background: none; border: none; border-radius: 6px; cursor: pointer;
+      position: relative;
+    }
+    .tissue-trial-btn::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 2px; background: transparent; border-radius: 2px 2px 0 0;
+    }
+    .tissue-trial-btn--active { color: var(--color-brand-500); font-weight: 600; }
+    .tissue-trial-btn--active::after { background: var(--color-brand-500); }
+    .tissue-trial-panel { display: none; }
+    .tissue-trial-panel--active { display: block; }
+
+    /* ── Mobile ── */
+    .mobile-bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; }
+
+    @media (max-width: 768px) {
+      .app-nav { display: none; }
+      .mobile-bottom-nav { display: block; }
+      .app-main { padding-bottom: 64px; }
+      .modal-overlay { padding: 0; align-items: flex-end; }
+      .modal {
+        border-radius: 20px 20px 0 0; max-width: 100%;
+        max-height: 92vh; display: flex; flex-direction: column;
+      }
+      .modal::before {
+        content: ''; display: block; width: 36px; height: 4px;
+        border-radius: 2px; background: var(--color-neutral-300);
+        margin: 10px auto 0; flex-shrink: 0;
+      }
+      .modal-header { flex-shrink: 0; }
+      .modal-body { overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; }
+      .sample-tabs { overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; }
+      .sample-tabs::-webkit-scrollbar { display: none; }
+      .baseline-select { width: 100%; }
+      .modal-meta-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .hbar-label { width: 90px; font-size: 11px; }
+      .chart-legend { margin-left: 98px; }
+      .table-scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .results-table { min-width: 520px; }
+      .nutrient-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      .report-meta-bar__left { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ── Sidebar nav ── -->
+  <aside class="app-nav">
+    <nav class="nav" aria-label="Main navigation" style="height:100vh;">
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span class="nav__label">Home</span></a>
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span class="nav__label">AI Chat</span></a>
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav__label">Growers</span></a>
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="nav__label">Fields</span></a>
+      <a href="#" class="nav__item nav__item--active" aria-current="page"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span><span class="nav__label">Scout</span></a>
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Weather</span></a>
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span><span class="nav__label">Analyze</span></a>
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="nav__label">Disease</span></a>
+      <a href="#" class="nav__item" style="margin-top:auto;"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nav__label">Settings</span></a>
+    </nav>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="app-main">
+    <div class="app-content">
+
+      <!-- ── Scout report chrome (always visible, not blurred) ── -->
+      <div class="report-chrome">
+
+        <!-- Field header -->
+        <div class="report-header">
+          <div>
+            <div class="report-field-name">South Shop</div>
+            <div class="report-field-meta">South Shop, Campbell farms.</div>
+            <div class="report-field-detail">
+              <span>664.9 ac</span><span>·</span><span>11/5</span><span>·</span><span>🌽 Corn</span>
+            </div>
+          </div>
+          <div class="report-header-actions">
+            <button class="btn-create-pdf-page">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Create PDF
+            </button>
+            <button class="btn-virtual-scout">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/><path d="M2 20c0-4 4-7 10-7s10 3 10 7"/></svg>
+              Virtual scout
+            </button>
+          </div>
+        </div>
+
+        <!-- Meta bar -->
+        <div class="report-meta-bar">
+          <div class="report-meta-bar__left">
+            <span>Created by: John Brooks</span>
+            <span>Date: 7/11</span>
+            <span>Hybrid / Variety: Placeholder</span>
+            <span>Planted on: 24/11</span>
+          </div>
+          <div class="report-meta-bar__right">
+            <button class="btn-meta-action">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Add summary
+            </button>
+            <button class="btn-advanced-analytics" onclick="document.getElementById('analyticsModal').style.display='flex'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              Advanced analytics
+            </button>
+          </div>
+        </div>
+
+        <!-- Data source toggle -->
+        <div class="data-source-bar">
+          <div class="toggle-pill" role="group">
+            <button class="toggle-pill__btn toggle-pill__btn--active" id="page-toggle-reese" onclick="switchPageSource('reese')">Reese Nevins</button>
+            <button class="toggle-pill__btn" id="page-toggle-tissue" onclick="switchPageSource('tissue')">Tissue Test</button>
+          </div>
+        </div>
+
+      </div><!-- /report-chrome -->
+
+      <!-- ── Report body (faded, behind modal) ── -->
+      <div class="report-body">
+
+        <!-- ── REESE NEVINS VIEW ── -->
+        <div class="report-view report-view--active" id="view-reese">
+
+          <div class="approved-banner">
+            <div>
+              <div class="approved-banner__title">Approved</div>
+              <div class="approved-banner__body">This scouting report has been approved and is now publicly available to the customer.</div>
+              <div style="font-size:12px;color:#3c84c7;margin-top:2px;">Reviewed by: John Junior</div>
+            </div>
+            <button style="background:#1a2a3a;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">Reopen</button>
+          </div>
+
+          <div class="report-section-title">
+            <span>Reese Nevins</span>
+            <span class="report-section-counter">1/12</span>
+          </div>
+          <div class="report-section-text">PorchCam camera does not seem to be responding to any motion (even those well within the range of 50 ft). Recording and all other functionality of the PorchCam device doesn't seem to be impacted at all though.</div>
+          <div class="detail-grid">
+            <div><div class="detail-item__label">Trial</div><div class="detail-item__value">25-ZEAMX-US750-IA02-HOCK</div></div>
+            <div><div class="detail-item__label">Treatment zone</div><div class="detail-item__value">PRVN + 100% N</div></div>
+            <div><div class="detail-item__label">Growth stage</div><div class="detail-item__value">VE</div></div>
+          </div>
+
+        </div><!-- /view-reese -->
+
+        <!-- ── TISSUE TEST VIEW ── -->
+        <div class="report-view" id="view-tissue">
+
+          <div class="report-section-title">
+            <span>Tissue Sample</span>
+            <span class="report-section-counter">1/12</span>
+          </div>
+          <div class="report-section-text">PorchCam camera does not seem to be responding to any motion (even those well within the range of 50 ft). Recording and all other functionality of the PorchCam device doesn't seem to be impacted at all though.</div>
+
+          <div class="detail-grid">
+            <div><div class="detail-item__label">Trial</div><div class="detail-item__value">PRVN + 100% N</div></div>
+            <div><div class="detail-item__label">Treatment zone</div><div class="detail-item__value">PRVN + 100% N</div></div>
+            <div><div class="detail-item__label">Soil depth</div><div class="detail-item__value">28K</div></div>
+            <div><div class="detail-item__label">Growth stage</div><div class="detail-item__value">VE</div></div>
+            <div><div class="detail-item__label">Lab</div><div class="detail-item__value">Next Level AG.LLC</div></div>
+            <div><div class="detail-item__label">Barcode Number</div><div class="detail-item__value">000000-0000000</div></div>
+            <div><div class="detail-item__label">Results received</div><div class="detail-item__value">April 26, 2025</div></div>
+          </div>
+
+          <!-- Tissue nutrient results -->
+          <div class="collapsible-section">
+            <div class="collapsible-header">
+              <div class="collapsible-header__left">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+                Tissue nutrient results
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+            </div>
+
+            <!-- Macronutrients: N S P K -->
+            <div class="nutrient-grid">
+              <div class="nutrient-card nc--yellow"><div class="nutrient-card__symbol">N</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--yellow"><div class="nutrient-card__symbol">S</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--yellow"><div class="nutrient-card__symbol">P</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--yellow"><div class="nutrient-card__symbol">K</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+            </div>
+            <!-- Secondary: Mg Ca Na B -->
+            <div class="nutrient-grid">
+              <div class="nutrient-card nc--red"><div class="nutrient-card__symbol">Mg</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--red"><div class="nutrient-card__symbol">Ca</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--teal"><div class="nutrient-card__symbol">Na</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--dark"><div class="nutrient-card__symbol">B</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+            </div>
+            <!-- Micronutrients: Zn Mn Fe Cu -->
+            <div class="nutrient-grid">
+              <div class="nutrient-card nc--green"><div class="nutrient-card__symbol">Zn</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--brown"><div class="nutrient-card__symbol">Mn</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--brown"><div class="nutrient-card__symbol">Fe</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+              <div class="nutrient-card nc--brown"><div class="nutrient-card__symbol">Cu</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+            </div>
+            <!-- Al centered -->
+            <div style="display:flex;justify-content:center;margin-bottom:12px;">
+              <div class="nutrient-card nc--dark" style="width:calc(25% - 6px);"><div class="nutrient-card__symbol">Al</div><div class="nutrient-card__value">10.4</div><div class="nutrient-card__unit">%</div></div>
+            </div>
+
+            <!-- Measurement rating bar -->
+            <div class="rating-bar-wrap">
+              <div class="rating-bar-label">Measurement Rating</div>
+              <div class="rating-bar"></div>
+              <div class="rating-bar-ticks">
+                <span>Very low</span><span>Low</span><span>Med</span><span>High</span><span>Very high</span>
+              </div>
+            </div>
+          </div><!-- /tissue nutrient collapsible -->
+
+          <!-- Leaf tissue nitrogen percent chart -->
+          <div class="collapsible-section">
+            <div class="collapsible-header">
+              <div class="collapsible-header__left">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Leaf tissue nitrogen percent
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+
+            <div class="ltissue-chart" style="--avg-pos:40%;">
+              <!-- Baseline label -->
+              <div class="ltissue-avg-header">
+                <div style="width:110px;flex-shrink:0;"></div>
+                <div style="flex:1;margin-right:36px;position:relative;height:16px;">
+                  <span style="position:absolute;left:40%;transform:translateX(-50%);font-size:11px;color:#888;">Baseline</span>
+                </div>
+              </div>
+              <div class="ltissue-row"><div class="ltissue-label">NTC:<br>100%N</div><div class="ltissue-track" style="--avg-pos:40%;"><div class="ltissue-bar" style="background:#5b8db8;width:74.3%;"></div><span class="ltissue-value">3.51</span></div></div>
+              <div class="ltissue-row"><div class="ltissue-label">NTC:<br>100%N-BMP</div><div class="ltissue-track" style="--avg-pos:40%;"><div class="ltissue-bar" style="background:#a8c8e0;width:88.6%;"></div><span class="ltissue-value">3.56</span></div></div>
+              <div class="ltissue-row"><div class="ltissue-label">PBOS:<br>100%N</div><div class="ltissue-track" style="--avg-pos:40%;"><div class="ltissue-bar" style="background:#4a7a4a;width:2.9%;"></div><span class="ltissue-value">3.26</span></div></div>
+              <div class="ltissue-row"><div class="ltissue-label">PBOS:<br>100%N-BMP</div><div class="ltissue-track" style="--avg-pos:40%;"><div class="ltissue-bar" style="background:#a8d4a8;width:25.7%;"></div><span class="ltissue-value">3.34</span></div></div>
+              <div class="ltissue-row"><div class="ltissue-label">PBDDryB:<br>100%N-BMP</div><div class="ltissue-track" style="--avg-pos:40%;"><div class="ltissue-bar" style="background:#e8a0b0;width:54.3%;"></div><span class="ltissue-value">3.44</span></div></div>
+              <div class="ltissue-row"><div class="ltissue-label">PBDDryA:<br>100%N-BMP</div><div class="ltissue-track" style="--avg-pos:40%;"><div class="ltissue-bar" style="background:#d4b84a;width:82.9%;"></div><span class="ltissue-value">3.54</span></div></div>
+              <div class="ltissue-axis-row">
+                <div style="width:110px;flex-shrink:0;"></div>
+                <div style="flex:1;margin-right:36px;position:relative;">
+                  <span style="position:absolute;left:0%;transform:translateX(-50%);font-size:10px;color:#888;">3.25</span>
+                  <span style="position:absolute;left:14.3%;transform:translateX(-50%);font-size:10px;color:#888;">3.30</span>
+                  <span style="position:absolute;left:28.6%;transform:translateX(-50%);font-size:10px;color:#888;">3.35</span>
+                  <span style="position:absolute;left:42.9%;transform:translateX(-50%);font-size:10px;color:#888;">3.40</span>
+                  <span style="position:absolute;left:57.1%;transform:translateX(-50%);font-size:10px;color:#888;">3.45</span>
+                  <span style="position:absolute;left:71.4%;transform:translateX(-50%);font-size:10px;color:#888;">3.50</span>
+                  <span style="position:absolute;left:85.7%;transform:translateX(-50%);font-size:10px;color:#888;">3.55</span>
+                </div>
+              </div>
+            </div>
+          </div><!-- /leaf tissue collapsible -->
+
+        </div><!-- /view-tissue -->
+
+      </div><!-- /report-body -->
+
+      <!-- ── Advanced Analytics Modal ── -->
+      <div class="modal-overlay" id="analyticsModal">
+        <div class="modal" role="dialog" aria-modal="true" aria-label="Advanced analytics">
+
+          <div class="modal-header">
+            <div class="modal-title-row">
+              <span class="modal-title">Advanced analytics</span>
+              <button class="modal-close" onclick="document.getElementById('analyticsModal').style.display='none'" aria-label="Close">×</button>
+            </div>
+            <div class="modal-meta-row">
+              <span class="modal-sample-date">Sample date: 2/11 &nbsp;·&nbsp; Observed growth stage: V8</span>
+              <button class="btn-create-pdf">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Create PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabs: Trial 1, Trial 2, Trial 3, Tissue Test -->
+          <div class="sample-tabs" role="tablist" id="mainTabs">
+            <button class="sample-tab sample-tab--active" role="tab" aria-selected="true" onclick="switchSampleTab(this, 'tab-trial1')">Trial 1</button>
+            <button class="sample-tab" role="tab" aria-selected="false" onclick="switchSampleTab(this, 'tab-trial2')">Trial 2</button>
+            <button class="sample-tab" role="tab" aria-selected="false" onclick="switchSampleTab(this, 'tab-trial3')">Trial 3</button>
+            <button class="sample-tab" role="tab" aria-selected="false" id="tab-btn-tissue" onclick="switchSampleTab(this, 'tab-tissue')">Tissue Test</button>
+          </div>
+
+          <!-- Demo state selector -->
+          <div class="modal-demo-bar">
+            <span>Demo state:</span>
+            <select class="modal-demo-select" onchange="setModalDemoState(this.value)">
+              <option value="all">All data populated</option>
+              <option value="trial2-empty">Trial 2 — no results</option>
+              <option value="no-data">No sample data at all</option>
+              <option value="tissue-pending">Tissue Test — awaiting lab results</option>
+            </select>
+          </div>
+
+          <div class="modal-body">
+
+            <!-- ── WHOLE MODAL EMPTY STATE (no sample data) ── -->
+            <div id="modal-no-data" class="tab-content hidden" style="min-height:300px;">
+              <div class="modal-empty-state">
+                <!-- Flask + magnifying glass -->
+                <svg class="modal-empty-state__icon" viewBox="0 0 72 72" fill="none">
+                  <path d="M26 8v22L14 48a6 6 0 0 0 5.2 9h25.6a6 6 0 0 0 5.2-9L38 30V8" stroke="#ccc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line x1="22" y1="8" x2="50" y2="8" stroke="#ccc" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="21" cy="42" r="3" fill="#ddd"/>
+                  <circle cx="30" cy="50" r="2" fill="#ddd"/>
+                  <circle cx="42" cy="46" r="2.5" fill="#ddd"/>
+                  <circle cx="52" cy="52" r="14" stroke="#ccc" stroke-width="3" fill="none"/>
+                  <line x1="62" y1="62" x2="69" y2="69" stroke="#ccc" stroke-width="3" stroke-linecap="round"/>
+                  <line x1="44" y1="44" x2="60" y2="60" stroke="#ddd" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="modal-empty-state__text">No sample data available for this date</div>
+              </div>
+            </div>
+
+            <!-- ── TRIAL 1 ── -->
+            <div class="tab-content tab-content--active" id="tab-trial1">
+              <div class="baseline-row">
+                <label class="baseline-label">Baseline</label>
+                <select class="baseline-select"><option>NTC: N 100%</option><option>NTC: N- Reduced</option></select>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card__title">Estimated In-Plant Nitrogen Status</div>
+                <div class="analytics-card__body">
+                  <div class="hbar-chart" style="--gsp-pos:75%;">
+                    <div style="display:flex;align-items:flex-end;margin-bottom:4px;">
+                      <div style="width:198px;flex-shrink:0;"></div>
+                      <div style="flex:1;position:relative;height:20px;"><span style="position:absolute;left:75%;transform:translateX(-50%);font-size:11px;font-weight:700;color:#c8a000;">GSP</span></div>
+                    </div>
+                    <div class="hbar-row"><div class="hbar-label">NTC: N 100%</div><div class="hbar-track" style="--gsp-pos:75%;"><span style="position:absolute;left:calc(75% + 6px);font-size:11px;font-weight:600;color:var(--color-text-muted);">0.0%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">NTC: N- Reduced</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--loss" style="left:8.75%;width:66.25%;"></div><span style="position:absolute;left:10px;font-size:11px;font-weight:600;color:#fff;z-index:3;">-10.6%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">PVN G3: N 100%</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--win" style="left:75%;width:18.1%;"></div><span style="position:absolute;left:calc(75% + 18.1% + 6px);font-size:11px;font-weight:600;color:var(--color-text);">2.9%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">PVN G3: N100%</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--loss" style="left:68.1%;width:6.9%;"></div><span style="position:absolute;left:calc(68.1% - 36px);font-size:11px;font-weight:600;color:var(--color-text);">-1.1%</span></div></div>
+                    <div style="display:flex;margin-left:198px;position:relative;height:18px;margin-top:4px;"><div style="flex:1;position:relative;"><span style="position:absolute;left:0%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">-12.0</span><span style="position:absolute;left:37.5%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">-6.0</span><span style="position:absolute;left:75%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">0.0</span><span style="position:absolute;left:100%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">4.0</span></div></div>
+                    <div style="text-align:center;font-size:11px;color:var(--color-text-muted);margin-top:8px;">In Plant Nitrogen Status (% difference from GSP)</div>
+                    <div class="chart-legend"><div class="legend-item"><div class="legend-swatch legend-swatch--loss"></div>Loss</div><div class="legend-item"><div class="legend-swatch legend-swatch--parity"></div>Parity</div><div class="legend-item"><div class="legend-swatch legend-swatch--win"></div>Win</div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card__title">Results Table</div>
+                <div class="analytics-card__body" style="padding:0;">
+                  <div class="table-scroll-wrap">
+                    <table class="results-table">
+                      <thead><tr><th>Treatment Zone</th><th>Avg. Chlorophyll Content (CCI)</th><th>Avg. Chlorophyll (CCI) Diff. from GSP</th><th>Avg. Fresh Weight (g)</th><th>Avg. Fresh Weight Diff. From GSP</th></tr></thead>
+                      <tbody>
+                        <tr><td>NTC: N 100%</td><td>46.3</td><td>0.0</td><td>428</td><td>0</td></tr>
+                        <tr><td>NTC: N Reduced</td><td>46.1</td><td>-0.2</td><td>373</td><td>-55</td></tr>
+                        <tr><td>PVN G3: N 100%</td><td>46.3</td><td>0.1</td><td>443</td><td>15</td></tr>
+                        <tr><td>PVN G3: N Reduced</td><td>48.3</td><td>2.1</td><td>418</td><td>-10</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── TRIAL 2 ── -->
+            <div class="tab-content" id="tab-trial2">
+
+              <!-- Empty state for Trial 2 -->
+              <div id="trial2-empty" class="modal-empty-state hidden">
+                <svg class="modal-empty-state__icon" viewBox="0 0 72 72" fill="none">
+                  <!-- Bar chart -->
+                  <rect x="8" y="32" width="12" height="24" rx="2" fill="#ddd"/>
+                  <rect x="26" y="20" width="12" height="36" rx="2" fill="#ddd"/>
+                  <rect x="44" y="12" width="12" height="44" rx="2" fill="#ddd"/>
+                  <line x1="6" y1="58" x2="58" y2="58" stroke="#ccc" stroke-width="2.5" stroke-linecap="round"/>
+                  <!-- Magnifying glass -->
+                  <circle cx="54" cy="22" r="14" stroke="#ccc" stroke-width="3" fill="rgba(255,255,255,0.9)"/>
+                  <line x1="64" y1="32" x2="70" y2="38" stroke="#ccc" stroke-width="3" stroke-linecap="round"/>
+                  <line x1="47" y1="15" x2="61" y2="29" stroke="#e0e0e0" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="modal-empty-state__text">No results available for Trial 2</div>
+              </div>
+
+              <!-- Trial 2 data (shown by default) -->
+              <div id="trial2-data">
+              <div class="baseline-row"><label class="baseline-label">Baseline</label><select class="baseline-select"><option>NTC: N 100%</option><option>NTC: N- Reduced</option></select></div>
+              <div class="analytics-card">
+                <div class="analytics-card__title">Estimated In-Plant Nitrogen Status</div>
+                <div class="analytics-card__body">
+                  <div class="hbar-chart" style="--gsp-pos:75%;">
+                    <div style="display:flex;align-items:flex-end;margin-bottom:4px;"><div style="width:198px;flex-shrink:0;"></div><div style="flex:1;position:relative;height:20px;"><span style="position:absolute;left:75%;transform:translateX(-50%);font-size:11px;font-weight:700;color:#c8a000;">GSP</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">NTC: N 100%</div><div class="hbar-track" style="--gsp-pos:75%;"><span style="position:absolute;left:calc(75% + 6px);font-size:11px;font-weight:600;color:var(--color-text-muted);">0.0%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">NTC: N- Reduced</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--loss" style="left:18.75%;width:56.25%;"></div><span style="position:absolute;left:10px;font-size:11px;font-weight:600;color:#fff;z-index:3;">-8.2%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">PBOS: N 100%</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--win" style="left:75%;width:25%;"></div><span style="position:absolute;left:calc(75% + 25% + 6px);font-size:11px;font-weight:600;color:var(--color-text);">4.0%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">PBOS: N Reduced</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--loss" style="left:62.5%;width:12.5%;"></div><span style="position:absolute;left:calc(62.5% - 36px);font-size:11px;font-weight:600;color:var(--color-text);">-2.0%</span></div></div>
+                    <div style="display:flex;margin-left:198px;position:relative;height:18px;margin-top:4px;"><div style="flex:1;position:relative;"><span style="position:absolute;left:0%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">-12.0</span><span style="position:absolute;left:37.5%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">-6.0</span><span style="position:absolute;left:75%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">0.0</span><span style="position:absolute;left:100%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">4.0</span></div></div>
+                    <div style="text-align:center;font-size:11px;color:var(--color-text-muted);margin-top:8px;">In Plant Nitrogen Status (% difference from GSP)</div>
+                    <div class="chart-legend"><div class="legend-item"><div class="legend-swatch legend-swatch--loss"></div>Loss</div><div class="legend-item"><div class="legend-swatch legend-swatch--parity"></div>Parity</div><div class="legend-item"><div class="legend-swatch legend-swatch--win"></div>Win</div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card__title">Results Table</div>
+                <div class="analytics-card__body" style="padding:0;"><div class="table-scroll-wrap"><table class="results-table"><thead><tr><th>Treatment Zone</th><th>Avg. Chlorophyll Content (CCI)</th><th>Avg. Chlorophyll (CCI) Diff. from GSP</th><th>Avg. Fresh Weight (g)</th><th>Avg. Fresh Weight Diff. From GSP</th></tr></thead><tbody><tr><td>NTC: N 100%</td><td>44.8</td><td>0.0</td><td>412</td><td>0</td></tr><tr><td>NTC: N Reduced</td><td>43.1</td><td>-1.7</td><td>358</td><td>-54</td></tr><tr><td>PBOS: N 100%</td><td>47.2</td><td>2.4</td><td>451</td><td>39</td></tr><tr><td>PBOS: N Reduced</td><td>45.9</td><td>1.1</td><td>399</td><td>-13</td></tr></tbody></table></div></div>
+              </div>
+              </div><!-- /trial2-data -->
+            </div><!-- /tab-trial2 -->
+
+            <!-- ── TRIAL 3 ── -->
+            <div class="tab-content" id="tab-trial3">
+              <div class="baseline-row"><label class="baseline-label">Baseline</label><select class="baseline-select"><option>NTC: N 100%</option><option>NTC: N- Reduced</option></select></div>
+              <div class="analytics-card">
+                <div class="analytics-card__title">Estimated In-Plant Nitrogen Status</div>
+                <div class="analytics-card__body">
+                  <div class="hbar-chart" style="--gsp-pos:75%;">
+                    <div style="display:flex;align-items:flex-end;margin-bottom:4px;"><div style="width:198px;flex-shrink:0;"></div><div style="flex:1;position:relative;height:20px;"><span style="position:absolute;left:75%;transform:translateX(-50%);font-size:11px;font-weight:700;color:#c8a000;">GSP</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">NTC: N 100%</div><div class="hbar-track" style="--gsp-pos:75%;"><span style="position:absolute;left:calc(75% + 6px);font-size:11px;font-weight:600;color:var(--color-text-muted);">0.0%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">NTC: N- Reduced</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--loss" style="left:25%;width:50%;"></div><span style="position:absolute;left:10px;font-size:11px;font-weight:600;color:#fff;z-index:3;">-7.5%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">PBDDryB: N 100%</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--win" style="left:75%;width:31.25%;"></div><span style="position:absolute;left:calc(75% + 31.25% + 6px);font-size:11px;font-weight:600;color:var(--color-text);">5.0%</span></div></div>
+                    <div class="hbar-row"><div class="hbar-label">PBDDryA: N Reduced</div><div class="hbar-track" style="--gsp-pos:75%;"><div class="hbar-bar hbar-bar--win" style="left:75%;width:12.5%;"></div><span style="position:absolute;left:calc(75% + 12.5% + 6px);font-size:11px;font-weight:600;color:var(--color-text);">2.0%</span></div></div>
+                    <div style="display:flex;margin-left:198px;position:relative;height:18px;margin-top:4px;"><div style="flex:1;position:relative;"><span style="position:absolute;left:0%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">-12.0</span><span style="position:absolute;left:37.5%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">-6.0</span><span style="position:absolute;left:75%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">0.0</span><span style="position:absolute;left:100%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">4.0</span></div></div>
+                    <div style="text-align:center;font-size:11px;color:var(--color-text-muted);margin-top:8px;">In Plant Nitrogen Status (% difference from GSP)</div>
+                    <div class="chart-legend"><div class="legend-item"><div class="legend-swatch legend-swatch--loss"></div>Loss</div><div class="legend-item"><div class="legend-swatch legend-swatch--parity"></div>Parity</div><div class="legend-item"><div class="legend-swatch legend-swatch--win"></div>Win</div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="analytics-card">
+                <div class="analytics-card__title">Results Table</div>
+                <div class="analytics-card__body" style="padding:0;"><div class="table-scroll-wrap"><table class="results-table"><thead><tr><th>Treatment Zone</th><th>Avg. Chlorophyll Content (CCI)</th><th>Avg. Chlorophyll (CCI) Diff. from GSP</th><th>Avg. Fresh Weight (g)</th><th>Avg. Fresh Weight Diff. From GSP</th></tr></thead><tbody><tr><td>NTC: N 100%</td><td>45.5</td><td>0.0</td><td>420</td><td>0</td></tr><tr><td>NTC: N Reduced</td><td>43.8</td><td>-1.7</td><td>381</td><td>-39</td></tr><tr><td>PBDDryB: N 100%</td><td>48.1</td><td>2.6</td><td>463</td><td>43</td></tr><tr><td>PBDDryA: N Reduced</td><td>46.4</td><td>0.9</td><td>435</td><td>15</td></tr></tbody></table></div></div>
+              </div>
+            </div>
+
+            <!-- ── TISSUE TEST — 13 analyte charts grouped by trial ── -->
+            <div class="tab-content" id="tab-tissue">
+
+              <!-- Trial sub-tabs -->
+              <div class="tissue-trial-bar" id="tissue-trial-tabs">
+                <button class="tissue-trial-btn tissue-trial-btn--active" onclick="switchTissueTrial(this,'tissue-trial1')">Trial 1</button>
+                <button class="tissue-trial-btn" onclick="switchTissueTrial(this,'tissue-trial2')">Trial 2</button>
+                <button class="tissue-trial-btn" onclick="switchTissueTrial(this,'tissue-trial3')">Trial 3</button>
+              </div>
+
+              <!-- Trial panels (JS-rendered) -->
+              <div id="tissue-trial1" class="tissue-trial-panel tissue-trial-panel--active"></div>
+              <div id="tissue-trial2" class="tissue-trial-panel"></div>
+              <div id="tissue-trial3" class="tissue-trial-panel"></div>
+
+              <!-- ── PENDING: awaiting lab results ── -->
+              <div id="tissue-pending" class="hidden">
+                <div class="modal-empty-state" style="padding:64px 24px;">
+                  <svg class="modal-empty-state__icon" viewBox="0 0 72 72" fill="none" style="width:80px;height:80px;">
+                    <path d="M26 10v20L14 48a6 6 0 0 0 5.2 9h25.6a6 6 0 0 0 5.2-9L38 30V10" stroke="#c8a87a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="22" y1="10" x2="42" y2="10" stroke="#c8a87a" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="22" cy="44" r="2.5" fill="#e8c89a" opacity="0.7"/>
+                    <circle cx="31" cy="50" r="2" fill="#e8c89a" opacity="0.5"/>
+                    <circle cx="38" cy="44" r="3" fill="#e8c89a" opacity="0.6"/>
+                    <circle cx="52" cy="20" r="16" fill="#fff" stroke="#c8a87a" stroke-width="3"/>
+                    <line x1="52" y1="20" x2="52" y2="13" stroke="#c8a87a" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="52" y1="20" x2="58" y2="24" stroke="#c8a87a" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="52" y1="6" x2="52" y2="8.5" stroke="#c8a87a" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="52" y1="31.5" x2="52" y2="34" stroke="#c8a87a" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="38" y1="20" x2="40.5" y2="20" stroke="#c8a87a" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="63.5" y1="20" x2="66" y2="20" stroke="#c8a87a" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <div class="modal-empty-state__text" style="color:#c8a87a;">Results pending from lab</div>
+                  <div style="font-size:12px;color:#ccc;text-align:center;max-width:240px;line-height:1.5;">Results typically arrive within 3–5 business days of sample submission</div>
+                </div>
+              </div>
+
+            </div><!-- /tab-tissue -->
+
+          </div><!-- /modal-body -->
+
+          <div class="modal-footer">
+            <button class="btn-close" onclick="document.getElementById('analyticsModal').style.display='none'">Close</button>
+          </div>
+
+        </div><!-- /modal -->
+      </div><!-- /modal-overlay -->
+
+    </div><!-- /app-content -->
+  </div><!-- /app-main -->
+
+  <!-- ── Mobile bottom nav ── -->
+  <div class="mobile-bottom-nav">
+    <nav class="nav nav--bottom" aria-label="Main navigation">
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span><span class="nav__label">Fields</span></a>
+      <a href="#" class="nav__item nav__item--active" aria-current="page"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span><span class="nav__label">Scout</span></a>
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Weather</span></a>
+      <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span><span class="nav__label">More</span></a>
+    </nav>
+  </div>
+
+</div><!-- /app-shell -->
+
+<script>
+  // Page-level data source toggle
+  function switchPageSource(source) {
+    document.getElementById('page-toggle-reese').classList.toggle('toggle-pill__btn--active', source === 'reese');
+    document.getElementById('page-toggle-tissue').classList.toggle('toggle-pill__btn--active', source === 'tissue');
+    document.getElementById('view-reese').classList.toggle('report-view--active', source === 'reese');
+    document.getElementById('view-tissue').classList.toggle('report-view--active', source === 'tissue');
+  }
+
+  // Modal tab switching
+  function switchSampleTab(btn, targetId) {
+    btn.closest('.sample-tabs').querySelectorAll('.sample-tab').forEach(t => {
+      t.classList.remove('sample-tab--active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('sample-tab--active');
+    btn.setAttribute('aria-selected', 'true');
+    btn.closest('.modal').querySelectorAll('.tab-content').forEach(p => {
+      p.classList.remove('tab-content--active');
+    });
+    document.getElementById(targetId).classList.add('tab-content--active');
+  }
+
+  // When opening from Tissue Test context, auto-open Tissue Test tab
+  document.querySelector('.btn-advanced-analytics').addEventListener('click', function() {
+    const issueTissue = document.getElementById('page-toggle-tissue').classList.contains('toggle-pill__btn--active');
+    if (issueTissue) {
+      switchSampleTab(document.getElementById('tab-btn-tissue'), 'tab-tissue');
+    }
+  });
+
+  // ── Tissue trial sub-tab switching ──
+  function switchTissueTrial(btn, panelId) {
+    document.querySelectorAll('.tissue-trial-btn').forEach(b => b.classList.remove('tissue-trial-btn--active'));
+    document.querySelectorAll('.tissue-trial-panel').forEach(p => p.classList.remove('tissue-trial-panel--active'));
+    btn.classList.add('tissue-trial-btn--active');
+    document.getElementById(panelId).classList.add('tissue-trial-panel--active');
+  }
+
+  // ── Tissue analyte data ──
+  // treatments: label, color
+  const TISSUE_TREATMENTS = [
+    { label: 'NTC:\n100%N',        color: '#5b8db8' },
+    { label: 'NTC:\n100%N-BMP',    color: '#a8c8e0' },
+    { label: 'PBOS:\n100%N',       color: '#4a7a4a' },
+    { label: 'PBOS:\n100%N-BMP',   color: '#a8d4a8' },
+    { label: 'PBDDryB:\n100%N-BMP',color: '#e8a0b0' },
+    { label: 'PBDDryA:\n100%N-BMP',color: '#d4b84a' },
+  ];
+
+  // analytes[trialIndex][analyteIndex] = array of 6 values (one per treatment)
+  const TISSUE_ANALYTES = [
+    // ── name, unit, sufficiency range label, avg% position, [trial1 values], [trial2 values], [trial3 values]
+    { name: 'Nitrogen', symbol: 'N', unit: '%',
+      avg: 48,
+      vals: [
+        [3.51, 3.56, 3.26, 3.34, 3.44, 3.54],
+        [3.48, 3.60, 3.22, 3.38, 3.41, 3.57],
+        [3.55, 3.52, 3.29, 3.31, 3.47, 3.50],
+      ],
+      min: 3.0, max: 4.0
+    },
+    { name: 'Sulfur', symbol: 'S', unit: '%',
+      avg: 52,
+      vals: [
+        [0.26, 0.28, 0.22, 0.25, 0.24, 0.27],
+        [0.25, 0.27, 0.21, 0.24, 0.23, 0.26],
+        [0.27, 0.29, 0.23, 0.26, 0.25, 0.28],
+      ],
+      min: 0.15, max: 0.40
+    },
+    { name: 'Phosphorus', symbol: 'P', unit: '%',
+      avg: 45,
+      vals: [
+        [0.38, 0.40, 0.34, 0.36, 0.35, 0.39],
+        [0.37, 0.41, 0.33, 0.37, 0.34, 0.40],
+        [0.39, 0.39, 0.35, 0.35, 0.36, 0.38],
+      ],
+      min: 0.20, max: 0.55
+    },
+    { name: 'Potassium', symbol: 'K', unit: '%',
+      avg: 50,
+      vals: [
+        [2.84, 2.91, 2.65, 2.72, 2.78, 2.88],
+        [2.80, 2.95, 2.61, 2.75, 2.74, 2.92],
+        [2.87, 2.88, 2.68, 2.69, 2.81, 2.85],
+      ],
+      min: 1.5, max: 3.8
+    },
+    { name: 'Magnesium', symbol: 'Mg', unit: '%',
+      avg: 46,
+      vals: [
+        [0.22, 0.24, 0.19, 0.21, 0.20, 0.23],
+        [0.21, 0.25, 0.18, 0.22, 0.19, 0.24],
+        [0.23, 0.23, 0.20, 0.20, 0.21, 0.22],
+      ],
+      min: 0.10, max: 0.50
+    },
+    { name: 'Calcium', symbol: 'Ca', unit: '%',
+      avg: 44,
+      vals: [
+        [0.41, 0.43, 0.37, 0.39, 0.38, 0.42],
+        [0.40, 0.44, 0.36, 0.40, 0.37, 0.43],
+        [0.42, 0.42, 0.38, 0.38, 0.39, 0.41],
+      ],
+      min: 0.20, max: 0.60
+    },
+    { name: 'Sodium', symbol: 'Na', unit: '%',
+      avg: 50,
+      vals: [
+        [0.032, 0.034, 0.028, 0.030, 0.029, 0.033],
+        [0.031, 0.035, 0.027, 0.031, 0.028, 0.034],
+        [0.033, 0.033, 0.029, 0.029, 0.030, 0.032],
+      ],
+      min: 0.01, max: 0.06
+    },
+    { name: 'Boron', symbol: 'B', unit: 'ppm',
+      avg: 48,
+      vals: [
+        [12.4, 13.1, 10.8, 11.5, 11.2, 12.8],
+        [12.1, 13.4, 10.5, 11.8, 10.9, 13.1],
+        [12.7, 12.8, 11.1, 11.2, 11.5, 12.5],
+      ],
+      min: 5, max: 25
+    },
+    { name: 'Zinc', symbol: 'Zn', unit: 'ppm',
+      avg: 47,
+      vals: [
+        [28.4, 30.1, 24.8, 26.5, 25.9, 29.2],
+        [27.9, 30.8, 24.2, 27.1, 25.4, 30.0],
+        [29.0, 29.4, 25.4, 25.8, 26.4, 28.6],
+      ],
+      min: 15, max: 55
+    },
+    { name: 'Manganese', symbol: 'Mn', unit: 'ppm',
+      avg: 45,
+      vals: [
+        [68, 72, 58, 63, 61, 70],
+        [66, 74, 56, 65, 59, 72],
+        [70, 70, 60, 61, 63, 68],
+      ],
+      min: 30, max: 180
+    },
+    { name: 'Iron', symbol: 'Fe', unit: 'ppm',
+      avg: 43,
+      vals: [
+        [112, 118, 98, 104, 101, 115],
+        [109, 121, 95, 107, 98, 118],
+        [115, 115, 101, 101, 104, 112],
+      ],
+      min: 50, max: 280
+    },
+    { name: 'Copper', symbol: 'Cu', unit: 'ppm',
+      avg: 50,
+      vals: [
+        [9.2, 9.8, 8.1, 8.6, 8.4, 9.5],
+        [9.0, 10.0, 7.9, 8.8, 8.2, 9.7],
+        [9.4, 9.5, 8.3, 8.4, 8.6, 9.3],
+      ],
+      min: 4, max: 18
+    },
+    { name: 'Aluminum', symbol: 'Al', unit: 'ppm',
+      avg: 46,
+      vals: [
+        [38, 41, 32, 35, 33, 40],
+        [37, 42, 31, 36, 32, 41],
+        [39, 39, 33, 33, 34, 38],
+      ],
+      min: 10, max: 100
+    },
+  ];
+
+  function renderTissueCharts() {
+    ['tissue-trial1','tissue-trial2','tissue-trial3'].forEach(function(panelId, trialIdx) {
+      const panel = document.getElementById(panelId);
+      if (!panel) return;
+      let html = '';
+      TISSUE_ANALYTES.forEach(function(analyte) {
+        const vals = analyte.vals[trialIdx];
+        const avg = vals.reduce((a,b) => a+b, 0) / vals.length;
+        const avgDisplay = analyte.unit === 'ppm'
+          ? avg.toFixed(1) + ' ppm'
+          : avg.toFixed(3) + '%';
+        const range = analyte.max - analyte.min;
+
+        html += '<div class="analytics-card">';
+        html += '<div class="analytics-card__title">' + analyte.name + ' (' + analyte.symbol + ')'
+              + ' <span style="font-weight:400;color:var(--color-text-muted);font-size:11px;">— Avg: ' + avgDisplay + '</span></div>';
+        html += '<div class="analytics-card__body">';
+        html += '<div class="ltissue-chart-modal" style="--avg-pos:' + analyte.avg + '%;">';
+
+        // Column header
+        html += '<div style="display:flex;align-items:flex-end;margin-bottom:2px;">'
+              + '<div style="width:130px;flex-shrink:0;"></div>'
+              + '<div style="flex:1;position:relative;height:18px;margin-right:40px;">'
+              + '<span style="position:absolute;left:' + analyte.avg + '%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">Avg</span>'
+              + '</div></div>';
+
+        // Treatment rows
+        TISSUE_TREATMENTS.forEach(function(tx, i) {
+          const val = vals[i];
+          const barPct = Math.max(2, Math.min(99, ((val - analyte.min) / range) * 100));
+          const display = analyte.unit === 'ppm' ? val.toFixed(1) : val.toFixed(3);
+          const labelLines = tx.label.split('\n');
+          const labelHtml = labelLines.length > 1
+            ? labelLines[0] + '<br>' + labelLines[1]
+            : labelLines[0];
+
+          html += '<div class="ltissue-row-modal">'
+                + '<div class="ltissue-label-modal">' + labelHtml + '</div>'
+                + '<div class="ltissue-track-modal" style="--avg-pos:' + analyte.avg + '%;">'
+                + '<div class="ltissue-bar-modal" style="background:' + tx.color + ';width:' + barPct.toFixed(1) + '%;"></div>'
+                + '<span class="ltissue-value-modal">' + display + '</span>'
+                + '</div>'
+                + '</div>';
+        });
+
+        // Axis labels
+        html += '<div style="display:flex;margin-left:130px;position:relative;height:16px;margin-top:4px;margin-right:40px;">'
+              + '<div style="flex:1;position:relative;">'
+              + '<span style="position:absolute;left:0%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">' + analyte.min + '</span>'
+              + '<span style="position:absolute;left:50%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">' + ((analyte.min + analyte.max) / 2).toFixed(analyte.unit === 'ppm' ? 0 : 2) + '</span>'
+              + '<span style="position:absolute;left:100%;transform:translateX(-50%);font-size:10px;color:var(--color-text-muted);">' + analyte.max + '</span>'
+              + '</div></div>';
+        html += '<div style="text-align:center;font-size:11px;color:var(--color-text-muted);margin-top:4px;margin-left:130px;">'
+              + analyte.name + ' (' + analyte.unit + ')</div>';
+
+        html += '</div>'; // ltissue-chart-modal
+        html += '</div>'; // analytics-card__body
+        html += '</div>'; // analytics-card
+      });
+      panel.innerHTML = html;
+    });
+  }
+
+  // Render all tissue trial panels on load
+  renderTissueCharts();
+
+  // ── Modal demo state switching ──
+  function setModalDemoState(state) {
+    const modal = document.getElementById('analyticsModal').querySelector('.modal');
+    const tabs = modal.querySelector('.sample-tabs');
+
+    // Reset everything to default
+    document.getElementById('modal-no-data').classList.add('hidden');
+    document.getElementById('trial2-empty').classList.add('hidden');
+    document.getElementById('trial2-data').classList.remove('hidden');
+    document.getElementById('tissue-pending').classList.add('hidden');
+    document.getElementById('tissue-trial-tabs').style.display = '';
+    document.querySelectorAll('.tissue-trial-panel').forEach(p => p.classList.remove('tissue-trial-panel--active'));
+    document.getElementById('tissue-trial1').classList.add('tissue-trial-panel--active');
+    document.querySelectorAll('.tissue-trial-btn').forEach((b,i) => b.classList.toggle('tissue-trial-btn--active', i === 0));
+    tabs.style.display = '';
+
+    if (state === 'no-data') {
+      tabs.style.display = 'none';
+      modal.querySelectorAll('.tab-content').forEach(t => t.classList.remove('tab-content--active'));
+      document.getElementById('modal-no-data').classList.remove('hidden');
+      document.getElementById('modal-no-data').classList.add('tab-content--active');
+
+    } else if (state === 'trial2-empty') {
+      switchSampleTab(modal.querySelectorAll('.sample-tab')[1], 'tab-trial2');
+      document.getElementById('trial2-data').classList.add('hidden');
+      document.getElementById('trial2-empty').classList.remove('hidden');
+
+    } else if (state === 'tissue-pending') {
+      switchSampleTab(document.getElementById('tab-btn-tissue'), 'tab-tissue');
+      document.getElementById('tissue-trial-tabs').style.display = 'none';
+      document.querySelectorAll('.tissue-trial-panel').forEach(p => p.classList.remove('tissue-trial-panel--active'));
+      document.getElementById('tissue-pending').classList.remove('hidden');
+    }
+  }
+</script>
+
+</body>
+</html>

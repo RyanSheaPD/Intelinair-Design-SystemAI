@@ -36,482 +36,7 @@
   <link rel="stylesheet" href="../components/view-switcher.css" />
   <link rel="stylesheet" href="../components/field-card.css" />
   <link rel="stylesheet" href="../components/empty-state.css" />
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; overflow: hidden; font-family: var(--font-family); }
-
-    /* Standard layout shell */
-    .page-shell { display: flex; height: 100vh; }
-    .page-shell__side { flex-shrink: 0; width: var(--nav-width); height: 100%; z-index: 10; }
-    .page-shell__main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; }
-
-    /* Page toolbar */
-    .page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-m); padding: var(--spacing-m) var(--spacing-l); border-bottom: 1px solid var(--color-border); background: var(--color-surface); flex-shrink: 0; }
-    .page-toolbar__title { font-size: var(--font-size-18); font-weight: 600; color: var(--color-text); margin: 0; white-space: nowrap; }
-    .page-toolbar__controls { display: flex; align-items: center; gap: var(--spacing-s); flex-wrap: wrap; }
-    .page-toolbar__divider { width: 1px; height: 24px; background: var(--color-border); flex-shrink: 0; }
-
-    /* Neutral pill */
-    .filter-pill--neutral { --filter-pill-bg: var(--color-neutral-100); --filter-pill-bg-hover: var(--color-neutral-200); --filter-pill-text: var(--color-neutral-700); --filter-pill-text-hover: var(--color-neutral-900); }
-
-    /* ===== TRIAL SIDE PANEL (left, pushes map right) ===== */
-    .trial-panel {
-      display: none;
-      width: 380px;
-      flex-shrink: 0;
-      background: var(--color-surface);
-      border-right: 1px solid var(--color-border);
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-      order: -1;
-    }
-    .trial-panel--open { display: flex; }
-    .trial-panel__header { display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 20px 0; }
-    .trial-panel__title { font-size: 18px; font-weight: 700; color: var(--color-text); }
-    .trial-panel__subtitle { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
-    .trial-panel__close { background: none; border: none; cursor: pointer; color: var(--color-text-muted); display: flex; align-items: center; padding: 0; }
-    .trial-panel__close:hover { color: var(--color-text); }
-    .trial-panel__close .material-symbols-outlined { font-size: 22px; }
-    .trial-panel__section { padding: 16px 20px 0; }
-    .trial-panel__label { font-size: 13px; color: var(--color-text-muted); margin-bottom: 6px; }
-    .trial-panel__select { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); font-size: 13px; font-family: var(--font-family); color: var(--color-text-muted); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
-    .trial-panel__field-info { padding: 16px 20px; }
-    .trial-panel__field-name { font-size: 15px; font-weight: 700; color: var(--color-brand-500); }
-    .trial-panel__field-grower { font-size: 13px; color: var(--color-text-muted); margin-top: 2px; }
-    .trial-panel__field-meta { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--color-text-muted); margin-top: 4px; flex-wrap: wrap; }
-    .trial-panel__field-meta-sep { color: var(--color-border); }
-    .trial-panel__field-meta-gdd { color: var(--color-warning-500); }
-    .trial-panel__treatments { flex: 1; margin: 0 20px; background: var(--color-neutral-100); border-radius: var(--radius-lg); display: flex; flex-direction: column; overflow: hidden; }
-    .trial-panel__treatments-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--color-text-muted); }
-    .trial-panel__treatments-empty .material-symbols-outlined { font-size: 32px; color: var(--color-neutral-400); }
-    .trial-panel__treatments-empty-text { font-size: 14px; font-weight: 500; }
-    .trial-panel__add-treatment { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 14px; border-top: 1px solid var(--color-border); background: none; border-left: none; border-right: none; border-bottom: none; font-size: 14px; font-weight: 600; color: var(--color-text); cursor: pointer; font-family: var(--font-family); width: 100%; }
-    .trial-panel__add-treatment:hover { background: var(--color-neutral-200); }
-    .trial-panel__treatments-list { padding: 16px 16px 0; }
-    .trial-panel__treatments-label { font-size: 12px; font-weight: 500; color: var(--color-text-muted); margin-bottom: 10px; }
-    .trial-panel__treatment-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; cursor: pointer; }
-    .trial-panel__treatment-item:hover { opacity: 0.8; }
-    .trial-panel__treatment-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
-    .trial-panel__treatment-name { flex: 1; font-size: 14px; font-weight: 600; color: var(--color-text); }
-    .trial-panel__treatment-chevron { font-size: 20px; color: var(--color-text-muted); }
-    .trial-panel__treatment-divider { height: 1px; background: var(--color-border); }
-    /* Treatment detail view */
-    .treatment-detail { display: none; flex-direction: column; flex: 1; min-height: 0; }
-    .treatment-detail--open { display: flex; }
-    .treatment-detail__header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--color-border); }
-    .treatment-detail__back { background: none; border: none; cursor: pointer; color: var(--color-primitive-500, #3b82f6); display: flex; align-items: center; padding: 0; }
-    .treatment-detail__back .material-symbols-outlined { font-size: 22px; }
-    .treatment-detail__title { font-size: 16px; font-weight: 700; color: var(--color-text); }
-    .treatment-detail__delete { background: none; border: none; cursor: pointer; color: var(--color-text-muted); display: flex; align-items: center; padding: 0; }
-    .treatment-detail__delete:hover { color: var(--color-danger-500); }
-    .treatment-detail__delete .material-symbols-outlined { font-size: 22px; }
-    .treatment-detail__body { padding: 16px; display: flex; flex-direction: column; gap: 16px; flex: 1; overflow-y: auto; }
-    .treatment-detail__radios { display: flex; align-items: center; gap: 20px; }
-    .treatment-detail__radio { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--color-text); cursor: pointer; }
-    .treatment-detail__radio-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--color-neutral-400); display: flex; align-items: center; justify-content: center; }
-    .treatment-detail__radio--active .treatment-detail__radio-circle { border-color: var(--color-brand-500); }
-    .treatment-detail__radio-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--color-brand-500); display: none; }
-    .treatment-detail__radio--active .treatment-detail__radio-dot { display: block; }
-    .treatment-detail__field-label { font-size: 14px; font-weight: 600; color: var(--color-text); margin-bottom: 6px; }
-    .treatment-detail__select { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); font-size: 13px; font-family: var(--font-family); color: var(--color-text-muted); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
-    .treatment-detail__add-row { display: flex; align-items: center; gap: 8px; }
-    .treatment-detail__add-input { flex: 1; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); font-size: 13px; font-family: var(--font-family); color: var(--color-text); }
-    .treatment-detail__add-input::placeholder { color: var(--color-text-muted); }
-    .treatment-detail__add-btn { background: none; border: none; font-size: 14px; font-weight: 600; color: var(--color-primitive-500, #3b82f6); cursor: pointer; font-family: var(--font-family); padding: 10px 4px; white-space: nowrap; }
-    .treatment-detail__add-btn:hover { opacity: 0.8; }
-    .treatment-detail__exclude { margin-top: 4px; }
-    .treatment-detail__exclude-label { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--color-text); cursor: pointer; }
-    .treatment-detail__exclude-checkbox { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--color-neutral-400); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.12s ease, border-color 0.12s ease; }
-    .treatment-detail__exclude-checkbox--checked { background: var(--color-brand-500); border-color: var(--color-brand-500); color: #fff; }
-    .treatment-detail__exclude-checkbox--checked .material-symbols-outlined { display: block !important; }
-    .treatment-detail__exclude-comment { margin-top: 12px; }
-    .treatment-detail__textarea { width: 100%; min-height: 80px; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); font-size: 13px; font-family: var(--font-family); color: var(--color-text); resize: vertical; }
-    .treatment-detail__textarea::placeholder { color: var(--color-text-muted); }
-    .trial-panel__footer { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px 20px; }
-    .trial-panel__cancel { background: none; border: none; font-size: 15px; font-weight: 600; color: var(--color-text); cursor: pointer; font-family: var(--font-family); padding: 10px 24px; }
-    .trial-panel__cancel:hover { color: var(--color-text-muted); }
-    .trial-panel__save { padding: 10px 32px; border: none; border-radius: var(--radius-pill); background: var(--color-brand-500); color: #fff; font-size: 15px; font-weight: 600; font-family: var(--font-family); cursor: pointer; transition: background 0.12s ease; }
-    .trial-panel__save:hover { filter: brightness(1.1); }
-
-    /* ===== MAP CONTAINER ===== */
-    .map-container {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      background: #e8e4d8;
-    }
-
-    /* Satellite-style base */
-    .map-canvas {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      background:
-        radial-gradient(ellipse at 30% 40%, #5a7a3e 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 60%, #6b8a4a 0%, transparent 45%),
-        radial-gradient(ellipse at 50% 30%, #4a6832 0%, transparent 55%),
-        radial-gradient(ellipse at 20% 70%, #7a9a58 0%, transparent 40%),
-        radial-gradient(ellipse at 80% 25%, #5e7e40 0%, transparent 50%),
-        linear-gradient(135deg, #4a6832 0%, #6b8a4a 25%, #5a7a3e 50%, #7a9a58 75%, #4a6832 100%);
-    }
-
-    /* Road grid overlay */
-    .map-canvas::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(to right, rgba(180,170,150,0.35) 0px, rgba(180,170,150,0.35) 2px, transparent 2px) 25% 0 / 25% 100%,
-        linear-gradient(to bottom, rgba(180,170,150,0.35) 0px, rgba(180,170,150,0.35) 2px, transparent 2px) 0 33% / 100% 33%;
-      pointer-events: none;
-    }
-
-    /* Field boundary polygons */
-    .map-field {
-      position: absolute;
-      border: 2.5px solid var(--color-brand-500);
-      background: rgba(var(--color-brand-rgb), 0.15);
-      cursor: pointer;
-      transition: background 0.15s ease, border-color 0.15s ease;
-    }
-    .map-field:hover {
-      background: rgba(var(--color-brand-rgb), 0.3);
-      border-color: var(--color-brand-300);
-    }
-    .map-field--selected {
-      border-color: #fff;
-      background: rgba(var(--color-brand-rgb), 0.35);
-      box-shadow: 0 0 0 2px var(--color-brand-500), 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    /* Field label */
-    .map-field__label {
-      position: absolute;
-      bottom: 4px;
-      left: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-      background: rgba(0,0,0,0.6);
-      padding: 2px 6px;
-      border-radius: 3px;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-
-    /* Map controls (shared) */
-    .map-controls {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      z-index: 10;
-    }
-    .map-controls__btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      border: none;
-      border-radius: 50%;
-      background: rgba(220,220,220,0.85);
-      color: var(--color-text);
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      transition: background 0.12s ease;
-    }
-    .map-controls__btn:hover { background: rgba(240,240,240,0.95); }
-    .map-controls__btn .material-symbols-outlined { font-size: 24px; }
-    .map-controls__info {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px 12px;
-      border-radius: var(--radius-pill);
-      background: rgba(220,220,220,0.85);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--color-text);
-      white-space: nowrap;
-    }
-    /* Left controls — above timeline */
-    .map-controls--left {
-      bottom: 80px;
-      left: 16px;
-    }
-    /* Top-right actions */
-    .map-actions {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      z-index: 10;
-    }
-    .map-actions__btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      border: none;
-      border-radius: 50%;
-      background: rgba(220,220,220,0.85);
-      color: var(--color-text);
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      transition: background 0.12s ease;
-    }
-    .map-actions__btn:hover { background: rgba(240,240,240,0.95); }
-    .map-actions__btn .material-symbols-outlined { font-size: 24px; }
-    .map-actions__btn--info {
-      background: rgba(50,50,50,0.85);
-      color: #fff;
-    }
-    .map-actions__btn--info:hover { background: rgba(70,70,70,0.9); }
-    .map-actions__share {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 28px;
-      border: none;
-      border-radius: var(--radius-pill);
-      background: rgba(50,60,70,0.85);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      font-family: var(--font-family);
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      transition: background 0.15s ease;
-    }
-    .map-actions__share:hover { background: rgba(60,70,80,0.95); }
-
-    /* Right controls — vertically centered */
-    .map-controls--right {
-      top: 50%;
-      right: 16px;
-      transform: translateY(-50%);
-    }
-
-    /* Map legend */
-    .map-legend {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      background: var(--color-surface);
-      border-radius: var(--radius-md);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      padding: 12px 16px;
-      font-size: 12px;
-      z-index: 5;
-    }
-    .map-legend__title {
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: 8px;
-    }
-    .map-legend__item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-    .map-legend__item:last-child { margin-bottom: 0; }
-    .map-legend__swatch {
-      width: 14px;
-      height: 14px;
-      border-radius: 3px;
-      flex-shrink: 0;
-    }
-    .map-legend__label { color: var(--color-text-muted); }
-
-    /* ===== TIMELINE BAR (floating) ===== */
-    .timeline-bar {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 20px;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(8px);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      z-index: 10;
-      overflow-x: auto;
-    }
-    .timeline-bar__year {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--color-text);
-      flex-shrink: 0;
-    }
-    .timeline-bar__filter {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--color-text-muted);
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-    .timeline-bar__dates {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .timeline-bar__date {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      padding: 4px 10px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--color-border);
-      background: var(--color-surface);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--color-text);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.15s ease, border-color 0.15s ease;
-      font-family: var(--font-family);
-    }
-    .timeline-bar__date:hover {
-      background: var(--color-neutral-100);
-    }
-    .timeline-bar__date--active {
-      background: var(--color-brand-500);
-      border-color: var(--color-brand-500);
-      color: #fff;
-    }
-    .timeline-bar__date--active:hover {
-      background: var(--color-brand-600);
-    }
-    .timeline-bar__date-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .timeline-bar__date-icon .material-symbols-outlined {
-      font-size: 16px;
-    }
-    .timeline-bar__date--active .timeline-bar__date-icon .material-symbols-outlined {
-      color: #fff;
-    }
-    .timeline-bar__date-icon .material-symbols-outlined {
-      color: var(--color-success-500);
-    }
-    .timeline-bar__date--active .timeline-bar__date-icon .material-symbols-outlined {
-      color: #fff;
-    }
-    .timeline-bar__date--processing .timeline-bar__date-icon .material-symbols-outlined {
-      color: var(--color-brand-400);
-    }
-
-    /* Scale bar */
-    .map-scale {
-      position: absolute;
-      bottom: 16px;
-      right: 16px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      color: var(--color-text-muted);
-      background: rgba(255,255,255,0.85);
-      padding: 4px 8px;
-      border-radius: 4px;
-      z-index: 5;
-    }
-    .map-scale__bar {
-      width: 60px;
-      height: 2px;
-      background: var(--color-text-muted);
-      position: relative;
-    }
-    .map-scale__bar::before,
-    .map-scale__bar::after {
-      content: '';
-      position: absolute;
-      width: 2px;
-      height: 6px;
-      background: var(--color-text-muted);
-      top: -2px;
-    }
-    .map-scale__bar::before { left: 0; }
-    .map-scale__bar::after { right: 0; }
-
-    /* Map layer toggles (top-left) */
-    .map-layers {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      z-index: 10;
-      max-width: 220px;
-    }
-    .map-layers__btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 56px;
-      height: 56px;
-      border: none;
-      border-radius: 50%;
-      background: rgba(220,220,220,0.85);
-      color: var(--color-text);
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      transition: background 0.15s ease;
-    }
-    .map-layers__btn:hover { background: rgba(240,240,240,0.95); }
-    .map-layers__btn .material-symbols-outlined { font-size: 28px; }
-    .map-layers__btn--imagery {
-      background: linear-gradient(135deg, #4a90d9 0%, #d4e84f 50%, #4a90d9 100%);
-      width: 64px;
-      height: 64px;
-    }
-    .map-layers__btn--imagery:hover { opacity: 0.9; }
-    .map-layers__btn--aerial {
-      background: #1a2a1a;
-      width: 56px;
-      height: 56px;
-    }
-    .map-layers__btn--aerial:hover { background: #2a3a2a; }
-    .map-layers__btn--aerial .material-symbols-outlined { color: #7dcea0; }
-
-    /* Trials panel overlay */
-    .map-layers__actions-wrap { position: relative; }
-    .trials-panel { display: none; position: absolute; top: 0; left: calc(100% + 12px); width: 340px; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-radius: var(--radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.18); z-index: 20; overflow: hidden; font-family: var(--font-family); }
-    .trials-panel--open { display: block; }
-    .trials-panel__header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; }
-    .trials-panel__header-left { display: flex; align-items: center; gap: 8px; }
-    .trials-panel__checkbox { width: 20px; height: 20px; border-radius: 4px; border: 2px solid var(--color-brand-500, var(--color-primitive-500)); background: var(--color-brand-500, var(--color-primitive-500)); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .trials-panel__checkbox .material-symbols-outlined { font-size: 16px; }
-    .trials-panel__title { font-size: 15px; font-weight: 600; color: var(--color-text); }
-    .trials-panel__collapse { background: none; border: none; cursor: pointer; color: var(--color-text-muted); display: flex; align-items: center; }
-    .trials-panel__collapse .material-symbols-outlined { font-size: 22px; }
-    .trials-panel__list { padding: 0 16px 12px; display: flex; flex-direction: column; gap: 6px; }
-    .trials-panel__item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--radius-md); background: var(--color-neutral-50, #f8f8f8); }
-    .trials-panel__item-checkbox { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--color-brand-500, var(--color-primitive-500)); background: var(--color-brand-500, var(--color-primitive-500)); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .trials-panel__item-checkbox .material-symbols-outlined { font-size: 14px; }
-    .trials-panel__item-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--color-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .trials-panel__item-edit { background: none; border: none; cursor: pointer; color: var(--color-text-muted); display: flex; align-items: center; padding: 0; }
-    .trials-panel__item-edit .material-symbols-outlined { font-size: 18px; }
-    .trials-panel__item-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
-    .trials-panel__add { display: flex; align-items: center; justify-content: center; gap: 6px; width: calc(100% - 32px); margin: 0 16px 14px; padding: 10px; border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-surface); font-size: 13px; font-weight: 600; color: var(--color-text); cursor: pointer; font-family: var(--font-family); transition: background 0.12s ease; }
-    .trials-panel__add:hover { background: var(--color-neutral-100); }
-  </style>
+  <link rel="stylesheet" href="../components/field-map-view-shell.css" />
 </head>
 <body>
 
@@ -569,7 +94,7 @@
         </div>
       </header>
 
-      <!-- TOOLBAR -->
+      <!-- TOOLBAR — view menu trigger matches AGMRI mat-mdc-menu (mapViewIcon + f-12 + arrowCollapseIcon) -->
       <div class="page-toolbar">
         <h1 class="page-toolbar__title">Fields</h1>
         <div class="page-toolbar__controls">
@@ -578,13 +103,25 @@
           <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;color:var(--color-warning-500);">star</span></span> Favorite growers</button>
           <span class="page-toolbar__divider"></span>
           <button class="filter-pill filter-pill--neutral"><span class="filter-pill__icon"><span class="material-symbols-outlined" style="font-size:14px;">tune</span></span> Advanced filters</button>
-          <span class="page-toolbar__divider"></span>
-          <div class="view-switcher view-switcher--with-collapse">
-            <button class="view-switcher__trigger"><span class="material-symbols-outlined">map</span><span class="view-switcher__label">Map view</span><span class="material-symbols-outlined view-switcher__caret">expand_more</span></button>
-            <div class="view-switcher__menu">
-              <button class="view-switcher__option"><span class="material-symbols-outlined">view_list</span> List view</button>
-              <button class="view-switcher__option"><span class="material-symbols-outlined">grid_view</span> Thumbnail view</button>
-              <button class="view-switcher__option view-switcher__option--active"><span class="material-symbols-outlined">map</span> Map view</button>
+        </div>
+        <div class="page-toolbar__grow" aria-hidden="true"></div>
+        <div class="page-toolbar__view">
+          <div class="view-switcher view-switcher--with-collapse" data-view-switcher>
+            <div class="view-icons cursor-pointer">
+              <button type="button" class="view-switcher__trigger view-icon-wrapper" aria-haspopup="menu" aria-expanded="false" aria-controls="map-view-switcher-menu">
+                <span class="view-switcher__map-icon" aria-hidden="true">
+                  <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M2.76058 15.7233C2.92884 15.7233 3.10385 15.6594 3.31923 15.5316L6.74519 13.5874L10.4673 15.7871C10.7096 15.929 10.9721 16 11.2211 16C11.4568 16 11.6923 15.9361 11.8943 15.8154L15.4144 13.708C15.8183 13.4739 16 13.1333 16 12.6579V3.09985C16 2.57476 15.724 2.28383 15.2394 2.28383C15.0712 2.28383 14.8962 2.3406 14.674 2.46832L11.1067 4.56157L7.45192 2.19868C7.24327 2.07096 7.00769 2 6.77211 2C6.52981 2 6.2875 2.07096 6.07885 2.19868L2.57885 4.29903C2.18173 4.54029 2 4.88089 2 5.3563V14.9001C2 15.4252 2.27596 15.7233 2.76058 15.7233ZM6.30769 12.4592L3.27211 14.2189C3.23846 14.2332 3.20481 14.2544 3.17116 14.2544C3.11731 14.2544 3.08365 14.2118 3.08365 14.1409V5.63304C3.08365 5.46274 3.14423 5.34211 3.30576 5.24277L6.06538 3.53978C6.15288 3.49011 6.22692 3.44754 6.30769 3.39787V12.4592ZM7.39134 12.5727V3.54687C7.45866 3.58945 7.53943 3.63203 7.60673 3.6746L10.6087 5.60465V14.4744C10.5144 14.4176 10.4135 14.3679 10.3125 14.3112L7.39134 12.5727ZM11.6923 14.6021V5.53369L14.7279 3.78814C14.7615 3.76685 14.7952 3.75266 14.8221 3.75266C14.8827 3.75266 14.9164 3.79523 14.9164 3.86619V12.374C14.9164 12.5514 14.8491 12.672 14.6943 12.7714L11.9952 14.4247C11.8943 14.4886 11.7933 14.5524 11.6923 14.6021Z" fill="currentColor"/></svg>
+                </span>
+                <span class="view-switcher__label">Map view</span>
+                <span class="view-switcher__caret" aria-hidden="true">
+                  <svg viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M12.9793 6.18171L7.37928 0.565047C7.31261 0.498381 7.24039 0.45127 7.16261 0.423714C7.08484 0.395714 7.0015 0.381714 6.91261 0.381714C6.82373 0.381714 6.74039 0.395714 6.66261 0.423714C6.58484 0.45127 6.51261 0.498381 6.44595 0.565047L0.82928 6.18171C0.673725 6.33727 0.595947 6.53171 0.595947 6.76505C0.595947 6.99838 0.67928 7.19838 0.845947 7.36505C1.01261 7.53171 1.20706 7.61505 1.42928 7.61505C1.6515 7.61505 1.84595 7.53171 2.01261 7.36505L6.91261 2.46505L11.8126 7.36505C11.9682 7.5206 12.1597 7.59838 12.3873 7.59838C12.6153 7.59838 12.8126 7.51505 12.9793 7.34838C13.1459 7.18171 13.2293 6.98727 13.2293 6.76505C13.2293 6.54283 13.1459 6.34838 12.9793 6.18171Z" fill="currentColor"/></svg>
+                </span>
+              </button>
+            </div>
+            <div id="map-view-switcher-menu" class="view-switcher__menu" role="menu" hidden>
+              <button type="button" class="view-switcher__option" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">view_list</span> List view</button>
+              <button type="button" class="view-switcher__option" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">grid_view</span> Thumbnail view</button>
+              <button type="button" class="view-switcher__option view-switcher__option--active" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">map</span> Map view</button>
             </div>
           </div>
         </div>
@@ -643,27 +180,7 @@
           <button class="map-layers__btn"><span class="material-symbols-outlined">layers</span></button>
           <button class="map-layers__btn map-layers__btn--imagery"></button>
           <button class="map-layers__btn map-layers__btn--aerial"><span class="material-symbols-outlined">layers</span></button>
-          <div class="map-layers__actions-wrap">
-            <button class="map-layers__btn" onclick="toggleTrials()"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.333 1.3335H2.66634C1.93301 1.3335 1.33301 1.9335 1.33301 2.66683V13.3335C1.33301 14.0668 1.93301 14.6668 2.66634 14.6668H13.333C14.0663 14.6668 14.6663 14.0668 14.6663 13.3335V2.66683C14.6663 1.9335 14.0663 1.3335 13.333 1.3335ZM10.1997 2.66683C9.66634 3.40016 9.33301 4.3335 9.33301 5.3335H6.66634C6.66634 4.26683 7.19967 3.26683 7.99967 2.66683H10.1997ZM9.33301 9.3335H6.66634C6.66634 8.3335 6.33301 7.40016 5.79967 6.66683H7.99967C8.79967 7.26683 9.33301 8.26683 9.33301 9.3335ZM2.66634 2.66683H6.19967C5.66634 3.40016 5.33301 4.3335 5.33301 5.3335H2.66634V2.66683ZM2.66634 6.66683H3.99967C4.79967 7.26683 5.33301 8.20016 5.33301 9.3335H2.66634V6.66683ZM2.66634 13.3335V10.6668H6.19967C5.66634 11.4002 5.33301 12.3335 5.33301 13.3335H2.66634ZM6.66634 13.3335C6.66634 12.2668 7.19967 11.2668 7.99967 10.6668H10.1997C9.66634 11.4002 9.33301 12.3335 9.33301 13.3335H6.66634ZM13.333 13.3335H10.6663C10.6663 12.2668 11.1997 11.2668 11.9997 10.6668H13.333V13.3335ZM13.333 9.3335H10.6663C10.6663 8.3335 10.333 7.40016 9.79967 6.66683H13.333V9.3335ZM13.333 5.3335H10.6663C10.6663 4.26683 11.1997 3.26683 11.9997 2.66683H13.333V5.3335Z" fill="currentColor"/></svg></button>
-            <div class="trials-panel" id="trials-panel">
-              <div class="trials-panel__header">
-                <div class="trials-panel__header-left">
-                  <span class="trials-panel__checkbox"><span class="material-symbols-outlined">check</span></span>
-                  <span class="trials-panel__title">Trials</span>
-                </div>
-                <button class="trials-panel__collapse"><span class="material-symbols-outlined">expand_less</span></button>
-              </div>
-              <div class="trials-panel__list">
-                <div class="trials-panel__item">
-                  <span class="trials-panel__item-checkbox"><span class="material-symbols-outlined">check</span></span>
-                  <span class="trials-panel__item-name">26-ZEAMX-US700-IL-1214034-GROW</span>
-                  <button class="trials-panel__item-edit" onclick="openTrialEdit(); toggleTrials();"><span class="material-symbols-outlined">edit</span></button>
-                  <span class="trials-panel__item-dot" style="background: var(--color-danger-500);"></span>
-                </div>
-              </div>
-              <button class="trials-panel__add" onclick="openTrialAdd(); toggleTrials();">+ Add trial</button>
-            </div>
-          </div>
+          <button class="map-layers__btn"><span class="material-symbols-outlined">grid_view</span></button>
         </div>
 
         <!-- Map controls (left side, above timeline) -->
@@ -717,165 +234,59 @@
 
       </div><!-- /.map-container -->
 
-      <!-- TRIAL SIDE PANEL (Add new — empty state) -->
-      <aside class="trial-panel" id="trial-panel-add">
-        <div class="trial-panel__header">
-          <div>
-            <div class="trial-panel__title">Trial</div>
-            <div class="trial-panel__subtitle">MTXX-GROW</div>
-          </div>
-          <button class="trial-panel__close" onclick="closeTrialPanels()"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div class="trial-panel__section">
-          <div class="trial-panel__label">Protocol</div>
-          <select class="trial-panel__select"><option>Select protocol</option></select>
-        </div>
-        <div class="trial-panel__field-info">
-          <div class="trial-panel__field-name">Fazenda ind 25</div>
-          <div class="trial-panel__field-grower">fazenda ind 25 grower</div>
-          <div class="trial-panel__field-meta">
-            <span>27.1 ac</span>
-            <span class="trial-panel__field-meta-sep">|</span>
-            <span class="material-symbols-outlined" style="font-size:14px;">water_drop</span> N/A
-            <span class="trial-panel__field-meta-sep">|</span>
-            <span class="material-symbols-outlined" style="font-size:14px;">eco</span> Corn 20in
-            <span class="trial-panel__field-meta-sep">|</span>
-            <span class="trial-panel__field-meta-gdd">GDD: N/A</span>
-          </div>
-        </div>
-        <div class="trial-panel__treatments">
-          <div class="trial-panel__treatments-empty">
-            <span class="material-symbols-outlined">grid_view</span>
-            <span class="trial-panel__treatments-empty-text">No treatments created</span>
-          </div>
-          <button class="trial-panel__add-treatment">+ Add treatment</button>
-        </div>
-        <div class="trial-panel__footer">
-          <button class="trial-panel__cancel" onclick="closeTrialPanels()">Cancel</button>
-          <button class="trial-panel__save">Save trial</button>
-        </div>
-      </aside>
-
-      <!-- TRIAL SIDE PANEL (Edit — populated state) -->
-      <aside class="trial-panel" id="trial-panel-edit">
-        <div class="trial-panel__header">
-          <div>
-            <div class="trial-panel__title">Trial</div>
-            <div class="trial-panel__subtitle" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;">30-ZEAMX-AM2025-MT-1214170-GR...</div>
-          </div>
-          <button class="trial-panel__close" onclick="closeTrialPanels()"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div class="trial-panel__section">
-          <div class="trial-panel__label">Protocol</div>
-          <select class="trial-panel__select" style="color:var(--color-text);"><option selected>30-ZEAMX-AM2025</option></select>
-        </div>
-        <div class="trial-panel__field-info">
-          <div class="trial-panel__field-name">Fazenda ind 25</div>
-          <div class="trial-panel__field-grower">fazenda ind 25 grower</div>
-          <div class="trial-panel__field-meta">
-            <span>27.1 ac</span>
-            <span class="trial-panel__field-meta-sep">|</span>
-            <span class="material-symbols-outlined" style="font-size:14px;">water_drop</span> N/A
-            <span class="trial-panel__field-meta-sep">|</span>
-            <span class="material-symbols-outlined" style="font-size:14px;">eco</span> Corn 20in
-            <span class="trial-panel__field-meta-sep">|</span>
-            <span class="trial-panel__field-meta-gdd">GDD: N/A</span>
-          </div>
-        </div>
-        <div class="trial-panel__treatments" id="edit-treatments">
-          <div class="trial-panel__treatments-list" id="treatment-list">
-            <div class="trial-panel__treatments-label">Treatments</div>
-            <div class="trial-panel__treatment-item" onclick="showTreatmentDetail('Treatment 1')">
-              <span class="trial-panel__treatment-dot" style="background: var(--color-danger-500);"></span>
-              <span class="trial-panel__treatment-name">Treatment 1</span>
-              <span class="material-symbols-outlined trial-panel__treatment-chevron">chevron_right</span>
-            </div>
-            <div class="trial-panel__treatment-divider"></div>
-            <div class="trial-panel__treatment-item" onclick="showTreatmentDetail('Treatment 2')">
-              <span class="trial-panel__treatment-dot" style="background: var(--color-warning-500);"></span>
-              <span class="trial-panel__treatment-name">Treatment 2</span>
-              <span class="material-symbols-outlined trial-panel__treatment-chevron">chevron_right</span>
-            </div>
-          </div>
-          <button class="trial-panel__add-treatment" id="add-treatment-btn">+ Add treatment</button>
-          <div class="treatment-detail" id="treatment-detail">
-            <div class="treatment-detail__header">
-              <button class="treatment-detail__back" onclick="hideTreatmentDetail()"><span class="material-symbols-outlined">chevron_left</span></button>
-              <span class="treatment-detail__title" id="treatment-detail-title">Treatment 1</span>
-              <button class="treatment-detail__delete"><span class="material-symbols-outlined">delete_outline</span></button>
-            </div>
-            <div class="treatment-detail__body">
-              <div class="treatment-detail__radios">
-                <label class="treatment-detail__radio"><span class="treatment-detail__radio-circle"><span class="treatment-detail__radio-dot"></span></span> Treated</label>
-                <label class="treatment-detail__radio treatment-detail__radio--active"><span class="treatment-detail__radio-circle"><span class="treatment-detail__radio-dot"></span></span> Untreated</label>
-              </div>
-              <div><div class="treatment-detail__field-label">Product</div><select class="treatment-detail__select"><option>Select</option></select></div>
-              <div><div class="treatment-detail__field-label">N-Factor</div><select class="treatment-detail__select"><option>Select</option></select></div>
-              <div>
-                <div class="treatment-detail__field-label">Complimentary products</div>
-                <div class="treatment-detail__add-row"><input type="text" class="treatment-detail__add-input" placeholder="Type to add" /><button class="treatment-detail__add-btn">Add</button></div>
-              </div>
-              <div class="treatment-detail__exclude">
-                <label class="treatment-detail__exclude-label" onclick="toggleExclude()">
-                  <span class="treatment-detail__exclude-checkbox" id="exclude-checkbox"><span class="material-symbols-outlined" style="font-size:16px;display:none;" id="exclude-check">check</span></span>
-                  Exclude treatment
-                </label>
-                <div class="treatment-detail__exclude-comment" id="exclude-comment" style="display:none;">
-                  <div class="treatment-detail__field-label">Reason for exclusion</div>
-                  <textarea class="treatment-detail__textarea" placeholder="Add a comment..."></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="trial-panel__footer">
-          <button class="trial-panel__cancel" onclick="closeTrialPanels()">Cancel</button>
-          <button class="trial-panel__save">Save trial</button>
-        </div>
-      </aside>
-
     </div><!-- /.page-shell__main -->
   </div><!-- /.page-shell -->
 
   <script>
-    function toggleTrials() {
-      var panel = document.getElementById('trials-panel');
-      panel.classList.toggle('trials-panel--open');
-    }
-    function closeTrialPanels() {
-      document.getElementById('trial-panel-add').classList.remove('trial-panel--open');
-      document.getElementById('trial-panel-edit').classList.remove('trial-panel--open');
-    }
-    function openTrialAdd() {
-      closeTrialPanels();
-      document.getElementById('trial-panel-add').classList.add('trial-panel--open');
-    }
-    function openTrialEdit() {
-      closeTrialPanels();
-      hideTreatmentDetail();
-      document.getElementById('trial-panel-edit').classList.add('trial-panel--open');
-    }
-    function showTreatmentDetail(name) {
-      document.getElementById('treatment-detail-title').textContent = name;
-      document.getElementById('treatment-list').style.display = 'none';
-      document.getElementById('add-treatment-btn').style.display = 'none';
-      document.getElementById('treatment-detail').classList.add('treatment-detail--open');
-    }
-    function toggleExclude() {
-      var cb = document.getElementById('exclude-checkbox');
-      var comment = document.getElementById('exclude-comment');
-      cb.classList.toggle('treatment-detail__exclude-checkbox--checked');
-      if (cb.classList.contains('treatment-detail__exclude-checkbox--checked')) {
-        comment.style.display = '';
-      } else {
-        comment.style.display = 'none';
+    (function () {
+      function closeAllViewSwitchers() {
+        document.querySelectorAll('[data-view-switcher].view-switcher--open').forEach(function (root) {
+          root.classList.remove('view-switcher--open');
+          var btn = root.querySelector('.view-switcher__trigger');
+          var menu = root.querySelector('.view-switcher__menu');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+          if (menu) menu.setAttribute('hidden', '');
+        });
       }
-    }
-    function hideTreatmentDetail() {
-      document.getElementById('treatment-detail').classList.remove('treatment-detail--open');
-      document.getElementById('treatment-list').style.display = '';
-      document.getElementById('add-treatment-btn').style.display = '';
-    }
+      document.querySelectorAll('[data-view-switcher]').forEach(function (root) {
+        var btn = root.querySelector('.view-switcher__trigger');
+        var menu = root.querySelector('.view-switcher__menu');
+        if (!btn || !menu) return;
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var wasOpen = root.classList.contains('view-switcher--open');
+          closeAllViewSwitchers();
+          if (!wasOpen) {
+            root.classList.add('view-switcher--open');
+            btn.setAttribute('aria-expanded', 'true');
+            menu.removeAttribute('hidden');
+          }
+        });
+        menu.querySelectorAll('.view-switcher__option').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            menu.querySelectorAll('.view-switcher__option').forEach(function (o) {
+              o.classList.remove('view-switcher__option--active');
+            });
+            opt.classList.add('view-switcher__option--active');
+            var labelEl = btn.querySelector('.view-switcher__label');
+            if (labelEl) {
+              var c = opt.cloneNode(true);
+              c.querySelectorAll('.material-symbols-outlined').forEach(function (s) {
+                s.remove();
+              });
+              labelEl.textContent = c.textContent.replace(/\s+/g, ' ').trim();
+            }
+            closeAllViewSwitchers();
+          });
+        });
+      });
+      document.addEventListener('click', function () {
+        closeAllViewSwitchers();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeAllViewSwitchers();
+      });
+    })();
   </script>
 </body>
 </html>
