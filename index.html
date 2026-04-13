@@ -686,12 +686,49 @@
       color: #fff;
       text-shadow: 0 0 2px rgba(0,0,0,0.4);
     }
-    #brands, #components, #layouts {
+    #core, #brands, #components, #layouts {
       scroll-margin-top: 1rem;
+    }
+
+    .ds-core-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .ds-core-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      background: var(--color-surface);
+    }
+    .ds-core-card h3 {
+      font-size: var(--font-size-14);
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+      color: var(--color-text);
+    }
+    .ds-core-card p {
+      margin: 0;
+      font-size: var(--font-size-footnote);
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+    .ds-core-card__path {
+      display: block;
+      font-size: 11px;
+      font-family: ui-monospace, monospace;
+      color: var(--color-text-muted);
+      margin-top: 0.75rem;
+    }
+    .ds-core-card a {
+      font-weight: 600;
+      color: var(--color-action);
     }
 
     /* Page switching: only one page visible at a time */
     .page-content { display: none; }
+    body.page-core .page-content--core,
     body.page-brands .page-content--brands,
     body.page-components .page-content--components,
     body.page-layouts .page-content--layouts,
@@ -703,11 +740,12 @@
 
   </style>
 </head>
-<body class="page-components">
+<body class="page-core">
   <h1 class="type-header">Intelinair Design System</h1>
   <p class="type-body">From Figma Variable Design System (test) — node 32-818 + file components.</p>
 
   <nav class="page-nav" aria-label="Design system sections">
+    <a href="#core" data-page="core" class="page-nav__link page-nav__link--active" id="nav-core" aria-current="page">System core</a>
     <a href="#brands" data-page="brands" class="page-nav__link" id="nav-brands">Brand(s)</a>
     <a href="#components" data-page="components" class="page-nav__link" id="nav-components">Components</a>
     <a href="#icons" data-page="icons" class="page-nav__link" id="nav-icons">SVGs and Icons</a>
@@ -731,6 +769,45 @@
       </div>
     </div>
     <span class="demo-controls__platform-badge" id="platform-badge" aria-hidden="true">Web</span>
+  </div>
+
+  <div class="page-content page-content--core">
+    <section id="core" class="demo-section" style="margin-top: 2rem;">
+      <h2 class="type-title2" style="margin-bottom: 0.5rem;">System core</h2>
+      <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.5rem; max-width: 52rem;">
+        The <strong>core</strong> is the contract for how work is layered: visual language and components here on this page;
+        the shared <strong>app shell</strong> you copy for new screens; reusable <strong>tokens, CSS, and SVGs</strong>; and
+        <strong>product-area demos</strong> under <code>pages/&lt;area&gt;/</code> so features land next to related flows instead of a flat dump.
+      </p>
+      <div class="ds-core-grid">
+        <article class="ds-core-card">
+          <h3>1 · Visual design system (this page)</h3>
+          <p>Brands, typography, components, and icon gallery. Use it to validate states, spacing, and parity with Figma before shipping to product HTML.</p>
+          <span class="ds-core-card__path">index.html</span>
+        </article>
+        <article class="ds-core-card">
+          <h3>2 · Application shell</h3>
+          <p>Standard nav, header, and main layout regions. Start new app-like pages from this file, then drop in area content.</p>
+          <span class="ds-core-card__path">pages/_template.html</span>
+          <span class="ds-core-card__path" style="margin-top:0.35rem;"><a href="pages/_template.html" target="_blank" rel="noopener">Open shell</a></span>
+        </article>
+        <article class="ds-core-card">
+          <h3>3 · Tokens, components, icons</h3>
+          <p>Implementation layer: CSS variables, component stylesheets, and SVG assets. Prefer extending these over one-off copies in demos.</p>
+          <span class="ds-core-card__path">design-tokens/tokens.css · components/*.css · assets/icons/</span>
+        </article>
+        <article class="ds-core-card">
+          <h3>4 · Product surfaces</h3>
+          <p>Standalone screens grouped by app area (<code>home</code>, <code>fields</code>, <code>weather</code>, <code>scout</code>, <code>trials</code>, <code>yield</code>, …). Use <code>pages/demos/</code> for experiments and <code>pages/exports/</code> for Figma capture.</p>
+          <span class="ds-core-card__path">pages/&lt;area&gt;/*.html</span>
+          <span class="ds-core-card__path" style="margin-top:0.35rem;"><a href="pages/system/product-language.html" target="_blank" rel="noopener">Product language map</a></span>
+        </article>
+      </div>
+      <p class="type-footnote" style="color: var(--color-text-muted); margin-top: 1.25rem; max-width: 52rem;">
+        Authoring rule: new UI that maps to a primary nav destination goes under the matching <code>pages/&lt;area&gt;/</code> folder.
+        Full overview for contributors: <a href="DESIGN-SYSTEM.md">DESIGN-SYSTEM.md</a>.
+      </p>
+    </section>
   </div>
 
   <div class="page-content page-content--brands">
@@ -3879,7 +3956,7 @@
       var body = document.body;
       var navLinks = document.querySelectorAll('.page-nav__link[data-page]');
       function setPage(page) {
-        body.classList.remove('page-brands', 'page-components', 'page-layouts', 'page-icons');
+        body.classList.remove('page-core', 'page-brands', 'page-components', 'page-layouts', 'page-icons');
         body.classList.add('page-' + page);
         navLinks.forEach(function (a) {
           var isActive = a.getAttribute('data-page') === page;
@@ -3895,10 +3972,10 @@
       });
       window.addEventListener('hashchange', function () {
         var h = location.hash.slice(1);
-        if (h && ['brands','components','icons','layouts'].indexOf(h) >= 0) setPage(h);
+        if (h && ['core','brands','components','icons','layouts'].indexOf(h) >= 0) setPage(h);
       });
-      var page = (function () { var h = location.hash.slice(1); return (h && ['brands','components','icons','layouts'].indexOf(h) >= 0) ? h : null; })();
-      setPage(page || (body.classList.contains('page-brands') ? 'brands' : body.classList.contains('page-layouts') ? 'layouts' : body.classList.contains('page-icons') ? 'icons' : 'components'));
+      var page = (function () { var h = location.hash.slice(1); return (h && ['core','brands','components','icons','layouts'].indexOf(h) >= 0) ? h : null; })();
+      setPage(page || (body.classList.contains('page-core') ? 'core' : body.classList.contains('page-brands') ? 'brands' : body.classList.contains('page-layouts') ? 'layouts' : body.classList.contains('page-icons') ? 'icons' : 'components'));
     })();
   </script>
   <script>

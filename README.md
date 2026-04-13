@@ -20,8 +20,8 @@ Brand colors are referred to by **brand name** then **color**. Examples:
 
 - **design-tokens/** – Design variables and tokens (colors, spacing, typography, etc.). Add your Figma exports here or paste them in chat for implementation.
 - **components/** – Reusable UI (buttons, inputs, nav, filter pills, dropdowns, menus, modals, tabs, field cards, etc.).
-- **index.html** – Demo page with nav to **Colors** (primitives and ramps), **Components** (typography, header, buttons, inputs, nav, tabs, pills, modals, field cards, etc.), and **Example layouts** (app shell, field cards grid, YP1K Analysis). Includes Legends and Charts.
-- **pages/** – Example and standalone pages (e.g. MyFS scouting, field card wheat, YP1K Analysis 2024, advanced analytics). Linked from index.html Example layouts.
+- **index.html** – Visual design system: **System core** (how layers fit together), brands, components, icons, and **Example layouts**. Includes Legends and Charts.
+- **pages/** – Product-area demos under `pages/<area>/` (e.g. `fields`, `weather`, `trials`, `yield`), plus `pages/demos/` and `pages/exports/`. App shell starter: `pages/_template.html`.
 - **docs/cards.md** – Card and modal rules and callouts (radius, actions, tags). **docs/field-cards-design-system-instances.md** – Field card instances checklist for the design system.
 
 ## Legends and Charts

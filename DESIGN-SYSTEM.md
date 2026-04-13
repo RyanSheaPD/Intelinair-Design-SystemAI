@@ -16,6 +16,23 @@ A static HTML/CSS design system aligned with the **Variable Design System (test)
 
 ---
 
+## System core (what belongs where)
+
+The **core** is the layered contract for this repo—not a single folder, but how the pieces stack:
+
+| Layer | Role | Where it lives |
+|-------|------|----------------|
+| **Visual design system** | Tokens, type, components, and icon gallery in one scrollable reference. | [`index.html`](./index.html) — start at **System core** (`#core`) in the in-page nav |
+| **Application shell** | Default nav + header + main regions for app-like pages. | [`pages/_template.html`](./pages/_template.html) |
+| **Composable implementation** | Variables and reusable styles; shared SVGs. | [`design-tokens/tokens.css`](./design-tokens/tokens.css), [`components/`](./components/), [`assets/icons/`](./assets/icons/) |
+| **Product surfaces** | Full-screen or flow demos tied to an app area (Home, Fields, Weather, Scout, Trials, Yield, …). | [`pages/<area>/`](./pages/) — use [`pages/demos/`](./pages/demos/) for experiments and [`pages/exports/`](./pages/exports/) for Figma / HTML→Design captures |
+
+**Authoring rule:** UI that maps to a primary product destination should live under the matching `pages/<area>/` folder (not loose in `pages/` root). Extend tokens and `components/*.css` before inventing parallel styles in a demo.
+
+**Product vocabulary** (how terms map to screens): [`pages/system/product-language.html`](./pages/system/product-language.html).
+
+---
+
 ## Principles
 
 - **Accessibility:** Target **WCAG 2.1 Level AA** for contrast and legibility. Document intentional exceptions (e.g. tertiary or decorative UI). Use paired tokens such as `--color-text-on-brand`, `--color-text-on-success`, etc., when placing text on colored backgrounds. See [design-tokens/README.md](./design-tokens/README.md).
@@ -107,9 +124,9 @@ Add new components here with a short description in this table when you introduc
 
 | Entry | Description |
 |-------|-------------|
-| `index.html` | Main gallery: colors, typography, components, example layouts |
-| `pages/` | Standalone demos (scouting, wheat field card, analytics, disease risk, etc.) |
-| Root HTML files | e.g. `yield-forecast-card.html`, `test-brand-cards.html`, brand-specific previews |
+| `index.html` | Main gallery: **System core** (`#core`), brands, typography, components, example layouts |
+| `pages/<area>/` | Standalone demos by app area (`home`, `fields`, `weather`, `scout`, `trials`, `yield`, …) |
+| `pages/demos/`, `pages/exports/` | Scratch / variable parity demos and Figma-oriented export pages |
 | `pages/demos/ios-assistant-widget-screens.html` | iOS-style widget gallery + home placement + assistant sheet interaction |
 | `pages/analytics/csv-data-table.html` | Default `data/adam_ford_s170.csv` (paginated, optional hide geometry cols); file picker or any CSV → `data-table.css` |
 | `pages/trials/myfs-mitrials.html` | **Default starter** for MyFS MiTrials (4th layer chip + inline trials SVG replaces grid; Fields toolbar) + `myfs-trials-flow-shell.css` + `field-map-view-shell.css` |
