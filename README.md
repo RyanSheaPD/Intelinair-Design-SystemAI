@@ -21,7 +21,8 @@ Brand colors are referred to by **brand name** then **color**. Examples:
 - **design-tokens/** – Design variables and tokens (colors, spacing, typography, etc.). Add your Figma exports here or paste them in chat for implementation.
 - **components/** – Reusable UI (buttons, inputs, nav, filter pills, dropdowns, menus, modals, tabs, field cards, etc.).
 - **index.html** – Visual design system: **System core** (how layers fit together), brands, components, icons, and **Example layouts**. Includes Legends and Charts.
-- **pages/** – Product-area demos under `pages/<area>/` (e.g. `fields`, `weather`, `trials`, `yield`), plus `pages/demos/` and `pages/exports/`. App shell starter: `pages/_template.html`.
+- **pages/** – Product-area demos under `pages/<area>/` (e.g. `fields`, `weather`, `trials`, `yield`) and `pages/demos/` for experiments. App shell starter: `pages/_template.html`.
+- **figma-exports/** – Optional Figma / capture HTML (separate from product pages; see `figma-exports/README.md`).
 - **docs/cards.md** – Card and modal rules and callouts (radius, actions, tags). **docs/field-cards-design-system-instances.md** – Field card instances checklist for the design system.
 
 ## Legends and Charts

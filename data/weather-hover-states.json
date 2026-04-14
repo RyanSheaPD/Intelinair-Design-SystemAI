@@ -1,8 +1,8 @@
 {
-  "source_page": "pages/agmri-weather.html",
-  "export_document": "pages/weather-hover-states.html",
-  "gw_spray_map_tooltip_cards_export": "pages/weather-gw-spray-cards-export.html",
-  "gw_spray_tooltip_options_gallery": "pages/weather-gw-spray-tooltip-options.html",
+  "source_page": "pages/weather/agmri-weather.html",
+  "export_document": "pages/weather/weather-hover-states.html",
+  "gw_spray_map_tooltip_cards_export": "figma-exports/weather-gw-spray-cards-export.html",
+  "gw_spray_tooltip_options_gallery": "pages/weather/weather-gw-spray-tooltip-options.html",
   "stylesheet": "pages/css/weather-hover-export.css",
   "query_param": "figmaHover",
   "optional_params": {

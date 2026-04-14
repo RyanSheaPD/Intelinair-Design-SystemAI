@@ -25,9 +25,10 @@ The **core** is the layered contract for this repo—not a single folder, but ho
 | **Visual design system** | Tokens, type, components, and icon gallery in one scrollable reference. | [`index.html`](./index.html) — start at **System core** (`#core`) in the in-page nav |
 | **Application shell** | Default nav + header + main regions for app-like pages. | [`pages/_template.html`](./pages/_template.html) |
 | **Composable implementation** | Variables and reusable styles; shared SVGs. | [`design-tokens/tokens.css`](./design-tokens/tokens.css), [`components/`](./components/), [`assets/icons/`](./assets/icons/) |
-| **Product surfaces** | Full-screen or flow demos tied to an app area (Home, Fields, Weather, Scout, Trials, Yield, …). | [`pages/<area>/`](./pages/) — use [`pages/demos/`](./pages/demos/) for experiments and [`pages/exports/`](./pages/exports/) for Figma / HTML→Design captures |
+| **Product surfaces** | Full-screen or flow demos tied to an app area (Home, Fields, Weather, Scout, Trials, Yield, …). | [`pages/<area>/`](./pages/) — use [`pages/demos/`](./pages/demos/) for experiments |
+| **Figma / export captures** | Disposable HTML for MCP or html.to.design; not part of product IA. | [`figma-exports/`](./figma-exports/) — optional; merge policy in [`figma-exports/README.md`](./figma-exports/README.md) |
 
-**Authoring rule:** UI that maps to a primary product destination should live under the matching `pages/<area>/` folder (not loose in `pages/` root). Extend tokens and `components/*.css` before inventing parallel styles in a demo.
+**Authoring rule:** UI that maps to a primary product destination should live under the matching `pages/<area>/` folder (not loose in `pages/` root). Figma-only or html.to.design capture pages belong in **`figma-exports/`**, not under `pages/<area>/`. Extend tokens and `components/*.css` before inventing parallel styles in a demo.
 
 **Product vocabulary** (how terms map to screens): [`pages/system/product-language.html`](./pages/system/product-language.html).
 
@@ -126,7 +127,8 @@ Add new components here with a short description in this table when you introduc
 |-------|-------------|
 | `index.html` | Main gallery: **System core** (`#core`), brands, typography, components, example layouts |
 | `pages/<area>/` | Standalone demos by app area (`home`, `fields`, `weather`, `scout`, `trials`, `yield`, …) |
-| `pages/demos/`, `pages/exports/` | Scratch / variable parity demos and Figma-oriented export pages |
+| `pages/demos/` | Scratch / variable parity demos |
+| `figma-exports/` | Figma / HTML→Design export targets (optional; see folder README) |
 | `pages/demos/ios-assistant-widget-screens.html` | iOS-style widget gallery + home placement + assistant sheet interaction |
 | `pages/analytics/csv-data-table.html` | Default `data/adam_ford_s170.csv` (paginated, optional hide geometry cols); file picker or any CSV → `data-table.css` |
 | `pages/trials/myfs-mitrials.html` | **Default starter** for MyFS MiTrials (4th layer chip + inline trials SVG replaces grid; Fields toolbar) + `myfs-trials-flow-shell.css` + `field-map-view-shell.css` |
