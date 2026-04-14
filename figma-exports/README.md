@@ -2,6 +2,8 @@
 
 Static capture targets for **html.to.design**, Figma MCP, or similar tools. They are **not** product surfaces and **not** required for the app shell or area demos under `pages/`.
 
+**Cursor / AI:** New export HTML must be created here (`figma-exports/` at repo root), not under `pages/`, regardless of which folder is open. Enforced via `.cursor/rules/figma-export-placement.mdc`.
+
 ## Lifecycle
 
 - **Safe to delete or replace** when captures are stale; regenerate from live pages under `pages/<area>/` as needed.

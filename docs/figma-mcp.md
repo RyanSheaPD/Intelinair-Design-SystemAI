@@ -6,6 +6,8 @@ This project is set up to work with **Figma MCP** so you can get the design syst
 
 **Destination in Figma:** Push captures into this file under the **Test layouts** page (create or use that page so all design-system captures live in one place).
 
+**Where to put new export HTML in this repo:** Always under **`figma-exports/`** at the repository root (e.g. `figma-exports/feature-name-export.html`). Do not add Figma-only capture pages under `pages/`. See `figma-exports/README.md` and the Cursor rule `.cursor/rules/figma-export-placement.mdc`.
+
 ## Which plugin is needed to push designs in
 
 You need one of the following so Cursor can send your design system (HTML/URL) into Figma:

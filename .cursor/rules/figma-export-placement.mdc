@@ -1,0 +1,20 @@
+---
+description: Figma / HTML export pages must live under figma-exports at repo root
+alwaysApply: true
+---
+
+# Figma and HTML→Design export files
+
+When creating or editing **export-only** HTML (Figma MCP capture, html.to.design, HTML→Design, hover-state slabs, pixel-parity snapshots, or any page whose sole purpose is pushing static UI to Figma):
+
+1. **Path:** Write the file under **`figma-exports/`** at the **repository root**, e.g. `figma-exports/my-feature-export.html`. Do **not** place new export pages under `pages/<area>/`, `pages/demos/`, or loose under `pages/`.
+
+2. **Working directory:** Ignore where the user’s terminal or editor focus started. Always use paths relative to the **workspace root** (`figma-exports/...`).
+
+3. **Assets in export HTML:** From `figma-exports/*.html`, link shared repo assets as:
+   - `../design-tokens/tokens.css`, `../components/*.css`, `../assets/...`, `../data/...`
+   - Shared page helpers: `../pages/css/...`, `../pages/js/...` when reusing weather or other bundled CSS/JS.
+
+4. **Product vs export:** Real product demos, shells, and flows belong in **`pages/<area>/`** (or `pages/_template.html`). If unsure, prefer **`figma-exports/`** only when the user explicitly asked for an **export** or **Figma capture** page.
+
+See `figma-exports/README.md` for lifecycle and merge notes.
