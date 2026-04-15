@@ -24,6 +24,7 @@ Brand colors are referred to by **brand name** then **color**. Examples:
 - **pages/** – Product-area demos under `pages/<area>/` (e.g. `fields`, `weather`, `trials`, `yield`) and `pages/demos/` for experiments. App shell starter: `pages/_template.html`.
 - **figma-exports/** – Optional Figma / capture HTML (separate from product pages; see `figma-exports/README.md`).
 - **docs/cards.md** – Card and modal rules and callouts (radius, actions, tags). **docs/field-cards-design-system-instances.md** – Field card instances checklist for the design system.
+- **docs/system-voice.md** – Voice and tone for UI strings; canonical copy for edge cases (e.g. MiTrials single zone).
 
 ## Legends and Charts
 

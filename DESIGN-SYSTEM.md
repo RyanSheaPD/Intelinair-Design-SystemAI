@@ -11,6 +11,7 @@ A static HTML/CSS design system aligned with the **Variable Design System (test)
 | [docs/empty-states.md](./docs/empty-states.md) | Empty state patterns |
 | [docs/figma-mcp.md](./docs/figma-mcp.md) | Figma MCP workflow |
 | [docs/myfs-trials-treatments-flow.md](./docs/myfs-trials-treatments-flow.md) | **MyFS MiTrials / treatments** — canonical shell, CSS, naming for new screens |
+| [docs/system-voice.md](./docs/system-voice.md) | **Voice & tone** for UI strings (warnings, education); canonical copy for edge cases |
 
 **Figma (source of truth for variables):** [Variable Design System (test)](https://www.figma.com/design/0njyFuWX2qzunGeGrKHyHi/Variable-Design-System--test-?m=dev)
 
@@ -30,7 +31,7 @@ The **core** is the layered contract for this repo—not a single folder, but ho
 
 **Authoring rule:** UI that maps to a primary product destination should live under the matching `pages/<area>/` folder (not loose in `pages/` root). Figma-only or html.to.design capture pages belong in **`figma-exports/`**, not under `pages/<area>/`. Extend tokens and `components/*.css` before inventing parallel styles in a demo.
 
-**Product vocabulary** (how terms map to screens): [`pages/system/product-language.html`](./pages/system/product-language.html).
+**Product vocabulary** (how terms map to screens): [`pages/system/product-language.html`](./pages/system/product-language.html). **Voice & tone** (how we phrase UI copy): [`docs/system-voice.md`](./docs/system-voice.md).
 
 ---
 
