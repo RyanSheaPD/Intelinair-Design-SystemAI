@@ -46,6 +46,10 @@ Use when the app **allows** a configuration but **science, statistics, or compar
 
 Keep plural education separate, e.g. **Multiple treatment zones** / **Add one or more zones for this trial** — only when the UI state actually reflects multiple zones or the empty-add flow for several.
 
+### Static demo (`pages/trials/myfs-mitrials.html`)
+
+Choose protocol **Corn — single treatment zone (demo)** in the trial drawer to preview the canonical single-zone heading and body. Empty “no treatments” state uses: **Add treatment zones for this trial so you can compare products reliably.**
+
 ---
 
 ## Related

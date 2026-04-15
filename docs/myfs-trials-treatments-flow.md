@@ -55,7 +55,7 @@ Add other `components/*.css` files as needed (`input.css`, `modal.css`, `data-ta
 
 ## Voice & copy
 
-MiTrials-specific strings (e.g. **single treatment zone** — weak results, non-blocking) are canonical in [**docs/system-voice.md**](./system-voice.md). Use that file for headings and helper text so demos and product stay aligned.
+MiTrials-specific strings (e.g. **single treatment zone** — weak results, non-blocking) are canonical in [**docs/system-voice.md**](./system-voice.md). Use that file for headings and helper text so demos and product stay aligned. In [`pages/trials/myfs-mitrials.html`](../pages/trials/myfs-mitrials.html), choose protocol **Corn — single treatment zone (demo)** to preview that copy in the drawer.
 
 ## Related docs
 

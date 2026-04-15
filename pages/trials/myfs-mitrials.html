@@ -75,6 +75,7 @@
             <select id="trial-protocol-select" class="trial-drawer__select">
               <option value="">Select protocol</option>
               <option value="corn-standard">Corn standard protocol</option>
+              <option value="corn-single-zone">Corn — single treatment zone (demo)</option>
               <option value="carbon">Carbon</option>
               <option value="no-till">No till</option>
               <option value="fungicide">Fungicide</option>
@@ -135,11 +136,29 @@
               </div>
             </div>
 
+            <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--predetermined" id="trial-treatments-single-zone" hidden>
+              <div class="trial-drawer__treatments-predetermined-inner">
+                <p class="trial-drawer__treatments-list-title">Treatments</p>
+                <ul class="trial-drawer__treatments-list" role="list">
+                  <li>
+                    <button type="button" class="trial-drawer__treatments-row" data-treatment-detail data-treatment-title="Treated — G3 OS" data-treated="true">
+                      <span class="trial-drawer__treatments-row-label">Treated</span>
+                      <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
+                    </button>
+                  </li>
+                </ul>
+                <div class="trial-drawer__treatments-quality" role="note">
+                  <p class="trial-drawer__treatments-quality-title">Limited trial results</p>
+                  <p class="trial-drawer__treatments-quality-body">With one zone, comparisons and trial metrics are usually unreliable. Add another zone for more trustworthy results—or continue if you need to.</p>
+                </div>
+              </div>
+            </div>
+
             <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--undetermined" id="trial-treatments-undetermined" hidden>
               <div class="trial-drawer__treatments-empty">
                 <span class="material-symbols-outlined trial-drawer__treatments-icon" aria-hidden="true">texture</span>
                 <p class="trial-drawer__treatments-msg">No treatments created</p>
-                <p class="trial-drawer__treatments-sub">Add one or more zones for this trial.</p>
+                <p class="trial-drawer__treatments-sub">Add treatment zones for this trial so you can compare products reliably.</p>
               </div>
               <div class="trial-drawer__treatments-actions">
                 <button type="button" class="trial-drawer__add-treatment" id="trial-add-treatment-btn" data-treatment-detail data-treatment-title="New treatment" data-treated="true">+ Add treatment</button>
@@ -989,12 +1008,14 @@
         var treatmentsRoot = document.getElementById('trial-treatments-root');
         var treatmentsPlaceholder = document.getElementById('trial-treatments-placeholder');
         var treatmentsPredetermined = document.getElementById('trial-treatments-predetermined');
+        var treatmentsSingleZone = document.getElementById('trial-treatments-single-zone');
         var treatmentsUndetermined = document.getElementById('trial-treatments-undetermined');
         var protocolsWithPredeterminedZones = ['corn-standard', 'fungicide', 'herbicide', 'seed-treatment'];
         var protocolsWithUndeterminedZones = ['carbon', 'no-till', 'nitrogen', 'cover-crop'];
 
         function treatmentsModeForProtocol(value) {
           if (!value) return 'placeholder';
+          if (value === 'corn-single-zone') return 'single-zone';
           if (protocolsWithPredeterminedZones.indexOf(value) !== -1) return 'predetermined';
           if (protocolsWithUndeterminedZones.indexOf(value) !== -1) return 'undetermined';
           return 'undetermined';
@@ -1007,6 +1028,7 @@
           treatmentsRoot.setAttribute('data-treatments-mode', mode);
           treatmentsPlaceholder.hidden = mode !== 'placeholder';
           treatmentsPredetermined.hidden = mode !== 'predetermined';
+          if (treatmentsSingleZone) treatmentsSingleZone.hidden = mode !== 'single-zone';
           treatmentsUndetermined.hidden = mode !== 'undetermined';
         };
 
