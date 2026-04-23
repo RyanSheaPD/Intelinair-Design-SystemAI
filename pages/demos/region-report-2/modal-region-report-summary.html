@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Region Report 2.0 — Region report tool (Summary)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="region-report-2.css" />
+</head>
+<body class="rr2">
+  <div class="rr2-shell">
+    <div class="rr2-shell__map" style="background-image: url('../../../assets/intelinair-hero-panorama.png');"></div>
+    <div class="rr2-toast" role="status">Please select area to create zone.</div>
+
+    <aside class="rr2-sidebar" aria-label="Primary">
+      <a class="rr2-nav-item" href="#" title="Home">⌂</a>
+      <a class="rr2-nav-item" href="#" title="Growers">G</a>
+      <a class="rr2-nav-item" href="#" title="Fields">F</a>
+      <a class="rr2-nav-item rr2-nav-item--active" href="#" title="Scout">S</a>
+      <a class="rr2-nav-item" href="#" title="Weather">W</a>
+      <a class="rr2-nav-item" href="#" title="Analyze">A</a>
+    </aside>
+
+    <header class="rr2-topbar">
+      <img class="rr2-topbar__logo" src="../../../assets/agmri-logo.png" alt="AgMRI" />
+      <a class="rr2-topbar__back" href="index.html">‹ Back</a>
+      <div class="rr2-topbar__search">Search</div>
+      <div class="rr2-topbar__user">
+        <span>Caleb Wieber</span>
+        <span class="rr2-topbar__avatar" aria-hidden="true">CW</span>
+      </div>
+    </header>
+
+    <div class="rr2-modal-layer">
+      <div class="rr2-modal" role="dialog" aria-labelledby="rr-sum-title">
+        <div class="rr2-modal__head">
+          <div class="rr2-modal__title-row">
+            <div>
+              <h1 id="rr-sum-title" class="rr2-modal__title">Region report tool</h1>
+              <div id="rr2-field-meta" class="rr2-field-meta">
+                <div>Home 4 South Dahlia’s 24</div>
+                <div class="rr2-field-meta__line2">South Shop, <a href="#">Campbell farms.</a></div>
+                <div class="rr2-field-meta__stats">
+                  <span><strong>664.9 ac</strong></span>
+                  <span>🌱 11/5</span>
+                  <span>🌽 Corn</span>
+                  <span>GDD: 153</span>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="rr2-icon-btn" aria-label="Close">×</button>
+          </div>
+
+          <nav id="rr2-report-tabs" class="rr2-tabs" aria-label="Report sections">
+            <a class="rr2-tab" href="modal-region-report-zones.html">Zones</a>
+            <a class="rr2-tab" href="modal-region-report-machine-data.html">Machine data</a>
+            <span class="rr2-tab rr2-tab--active" aria-selected="true">Summary</span>
+          </nav>
+        </div>
+
+        <div class="rr2-modal__body">
+          <div id="rr2-summary-zone-chips" class="rr2-zone-row">
+            <button type="button" class="rr2-zone-chip rr2-zone-chip--selected" style="--chip-color: var(--rr2-zone-1)">Zone 1</button>
+            <button type="button" class="rr2-zone-chip" style="--chip-color: var(--rr2-zone-2)">Zone 2</button>
+            <button type="button" class="rr2-zone-chip" style="--chip-color: var(--rr2-zone-3)">Zone 3</button>
+            <button type="button" class="rr2-zone-chip" style="--chip-color: var(--rr2-zone-4)">Zone 4</button>
+          </div>
+
+          <div id="rr2-summary-name-tags" class="rr2-summary-grid">
+            <div>
+              <div class="rr2-field-label">Zone name</div>
+              <div class="rr2-input-row">
+                <input type="text" value="Zone 1" aria-label="Zone name" />
+                <span aria-hidden="true" title="Saved" style="color: var(--color-brand-600); font-size: 18px;">✓</span>
+              </div>
+            </div>
+            <div>
+              <div class="rr2-field-label">Tags</div>
+              <div class="rr2-tag-list">
+                <span class="rr2-tag">Compaction <button type="button" aria-label="Remove Compaction">×</button></span>
+                <span class="rr2-tag">Crusted soil <button type="button" aria-label="Remove Crusted soil">×</button></span>
+                <span class="rr2-tag">Double plant <button type="button" aria-label="Remove Double plant">×</button></span>
+              </div>
+            </div>
+          </div>
+
+          <div id="rr2-summary-suggested" style="margin-top: 20px;">
+            <div class="rr2-field-label">Suggested</div>
+            <div class="rr2-suggested">
+              <button type="button">Compaction</button>
+              <button type="button">Crusted soil</button>
+              <button type="button">Double plant</button>
+              <button type="button">Planter skip</button>
+              <button type="button">Poor placement</button>
+              <button type="button">Stunted plants</button>
+            </div>
+            <button type="button" class="rr2-btn rr2-btn--ghost" style="margin-top: 12px;">+ Custom tag</button>
+          </div>
+        </div>
+
+        <div id="rr2-save-summary" class="rr2-modal__footer">
+          <button type="button" class="rr2-btn rr2-btn--primary">Save summary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

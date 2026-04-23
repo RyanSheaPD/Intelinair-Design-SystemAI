@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGMRI · Season Planning Mockups</title>
+<link rel="stylesheet" href="../design-tokens/tokens.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+<style>
+  /* AGMRI Season Planning mockups — colors/spacing/type from design-tokens/tokens.css only. */
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-family);
+    color: var(--color-text);
+    background: var(--color-neutral-50);
+    font-size: var(--font-size-14);
+    line-height: var(--line-height-normal);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3,h4 { margin: 0; letter-spacing: -0.01em; color: var(--color-text); font-weight: var(--font-weight-semibold); }
+  .mono { font-family: ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* AGMRI season header art — also duplicated as <img> for Figma/html-to-design capture */
+  .page-head,
+  .report-hero {
+    /* Relative to this file in figma-exports/ — works for local server + html-to-design fetch */
+    --agmri-header-bg: url('../assets/agmri-season-header-bg.png');
+  }
+
+  /* =========================================================
+     PAGE WRAP
+     ========================================================= */
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 28px 80px;
+  }
+
+  /* Top brand bar (not part of mockups) */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--color-pb-900);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-xl);
+    margin-bottom: 36px;
+    box-shadow: var(--shadow-lg);
+  }
+  .topbar .lock {
+    display: flex; align-items: center; gap: 16px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .agmri-logo {
+    display: block;
+    height: 36px;
+    width: auto;
+    max-width: min(200px, 42vw);
+    object-fit: contain;
+    object-position: left center;
+  }
+  .topbar .brand-txt {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    min-width: 0;
+  }
+  .topbar .brand-txt .sub {
+    display: block; font-weight: 400; color: var(--color-neutral-400); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .topbar .right {
+    font-size: 12px; color: var(--color-neutral-400); letter-spacing: 0.05em;
+  }
+  .topbar .right .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px;
+    background: rgba(34, 197, 94, 0.2);
+    color: var(--color-success-400);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: 10px;
+  }
+  .topbar .right .chip .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--color-success-400);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.28);
+  }
+
+  /* =========================================================
+     MOCKUP FRAME
+     ========================================================= */
+  .mockup {
+    background: var(--color-background);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    margin-bottom: 52px;
+    border: 1px solid var(--color-border);
+  }
+  .mock-lab {
+    display: flex; align-items: baseline; gap: 12px;
+    margin: 0 4px 12px;
+    color: var(--color-text-muted);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .mock-lab .id {
+    background: var(--color-pb-900);
+    color: var(--color-text-inverse);
+    padding: 2px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.16em;
+  }
+  .mock-lab .name { color: var(--color-text); font-weight: 600; letter-spacing: 0.06em; }
+
+  /* =========================================================
+     AGMRI APP CHROME — main shell (left rail removed)
+     ========================================================= */
+  .app {
+    display: block;
+    min-height: 0;
+  }
+  .app-main { min-width: 0; }
+
+  /*
+     Plexus header: <img> stays in normal flow inside .page-head__canvas so html-to-design
+     keeps the bitmap (absolute-position-only images are often dropped). Overlay + UI sit on top.
+  */
+  .page-head {
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--color-pb-900);
+  }
+  .page-head__canvas {
+    position: relative;
+    overflow: hidden;
+    color: var(--color-text-inverse);
+    background-color: var(--color-pb-900);
+    background-image: var(--agmri-header-bg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 88% 88%;
+  }
+  .page-head__photo {
+    display: block;
+    width: 100%;
+    min-height: 156px;
+    max-height: 220px;
+    height: auto;
+    object-fit: cover;
+    object-position: 88% 88%;
+    position: relative;
+    z-index: 0;
+  }
+  .page-head .overlay {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(13, 17, 23, 0.78) 0%, rgba(13, 17, 23, 0.62) 55%, rgba(13, 17, 23, 0.28) 100%),
+      linear-gradient(180deg, rgba(23, 23, 23, 0.08) 0%, rgba(13, 17, 23, 0.35) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .page-head .content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    padding: 22px 28px 20px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 28px;
+  }
+  .page-head h1 {
+    font-size: 22px;
+    color: var(--color-text-inverse);
+    font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .page-head h1 .dot-tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    background: var(--color-success-600);
+    color: var(--color-text-inverse);
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+  .page-head .breadcrumb {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .page-head .meta-row {
+    margin-top: 8px;
+    display: flex; gap: 20px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 13px;
+    flex-wrap: wrap;
+  }
+  .page-head .meta-row .i {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .page-head .meta-row svg { width: 14px; height: 14px; opacity: 0.7; }
+
+  /* Corn price mini card — rgba surfaces capture reliably in Figma */
+  .price-mini {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    min-width: 230px;
+    backdrop-filter: blur(4px);
+  }
+  .price-mini .lbl {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.72);
+    font-weight: 600;
+  }
+  .price-mini .val-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+  .price-mini .v { font-size: 20px; font-weight: 700; }
+  .price-mini .track { flex: 1; height: 3px; background: rgba(255, 255, 255, 0.22); border-radius: 3px; position: relative; }
+  .price-mini .track > i { position: absolute; left: 0; top: 0; bottom: 0; width: 50%; background: var(--color-success-400); border-radius: 3px; }
+  .price-mini .track > .knob { position: absolute; top: -4px; left: calc(50% - 5px); width: 10px; height: 10px; border-radius: 50%; background: var(--color-surface); }
+
+  /* Sub-tab bar */
+  .subtabs {
+    display: flex; align-items: center; gap: 2px;
+    padding: 0 28px;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .subtabs .t {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 16px;
+    font-size: 13px; font-weight: 600; color: var(--color-text-muted);
+    border-bottom: 2px solid transparent;
+    position: relative; top: 1px;
+  }
+  .subtabs .t.on { color: var(--color-pb-800); border-bottom-color: var(--color-success-600); }
+  .subtabs .t svg { width: 15px; height: 15px; }
+  .subtabs .spacer { flex: 1; }
+  .subtabs .kpi {
+    font-size: 12px; color: var(--color-text-muted); letter-spacing: 0.02em;
+  }
+  .subtabs .kpi b { color: var(--color-text); font-weight: 700; font-size: 14px; margin-right: 4px; }
+
+  /* Section body */
+  .body {
+    padding: 20px 28px 28px;
+    background: var(--color-neutral-50);
+  }
+
+  /* =========================================================
+     HYBRID CARDS (Mockup C)
+     ========================================================= */
+  .h-title-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+  .h-title {
+    font-size: 14px; font-weight: 600; color: var(--color-neutral-800);
+  }
+  .h-note { font-size: 12px; color: var(--color-text-muted); }
+
+  .hgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  .hcard {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    position: relative;
+    transition: transform .12s ease;
+  }
+  .hcard .aerial-thumb {
+    height: 64px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .hcard .aerial-thumb .chip {
+    position: absolute;
+    top: 8px; left: 10px;
+    z-index: 3;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 700;
+    background: rgba(13, 17, 23, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--color-text-inverse);
+    padding: 3px 8px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+  }
+  .hcard .aerial-thumb .chip.ndvi { background: rgba(22, 163, 74, 0.9); border-color: rgba(255, 255, 255, 0.25); }
+  .hcard .aerial-thumb .chip.rgb { background: rgba(29, 78, 216, 0.88); border-color: rgba(255, 255, 255, 0.22); }
+
+  /* Panorama: <img> + rgba wash (Figma-friendly); CSS bg fallback on container */
+  .hcard .aerial-thumb--panorama,
+  .fcard-head .thumb.thumb--panorama {
+    background-color: var(--color-pb-800);
+    background-image: url('../assets/intelinair-hero-panorama.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .hcard .aerial-thumb .aerial-thumb__photo,
+  .fcard-head .thumb .aerial-thumb__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+    display: block;
+  }
+  .hcard .aerial-thumb .aerial-thumb__wash,
+  .fcard-head .thumb .aerial-thumb__wash {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .hcard .aerial-thumb--s1 .aerial-thumb__photo,
+  .fcard-head .thumb.thumb--s1 .aerial-thumb__photo { object-position: 52% 4%; }
+  .hcard .aerial-thumb--s2 .aerial-thumb__photo,
+  .fcard-head .thumb.thumb--s2 .aerial-thumb__photo { object-position: 10% 82%; }
+  .hcard .aerial-thumb--s3 .aerial-thumb__photo,
+  .fcard-head .thumb.thumb--s3 .aerial-thumb__photo { object-position: 92% 74%; }
+  .hcard .aerial-thumb--s4 .aerial-thumb__photo,
+  .fcard-head .thumb.thumb--s4 .aerial-thumb__photo { object-position: 48% 46%; }
+  .hcard .aerial-thumb--s5 .aerial-thumb__photo,
+  .fcard-head .thumb.thumb--s5 .aerial-thumb__photo { object-position: 62% 66%; }
+  .hcard .aerial-thumb--s6 .aerial-thumb__photo,
+  .fcard-head .thumb.thumb--s6 .aerial-thumb__photo { object-position: 78% 70%; }
+
+  .hcard .aerial-thumb--s1 .aerial-thumb__wash--s1,
+  .fcard-head .thumb.thumb--s1 .aerial-thumb__wash--s1 {
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.28) 0%, transparent 58%),
+      linear-gradient(180deg, transparent 55%, rgba(13, 17, 23, 0.4) 100%);
+  }
+  .hcard .aerial-thumb--s2 .aerial-thumb__wash--s2,
+  .fcard-head .thumb.thumb--s2 .aerial-thumb__wash--s2 {
+    background: linear-gradient(115deg, rgba(34, 197, 94, 0.2) 0%, transparent 50%),
+      linear-gradient(180deg, transparent 28%, rgba(13, 17, 23, 0.44) 100%);
+  }
+  .hcard .aerial-thumb--s3 .aerial-thumb__wash--s3,
+  .fcard-head .thumb.thumb--s3 .aerial-thumb__wash--s3 {
+    background: linear-gradient(200deg, transparent 35%, rgba(21, 128, 61, 0.28) 100%),
+      linear-gradient(180deg, transparent 32%, rgba(13, 17, 23, 0.48) 100%);
+  }
+  .hcard .aerial-thumb--s4 .aerial-thumb__wash--s4,
+  .fcard-head .thumb.thumb--s4 .aerial-thumb__wash--s4 {
+    background: linear-gradient(90deg, rgba(22, 101, 52, 0.28) 0%, transparent 45%),
+      linear-gradient(180deg, rgba(13, 17, 23, 0.2) 0%, transparent 42%, rgba(13, 17, 23, 0.42) 100%);
+  }
+  .hcard .aerial-thumb--s5 .aerial-thumb__wash--s5,
+  .fcard-head .thumb.thumb--s5 .aerial-thumb__wash--s5 {
+    background: linear-gradient(160deg, rgba(147, 197, 253, 0.14) 0%, transparent 60%),
+      linear-gradient(180deg, transparent 36%, rgba(13, 17, 23, 0.44) 100%);
+  }
+  .hcard .aerial-thumb--s6 .aerial-thumb__wash--s6,
+  .fcard-head .thumb.thumb--s6 .aerial-thumb__wash--s6 {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.18) 0%, transparent 45%),
+      linear-gradient(180deg, transparent 30%, rgba(13, 17, 23, 0.48) 100%);
+  }
+
+  .hcard .pad { padding: 14px 16px 4px; }
+  .hcard .row-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px;
+  }
+  .hcard h3 { font-size: 16px; font-weight: 700; color: var(--color-text); }
+  .hcard .sub {
+    font-size: 12px; color: var(--color-text-muted); margin-top: 2px; line-height: 1.4;
+  }
+  .hcard .big-num {
+    font-size: 26px; font-weight: 700; color: var(--color-text);
+    letter-spacing: -0.02em; line-height: 1;
+    text-align: right;
+  }
+  .hcard .unit { font-size: 10px; color: var(--color-text-muted); text-align:right; margin-top: 3px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .hcard .chips { display: flex; flex-wrap: wrap; gap: 5px; padding: 12px 16px 0; }
+  .chip-sm {
+    background: var(--color-neutral-100);
+    color: var(--color-neutral-700);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .hcard .soil-block { padding: 12px 16px 0; }
+  .hcard .soil-block .title {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-text-muted); font-weight: 600; margin-bottom: 6px;
+  }
+  .soil-line {
+    display: flex; align-items: center; gap: 10px; font-size: 12px; margin-bottom: 4px;
+  }
+  .soil-line .lbl { width: 60px; color: var(--color-neutral-700); font-weight: 500; }
+  .soil-line .bar { flex: 1; height: 6px; background: var(--color-neutral-100); border-radius: 4px; overflow: hidden; }
+  .soil-line .bar > i { display:block; height: 100%; background: var(--color-success-600); border-radius: 4px; }
+  .soil-line.med .bar > i { background: var(--color-warning-400); }
+  .soil-line .v { color: var(--color-text); font-weight: 600; min-width: 40px; text-align: right; }
+
+  .hcard .foot {
+    margin-top: auto;
+    border-top: 1px solid var(--color-neutral-100);
+    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px;
+  }
+  .hcard .foot .net { color: var(--color-success-700); font-weight: 700; }
+  .hcard .foot .link { color: var(--color-brand-600); font-weight: 600; display: inline-flex; align-items: center; gap: 3px; }
+
+  /* =========================================================
+     FIELD PLACEMENT (Mockup D) — with satellite thumb per field
+     ========================================================= */
+  .fcard {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .fcard-head {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 18px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--color-neutral-100);
+    align-items: center;
+  }
+  .fcard-head .thumb {
+    height: 84px;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+  .fcard-head .thumb .label {
+    position: absolute; bottom: 6px; left: 6px;
+    z-index: 3;
+    background: rgba(13, 17, 23, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--color-text-inverse);
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 3px;
+  }
+  .fcard-head .meta h3 {
+    font-size: 18px; font-weight: 700; color: var(--color-text);
+    display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .fcard-head .meta .row2 {
+    display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px;
+    font-size: 12px; color: var(--color-text-muted);
+  }
+  .fcard-head .meta .row2 .i { display: inline-flex; align-items: center; gap: 5px; }
+  .fcard-head .meta .row2 svg { width: 13px; height: 13px; opacity: 0.7; }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .badge.high { background: var(--color-success-100); color: var(--color-success-800); }
+  .badge.med  { background: var(--color-warning-100); color: var(--color-warning-600); }
+  .badge.low  { background: var(--color-warning-100); color: var(--color-warning-800); }
+  .badge.neutral { background: var(--color-neutral-100); color: var(--color-neutral-700); }
+
+  .ptable {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .ptable th {
+    text-align: left; padding: 10px 18px;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 600; color: var(--color-text-muted);
+    background: var(--color-neutral-50);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .ptable th.num, .ptable td.num { text-align: right; }
+  .ptable td {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--color-neutral-100);
+    color: var(--color-neutral-800);
+  }
+  .ptable tr:last-child td { border-bottom: none; }
+  .ptable tr.top td { background: var(--color-success-100); }
+  .ptable tr.top-blue td { background: var(--color-primitive-100); }
+
+  .hyb-name {
+    display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--color-text);
+  }
+  .h-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .top-flag {
+    font-size: 10px; font-weight: 800; background: var(--color-success-100); color: var(--color-success-800);
+    padding: 2px 6px; border-radius: 3px; letter-spacing: 0.1em;
+  }
+  .top-flag.blue { background: var(--color-brand-100); color: var(--color-brand-700); }
+  .money { color: var(--color-success-700); font-weight: 700; }
+
+  .yrbar {
+    position: relative;
+    height: 18px;
+    background: var(--color-neutral-100);
+    border-radius: 9px;
+    min-width: 160px;
+  }
+  .yrbar .fill {
+    position: absolute; top: 2px; bottom: 2px;
+    border-radius: 9px;
+    background: rgba(22, 163, 74, 0.22);
+    border: 1px solid rgba(22, 163, 74, 0.5);
+  }
+  .yrbar .fill.blue { background: rgba(60, 132, 199, 0.22); border-color: rgba(60, 132, 199, 0.55); }
+  .yrbar .fill.amber { background: rgba(251, 191, 36, 0.22); border-color: rgba(251, 191, 36, 0.55); }
+  .yrbar .fill.rust  { background: rgba(146, 64, 14, 0.2); border-color: rgba(146, 64, 14, 0.5); }
+  .yrbar .tick {
+    position: absolute; top: 1px; bottom: 1px; width: 3px; border-radius: 2px;
+    background: var(--color-success-700);
+  }
+  .yrbar .tick.blue { background: var(--color-brand-700); }
+  .yrbar .tick.amber { background: var(--color-warning-600); }
+  .yrbar .tick.rust { background: var(--color-warning-800); }
+
+  /* =========================================================
+     REPORT (Guide) — full-bleed hero (same header art + gradients)
+     ========================================================= */
+  .report-hero {
+    padding: 0;
+    overflow: hidden;
+    background-color: var(--color-pb-900);
+  }
+  .report-hero__canvas {
+    position: relative;
+    height: 280px;
+    overflow: hidden;
+    color: var(--color-text-inverse);
+    background-color: var(--color-pb-900);
+    background-image: var(--agmri-header-bg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 82% 100%;
+  }
+  .report-hero__photo {
+    display: block;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    object-position: 82% 100%;
+    position: relative;
+    z-index: 0;
+  }
+  .report-hero .overlay {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(100deg, rgba(23, 23, 23, 0.72) 0%, rgba(23, 23, 23, 0.48) 50%, rgba(23, 23, 23, 0.14) 100%),
+      linear-gradient(180deg, rgba(23, 23, 23, 0.04) 0%, rgba(23, 23, 23, 0.58) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .report-hero .content {
+    position: absolute; inset: 0; z-index: 2;
+    padding: 32px 40px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .report-hero .kicker {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 600; color: rgba(255, 255, 255, 0.72);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .report-hero .kicker .agmri-pill {
+    background: var(--color-success-600); color: var(--color-text-inverse);
+    padding: 2px 8px; border-radius: 3px;
+    letter-spacing: 0.2em; font-weight: 700;
+  }
+  .report-hero h1 {
+    color: var(--color-text-inverse);
+    font-size: 36px; font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-top: 12px;
+    max-width: 800px;
+  }
+  .report-hero .sub {
+    margin-top: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 720px;
+  }
+  .report-hero .stats {
+    position: absolute; top: 28px; right: 32px; z-index: 3;
+    display: flex; gap: 20px;
+    background: rgba(23, 23, 23, 0.78);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 10px;
+    padding: 12px 20px;
+  }
+  .report-hero .stats .s .v {
+    font-size: 18px; font-weight: 700; color: var(--color-text-inverse); letter-spacing: -0.01em;
+  }
+  .report-hero .stats .s .l {
+    font-size: 10px; color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+  }
+
+  .report-body { padding: 28px 40px 36px; background: var(--color-surface); }
+
+  .sec-head {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--color-neutral-100);
+    margin-bottom: 20px;
+  }
+  .sec-num {
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    background: var(--color-pb-800); color: var(--color-text-inverse);
+    border-radius: 8px;
+    font-size: 14px; font-weight: 700;
+    font-family: ui-monospace, monospace;
+  }
+  .sec-head h2 {
+    font-size: 22px; font-weight: 700; color: var(--color-text);
+  }
+  .sec-head .sub-title {
+    font-size: 12px; color: var(--color-text-muted); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+  }
+
+  .lede {
+    font-size: 15px; color: var(--color-neutral-700); margin-bottom: 20px;
+    max-width: 820px;
+  }
+  .lede strong { color: var(--color-text); }
+
+  /* Data table for reports */
+  .dtable {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    font-size: 13px;
+    margin-bottom: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .dtable th {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--color-pb-800);
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;
+  }
+  .dtable td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--color-neutral-100);
+    color: var(--color-neutral-800);
+    vertical-align: top;
+  }
+  .dtable tr:last-child td { border-bottom: none; }
+  .dtable tr:nth-child(even) td { background: var(--color-neutral-50); }
+  .dtable td.pos { color: var(--color-success-700); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .dtable td.numr { text-align: right; font-variant-numeric: tabular-nums; }
+  .dtable strong { color: var(--color-text); }
+
+  /* Callouts */
+  .call {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 14px 16px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-brand-500);
+    background: var(--color-primitive-100);
+    color: var(--color-neutral-800);
+  }
+  .call svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; color: var(--color-brand-700); }
+  .call.tip { background: var(--color-success-100); border-color: var(--color-success-600); }
+  .call.tip svg { color: var(--color-success-700); }
+  .call.warn { background: var(--color-warning-100); border-color: var(--color-warning-400); }
+  .call.warn svg { color: var(--color-warning-600); }
+  .call.risk { background: var(--color-warning-100); border-color: var(--color-warning-800); }
+  .call.risk svg { color: var(--color-warning-800); }
+  .call strong { color: var(--color-text); font-weight: 700; }
+
+  /* Stat tiles */
+  .stiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  .stile {
+    position: relative;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 18px 16px;
+    overflow: hidden;
+  }
+  .stile::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--color-success-600);
+  }
+  .stile .v {
+    font-size: 30px; font-weight: 700; letter-spacing: -0.02em;
+    color: var(--color-pb-800); line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stile .l {
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 600; color: var(--color-text-muted); margin-top: 8px;
+  }
+
+  /* =========================================================
+     DECISION TOOL (Mockup E & F)
+     ========================================================= */
+  .how-card {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px;
+    padding: 18px 20px; margin-bottom: 14px;
+  }
+  .how-card h4 {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--color-text-muted); margin-bottom: 14px; font-weight: 600;
+  }
+  .steps {
+    display: grid; grid-template-columns: 1fr 24px 1fr 24px 1fr;
+    gap: 10px; align-items: stretch;
+  }
+  .step {
+    background: var(--color-neutral-50);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .step .n {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; background: var(--color-pb-800); color: var(--color-text-inverse);
+    border-radius: 5px; font-weight: 700; font-size: 12px;
+    font-family: ui-monospace, monospace;
+    margin-right: 8px; vertical-align: middle;
+  }
+  .step .hd { font-weight: 700; color: var(--color-text); font-size: 13px; margin-bottom: 4px; }
+  .step p { margin: 0; color: var(--color-neutral-700); font-size: 12.5px; }
+  .step .stage {
+    display: inline-block;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 700; color: var(--color-success-700);
+    background: var(--color-success-100);
+    padding: 1px 6px; border-radius: 3px;
+    margin-bottom: 6px;
+  }
+  .steps .ar { display: grid; place-items: center; color: var(--color-neutral-300); font-weight: 700; }
+
+  /* Controls */
+  .ctl-card {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px;
+    padding: 18px 20px; margin-bottom: 14px;
+  }
+  .ctl-grid {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr;
+    gap: 18px 22px;
+    align-items: center;
+  }
+  .ctl-row { display: flex; flex-direction: column; gap: 6px; }
+  .ctl-row .nm {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 600; color: var(--color-text-muted);
+  }
+  .ctl-row .tw { display: flex; align-items: center; gap: 10px; }
+  .trk {
+    flex: 1; height: 4px; background: var(--color-border); border-radius: 4px; position: relative;
+  }
+  .trk > i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--color-success-600); border-radius: 4px; }
+  .trk > .k { position: absolute; top: -5px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--color-surface); border: 2px solid var(--color-success-600); }
+  .ctl-row .v { font-weight: 700; font-size: 14px; min-width: 50px; text-align: right; color: var(--color-text); font-variant-numeric: tabular-nums; }
+
+  .seg { display: inline-flex; border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; }
+  .seg button {
+    border: none; background: var(--color-surface); padding: 8px 14px;
+    font-family: inherit; font-size: 13px; font-weight: 600; color: var(--color-neutral-700);
+    cursor: default;
+  }
+  .seg button.on { background: var(--color-pb-800); color: var(--color-text-inverse); }
+
+  /* Decision KPI row */
+  .dec-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .dec-card {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px;
+    padding: 16px 18px; position: relative; overflow: hidden;
+  }
+  .dec-card .rail {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--color-neutral-300);
+  }
+  .dec-card.spray .rail { background: var(--color-success-600); }
+  .dec-card.skip .rail { background: var(--color-warning-800); }
+  .dec-card.save .rail { background: var(--color-warning-600); }
+  .dec-card .v { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: var(--color-text); font-variant-numeric: tabular-nums; }
+  .dec-card.spray .v { color: var(--color-success-700); }
+  .dec-card.skip .v { color: var(--color-warning-800); }
+  .dec-card.save .v { color: var(--color-warning-600); }
+  .dec-card .l { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--color-text-muted); margin-top: 5px; }
+  .dec-card .s { font-size: 12px; color: var(--color-text-muted); margin-top: 4px; }
+
+  /* Tool tabs at top of the chart mockup */
+  .tool-tabs {
+    display: flex; gap: 6px; padding: 14px 28px 0; background: var(--color-surface);
+  }
+  .tt {
+    border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-neutral-700);
+    font-weight: 600; font-size: 13px; padding: 8px 14px; border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tt.on { background: var(--color-pb-800); color: var(--color-text-inverse); border-color: var(--color-pb-800); }
+  .tt svg { width: 14px; height: 14px; }
+
+  /* Chart */
+  .chart-card {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px;
+    padding: 20px 22px; margin-bottom: 14px;
+  }
+  .chart-card h4 {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 600; color: var(--color-text-muted); margin-bottom: 4px;
+  }
+  .chart-card .cap { font-size: 13px; color: var(--color-neutral-600); margin-bottom: 14px; }
+
+  .legend {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 22px;
+    margin-top: 8px; font-size: 12px; color: var(--color-neutral-700); font-weight: 500;
+  }
+  .legend .i { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .sw { width: 12px; height: 12px; border-radius: 3px; background: var(--color-success-600); }
+  .legend .sw.a { background: var(--color-warning-400); }
+  .legend .sw.r { background: var(--color-warning-800); }
+  .legend .sw.line { width: 14px; height: 2px; border-radius: 0; background: var(--color-brand-600); }
+
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .why-card {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .why-card .t { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--color-text-muted); margin-bottom: 8px; }
+  .why-card .b { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .why-card.g { background: var(--color-success-100); border-color: rgba(22, 163, 74, 0.35); }
+  .why-card.g .t, .why-card.g .b { color: var(--color-success-800); }
+  .why-card.b-theme { background: var(--color-primitive-100); border-color: rgba(37, 99, 235, 0.32); }
+  .why-card.b-theme .t, .why-card.b-theme .b { color: var(--color-brand-700); }
+  .why-card .foot { font-size: 12px; color: var(--color-text-muted); font-style: italic; margin-top: 6px; }
+
+  .footline {
+    margin-top: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 2px;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-neutral-400);
+    font-size: 11px; letter-spacing: 0.08em;
+  }
+  .footline .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: var(--color-text-muted); }
+  .agmri-logo--footer {
+    height: 22px;
+    width: auto;
+    object-fit: contain;
+    opacity: 0.92;
+  }
+</style>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+
+<!-- =================================================================
+     REUSABLE AERIAL SVG TEMPLATES — we inline these as needed
+     (Patterns reused via <use>)
+================================================================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Row-crop corduroy pattern for NDVI/infrared -->
+    <pattern id="p-rows" width="8" height="80" patternUnits="userSpaceOnUse" patternTransform="rotate(15)">
+      <rect width="8" height="80" fill="var(--color-success-600)"/>
+      <rect x="0" width="1" height="80" fill="var(--color-success-800)" opacity="0.6"/>
+      <rect x="4" width="1" height="80" fill="var(--color-success-400)" opacity="0.5"/>
+    </pattern>
+    <pattern id="p-rows-rgb" width="8" height="80" patternUnits="userSpaceOnUse" patternTransform="rotate(-18)">
+      <rect width="8" height="80" fill="var(--color-success-700)"/>
+      <rect x="0" width="1" height="80" fill="var(--color-success-900)" opacity="0.6"/>
+      <rect x="4" width="1" height="80" fill="var(--color-success-500)" opacity="0.5"/>
+    </pattern>
+    <pattern id="p-rows-wide" width="14" height="140" patternUnits="userSpaceOnUse" patternTransform="rotate(22)">
+      <rect width="14" height="140" fill="var(--color-success-600)"/>
+      <rect x="0" width="1.5" height="140" fill="var(--color-success-900)" opacity="0.7"/>
+      <rect x="7" width="1" height="140" fill="var(--color-success-400)" opacity="0.5"/>
+    </pattern>
+    <!-- NDVI gradient -->
+    <linearGradient id="g-ndvi" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="var(--color-success-800)"/>
+      <stop offset="45%" stop-color="var(--color-success-600)"/>
+      <stop offset="80%" stop-color="var(--color-success-300)"/>
+      <stop offset="100%" stop-color="var(--color-success-200)"/>
+    </linearGradient>
+    <!-- Stressed (amber patches) -->
+    <radialGradient id="g-stress" cx="0.65" cy="0.4" r="0.5">
+      <stop offset="0%" stop-color="var(--color-warning-500)" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="var(--color-warning-500)" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Sky/atmosphere for hero -->
+    <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--color-brand-400)"/>
+      <stop offset="100%" stop-color="var(--color-pb-800)"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <!-- Top Brand Bar -->
+  <div class="topbar">
+    <div class="lock">
+      <img
+        class="agmri-logo"
+        src="../assets/agmri-logo.png"
+        width="160"
+        height="40"
+        alt="AGMRI"
+      />
+      <div class="brand-txt">
+        <span class="sub">By Intelinair · Season Planning</span>
+      </div>
+    </div>
+    <div class="right">
+      Anonymized · McLean Co., IL · 2026 season
+      <span class="chip"><span class="dot"></span>Live</span>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       MOCKUP C — Hybrid Cards (with aerial thumbs)
+  ============================================================ -->
+  <p class="mock-lab"><span class="id">C</span><span class="name">Hybrid Cards</span>McLean County Corn Hybrid Placement</p>
+  <div class="mockup">
+    <div class="app">
+      <div class="app-main">
+        <!-- Header: agmri-season-header-bg + overlay gradients -->
+        <div class="page-head">
+          <div class="page-head__canvas">
+            <img
+              class="page-head__photo"
+              src="../assets/agmri-season-header-bg.png"
+              alt=""
+              width="1920"
+              height="640"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+            <div class="overlay"></div>
+            <div class="content">
+            <div>
+              <div class="breadcrumb">Home / Hybrid Planning / McLean County 2026</div>
+              <h1>McLean County Corn Hybrid Placement <span class="dot-tag">AGMRI</span></h1>
+              <div class="meta-row">
+                <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1118 0z"/><circle cx="12" cy="10" r="3"/></svg> McLean Co., IL</span>
+                <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> 2025 Crop Year</span>
+                <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg> 18 fields · 2,227 ac · 9 hybrids</span>
+              </div>
+            </div>
+            <div class="price-mini">
+              <div class="lbl">Corn Price (per bu)</div>
+              <div class="val-row">
+                <div class="v">$4.50</div>
+                <div class="track"><i></i><span class="knob"></span></div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Subtabs -->
+        <div class="subtabs">
+          <div class="t on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Hybrid Cards</div>
+          <div class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg> Seed Economics</div>
+          <div class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg> Field Placement</div>
+          <div class="spacer"></div>
+          <div class="kpi">County avg <b>243.1</b>bu/ac</div>
+        </div>
+
+        <div class="body">
+          <div class="h-title-row">
+            <div class="h-title">Click a hybrid card for detailed soil &amp; drainage performance</div>
+            <div class="h-note">Sorted by predicted yield (bu/ac)</div>
+          </div>
+
+          <div class="hgrid">
+
+            <!-- Card 1 -->
+            <div class="hcard">
+              <div class="aerial-thumb aerial-thumb--panorama aerial-thumb--s1" role="img" aria-label="Field preview, sky and horizon">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s1" aria-hidden="true"></div>
+                <span class="chip ndvi">NDVI · 6 fields</span>
+              </div>
+              <div class="pad">
+                <div class="row-top">
+                  <div>
+                    <h3>6492</h3>
+                    <div class="sub">RM 114 · 330 ac observed</div>
+                  </div>
+                  <div>
+                    <div class="big-num tnum">269.9</div>
+                    <div class="unit">bu/ac predicted</div>
+                  </div>
+                </div>
+              </div>
+              <div class="chips">
+                <span class="chip-sm">Pop 36.0K</span>
+                <span class="chip-sm">Moist 17.7%</span>
+                <span class="chip-sm">SD 22.8</span>
+                <span class="chip-sm">$315/bag</span>
+              </div>
+              <div class="soil-block">
+                <div class="title">Yield by soil tier</div>
+                <div class="soil-line"><span class="lbl">High</span><div class="bar"><i style="width:75%"></i></div><span class="v tnum">269.9</span></div>
+              </div>
+              <div class="foot">
+                <span class="net tnum">$1,081 / ac net</span>
+                <span class="link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="hcard">
+              <div class="aerial-thumb aerial-thumb--panorama aerial-thumb--s2" role="img" aria-label="Field preview, rolling hills">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s2" aria-hidden="true"></div>
+                <span class="chip ndvi">NDVI · 5 fields</span>
+              </div>
+              <div class="pad">
+                <div class="row-top">
+                  <div><h3>DKC 66-06</h3><div class="sub">RM 116 · 487 ac observed</div></div>
+                  <div><div class="big-num tnum">266.2</div><div class="unit">bu/ac predicted</div></div>
+                </div>
+              </div>
+              <div class="chips">
+                <span class="chip-sm">Pop 36.0K</span><span class="chip-sm">Moist 18.3%</span>
+                <span class="chip-sm">SD 32.7</span><span class="chip-sm">$340/bag</span>
+              </div>
+              <div class="soil-block">
+                <div class="title">Yield by soil tier</div>
+                <div class="soil-line"><span class="lbl">High</span><div class="bar"><i style="width:72%"></i></div><span class="v tnum">266.2</span></div>
+              </div>
+              <div class="foot">
+                <span class="net tnum">$1,054 / ac net</span>
+                <span class="link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="hcard">
+              <div class="aerial-thumb aerial-thumb--panorama aerial-thumb--s3" role="img" aria-label="Field preview, row crop texture">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s3" aria-hidden="true"></div>
+                <span class="chip rgb">RGB · 7 fields</span>
+              </div>
+              <div class="pad">
+                <div class="row-top">
+                  <div><h3>DKC 64-22</h3><div class="sub">RM 114 · 503 ac observed</div></div>
+                  <div><div class="big-num tnum">255.4</div><div class="unit">bu/ac predicted</div></div>
+                </div>
+              </div>
+              <div class="chips">
+                <span class="chip-sm">Pop 36.0K</span><span class="chip-sm">Moist 16.9%</span>
+                <span class="chip-sm">SD 37.9</span><span class="chip-sm">$320/bag</span>
+              </div>
+              <div class="soil-block">
+                <div class="title">Yield by soil tier</div>
+                <div class="soil-line"><span class="lbl">High</span><div class="bar"><i style="width:68%"></i></div><span class="v tnum">260.8</span></div>
+                <div class="soil-line med"><span class="lbl">Medium</span><div class="bar"><i style="width:62%"></i></div><span class="v tnum">250.8</span></div>
+              </div>
+              <div class="foot">
+                <span class="net tnum">$1,013 / ac net</span>
+                <span class="link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="hcard">
+              <div class="aerial-thumb aerial-thumb--panorama aerial-thumb--s4" role="img" aria-label="Field preview, horizon and treeline">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s4" aria-hidden="true"></div>
+                <span class="chip ndvi">NDVI · 11 fields</span>
+              </div>
+              <div class="pad">
+                <div class="row-top">
+                  <div><h3>DKC 111-33</h3><div class="sub">RM 111 · 447 ac observed</div></div>
+                  <div><div class="big-num tnum">251.3</div><div class="unit">bu/ac predicted</div></div>
+                </div>
+              </div>
+              <div class="chips">
+                <span class="chip-sm">Pop 36.1K</span><span class="chip-sm">Moist 15.8%</span>
+                <span class="chip-sm">SD 38.3</span><span class="chip-sm">$300/bag</span>
+              </div>
+              <div class="soil-block">
+                <div class="title">Yield by soil tier</div>
+                <div class="soil-line"><span class="lbl">High</span><div class="bar"><i style="width:64%"></i></div><span class="v tnum">256.0</span></div>
+              </div>
+              <div class="foot">
+                <span class="net tnum">$971 / ac net</span>
+                <span class="link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span>
+              </div>
+            </div>
+
+            <!-- Card 5 -->
+            <div class="hcard">
+              <div class="aerial-thumb aerial-thumb--panorama aerial-thumb--s5" role="img" aria-label="Field preview, mid landscape">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s5" aria-hidden="true"></div>
+                <span class="chip ndvi">NDVI · 3 fields</span>
+              </div>
+              <div class="pad">
+                <div class="row-top">
+                  <div><h3>P1742Q</h3><div class="sub">RM 117 · 358 ac observed</div></div>
+                  <div><div class="big-num tnum">241.2</div><div class="unit">bu/ac predicted</div></div>
+                </div>
+              </div>
+              <div class="chips">
+                <span class="chip-sm">Pop 36.1K</span><span class="chip-sm">Moist 17.6%</span>
+                <span class="chip-sm">SD 20.6</span><span class="chip-sm">$280/bag</span>
+              </div>
+              <div class="soil-block">
+                <div class="title">Yield by soil tier</div>
+                <div class="soil-line"><span class="lbl">High</span><div class="bar"><i style="width:60%"></i></div><span class="v tnum">245.2</span></div>
+              </div>
+              <div class="foot">
+                <span class="net tnum">$923 / ac net</span>
+                <span class="link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span>
+              </div>
+            </div>
+
+            <!-- Card 6 -->
+            <div class="hcard">
+              <div class="aerial-thumb aerial-thumb--panorama aerial-thumb--s6" role="img" aria-label="Field preview, warm light on crop rows">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s6" aria-hidden="true"></div>
+                <span class="chip rgb">RGB · 5 fields</span>
+              </div>
+              <div class="pad">
+                <div class="row-top">
+                  <div><h3>6374</h3><div class="sub">RM 113 · 465 ac observed</div></div>
+                  <div><div class="big-num tnum">232.6</div><div class="unit">bu/ac predicted</div></div>
+                </div>
+              </div>
+              <div class="chips">
+                <span class="chip-sm">Pop 35.7K</span><span class="chip-sm">Moist 16.7%</span>
+                <span class="chip-sm">SD 26.1</span><span class="chip-sm">$310/bag</span>
+              </div>
+              <div class="soil-block">
+                <div class="title">Yield by soil tier</div>
+                <div class="soil-line"><span class="lbl">High</span><div class="bar"><i style="width:56%"></i></div><span class="v tnum">234.1</span></div>
+              </div>
+              <div class="foot">
+                <span class="net tnum">$876 / ac net</span>
+                <span class="link">Details <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       MOCKUP D — Field Placement with satellite thumbnails
+  ============================================================ -->
+  <p class="mock-lab"><span class="id">D</span><span class="name">Field Placement</span>Predicted Yield Ranges · Soil-adjusted</p>
+  <div class="mockup">
+    <div class="app">
+      <div class="app-main">
+        <div class="subtabs">
+          <div class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Hybrid Cards</div>
+          <div class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg> Seed Economics</div>
+          <div class="t on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg> Field Placement</div>
+          <div class="spacer"></div>
+          <div class="kpi">County avg <b>243.1</b>bu/ac</div>
+        </div>
+
+        <div class="body">
+          <div style="margin-bottom: 16px;">
+            <div class="h-title" style="font-size: 16px; color: var(--color-text); font-weight: 700;">Hybrid Placement with Predicted Yield Ranges</div>
+            <div class="h-note" style="font-size: 13px; margin-top: 4px;">Yields adjusted for each field's soil productivity and drainage class</div>
+          </div>
+
+          <!-- FIELD D -->
+          <div class="fcard">
+            <div class="fcard-head">
+              <div class="thumb thumb--panorama thumb--s4" role="img" aria-label="Field D preview">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s4" aria-hidden="true"></div>
+                <span class="label">Field D</span>
+              </div>
+              <div class="meta">
+                <h3>Field D <span class="badge high">High Prod</span> <span class="badge neutral">Poorly drained</span></h3>
+                <div class="row2">
+                  <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/></svg> NCCPI 0.82</span>
+                  <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> 160 ac</span>
+                  <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 17.58A5 5 0 0018 8h-1.26A8 8 0 104 16.25"/><path d="M8 16h.01"/></svg> Denitrification risk</span>
+                </div>
+              </div>
+            </div>
+            <table class="ptable">
+              <thead><tr>
+                <th>Hybrid</th><th class="num">Pred Yield</th><th>Range (bu/ac)</th>
+                <th class="num">Acres</th><th class="num">Net $/Ac</th><th>Yield Range</th>
+              </tr></thead>
+              <tbody>
+                <tr class="top-blue">
+                  <td><span class="hyb-name"><span class="h-dot" style="background:var(--color-brand-600)"></span>DKC 66-06 <span class="top-flag blue">TOP</span></span></td>
+                  <td class="num tnum"><strong>281.4</strong></td>
+                  <td class="tnum">255.2 – 301.0</td>
+                  <td class="num tnum">59</td>
+                  <td class="num money tnum">$1,121.80</td>
+                  <td><div class="yrbar"><div class="fill blue" style="left:60%; right:5%"></div><div class="tick blue" style="left:75%"></div></div></td>
+                </tr>
+                <tr>
+                  <td><span class="hyb-name"><span class="h-dot" style="background:var(--color-success-600)"></span>6492</span></td>
+                  <td class="num tnum"><strong>264.4</strong></td>
+                  <td class="tnum">246.2 – 278.1</td>
+                  <td class="num tnum">51</td>
+                  <td class="num money tnum">$1,055.93</td>
+                  <td><div class="yrbar"><div class="fill" style="left:52%; right:14%"></div><div class="tick" style="left:70%"></div></div></td>
+                </tr>
+                <tr>
+                  <td><span class="hyb-name"><span class="h-dot" style="background:var(--color-warning-600)"></span>DKC 64-22</span></td>
+                  <td class="num tnum"><strong>264.0</strong></td>
+                  <td class="tnum">233.7 – 286.7</td>
+                  <td class="num tnum">48</td>
+                  <td class="num money tnum">$1,052.00</td>
+                  <td><div class="yrbar"><div class="fill amber" style="left:40%; right:10%"></div><div class="tick amber" style="left:66%"></div></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- FIELD A -->
+          <div class="fcard">
+            <div class="fcard-head">
+              <div class="thumb thumb--panorama thumb--s2" role="img" aria-label="Field A preview">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s2" aria-hidden="true"></div>
+                <span class="label">Field A</span>
+              </div>
+              <div class="meta">
+                <h3>Field A <span class="badge high">High Prod</span> <span class="badge neutral">Well drained</span></h3>
+                <div class="row2">
+                  <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/></svg> NCCPI 0.92</span>
+                  <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> 145 ac</span>
+                  <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Healthy drainage</span>
+                </div>
+              </div>
+            </div>
+            <table class="ptable">
+              <thead><tr>
+                <th>Hybrid</th><th class="num">Pred Yield</th><th>Range (bu/ac)</th>
+                <th class="num">Acres</th><th class="num">Net $/Ac</th><th>Yield Range</th>
+              </tr></thead>
+              <tbody>
+                <tr class="top">
+                  <td><span class="hyb-name"><span class="h-dot" style="background:var(--color-success-600)"></span>6492 <span class="top-flag">TOP</span></span></td>
+                  <td class="num tnum"><strong>273.8</strong></td>
+                  <td class="tnum">255.6 – 287.5</td>
+                  <td class="num tnum">47</td>
+                  <td class="num money tnum">$1,098.23</td>
+                  <td><div class="yrbar"><div class="fill" style="left:56%; right:8%"></div><div class="tick" style="left:74%"></div></div></td>
+                </tr>
+                <tr>
+                  <td><span class="hyb-name"><span class="h-dot" style="background:var(--color-brand-600)"></span>DKC 66-06</span></td>
+                  <td class="num tnum"><strong>266.7</strong></td>
+                  <td class="tnum">240.5 – 286.3</td>
+                  <td class="num tnum">46</td>
+                  <td class="num money tnum">$1,055.65</td>
+                  <td><div class="yrbar"><div class="fill blue" style="left:46%; right:9%"></div><div class="tick blue" style="left:70%"></div></div></td>
+                </tr>
+                <tr>
+                  <td><span class="hyb-name"><span class="h-dot" style="background:var(--color-warning-600)"></span>DKC 111-33</span></td>
+                  <td class="num tnum"><strong>263.2</strong></td>
+                  <td class="tnum">232.6 – 286.2</td>
+                  <td class="num tnum">52</td>
+                  <td class="num money tnum">$1,056.90</td>
+                  <td><div class="yrbar"><div class="fill amber" style="left:39%; right:10%"></div><div class="tick amber" style="left:67%"></div></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- FIELD F -->
+          <div class="fcard">
+            <div class="fcard-head">
+              <div class="thumb thumb--panorama thumb--s3" role="img" aria-label="Field F preview">
+                <img class="aerial-thumb__photo" src="../assets/intelinair-hero-panorama.png" alt="" width="2400" height="800" />
+                <div class="aerial-thumb__wash aerial-thumb__wash--s3" aria-hidden="true"></div>
+                <span class="label">Field F</span>
+              </div>
+              <div class="meta">
+                <h3>Field F <span class="badge high">High Prod</span> <span class="badge neutral">Moderately well drained</span></h3>
+                <div class="row2">
+                  <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4z"/></svg> NCCPI 0.87</span>
+                  <span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> 135 ac</span>
+                </div>
+              </div>
+            </div>
+            <table class="ptable">
+              <thead><tr>
+                <th>Hybrid</th><th class="num">Pred Yield</th><th>Range (bu/ac)</th>
+                <th class="num">Acres</th><th class="num">Net $/Ac</th><th>Yield Range</th>
+              </tr></thead>
+              <tbody>
+                <tr class="top">
+                  <td><span class="hyb-name"><span class="h-dot" style="background:var(--color-success-600)"></span>6492 <span class="top-flag">TOP</span></span></td>
+                  <td class="num tnum"><strong>270.3</strong></td>
+                  <td class="tnum">251.1 – 285.9</td>
+                  <td class="num tnum">45</td>
+                  <td class="num money tnum">$1,083.64</td>
+                  <td><div class="yrbar"><div class="fill" style="left:52%; right:10%"></div><div class="tick" style="left:72%"></div></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       REPORT — Full-bleed aerial hero (the "Hybrid Management Guide")
+  ============================================================ -->
+  <p class="mock-lab"><span class="id">GUIDE</span><span class="name">Hybrid Management Guide</span>Cover + Section 1 · Planting &amp; Population</p>
+  <div class="mockup">
+    <div class="report-hero">
+      <div class="report-hero__canvas">
+        <img
+          class="report-hero__photo"
+          src="../assets/agmri-season-header-bg.png"
+          alt=""
+          width="1920"
+          height="640"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+        <div class="overlay"></div>
+
+      <div class="stats">
+        <div class="s"><div class="v tnum">2,227 ac</div><div class="l">Total Footprint</div></div>
+        <div class="s"><div class="v tnum">18</div><div class="l">Fields</div></div>
+        <div class="s"><div class="v tnum">9</div><div class="l">Hybrids</div></div>
+      </div>
+
+      <div class="content">
+        <div class="kicker"><span class="agmri-pill">AGMRI</span> Full-Season Report · 2026 Crop Year</div>
+        <h1>McLean County Hybrid Management Guide</h1>
+        <div class="sub">Season-long management recommendations for the top 9 corn hybrids, grounded in AGMRI aerial imagery and field-level yield analytics.</div>
+      </div>
+      </div>
+    </div>
+
+    <div class="report-body">
+      <div class="sec-head">
+        <div class="sec-num">01</div>
+        <div>
+          <div class="sub-title">Agronomy · Planting</div>
+          <h2>Planting &amp; Population</h2>
+        </div>
+      </div>
+
+      <p class="lede">All 9 hybrids in this lineup carry a <strong>&gt;32K planting population recommendation</strong> per the AGMRI Seed Guide. Targets flex by soil productivity tier (NCCPI):</p>
+
+      <table class="dtable">
+        <thead><tr>
+          <th>Soil Tier</th><th>Target Population</th><th>Rationale</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge high">High</span> <strong>NCCPI ≥ 0.80</strong></td>
+            <td class="tnum"><strong>34,000 – 36,000</strong></td>
+            <td>High-productivity ground supports higher populations; flex/semi-flex ears adjust kernel count.</td>
+          </tr>
+          <tr>
+            <td><span class="badge med">Medium</span> <strong>NCCPI 0.60–0.79</strong></td>
+            <td class="tnum"><strong>32,000 – 34,000</strong></td>
+            <td>Standard recommendation; balanced ear fill.</td>
+          </tr>
+          <tr>
+            <td><span class="badge low">Low</span> <strong>NCCPI &lt; 0.60</strong></td>
+            <td class="tnum"><strong>30,000 – 32,000</strong></td>
+            <td>Lower populations reduce plant-to-plant competition on stressed ground.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 00-4 12.7V17a2 2 0 002 2h4a2 2 0 002-2v-2.3A7 7 0 0012 2z"/><path d="M10 22h4"/></svg>
+        <div><strong>Field tip:</strong> 6017V RIB and 6133VDG RIB are <strong>semi-flex ear types</strong> that compensate at lower populations with longer ears and better tip fill — strong fits for variable-stand situations on tougher ground.</div>
+      </div>
+      <div class="call warn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <div><strong>Note:</strong> DKC 66-06 and DKC 64-22 — confirm your DeKalb rep's population guidance, as DeKalb hybrids may have different optimal ranges than this lineup.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SEED TREATMENT — Section 2 (continuation of guide)
+  ============================================================ -->
+  <p class="mock-lab"><span class="id">GUIDE</span><span class="name">Section 2</span>Seed Treatment</p>
+  <div class="mockup">
+    <div class="report-body" style="padding-top: 32px;">
+      <div class="sec-head">
+        <div class="sec-num">02</div>
+        <div>
+          <div class="sub-title">Agronomy · Genetics</div>
+          <h2>Seed Treatment</h2>
+        </div>
+      </div>
+
+      <p class="lede">The 2026 Plant Performance Guide recommends a systems approach starting at the seed:</p>
+
+      <table class="dtable">
+        <thead><tr>
+          <th>Component</th><th>Product</th><th>Rate</th><th>What It Does</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Seed Treatment</strong></td>
+            <td>Silver or Gold Package</td>
+            <td>Standard</td>
+            <td>Base fungicide + insecticide seed treatment.</td>
+          </tr>
+          <tr>
+            <td><strong>Seed-Applied</strong></td>
+            <td>Flotegic&trade; G</td>
+            <td>3 oz/unit</td>
+            <td>Talc/graphite replacement; builds a longer, more developed root system + micronutrient package.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <div><strong>AGMRI data:</strong> Flotegic&trade; G replaces traditional talc &amp; graphite while providing a micronutrient boost at emergence. Across <strong>25 AGMRI trials</strong>, the full High-Yield Corn Program (including Flotegic G) delivered <strong>+7.3 bu/ac</strong> with <strong>$16.53/ac ROI</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       MOCKUP A — Nitrogen Management (Section 4)
+  ============================================================ -->
+  <p class="mock-lab"><span class="id">A</span><span class="name">Section 4</span>Nitrogen Management</p>
+  <div class="mockup">
+    <div class="report-body" style="padding-top: 32px;">
+      <div class="sec-head">
+        <div class="sec-num">04</div>
+        <div>
+          <div class="sub-title">AGMRI + NVision&trade;</div>
+          <h2>Nitrogen Management</h2>
+        </div>
+      </div>
+
+      <p class="lede">AGMRI data strongly supports managing nitrogen <strong>as a system</strong>, not a single application. Three strategies, eight+ years of field trials:</p>
+
+      <table class="dtable">
+        <thead><tr>
+          <th>Strategy</th>
+          <th class="numr">Trials</th>
+          <th class="numr">Yield Adv.</th>
+          <th class="numr">ROI / Ac</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>N as a System</strong><div style="font-size:12px; color:var(--color-text-muted); margin-top:2px;">inhibitors + split + biologicals</div></td>
+            <td class="numr tnum">263 trials · 9 yr</td>
+            <td class="numr pos tnum">+8.8 bu/ac</td>
+            <td class="numr"><strong>Consistent</strong></td>
+          </tr>
+          <tr>
+            <td><strong>2-Pass vs 1-Pass</strong></td>
+            <td class="numr tnum">124 trials</td>
+            <td class="numr pos tnum">+6.8 bu/ac</td>
+            <td class="numr pos tnum">$14.74</td>
+          </tr>
+          <tr>
+            <td><strong>Biological N</strong><div style="font-size:12px; color:var(--color-text-muted); margin-top:2px;">Eastern IL only</div></td>
+            <td class="numr tnum">21 trials</td>
+            <td class="numr pos tnum">+2.2 bu/ac</td>
+            <td class="numr"><strong>Supplemental</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call risk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <div><strong>Poorly drained fields (E, I, Q)</strong> are highest risk for nitrogen loss via denitrification. A 2-pass system is especially valuable here — AGMRI data shows the response is <strong>more notable in wet years when increased denitrification and leaching occur.</strong></div>
+      </div>
+      <div class="call">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <div><strong>Biological N</strong> (Envita / N-Physis at 3.2 oz/A, in-furrow or foliar V2–V4) can supplement a traditional program, but the Eastern IL response averages just <strong>+2.2 bu</strong> — treat it as insurance, not a primary N source.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       MOCKUP B — Fungicide (Section 5)
+  ============================================================ -->
+  <p class="mock-lab"><span class="id">B</span><span class="name">Section 5</span>Fungicide — The Cornerstone Decision</p>
+  <div class="mockup">
+    <div class="report-body" style="padding-top: 32px;">
+      <div class="sec-head">
+        <div class="sec-num">05</div>
+        <div>
+          <div class="sub-title">Disease Stress · AGMRI Insights</div>
+          <h2>Fungicide — The Cornerstone Decision</h2>
+        </div>
+      </div>
+
+      <p class="lede">This is where the <strong>most consistent ROI opportunity</strong> lives for every one of these 9 hybrids:</p>
+
+      <div class="stiles">
+        <div class="stile"><div class="v tnum">512</div><div class="l">AGMRI Trials</div></div>
+        <div class="stile"><div class="v tnum">+10.1</div><div class="l">bu/ac Avg Response</div></div>
+        <div class="stile"><div class="v tnum">$16.74</div><div class="l">ROI per Acre</div></div>
+        <div class="stile"><div class="v">VT/R1</div><div class="l">Timing Window</div></div>
+      </div>
+
+      <div class="call tip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        <div><strong>AGMRI conclusion:</strong> "Due to the consistent year-over-year positive response, additional testing of fungicide is no longer warranted. <strong>The data supports fungicide use as a grower's standard program.</strong>"</div>
+      </div>
+
+      <h3 style="margin: 22px 0 6px; font-size: 16px;">Fungicide Risk Decision Aid — Score Each Field</h3>
+      <p class="lede" style="margin-bottom: 12px;">Apply where total is <strong>≥ 13 points</strong>:</p>
+
+      <table class="dtable">
+        <thead><tr>
+          <th>Risk Factor</th><th class="numr">Points</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>History of disease in field (GLS, NCLB, Tar Spot)</td><td class="numr"><strong>4</strong></td></tr>
+          <tr><td>Susceptible hybrid</td><td class="numr"><strong>2</strong></td></tr>
+          <tr><td>Continuous corn or heavy corn residue</td><td class="numr"><strong>4</strong></td></tr>
+          <tr><td>Minimum / conservation tillage</td><td class="numr"><strong>2</strong></td></tr>
+          <tr><td>Moderate temps + wet, humid weather</td><td class="numr"><strong>3</strong></td></tr>
+          <tr><td>Yield potential &gt; 180 bu/ac</td><td class="numr"><strong>2</strong></td></tr>
+          <tr><td>Grain destined for premium market</td><td class="numr"><strong>4</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       MOCKUP E — In-Season Decision Tool
+  ============================================================ -->
+  <p class="mock-lab"><span class="id">E</span><span class="name">Decision Tool</span>In-Season Nitrogen &amp; Fungicide</p>
+  <div class="mockup">
+    <div class="app">
+      <div class="app-main">
+        <div class="page-head">
+          <div class="page-head__canvas">
+            <img
+              class="page-head__photo"
+              src="../assets/agmri-season-header-bg.png"
+              alt=""
+              width="1920"
+              height="640"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+            <div class="overlay"></div>
+            <div class="content">
+            <div>
+              <div class="breadcrumb">Tools / In-Season Decision Tool</div>
+              <h1>In-Season Nitrogen &amp; Fungicide Decision Tool <span class="dot-tag">AGMRI</span></h1>
+              <div class="meta-row">
+                <span class="i">Field-level decisions: does this field have too much deficiency to make fungicide pay?</span>
+              </div>
+              <div style="display:flex; gap: 8px; margin-top: 12px;">
+                <span class="badge high" style="background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.35); color: var(--color-success-400);">AGMRI Data</span>
+                <span class="badge" style="background: rgba(37, 99, 235, 0.22); border: 1px solid rgba(37, 99, 235, 0.35); color: var(--color-brand-400);">Satellite Imagery</span>
+                <span class="badge" style="background: rgba(251, 191, 36, 0.22); border: 1px solid rgba(251, 191, 36, 0.4); color: var(--color-warning-500);">ROI Calculator</span>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div class="body">
+          <!-- How it works -->
+          <div class="how-card">
+            <h4>How This Tool Works</h4>
+            <div class="steps">
+              <div class="step">
+                <div class="stage">V6 Stage</div>
+                <div class="hd"><span class="n">1</span>Check Imagery</div>
+                <p>What % of this field's zones show nutrient deficiency in AGMRI's latest NDVI pass?</p>
+              </div>
+              <div class="ar">→</div>
+              <div class="step">
+                <div class="stage">V6 Decision</div>
+                <div class="hd"><span class="n">2</span>Nitrogen Decision</div>
+                <p>If deficient: does a rescue-N application pencil out? If not, the field is healthy — move on.</p>
+              </div>
+              <div class="ar">→</div>
+              <div class="step">
+                <div class="stage">VT Decision</div>
+                <div class="hd"><span class="n">3</span>Fungicide Decision</div>
+                <p>Is yield potential still intact? Yes → <strong>SPRAY</strong>. Deficiency capped the ceiling → <strong>SKIP</strong>.</p>
+              </div>
+            </div>
+            <div class="call risk" style="margin-top: 16px; margin-bottom: 0;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              <div><strong>Core insight:</strong> fungicide protects yield potential — but if nutrient deficiency has already destroyed that potential, you're spraying money on a field that can't pay it back.</div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="ctl-card">
+            <div class="ctl-grid">
+              <div class="ctl-row">
+                <span class="nm">Crop</span>
+                <div class="seg">
+                  <button class="on">Corn</button>
+                  <button>Soybeans</button>
+                </div>
+              </div>
+              <div class="ctl-row">
+                <span class="nm">Corn Price</span>
+                <div class="tw"><div class="trk"><i style="width:50%"></i><span class="k" style="left:calc(50% - 7px)"></span></div><span class="v">$4.50</span></div>
+              </div>
+              <div class="ctl-row">
+                <span class="nm">Fungicide $/Ac</span>
+                <div class="tw"><div class="trk"><i style="width:56%"></i><span class="k" style="left:calc(56% - 7px)"></span></div><span class="v">$28</span></div>
+              </div>
+              <div class="ctl-row">
+                <span class="nm">Skip Threshold</span>
+                <div class="tw"><div class="trk"><i style="width:30%"></i><span class="k" style="left:calc(30% - 7px)"></span></div><span class="v">30%</span></div>
+              </div>
+              <div class="ctl-row" style="grid-column: 1 / 3;">
+                <span class="nm">Rescue N $/Ac</span>
+                <div class="tw"><div class="trk"><i style="width:44%"></i><span class="k" style="left:calc(44% - 7px)"></span></div><span class="v">$55</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Decision KPIs -->
+          <div class="dec-row">
+            <div class="dec-card">
+              <div class="rail"></div>
+              <div class="v tnum">8</div>
+              <div class="l">Total Fields</div>
+              <div class="s">1,114 acres under review</div>
+            </div>
+            <div class="dec-card spray">
+              <div class="rail"></div>
+              <div class="v tnum">4 fields</div>
+              <div class="l">Spray Fungicide</div>
+              <div class="s">671 ac · yield intact</div>
+            </div>
+            <div class="dec-card skip">
+              <div class="rail"></div>
+              <div class="v tnum">4 fields</div>
+              <div class="l">Skip Fungicide</div>
+              <div class="s">443 ac · ceiling capped</div>
+            </div>
+            <div class="dec-card save">
+              <div class="rail"></div>
+              <div class="v tnum">$12,404</div>
+              <div class="l">Fungicide Savings</div>
+              <div class="s">by skipping deficient fields</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       MOCKUP F — Why It Works (chart)
+  ============================================================ -->
+  <p class="mock-lab"><span class="id">F</span><span class="name">Why It Works</span>Yield Response by Deficiency Level</p>
+  <div class="mockup">
+    <div class="app">
+      <div class="app-main">
+        <div class="tool-tabs">
+          <button class="tt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg> Field Decisions</button>
+          <button class="tt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg> Field Deep-Dive</button>
+          <button class="tt on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-7"/></svg> Why It Works</button>
+        </div>
+
+        <div class="body" style="padding-top: 14px;">
+          <div class="chart-card">
+            <h4>Yield Response by Deficiency Level</h4>
+            <div class="cap">As nutrient deficiency increases, yield declines — and the window for fungicide to pay shrinks.</div>
+            <svg viewBox="0 0 900 340" width="100%" style="display:block;">
+              <!-- gridlines -->
+              <g stroke="var(--color-neutral-100)" stroke-width="1">
+                <line x1="52" y1="40" x2="848" y2="40"/>
+                <line x1="52" y1="100" x2="848" y2="100"/>
+                <line x1="52" y1="160" x2="848" y2="160"/>
+                <line x1="52" y1="220" x2="848" y2="220"/>
+                <line x1="52" y1="280" x2="848" y2="280"/>
+              </g>
+              <!-- y labels -->
+              <g font-family="var(--font-family)" font-size="11" fill="var(--color-text-muted)" font-weight="500">
+                <text x="44" y="44" text-anchor="end">240</text>
+                <text x="44" y="104" text-anchor="end">180</text>
+                <text x="44" y="164" text-anchor="end">120</text>
+                <text x="44" y="224" text-anchor="end">60</text>
+                <text x="44" y="284" text-anchor="end">0</text>
+                <text x="856" y="44" text-anchor="start">18</text>
+                <text x="856" y="104" text-anchor="start">12</text>
+                <text x="856" y="164" text-anchor="start">6</text>
+                <text x="856" y="224" text-anchor="start">0</text>
+                <text x="856" y="284" text-anchor="start">-6</text>
+              </g>
+              <!-- axis titles -->
+              <text x="18" y="160" transform="rotate(-90,18,160)" text-anchor="middle" font-family="var(--font-family)" font-size="11" fill="var(--color-text-muted)" font-weight="600">bu / ac</text>
+              <text x="884" y="160" transform="rotate(90,884,160)" text-anchor="middle" font-family="var(--font-family)" font-size="11" fill="var(--color-text-muted)" font-weight="600">$ / ac ROI</text>
+
+              <!-- zero ROI dashed line -->
+              <line x1="52" y1="220" x2="848" y2="220" stroke="var(--color-neutral-300)" stroke-dasharray="4 4" stroke-width="1"/>
+
+              <!-- bars: 8 fields -->
+              <g>
+                <rect x="72"  y="52"  width="76" height="228" rx="3" fill="var(--color-success-500)"/>
+                <rect x="172" y="64"  width="76" height="216" rx="3" fill="var(--color-success-500)"/>
+                <rect x="272" y="76"  width="76" height="204" rx="3" fill="var(--color-success-500)"/>
+                <rect x="372" y="88"  width="76" height="192" rx="3" fill="var(--color-success-500)"/>
+                <rect x="472" y="112" width="76" height="168" rx="3" fill="var(--color-warning-400)"/>
+                <rect x="572" y="130" width="76" height="150" rx="3" fill="var(--color-warning-400)"/>
+                <rect x="672" y="150" width="76" height="130" rx="3" fill="var(--color-warning-800)"/>
+                <rect x="772" y="168" width="76" height="112" rx="3" fill="var(--color-warning-800)"/>
+              </g>
+
+              <!-- ROI line (blue) -->
+              <polyline fill="none" stroke="var(--color-brand-600)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                points="110,50 210,74 310,92 410,112 510,150 610,172 710,220 810,248"/>
+              <g fill="var(--color-brand-600)">
+                <circle cx="110" cy="50" r="5" stroke="var(--color-surface)" stroke-width="2"/>
+                <circle cx="210" cy="74" r="5" stroke="var(--color-surface)" stroke-width="2"/>
+                <circle cx="310" cy="92" r="5" stroke="var(--color-surface)" stroke-width="2"/>
+                <circle cx="410" cy="112" r="5" stroke="var(--color-surface)" stroke-width="2"/>
+                <circle cx="510" cy="150" r="5" stroke="var(--color-surface)" stroke-width="2"/>
+                <circle cx="610" cy="172" r="5" stroke="var(--color-surface)" stroke-width="2"/>
+                <circle cx="710" cy="220" r="5" stroke="var(--color-surface)" stroke-width="2"/>
+                <circle cx="810" cy="248" r="5" stroke="var(--color-surface)" stroke-width="2"/>
+              </g>
+
+              <!-- x labels -->
+              <g font-family="var(--font-family)" font-size="11" fill="var(--color-neutral-700)" text-anchor="middle" font-weight="600">
+                <text x="110" y="304">Field A</text>
+                <text x="210" y="304">Field B</text>
+                <text x="310" y="304">Field C</text>
+                <text x="410" y="304">Field D</text>
+                <text x="510" y="304">Field E</text>
+                <text x="610" y="304">Field F</text>
+                <text x="710" y="304">Field G</text>
+                <text x="810" y="304">Field H</text>
+              </g>
+            </svg>
+
+            <div class="legend">
+              <span class="i"><span class="sw"></span>Healthy yield</span>
+              <span class="i"><span class="sw a"></span>At-risk yield</span>
+              <span class="i"><span class="sw r"></span>Capped yield</span>
+              <span class="i"><span class="sw line"></span>Fungicide ROI line</span>
+            </div>
+          </div>
+
+          <div class="chart-card" style="margin-bottom: 0;">
+            <h4>The AGMRI Foundation</h4>
+            <div class="cap" style="margin-bottom: 16px;">Where the guidance comes from — and where it stops working.</div>
+            <div class="why-grid">
+              <div class="why-card g">
+                <div class="t">Corn Fungicide · 512 trials · 8 years</div>
+                <div class="b tnum">+10.1 bu/ac avg</div>
+                <div style="font-size: 13px; color: var(--color-success-800);">$16.74/ac ROI at $4.50 corn &amp; $28 fungicide</div>
+                <div class="foot">"The data supports fungicide as a standard program."</div>
+              </div>
+              <div class="why-card b-theme">
+                <div class="t">But only when yield potential exists</div>
+                <div class="b">The ceiling matters.</div>
+                <div style="font-size: 13px; color: var(--color-brand-700);">A field yielding 140 bu instead of 230 bu has lost <strong>39%</strong> of its potential to deficiency.</div>
+                <div class="foot">Fungicide can't recover what N stress already took.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="footline">
+    <span class="brand">
+      <img class="agmri-logo agmri-logo--footer" src="../assets/agmri-logo.png" width="120" height="22" alt="" />
+      <span>by Intelinair · Indianapolis, IN</span>
+    </span>
+    <span>© 2026 · Anonymized internal preview</span>
+  </div>
+
+</div>
+
+</body>
+</html>

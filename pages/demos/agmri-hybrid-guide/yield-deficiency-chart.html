@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yield response — AgMRI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="agmri-hybrid-guide.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="agh">
+  <header class="agh-hero">
+    <h1 class="agh-hero__title"><span class="agh-hero__icon" aria-hidden="true">🌽</span>In-season decisions</h1>
+    <p class="agh-hero__subtitle">Deficiency, yield ceiling, and fungicide ROI</p>
+  </header>
+
+  <div class="agh-toolbar">
+    <div class="agh-pill-tabs" role="tablist">
+      <button type="button" class="agh-pill-tabs__btn" role="tab" aria-selected="false"><span class="material-symbols-outlined">edit_note</span> Field decisions</button>
+      <button type="button" class="agh-pill-tabs__btn" role="tab" aria-selected="false"><span class="material-symbols-outlined">search</span> Field deep-dive</button>
+      <button type="button" class="agh-pill-tabs__btn agh-pill-tabs__btn--active" role="tab" aria-selected="true"><span class="material-symbols-outlined">monitoring</span> Why it works</button>
+    </div>
+  </div>
+
+  <main class="agh-main">
+    <a class="agh-back" href="index.html">← All demos</a>
+
+    <section class="agh-card">
+      <h2 class="agh-card__title">Yield response by deficiency level</h2>
+      <p class="agh-card__subtitle">As nutrient deficiency increases, yield declines — and the window for fungicide to pay shrinks.</p>
+      <div class="agh-chart-wrap">
+        <canvas id="yieldRoiChart" aria-label="Bar chart of yield by field with fungicide ROI line"></canvas>
+      </div>
+    </section>
+
+    <section class="agh-card">
+      <h2 class="agh-card__title">The MiField® foundation</h2>
+      <p class="agh-card__subtitle">Evidence behind the chart above.</p>
+      <div class="agh-split">
+        <div class="agh-mini-panel agh-mini-panel--green">
+          <p class="agh-mini-panel__h">Corn fungicide: 512 trials, 8 years</p>
+          <p class="agh-mini-panel__big" style="color: var(--color-success-800);">+10.1 bu/ac avg</p>
+          <p style="margin: 0 0 8px; font-weight: 600;">$16.74/ac ROI at $4.50 corn &amp; $28 fungicide</p>
+          <p style="margin: 0;"><em>“The data supports fungicide as standard program”</em></p>
+        </div>
+        <div class="agh-mini-panel agh-mini-panel--blue">
+          <p class="agh-mini-panel__h">But only when yield potential exists</p>
+          <p class="agh-mini-panel__big" style="color: #1e40af;">The ceiling matters</p>
+          <p style="margin: 0 0 8px;">A field yielding 140 bu instead of 230 bu has lost 39% of its potential to deficiency.</p>
+          <p style="margin: 0;"><em>Fungicide can’t recover what N stress already took</em></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const green = '#22c55e';
+      const orange = '#f59e0b';
+      const red = '#ef4444';
+      const barColors = [green, green, green, green, orange, orange, red, red];
+      const yields = [228, 222, 215, 208, 188, 172, 158, 142];
+      const roi = [18, 15.5, 13, 10, 6, 2.5, -1.5, -4];
+
+      const ctx = document.getElementById('yieldRoiChart');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Field A', 'Field B', 'Field C', 'Field D', 'Field E', 'Field F', 'Field G', 'Field H'],
+          datasets: [
+            {
+              label: 'Yield (bu/ac)',
+              data: yields,
+              backgroundColor: barColors,
+              borderRadius: 6,
+              yAxisID: 'y',
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'Fungicide ROI ($/ac)',
+              data: roi,
+              borderColor: '#2563eb',
+              backgroundColor: '#2563eb',
+              pointRadius: 5,
+              pointBackgroundColor: '#2563eb',
+              borderWidth: 2,
+              yAxisID: 'y1',
+              order: 1,
+              tension: 0.15
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { font: { family: 'Figtree, system-ui, sans-serif', size: 12 }, boxWidth: 12 }
+            },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  const v = ctx.parsed.y;
+                  if (ctx.datasetIndex === 0) return 'Yield: ' + v + ' bu/ac';
+                  return 'ROI: $' + v + '/ac';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { family: 'Figtree, system-ui, sans-serif', size: 11 } }
+            },
+            y: {
+              position: 'left',
+              min: 0,
+              max: 240,
+              title: { display: true, text: 'bu/ac' },
+              ticks: { stepSize: 60 },
+              grid: { color: 'rgba(0,0,0,0.06)' }
+            },
+            y1: {
+              position: 'right',
+              min: -6,
+              max: 18,
+              title: { display: true, text: '$/ac ROI' },
+              grid: { drawOnChartArea: false },
+              ticks: { stepSize: 6 }
+            }
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

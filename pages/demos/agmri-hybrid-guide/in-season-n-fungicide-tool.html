@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>In-season N &amp; fungicide — AgMRI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="agmri-hybrid-guide.css" />
+</head>
+<body class="agh">
+  <header class="agh-hero">
+    <h1 class="agh-hero__title"><span class="agh-hero__icon" aria-hidden="true">🌽</span>In-season nitrogen &amp; fungicide decision tool</h1>
+    <p class="agh-hero__subtitle">Field-level decisions: Does this field have too much deficiency to make fungicide pay?</p>
+    <div class="agh-pill-tabs" role="tablist" style="margin-top: var(--spacing-l);">
+      <button type="button" class="agh-pill-tabs__btn" aria-selected="false"><span class="material-symbols-outlined">bar_chart</span> MiField® data</button>
+      <button type="button" class="agh-pill-tabs__btn" aria-selected="false"><span class="material-symbols-outlined">satellite_alt</span> Satellite imagery</button>
+      <button type="button" class="agh-pill-tabs__btn agh-pill-tabs__btn--active" aria-selected="true"><span class="material-symbols-outlined">savings</span> ROI calculator</button>
+    </div>
+  </header>
+
+  <main class="agh-main">
+    <a class="agh-back" href="index.html">← All demos</a>
+
+    <section class="agh-card" style="background: var(--color-neutral-100); border-color: var(--color-border);">
+      <h2 class="agh-card__title">How this tool works</h2>
+      <div class="agh-flow">
+        <div class="agh-flow-step">
+          <div class="agh-flow-step__n">1</div>
+          <strong>V6 — Check imagery</strong>
+          <p style="margin: 8px 0 0; color: var(--color-text-muted);">What % of this field’s zones show nutrient deficiency?</p>
+        </div>
+        <div class="agh-flow-step">
+          <div class="agh-flow-step__n">2</div>
+          <strong>V6 — Nitrogen decision</strong>
+          <p style="margin: 8px 0 0; color: var(--color-text-muted);">If deficient: does rescue N pencil? If not: field is healthy, move on.</p>
+        </div>
+        <div class="agh-flow-step">
+          <div class="agh-flow-step__n">3</div>
+          <strong>VT — Fungicide decision</strong>
+          <p style="margin: 8px 0 0; color: var(--color-text-muted);">Is yield potential still intact? If yes → spray. If deficiency capped the ceiling → skip.</p>
+        </div>
+      </div>
+      <div class="agh-callout agh-callout--danger" style="margin-top: var(--spacing-l); margin-bottom: 0;">
+        <span class="agh-callout__icon" aria-hidden="true">⚠️</span>
+        <div><strong>Core insight:</strong> Fungicide protects yield potential — but if nutrient deficiency has already destroyed that potential, you’re spraying money on a field that can’t pay it back.</div>
+      </div>
+    </section>
+
+    <section class="agh-card">
+      <div class="agh-seg" role="tablist">
+        <button type="button" class="agh-seg__btn" aria-selected="true">🌽 Corn</button>
+        <button type="button" class="agh-seg__btn" aria-selected="false">🫘 Soybeans</button>
+      </div>
+
+      <div class="agh-slider-grid">
+        <div class="agh-slider-row">
+          <label for="s1">Corn price <span id="v1">$4.50</span></label>
+          <input type="range" id="s1" min="3" max="7" step="0.05" value="4.5" />
+        </div>
+        <div class="agh-slider-row">
+          <label for="s2">Fungicide $/ac <span id="v2">$28</span></label>
+          <input type="range" id="s2" min="10" max="45" step="1" value="28" />
+        </div>
+        <div class="agh-slider-row">
+          <label for="s3">Rescue N $/ac <span id="v3">$55</span></label>
+          <input type="range" id="s3" min="20" max="120" step="1" value="55" />
+        </div>
+        <div class="agh-slider-row">
+          <label for="s4">Skip threshold <span id="v4">30%</span></label>
+          <input type="range" id="s4" min="5" max="60" step="1" value="30" />
+        </div>
+      </div>
+    </section>
+
+    <section class="agh-result-grid" aria-label="Summary results">
+      <div class="agh-result-tile">
+        <div class="agh-result-tile__val">8</div>
+        <div class="agh-result-tile__sub">Total fields · 1,114 acres</div>
+      </div>
+      <div class="agh-result-tile agh-result-tile--green">
+        <div class="agh-result-tile__val">4</div>
+        <div class="agh-result-tile__sub">Fields spray fungicide · 671 ac</div>
+      </div>
+      <div class="agh-result-tile agh-result-tile--red">
+        <div class="agh-result-tile__val">4</div>
+        <div class="agh-result-tile__sub">Fields skip fungicide · 443 ac</div>
+      </div>
+      <div class="agh-result-tile agh-result-tile--gold">
+        <div class="agh-result-tile__val">$12,404</div>
+        <div class="agh-result-tile__sub">Fungicide savings by skipping deficient fields</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      function bind(id, fmt) {
+        var el = document.getElementById(id);
+        var out = document.getElementById('v' + id.slice(1));
+        if (!el || !out) return;
+        function sync() { out.textContent = fmt(el); }
+        el.addEventListener('input', sync);
+        sync();
+      }
+      bind('s1', function (el) { return '$' + Number(el.value).toFixed(2); });
+      bind('s2', function (el) { return '$' + el.value; });
+      bind('s3', function (el) { return '$' + el.value; });
+      bind('s4', function (el) { return el.value + '%'; });
+    })();
+  </script>
+</body>
+</html>

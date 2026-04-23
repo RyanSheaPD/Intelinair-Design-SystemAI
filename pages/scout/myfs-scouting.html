@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-pb">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MyFS — All Scouting Reports</title>
+  <title>MyFS — My fields</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../design-tokens/tokens.css" />
   <link rel="stylesheet" href="../../components/typography.css" />
   <link rel="stylesheet" href="../../components/header.css" />
@@ -15,9 +16,23 @@
   <link rel="stylesheet" href="../../components/filter-pill.css" />
   <link rel="stylesheet" href="../../components/counter-badge.css" />
   <link rel="stylesheet" href="../../components/tabs.css" />
+  <link rel="stylesheet" href="../../components/view-switcher.css" />
+  <script src="../../data/mitrials-protocol-presets.js"></script>
   <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     /* ── Page shell ── */
     html, body { height: 100%; }
@@ -48,13 +63,31 @@
       overflow: hidden;
     }
 
-    /* ── Sidebar nav ── */
+    /* ── Sidebar nav (scroll when items exceed viewport) ── */
     .app-nav {
       flex-shrink: 0;
-      height: 100vh;
+      align-self: stretch;
+      height: 100%;
+      max-height: 100vh;
+      max-height: 100dvh;
+      min-height: 0;
       position: sticky;
       top: 0;
       z-index: 10;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .app-nav .nav {
+      flex: 1 1 auto;
+      min-height: 0;
+      height: auto;
+      max-height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
 
     /* ── Main area: header + content ── */
@@ -96,6 +129,16 @@
       gap: 8px;
     }
 
+    .scout-filter-parity-note {
+      margin: 0;
+      padding: 4px 24px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--color-neutral-500);
+      background: #fff;
+    }
+
     .action-btn {
       display: inline-flex;
       align-items: center;
@@ -125,6 +168,20 @@
 
     .action-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
     .action-btn__star { color: var(--color-warning-500); }
+
+    .page-actions .view-switcher {
+      z-index: 70;
+    }
+
+    .page-actions .view-switcher__menu {
+      z-index: 220;
+    }
+
+    .view-switcher__map-icon .material-symbols-outlined {
+      font-size: 18px;
+      line-height: 1;
+      color: inherit;
+    }
 
     .action-sep { width: 1px; height: 20px; background: var(--color-neutral-200); }
 
@@ -270,23 +327,666 @@
       color: var(--color-neutral-600);
     }
 
-    .filter-sep { width: 1px; height: 20px; background: var(--color-neutral-200); margin: 0 4px; }
-
-    .tags-trigger {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-family: var(--font-family);
+    .status-pill--adhoc {
       color: var(--color-text-muted);
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px 6px;
     }
 
-    .tags-trigger svg { width: 14px; height: 14px; }
+    .status-pill--adhoc.status-pill--active-purple {
+      background: #f5f3ff;
+      border-color: #c4b5fd;
+      color: #5b21b6;
+    }
+
+    .status-pill--adhoc.status-pill--active-purple .status-pill__count {
+      background: #7c3aed;
+      color: #fff;
+    }
+
+    .status-pill--excluded.status-pill--active-red {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+
+    .status-pill--excluded.status-pill--active-red .status-pill__count {
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .summary-stats {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      padding: 12px 24px 14px;
+      background: var(--color-neutral-50);
+      border-top: 2px solid var(--color-primitive-400);
+      border-bottom: 1px solid var(--color-neutral-200);
+      font-family: var(--font-family);
+    }
+
+    .summary-stats__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 28px;
+    }
+
+    .summary-stats__ratio {
+      font-size: 20pt;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+
+    .summary-stats__value {
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .summary-stats__ratio-rest {
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .summary-stats__label {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .summary-stats__sep {
+      align-self: center;
+      width: 1px;
+      height: 44px;
+      background: var(--color-neutral-200);
+      flex-shrink: 0;
+    }
+
+    .filter-sep { width: 1px; height: 20px; background: var(--color-neutral-200); margin: 0 4px; }
+
+    .scout-filter-tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+      width: 100%;
+    }
+
+    .scout-filter-tags__group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 200px;
+      min-width: 0;
+    }
+
+    .scout-filter-tags__label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-neutral-500);
+      white-space: nowrap;
+    }
+
+    .scout-filter-select-all {
+      flex-shrink: 0;
+      padding: 4px 2px;
+      border: none;
+      background: none;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-pb-500);
+      cursor: pointer;
+    }
+
+    .scout-filter-select-all:hover {
+      text-decoration: underline;
+      color: var(--color-pb-600);
+    }
+
+    .scout-filter-tags__sep {
+      width: 1px;
+      height: 22px;
+      background: var(--color-neutral-200);
+      flex-shrink: 0;
+    }
+
+    .tags-dropdown-wrap {
+      flex: 1;
+      min-width: 0;
+      max-width: min(100%, 360px);
+      position: relative;
+    }
+
+    .tags-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      min-height: 36px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-family: var(--font-family);
+      font-weight: 500;
+      color: var(--color-text);
+      background: #fff;
+      border: 1px solid var(--color-neutral-200);
+      border-radius: 999px;
+      cursor: pointer;
+      text-align: left;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+    }
+
+    .tags-trigger:hover {
+      border-color: var(--color-neutral-300);
+      background: var(--color-neutral-50);
+    }
+
+    .tags-trigger__main {
+      display: flex;
+      align-items: baseline;
+      min-width: 0;
+      flex: 1;
+      gap: 0.2em;
+    }
+
+    .tags-trigger__label {
+      flex-shrink: 0;
+      color: var(--color-text);
+      font-weight: 500;
+    }
+
+    .tags-trigger__values {
+      min-width: 0;
+      color: var(--color-myfs-500);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+    }
+
+    .tags-trigger__values:empty {
+      display: none;
+    }
+
+    #tags-trigger-values-protocol:empty,
+    #tags-trigger-values-product:empty {
+      display: inline;
+    }
+
+    #tags-trigger-values-protocol:empty::before,
+    #tags-trigger-values-product:empty::before {
+      content: attr(data-placeholder);
+      color: var(--color-neutral-400);
+      font-weight: 400;
+    }
+
+    .tags-trigger__chevron {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      color: var(--color-text);
+      opacity: 0.85;
+    }
     .clear-all { font-size: 12px; color: var(--color-myfs-500); font-family: var(--font-family); background: none; border: none; cursor: pointer; font-weight: 500; }
+
+    /* Advanced filters: trigger only; drawer is fixed (see .scout-adv-filters-drawer) */
+    .scout-adv-filters {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .scout-adv-filters-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1040;
+      background: rgba(15, 23, 42, 0.38);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .scout-adv-filters-backdrop[hidden] {
+      display: none !important;
+    }
+
+    .scout-adv-filters-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 1050;
+      display: flex;
+      flex-direction: column;
+      width: min(420px, 100vw);
+      height: 100%;
+      max-height: 100dvh;
+      background: var(--color-neutral-0);
+      border-radius: 16px 0 0 16px;
+      box-shadow: -8px 0 40px rgba(15, 23, 42, 0.18);
+      font-family: var(--font-family);
+    }
+
+    .scout-adv-filters-drawer[hidden] {
+      display: none !important;
+    }
+
+    .scout-adv-filters-drawer__header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--color-neutral-200);
+    }
+
+    .scout-adv-filters-drawer__title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .scout-adv-filters-drawer__icon {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      color: var(--color-pb-500);
+    }
+
+    .scout-adv-filters-drawer__title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .scout-adv-filters-drawer__close {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      margin: -8px -8px -8px 0;
+      padding: 0;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--color-neutral-600);
+      cursor: pointer;
+    }
+
+    .scout-adv-filters-drawer__close:hover {
+      background: var(--color-neutral-100);
+      color: var(--color-pb-500);
+    }
+
+    .scout-adv-filters-drawer__body {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 16px 20px 24px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .scout-adv-filters__section {
+      margin-bottom: 20px;
+    }
+
+    .scout-adv-filters__section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-neutral-500);
+      margin: 0 0 10px;
+    }
+
+    .scout-adv-filters-drawer .status-bar {
+      padding: 0;
+      border-bottom: none;
+      background: transparent;
+      flex-wrap: wrap;
+    }
+
+    .scout-adv-filters__block {
+      margin-bottom: 20px;
+    }
+
+    .scout-adv-filters__block-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .scout-adv-filters__label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-neutral-600);
+    }
+
+    .scout-adv-filters__reset-link {
+      padding: 0;
+      border: none;
+      background: none;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-pb-400);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .scout-adv-filters__reset-link:hover {
+      color: var(--color-pb-500);
+      text-decoration: underline;
+    }
+
+    .scout-adv-filters__adhoc-wrap {
+      margin-top: 8px;
+    }
+
+    .scout-adv-filters__adhoc-wrap[hidden] {
+      display: none !important;
+    }
+
+    .scout-adv-filters__adhoc-field {
+      width: 100%;
+    }
+
+    .scout-adv-filters__input,
+    .scout-adv-filters__select {
+      width: 100%;
+      box-sizing: border-box;
+      height: 40px;
+      padding: 0 12px;
+      font: inherit;
+      font-size: 14px;
+      color: var(--color-text);
+      border: 1px solid var(--color-neutral-200);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .scout-adv-filters__input::placeholder {
+      color: var(--color-neutral-400);
+    }
+
+    .scout-adv-filters__select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236B7582' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    .scout-adv-filters__input:focus,
+    .scout-adv-filters__select:focus {
+      outline: none;
+      border-color: var(--color-pb-400);
+      box-shadow: 0 0 0 3px rgba(var(--color-pb-rgb), 0.18);
+    }
+
+    .scout-adv-filters__pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .scout-adv-filters__block .scout-adv-filters__pair {
+      margin-bottom: 0;
+    }
+
+    .scout-adv-filters__pair-num .scout-adv-filters__input {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .scout-adv-filters__input-with-unit {
+      position: relative;
+    }
+
+    .scout-adv-filters__input-with-unit .scout-adv-filters__input {
+      padding-right: 36px;
+    }
+
+    .scout-adv-filters__unit {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-neutral-500);
+      pointer-events: none;
+    }
+
+    .scout-adv-filters__date-pair .scout-adv-filters__input {
+      padding-right: 36px;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%236B7582' stroke-width='1.75'%3E%3Crect x='3' y='4' width='12' height='11' rx='2'/%3E%3Cpath d='M3 9h12M8 2v3M16 2v3'/%3E%3C/svg%3E") right 10px center no-repeat;
+    }
+
+    .scout-adv-filters__slider-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-neutral-500);
+    }
+
+    .scout-adv-filters__range {
+      width: 100%;
+      height: 6px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background: var(--color-neutral-200);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .scout-adv-filters__range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--color-pb-500);
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(43, 58, 77, 0.35);
+      cursor: pointer;
+    }
+
+    .scout-adv-filters__range::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--color-pb-500);
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(43, 58, 77, 0.35);
+      cursor: pointer;
+    }
+
+    .scout-adv-filters__dual-wrap {
+      margin-top: 10px;
+    }
+
+    .scout-adv-filters__dual-track-bg {
+      position: relative;
+      height: 24px;
+      margin: 8px 0 4px;
+      border-radius: 999px;
+      background: transparent;
+    }
+
+    .scout-adv-filters__dual-track-bg::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 6px;
+      border-radius: 999px;
+      background: var(--color-neutral-200);
+      pointer-events: none;
+    }
+
+    .scout-adv-filters__dual-fill {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--color-pb-300), var(--color-pb-500));
+      pointer-events: none;
+    }
+
+    .scout-adv-filters__dual-range {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      pointer-events: none;
+    }
+
+    .scout-adv-filters__dual-range input[type="range"] {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 24px;
+      margin: 0;
+      background: none;
+      pointer-events: auto;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .scout-adv-filters__dual-range input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--color-pb-500);
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(43, 58, 77, 0.35);
+      cursor: pointer;
+    }
+
+    .scout-adv-filters__dual-range input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--color-pb-500);
+      border: 2px solid #fff;
+      cursor: pointer;
+    }
+
+    .scout-adv-filters__dual-range input[type="range"]::-webkit-slider-runnable-track {
+      height: 6px;
+      background: transparent;
+    }
+
+    .scout-adv-filters__dual-range input[type="range"]::-moz-range-track {
+      height: 6px;
+      background: transparent;
+    }
+
+    .scout-adv-filters__gdd-values {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-pb-600);
+    }
+
+    .scout-adv-filters-drawer__footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+      border-top: 1px solid var(--color-neutral-200);
+      background: var(--color-neutral-0);
+    }
+
+    .scout-adv-filters__reset-all {
+      padding: 10px 4px;
+      border: none;
+      background: none;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-pb-400);
+      cursor: pointer;
+    }
+
+    .scout-adv-filters__reset-all:hover {
+      color: var(--color-pb-500);
+    }
+
+    .scout-adv-filters__apply {
+      min-width: 120px;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--color-pb-500);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(var(--color-pb-rgb), 0.35);
+    }
+
+    .scout-adv-filters__apply:hover {
+      background: var(--color-pb-600);
+    }
+
+    .scout-adv-filters__apply:focus-visible {
+      outline: 2px solid var(--color-pb-400);
+      outline-offset: 2px;
+    }
+
+    .scout-adv-filters-drawer .tags-panel {
+      z-index: 1200;
+    }
+
+    .theme-pb .tags-trigger__values {
+      color: var(--color-pb-500);
+    }
+
+    .theme-pb .clear-all {
+      color: var(--color-pb-500);
+    }
+
+    @media (max-width: 899px) {
+      .scout-status-slot--desktop {
+        display: none !important;
+      }
+    }
+
+    @media (min-width: 900px) {
+      .scout-status-slot--mobile {
+        display: none;
+      }
+    }
 
     /* ── Table ── */
     .table-wrap {
@@ -309,7 +1009,16 @@
       color: var(--color-text-muted);
       border-bottom: 1px solid var(--color-neutral-200);
       white-space: nowrap;
-      background: #fff;
+      background: var(--color-neutral-100);
+    }
+
+    thead th.th-num,
+    tbody td.td-num {
+      text-align: right;
+    }
+
+    tbody td.td-na {
+      color: var(--color-neutral-500);
     }
 
     thead th .sort-icon {
@@ -373,60 +1082,100 @@
 
     .crop-icon { width: 16px; height: 16px; flex-shrink: 0; }
     .crop-name { color: var(--color-myfs-500); font-weight: 500; }
-    /* Status pills */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
-      white-space: nowrap;
-    }
 
-    .status-badge--in-progress {
-      background: #ede9fe;
-      color: #5b21b6;
-    }
-
-    .status-badge--needs-scouted {
-      background: var(--color-primitive-100);
-      color: var(--color-primitive-700);
-    }
-
-    /* Category pills */
-    .categories { display: flex; gap: 4px; flex-wrap: wrap; }
-
-    .cat-pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 500;
-      background: var(--color-primitive-100);
-      color: var(--color-primitive-700);
-      white-space: nowrap;
+    .td-protocol,
+    .td-trial-name {
+      max-width: 220px;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.35;
     }
 
     /* ── Tags dropdown overlay ── */
-    .tags-dropdown-wrap {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-    }
-
     .tags-panel {
       position: absolute;
       top: calc(100% + 6px);
       left: 0;
-      min-width: 280px;
+      width: min(360px, calc(100vw - 48px));
+      max-height: min(420px, 70vh);
       background: #fff;
       border: 1px solid var(--color-neutral-200);
       border-radius: 12px;
       box-shadow: var(--shadow-lg);
       z-index: 100;
-      padding: 8px 0 12px;
+      padding: 0 0 12px;
+      overflow: hidden;
+    }
+
+    /* Author `display:flex` must not override `[hidden]` — otherwise Cancel/Apply cannot hide the panel */
+    .tags-panel:not([hidden]) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tags-panel__search-wrap {
+      padding: 10px 12px 8px;
+      border-bottom: 1px solid var(--color-neutral-100);
+      flex-shrink: 0;
+    }
+
+    .tags-panel__search {
+      width: 100%;
+      box-sizing: border-box;
+      height: 36px;
+      padding: 0 12px 0 36px;
+      border: 1px solid var(--color-neutral-300);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: var(--font-family);
+      background: var(--color-neutral-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M13 13l4 4'/%3E%3C/svg%3E") 10px center no-repeat;
+    }
+
+    .tags-panel__search::placeholder { color: var(--color-neutral-400); }
+
+    .tags-panel__search:focus {
+      outline: 2px solid rgba(var(--color-myfs-rgb), 0.25);
+      outline-offset: 0;
+      border-color: var(--color-myfs-500);
+      background-color: #fff;
+    }
+
+    .tags-panel__body {
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .tags-panel__section-title {
+      padding: 8px 16px 4px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      font-family: var(--font-family);
+    }
+
+    .tags-hit {
+      background: #fef08a;
+      color: inherit;
+      font-weight: 600;
+      padding: 0 1px;
+      border-radius: 2px;
+    }
+
+    .tags-panel-row--search .tags-panel-row__count {
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    .tags-search-empty {
+      margin: 0;
+      padding: 10px 16px 4px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--color-text-muted);
+      font-family: var(--font-family);
     }
 
     .tags-panel-row {
@@ -455,6 +1204,8 @@
     }
 
     .tags-panel-row--all .tags-panel-row__label { font-weight: 600; }
+
+    .tags-panel-row__label { flex: 1; min-width: 0; }
 
     /* custom radio/checkbox */
     .tags-radio {
@@ -516,14 +1267,10 @@
       border-radius: 999px;
     }
 
-    /* ── "Times Used" header in panel ── */
-    .tags-panel-header {
-      display: flex;
-      justify-content: flex-end;
-      padding: 4px 16px 4px;
+    .tags-panel-row__count--header {
       font-size: 11px;
+      font-weight: 600;
       color: var(--color-text-muted);
-      font-family: var(--font-family);
     }
 
     /* Interactive checkbox/radio states */
@@ -544,24 +1291,6 @@
     .tags-radio--empty { background: transparent; }
     .tags-radio--empty::after { display: none; }
 
-    /* Active tag chip in status bar */
-    .tag-chip {
-      display: inline-flex; align-items: center; gap: 4px;
-      height: 24px; padding: 0 8px;
-      background: var(--color-myfs-100);
-      border: 1px solid var(--color-myfs-300);
-      border-radius: 999px;
-      font-size: 12px; font-weight: 500;
-      color: var(--color-myfs-900);
-      font-family: var(--font-family);
-    }
-    .tag-chip__remove {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 14px; height: 14px; border-radius: 999px;
-      background: none; border: none; cursor: pointer;
-      color: var(--color-myfs-500); font-size: 14px; line-height: 1;
-      padding: 0;
-    }
   </style>
 </head>
 <body>
@@ -570,7 +1299,7 @@
 
   <!-- ── Left nav ── -->
   <aside class="app-nav">
-    <nav class="nav nav--myfs" aria-label="Main navigation" style="height:100vh;">
+    <nav class="nav nav--myfs" aria-label="Main navigation">
       <a href="#" class="nav__item" aria-label="Home">
         <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
         <span class="nav__label">Home</span>
@@ -583,11 +1312,11 @@
         <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
         <span class="nav__label">Growers</span>
       </a>
-      <a href="#" class="nav__item" aria-label="Fields">
+      <a href="#" class="nav__item nav__item--active" aria-current="page" aria-label="Fields">
         <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
         <span class="nav__label">Fields</span>
       </a>
-      <a href="#" class="nav__item nav__item--active" aria-current="page" aria-label="Scout">
+      <a href="#" class="nav__item" aria-label="Scout">
         <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
         <span class="nav__label">Scout</span>
       </a>
@@ -633,7 +1362,7 @@
 
       <!-- Page title + actions -->
       <div class="page-header">
-        <h1 class="page-title">All scouting reports</h1>
+        <h1 class="page-title">My fields</h1>
         <div class="page-actions">
           <button class="action-btn action-btn--dark">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l3 3"/></svg>
@@ -650,30 +1379,48 @@
             Favorite growers
           </button>
           <div class="action-sep"></div>
-          <button class="action-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            Advanced filters
-          </button>
+          <div class="scout-adv-filters" id="scout-adv-filters-wrap">
+            <button type="button" class="action-btn" id="scout-adv-filters-btn" aria-expanded="false" aria-controls="scout-adv-filters-drawer" aria-haspopup="dialog">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+              Advanced filters
+            </button>
+          </div>
           <div class="action-sep"></div>
-          <button class="action-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            List view
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
+          <div class="page-actions__view-switcher" aria-label="View mode">
+            <div class="view-switcher view-switcher--with-collapse" data-view-switcher>
+              <div class="view-icons cursor-pointer">
+                <button type="button" class="view-switcher__trigger view-icon-wrapper" aria-haspopup="menu" aria-expanded="false" aria-controls="myfs-scouting-view-switcher-menu" aria-label="View mode, List view">
+                  <span class="view-switcher__map-icon" aria-hidden="true">
+                    <span class="material-symbols-outlined">view_list</span>
+                  </span>
+                  <span class="view-switcher__label">List view</span>
+                  <span class="view-switcher__caret" aria-hidden="true">
+                    <svg viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M12.9793 6.18171L7.37928 0.565047C7.31261 0.498381 7.24039 0.45127 7.16261 0.423714C7.08484 0.395714 7.0015 0.381714 6.91261 0.381714C6.82373 0.381714 6.74039 0.395714 6.66261 0.423714C6.58484 0.45127 6.51261 0.498381 6.44595 0.565047L0.82928 6.18171C0.673725 6.33727 0.595947 6.53171 0.595947 6.76505C0.595947 6.99838 0.67928 7.19838 0.845947 7.36505C1.01261 7.53171 1.20706 7.61505 1.42928 7.61505C1.6515 7.61505 1.84595 7.53171 2.01261 7.36505L6.91261 2.46505L11.8126 7.36505C11.9682 7.5206 12.1597 7.59838 12.3873 7.59838C12.6153 7.59838 12.8126 7.51505 12.9793 7.34838C13.1459 7.18171 13.2293 6.98727 13.2293 6.76505C13.2293 6.54283 13.1459 6.34838 12.9793 6.18171Z" fill="currentColor"/></svg>
+                  </span>
+                </button>
+              </div>
+              <div id="myfs-scouting-view-switcher-menu" class="view-switcher__menu" role="menu" hidden>
+                <button type="button" class="view-switcher__option view-switcher__option--active" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">view_list</span> List view</button>
+                <button type="button" class="view-switcher__option" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">grid_view</span> Thumbnail view</button>
+                <button type="button" class="view-switcher__option" role="menuitem" data-view-nav="../trials/myfs-mitrials.html"><span class="material-symbols-outlined" aria-hidden="true">map</span> Map view</button>
+              </div>
+            </div>
+          </div>
           <div class="action-sep"></div>
           <button class="action-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
         </div>
       </div>
+      <p class="scout-filter-parity-note">Advanced filters apply to list view and map view; map highlights fields that match your trial filters.</p>
 
       <!-- Scout category tabs -->
       <div class="tabs-wrap">
         <div class="scout-tabs" role="tablist">
 
-          <button class="scout-tab" role="tab">
+          <button type="button" class="scout-tab scout-tab--active" role="tab" aria-selected="true">
             <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/all.png" alt="All" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/all.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
               <span style="display:none;width:44px;height:44px;background:#e0f2fe;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌾</span>
               <span class="scout-tab__badge">1234</span>
             </div>
@@ -681,154 +1428,105 @@
             <span class="scout-tab__indicator"></span>
           </button>
 
-          <button class="scout-tab scout-tab--active" role="tab" aria-selected="true">
-            <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/weeds.png" alt="Weeds" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <span style="display:none;width:44px;height:44px;background:#dcfce7;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌿</span>
-              <span class="scout-tab__badge">231</span>
-            </div>
-            <span>Weeds</span>
-            <span class="scout-tab__indicator"></span>
-          </button>
-
-          <button class="scout-tab" role="tab">
-            <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/disease.png" alt="Disease" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <span style="display:none;width:44px;height:44px;background:#fee2e2;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🦠</span>
-              <span class="scout-tab__badge">1</span>
-            </div>
-            <span>Disease</span>
-            <span class="scout-tab__indicator"></span>
-          </button>
-
-          <button class="scout-tab" role="tab">
-            <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/fertility.png" alt="Fertility" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <span style="display:none;width:44px;height:44px;background:#fef3c7;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌱</span>
-              <span class="scout-tab__badge">21</span>
-            </div>
-            <span>Fertility</span>
-            <span class="scout-tab__indicator"></span>
-          </button>
-
-          <button class="scout-tab" role="tab">
-            <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://intelinair-misc.s3.amazonaws.com/common/icons/scout_types/irrigation.png" alt="Irrigation" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <span style="display:none;width:44px;height:44px;background:#cffafe;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">💧</span>
-              <span class="scout-tab__badge">21</span>
-            </div>
-            <span>Irrigation</span>
-            <span class="scout-tab__indicator"></span>
-          </button>
-
-          <button class="scout-tab" role="tab">
-            <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/other.png" alt="Other" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <span style="display:none;width:44px;height:44px;background:#f3e8ff;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">📋</span>
-              <span class="scout-tab__badge">231</span>
-            </div>
-            <span>Other</span>
-            <span class="scout-tab__indicator"></span>
-          </button>
-
-          <button class="scout-tab" role="tab">
-            <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/pests.png" alt="Pests" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <span style="display:none;width:44px;height:44px;background:#fde8eb;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🐛</span>
-              <span class="scout-tab__badge">1</span>
-            </div>
-            <span>Pests</span>
-            <span class="scout-tab__indicator"></span>
-          </button>
-
-          <button class="scout-tab" role="tab">
-            <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/stand-count.png" alt="Stand cnt." onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <span style="display:none;width:44px;height:44px;background:#dcfce7;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">📊</span>
-              <span class="scout-tab__badge">21</span>
-            </div>
-            <span>Stand cnt.</span>
-            <span class="scout-tab__indicator"></span>
-          </button>
-
-          <button class="scout-tab" role="tab">
-            <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://intelinair-misc.s3.amazonaws.com/common/icons/scout_types/vines.png" alt="Vines" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-              <span style="display:none;width:44px;height:44px;background:#f3e8ff;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🍇</span>
-              <span class="scout-tab__badge">21</span>
-            </div>
-            <span>Vines</span>
-            <span class="scout-tab__indicator"></span>
-          </button>
-
         </div>
       </div>
 
-      <!-- Status filter bar -->
-      <div class="status-bar">
-        <button class="status-pill status-pill--active-blue">
-          Needs scouted
-          <span class="status-pill__count">12</span>
-        </button>
-        <button class="status-pill">
-          In progress
-          <span class="status-pill__count">12</span>
-        </button>
-        <button class="status-pill">
-          Approved
-          <span class="status-pill__count status-pill__count--zero">0</span>
-        </button>
-        <button class="status-pill">
-          Pending review
-          <span class="status-pill__count status-pill__count--zero">0</span>
-        </button>
-        <button class="status-pill">
-          Needs revision
-          <span class="status-pill__count status-pill__count--zero">0</span>
-        </button>
-        <div class="filter-sep"></div>
-        <span style="font-size:12px;color:var(--color-text-muted);font-family:var(--font-family);">Filter by</span>
-        <div class="tags-dropdown-wrap">
-          <button class="tags-trigger">
-            Tags:
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="tags-panel" id="tags-panel" style="display:none;">
-            <div class="tags-panel-header">Times Used</div>
-            <div class="tags-panel-row tags-panel-row--all">
-              <div class="tags-panel-row__left"><div class="tags-radio"></div><span class="tags-panel-row__label">All</span></div>
+      <div class="summary-stats" aria-label="Selection summary">
+        <div class="summary-stats__item">
+          <div class="summary-stats__ratio"><span class="summary-stats__value">1</span><span class="summary-stats__ratio-rest"> / 6,771</span></div>
+          <div class="summary-stats__label">Growers</div>
+        </div>
+        <span class="summary-stats__sep" aria-hidden="true"></span>
+        <div class="summary-stats__item">
+          <div class="summary-stats__ratio"><span class="summary-stats__value">9</span><span class="summary-stats__ratio-rest"> / 118K</span></div>
+          <div class="summary-stats__label">Fields</div>
+        </div>
+        <span class="summary-stats__sep" aria-hidden="true"></span>
+        <div class="summary-stats__item">
+          <div class="summary-stats__ratio"><span class="summary-stats__value">63</span><span class="summary-stats__ratio-rest"> / 5,448K</span></div>
+          <div class="summary-stats__label">Ac affected</div>
+        </div>
+      </div>
+
+      <!-- Trial name & protocol filters: list view — mobile inline; web (wide) inside Advanced filters -->
+      <div id="scout-status-slot-mobile" class="scout-status-slot scout-status-slot--mobile">
+      <div id="scout-status-bar" class="status-bar">
+        <div class="scout-filter-tags-row">
+          <div class="scout-filter-tags__group">
+            <span class="scout-filter-tags__label" id="scout-l-protocols">Protocols</span>
+            <div class="tags-dropdown-wrap" id="protocol-tags-wrap">
+              <button type="button" class="tags-trigger" id="tags-trigger-protocol" aria-expanded="false" aria-haspopup="true" aria-controls="tags-panel-protocol" aria-labelledby="scout-l-protocols">
+                <span class="tags-trigger__main">
+                  <span class="tags-trigger__values" id="tags-trigger-values-protocol" data-placeholder="Select"></span>
+                </span>
+                <svg class="tags-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="tags-panel" id="tags-panel-protocol" role="region" aria-label="Filter by protocols" hidden>
+                <div class="tags-panel__search-wrap">
+                  <label class="visually-hidden" for="tags-search-protocol">Search protocols</label>
+                  <input type="search" id="tags-search-protocol" class="tags-panel__search" placeholder="Search protocols…" autocomplete="off" />
+                </div>
+                <div class="tags-panel__body">
+                  <div class="tags-panel__section-title">Common protocols</div>
+                  <div class="tags-panel-row tags-panel-row--all">
+                    <div class="tags-panel-row__left">
+                      <div class="tags-radio" aria-hidden="true"></div>
+                      <span class="tags-panel-row__label">All</span>
+                    </div>
+                    <span class="tags-panel-row__count tags-panel-row__count--header">Times Used</span>
+                  </div>
+                  <div class="tags-panel-row" data-tag="Corn standard">
+                    <div class="tags-panel-row__left"><div class="tags-checkbox" role="checkbox" aria-checked="false" tabindex="0"></div><span class="tags-panel-row__label">Corn standard</span></div><span class="tags-panel-row__count">24</span>
+                  </div>
+                  <div class="tags-panel-row" data-tag="Nitrogen management">
+                    <div class="tags-panel-row__left"><div class="tags-checkbox" role="checkbox" aria-checked="false" tabindex="0"></div><span class="tags-panel-row__label">Nitrogen management</span></div><span class="tags-panel-row__count">19</span>
+                  </div>
+                  <div class="tags-panel-row" data-tag="Post-emerge herbicide">
+                    <div class="tags-panel-row__left"><div class="tags-checkbox" role="checkbox" aria-checked="false" tabindex="0"></div><span class="tags-panel-row__label">Post-emerge herbicide</span></div><span class="tags-panel-row__count">16</span>
+                  </div>
+                  <div class="tags-panel-row" data-tag="Fungicide application">
+                    <div class="tags-panel-row__left"><div class="tags-checkbox" role="checkbox" aria-checked="false" tabindex="0"></div><span class="tags-panel-row__label">Fungicide application</span></div><span class="tags-panel-row__count">12</span>
+                  </div>
+                  <div class="tags-panel-row" data-tag="Carbon pilot">
+                    <div class="tags-panel-row__left"><div class="tags-checkbox" role="checkbox" aria-checked="false" tabindex="0"></div><span class="tags-panel-row__label">Carbon pilot</span></div><span class="tags-panel-row__count">8</span>
+                  </div>
+                  <div class="tags-panel__section" id="tags-search-section-protocol" hidden>
+                    <div class="tags-panel__section-title">More protocols</div>
+                    <div id="tags-search-results-protocol"></div>
+                  </div>
+                </div>
+                <div class="tags-panel-actions">
+                  <button type="button" class="tags-cancel" id="tags-panel-cancel-protocol">Cancel</button>
+                  <button type="button" class="tags-apply" id="tags-apply-protocol">Apply</button>
+                </div>
+              </div>
             </div>
-            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Waterhemp</span></div><span class="tags-panel-row__count">23</span></div>
-            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Palmer Amaranth</span></div><span class="tags-panel-row__count">21</span></div>
-            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Foxtail</span></div><span class="tags-panel-row__count">10</span></div>
-            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Ragweed</span></div><span class="tags-panel-row__count">3</span></div>
-            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Marestail</span></div><span class="tags-panel-row__count">1</span></div>
-            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Barnyardgrass</span></div><span class="tags-panel-row__count">0</span></div>
-            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Morning Glory</span></div><span class="tags-panel-row__count">0</span></div>
-            <div class="tags-panel-row"><div class="tags-panel-row__left"><div class="tags-checkbox"></div><span>Canada Thistle</span></div><span class="tags-panel-row__count">0</span></div>
-            <div class="tags-panel-actions">
-              <button class="tags-cancel">Cancel</button>
-              <button class="tags-apply">Apply</button>
-            </div>
+            <button type="button" class="scout-filter-select-all" id="tags-select-all-protocols">Select all</button>
           </div>
+          <button type="button" class="clear-all" id="tags-clear-all">Clear all</button>
         </div>
-        <button class="clear-all">Clear All</button>
+      </div>
       </div>
 
-      <!-- Data table -->
+      <!-- Data table — trial/protocol columns filled from ../../data/mitrials-protocol-presets.js (same ids as MiTrials drawer) -->
       <div class="table-wrap">
-        <table>
+        <table id="scout-field-trials-table">
           <thead>
             <tr>
-              <th>Field <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
-              <th>Farm <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
-              <th>Grower <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
-              <th>Acres <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
-              <th>Crop <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
-              <th>Status <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
-              <th>Categories <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
-              <th>Created by <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
-              <th>Scout Date <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Field <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Farm <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Grower <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Trial name <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Protocol name <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Crop <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Dry yield <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Yield Forecast <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Emergence <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Field Potential <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Growth Stage <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">Planted Date <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col">GDD <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
+              <th scope="col" class="th-num">Area Affected <span class="sort-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 3 18 9"/></svg></span></th>
             </tr>
           </thead>
           <tbody>
@@ -836,111 +1534,161 @@
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
               <td>Pontiac Il.</td>
               <td>Jacob Jones</td>
-              <td>22,910.6 ac</td>
+              <td class="td-trial-name">IL corn program 2026</td>
+              <td class="td-protocol">Corn standard protocol</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
-              <td><div class="categories"><span class="cat-pill">Weeds</span></div></td>
-              <td>Kristin Watson</td>
-              <td>9/13</td>
+              <td class="td-na">N/A</td>
+              <td>130 bu/ac</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">9,902.9 ac</td>
             </tr>
             <tr data-categories="weeds crop-health">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Dowson Farms</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
               <td>New York, NY</td>
               <td>Savannah Nguyen</td>
-              <td>20,000 ac</td>
+              <td class="td-trial-name">NE nitrogen program</td>
+              <td class="td-protocol">Nitrogen management</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
-              <td><div class="categories"><span class="cat-pill">Crop Health</span><span class="cat-pill">Weeds</span></div></td>
-              <td>Ralph Edwards</td>
-              <td>5/13</td>
+              <td class="td-na">N/A</td>
+              <td>160 bu/ac</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">1,609 ac</td>
             </tr>
             <tr data-categories="weeds">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Campbell Farms and more</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
-              <td>New York, NY</td>
+              <td>Chicago, IL</td>
               <td>Robert Fox</td>
-              <td>17,836.8 ac</td>
+              <td class="td-trial-name">Soy herbicide program</td>
+              <td class="td-protocol">Soy herbicide trial</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 3c-1.5 0-3 1-4 3-1 2-1 4 0 6l4 8 4-8c1-2 1-4 0-6-1-2-2.5-3-4-3z"/></svg><span class="crop-name">Soy</span></div></td>
-              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
-              <td><div class="categories"><span class="cat-pill">Weeds</span></div></td>
-              <td>Dianne Russell</td>
-              <td>7/13</td>
+              <td class="td-na">N/A</td>
+              <td>142 bu/ac</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">4,120.5 ac</td>
             </tr>
             <tr data-categories="disease">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
               <td>Pontiac Il.</td>
               <td>Kathryn Murphy</td>
-              <td>22,910.6 ac</td>
+              <td class="td-trial-name td-na">—</td>
+              <td class="td-protocol td-na">N/A</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
-              <td><div class="categories"><span class="cat-pill">Disease</span></div></td>
-              <td>Wade Warren</td>
-              <td>3/13</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">892.1 ac</td>
             </tr>
             <tr data-categories="weeds crop-health">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Dowson Farms</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
               <td>Yerevan, Arm</td>
               <td>Eleanor Pena</td>
-              <td>22,910.6 ac</td>
+              <td class="td-trial-name">Carbon pilot program</td>
+              <td class="td-protocol">Carbon</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
-              <td><div class="categories"><span class="cat-pill">Crop Health</span><span class="cat-pill">Weeds</span></div></td>
-              <td>Leslie Alexander</td>
-              <td>4/13</td>
+              <td class="td-na">N/A</td>
+              <td>155 bu/ac</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">2,400 ac</td>
             </tr>
             <tr data-categories="fertility">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
-              <td>Chicago. Il</td>
+              <td>Chicago, IL</td>
               <td>Devon Lane</td>
-              <td>17,836.8 ac</td>
+              <td class="td-trial-name">Great Lakes no-till</td>
+              <td class="td-protocol">No till</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
-              <td><div class="categories"><span class="cat-pill">Fertility</span></div></td>
-              <td>Brooklyn Simmons</td>
-              <td>4/13</td>
+              <td class="td-na">N/A</td>
+              <td>148 bu/ac</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">12,100 ac</td>
             </tr>
             <tr data-categories="pests">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
-              <td>Chicago. Il</td>
+              <td>Chicago, IL</td>
               <td>Jane Cooper</td>
-              <td>17,836.8 ac</td>
+              <td class="td-trial-name td-na">—</td>
+              <td class="td-protocol td-na">N/A</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
-              <td><div class="categories"><span class="cat-pill">Pests</span></div></td>
-              <td>Eleanor Pena</td>
-              <td>4/13</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">330 ac</td>
             </tr>
             <tr data-categories="stand-cnt stand count">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
-              <td>Chicago. Il</td>
+              <td>Chicago, IL</td>
               <td>Courtney Henry</td>
-              <td>17,836.8 ac</td>
+              <td class="td-trial-name">Stand count program</td>
+              <td class="td-protocol">Stand count protocol</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
-              <td><div class="categories"><span class="cat-pill">Stand cnt.</span></div></td>
-              <td>Jenny Wilson</td>
-              <td>4/13</td>
+              <td class="td-na">N/A</td>
+              <td>138 bu/ac</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">7,050 ac</td>
             </tr>
             <tr data-categories="weeds">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
-              <td>Chicago. Il</td>
+              <td>Chicago, IL</td>
               <td>Esther Howard</td>
-              <td>17,836.8 ac</td>
+              <td class="td-trial-name">Single-zone demo program</td>
+              <td class="td-protocol">Corn — single treatment zone (demo)</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--needs-scouted">Needs scouted</span></td>
-              <td><div class="categories"><span class="cat-pill">Weeds</span></div></td>
-              <td>Savannah Nguyen</td>
-              <td>4/13</td>
+              <td class="td-na">N/A</td>
+              <td>150 bu/ac</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">9,902.9 ac</td>
             </tr>
             <tr data-categories="other">
               <td><div class="td-field"><div class="field-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div><a href="#" class="field-name">Research</a><svg class="field-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div></td>
-              <td>Chicago. Il</td>
+              <td>Chicago, IL</td>
               <td>Bessie Cooper</td>
-              <td>17,836.8 ac</td>
+              <td class="td-trial-name">Fungicide program</td>
+              <td class="td-protocol">Fungicide</td>
               <td><div class="td-crop"><svg class="crop-icon" viewBox="0 0 24 24" fill="var(--color-myfs-500)"><path d="M12 2C8.5 2 6 5 6 8c0 4 3 7 6 10 3-3 6-6 6-10 0-3-2.5-6-6-6z"/></svg><span class="crop-name">Corn</span></div></td>
-              <td><span class="status-badge status-badge--in-progress">In progress</span></td>
-              <td><div class="categories"><span class="cat-pill">Other</span></div></td>
-              <td>Jane Cooper</td>
-              <td>12/13</td>
+              <td class="td-na">N/A</td>
+              <td>125 bu/ac</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-na">N/A</td>
+              <td class="td-num">215.4 ac</td>
             </tr>
           </tbody>
         </table>
@@ -950,168 +1698,877 @@
   </div><!-- /app-main -->
 </div><!-- /app-shell -->
 
+  <!-- Advanced filters: right drawer (desktop); backdrop closes on click -->
+  <div id="scout-adv-filters-backdrop" class="scout-adv-filters-backdrop" hidden aria-hidden="true"></div>
+  <aside
+    id="scout-adv-filters-drawer"
+    class="scout-adv-filters-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="scout-adv-filters-title"
+    hidden
+  >
+    <header class="scout-adv-filters-drawer__header">
+      <div class="scout-adv-filters-drawer__title-row">
+        <svg class="scout-adv-filters-drawer__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>
+        </svg>
+        <h2 id="scout-adv-filters-title" class="scout-adv-filters-drawer__title">Advanced filters</h2>
+      </div>
+      <button type="button" class="scout-adv-filters-drawer__close" id="scout-adv-filters-close" aria-label="Close advanced filters">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </header>
+    <div class="scout-adv-filters-drawer__body">
+      <div class="scout-adv-filters__section">
+        <p class="scout-adv-filters__section-title">Protocol &amp; trial filters</p>
+        <div id="scout-status-slot-desktop" class="scout-status-slot scout-status-slot--desktop"></div>
+      </div>
+
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-trial-name">Trial name</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <input type="search" class="scout-adv-filters__input" placeholder="Search trial name…" aria-labelledby="saf-l-trial-name" autocomplete="off" id="saf-trial-name-search" />
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-has-trial">Field has a trial</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <label class="visually-hidden" for="saf-has-trial">Field has a trial</label>
+        <select id="saf-has-trial" class="scout-adv-filters__select" aria-labelledby="saf-l-has-trial">
+          <option value="">Any</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-grower">Filter by grower</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <input type="text" class="scout-adv-filters__input" placeholder="" aria-labelledby="saf-l-grower" autocomplete="off" />
+      </div>
+      <div class="scout-adv-filters__pair">
+        <div class="scout-adv-filters__block" style="margin-bottom:0;">
+          <div class="scout-adv-filters__block-head">
+            <span class="scout-adv-filters__label" id="saf-l-crop">Crop type</span>
+            <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+          </div>
+          <input type="text" class="scout-adv-filters__input" placeholder="" aria-labelledby="saf-l-crop" autocomplete="off" />
+        </div>
+        <div class="scout-adv-filters__block" style="margin-bottom:0;">
+          <div class="scout-adv-filters__block-head">
+            <span class="scout-adv-filters__label" id="saf-l-growth">Growth stage</span>
+            <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+          </div>
+          <input type="text" class="scout-adv-filters__input" placeholder="" aria-labelledby="saf-l-growth" autocomplete="off" />
+        </div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-fieldstate">Field state</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <label class="visually-hidden" for="saf-field-state">Field state</label>
+        <select id="saf-field-state" class="scout-adv-filters__select scout-adv-filters__select--adhoc" aria-labelledby="saf-l-fieldstate" data-adhoc-target="saf-field-state-adhoc-wrap">
+          <option value="">Pick one</option>
+          <option value="active">Active</option>
+          <option value="planned">Planned</option>
+          <option value="harvested">Harvested</option>
+          <option value="fallow">Fallow</option>
+          <option value="adhoc">Ad hoc (custom)</option>
+        </select>
+        <div class="scout-adv-filters__adhoc-wrap" id="saf-field-state-adhoc-wrap" hidden>
+          <input type="text" id="saf-field-state-adhoc" class="scout-adv-filters__input scout-adv-filters__adhoc-field" placeholder="Enter any field state…" autocomplete="off" disabled aria-label="Custom field state (ad hoc)" />
+        </div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-hybrid">Hybrid / variety</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <input type="text" class="scout-adv-filters__input" placeholder="" aria-labelledby="saf-l-hybrid" autocomplete="off" />
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label">Last scouted date</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <div class="scout-adv-filters__pair scout-adv-filters__date-pair">
+          <input type="text" class="scout-adv-filters__input" placeholder="From" aria-label="Last scouted from" />
+          <input type="text" class="scout-adv-filters__input" placeholder="To" aria-label="Last scouted to" />
+        </div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-prodsub">Product subscription</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <input type="text" class="scout-adv-filters__input" placeholder="" aria-labelledby="saf-l-prodsub" autocomplete="off" />
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-appprod">Application product</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <label class="visually-hidden" for="saf-app-product">Application product</label>
+        <select id="saf-app-product" class="scout-adv-filters__select scout-adv-filters__select--adhoc" aria-labelledby="saf-l-appprod" data-adhoc-target="saf-app-product-adhoc-wrap">
+          <option value="">Pick one</option>
+          <option value="atrazine">Atrazine</option>
+          <option value="glyphosate">Glyphosate</option>
+          <option value="dicamba">Dicamba</option>
+          <option value="other">Other</option>
+          <option value="adhoc">Ad hoc (custom)</option>
+        </select>
+        <div class="scout-adv-filters__adhoc-wrap" id="saf-app-product-adhoc-wrap" hidden>
+          <input type="text" id="saf-app-product-adhoc" class="scout-adv-filters__input scout-adv-filters__adhoc-field" placeholder="Enter any product name…" autocomplete="off" disabled aria-label="Custom application product (ad hoc)" />
+        </div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-activity">Activity type</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <label class="visually-hidden" for="saf-activity-type">Activity type</label>
+        <select id="saf-activity-type" class="scout-adv-filters__select scout-adv-filters__select--adhoc" aria-labelledby="saf-l-activity" data-adhoc-target="saf-activity-type-adhoc-wrap">
+          <option value="">Pick one</option>
+          <option value="spray">Spray</option>
+          <option value="fertilizer">Fertilizer</option>
+          <option value="tillage">Tillage</option>
+          <option value="scouting">Scouting</option>
+          <option value="adhoc">Ad hoc (custom)</option>
+        </select>
+        <div class="scout-adv-filters__adhoc-wrap" id="saf-activity-type-adhoc-wrap" hidden>
+          <input type="text" id="saf-activity-type-adhoc" class="scout-adv-filters__input scout-adv-filters__adhoc-field" placeholder="Enter any activity type…" autocomplete="off" disabled aria-label="Custom activity type (ad hoc)" />
+        </div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label">Activity date</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <div class="scout-adv-filters__pair scout-adv-filters__date-pair">
+          <input type="text" class="scout-adv-filters__input" placeholder="From" aria-label="Activity date from" />
+          <input type="text" class="scout-adv-filters__input" placeholder="To" aria-label="Activity date to" />
+        </div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-tags">Filter by tags</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <label class="visually-hidden" for="saf-filter-tags">Filter by tags</label>
+        <select id="saf-filter-tags" class="scout-adv-filters__select scout-adv-filters__select--adhoc" aria-labelledby="saf-l-tags" data-adhoc-target="saf-filter-tags-adhoc-wrap">
+          <option value="">Pick one</option>
+          <option value="priority">Priority</option>
+          <option value="trial">Trial</option>
+          <option value="issue">Issue</option>
+          <option value="adhoc">Ad hoc (custom)</option>
+        </select>
+        <div class="scout-adv-filters__adhoc-wrap" id="saf-filter-tags-adhoc-wrap" hidden>
+          <input type="text" id="saf-filter-tags-adhoc" class="scout-adv-filters__input scout-adv-filters__adhoc-field" placeholder="Enter any tag…" autocomplete="off" disabled aria-label="Custom tag (ad hoc)" />
+        </div>
+      </div>
+
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label">Emergence score</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <div class="scout-adv-filters__pair scout-adv-filters__pair-num">
+          <input type="number" class="scout-adv-filters__input" id="saf-emerge-min" value="0" min="0" max="100" aria-label="Emergence minimum" />
+          <input type="number" class="scout-adv-filters__input" id="saf-emerge-max" value="0" min="0" max="100" aria-label="Emergence maximum" />
+        </div>
+        <input type="range" class="scout-adv-filters__range" id="saf-emerge-range" min="0" max="100" value="0" aria-label="Emergence score range" />
+        <div class="scout-adv-filters__slider-labels"><span>0</span><span>100</span></div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label" id="saf-l-potential">Field potential</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <label class="visually-hidden" for="saf-field-potential">Field potential</label>
+        <select id="saf-field-potential" class="scout-adv-filters__select scout-adv-filters__select--adhoc" aria-labelledby="saf-l-potential" data-adhoc-target="saf-field-potential-adhoc-wrap">
+          <option value="">Pick one</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+          <option value="adhoc">Ad hoc (custom)</option>
+        </select>
+        <div class="scout-adv-filters__adhoc-wrap" id="saf-field-potential-adhoc-wrap" hidden>
+          <input type="text" id="saf-field-potential-adhoc" class="scout-adv-filters__input scout-adv-filters__adhoc-field" placeholder="Enter any field potential…" autocomplete="off" disabled aria-label="Custom field potential (ad hoc)" />
+        </div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label">Area affected</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <div class="scout-adv-filters__pair">
+          <div class="scout-adv-filters__input-with-unit">
+            <input type="number" class="scout-adv-filters__input" id="saf-area-min" value="0" min="0" aria-label="Area affected minimum" />
+            <span class="scout-adv-filters__unit">ac</span>
+          </div>
+          <div class="scout-adv-filters__input-with-unit">
+            <input type="number" class="scout-adv-filters__input" id="saf-area-max" value="0" min="0" aria-label="Area affected maximum" />
+            <span class="scout-adv-filters__unit">ac</span>
+          </div>
+        </div>
+        <input type="range" class="scout-adv-filters__range" id="saf-area-range" min="0" max="5000" value="0" aria-label="Area affected range" />
+        <div class="scout-adv-filters__slider-labels"><span>0 ac</span><span>5,000 ac</span></div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label">Minimum / maximum GDD</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <div class="scout-adv-filters__pair scout-adv-filters__pair-num">
+          <input type="number" class="scout-adv-filters__input" id="saf-gdd-min-num" value="21.5" step="0.1" aria-label="Minimum GDD" />
+          <input type="number" class="scout-adv-filters__input" id="saf-gdd-max-num" value="402.5" step="0.1" aria-label="Maximum GDD" />
+        </div>
+        <div class="scout-adv-filters__dual-wrap">
+          <div class="scout-adv-filters__dual-track-bg" id="saf-gdd-track">
+            <div class="scout-adv-filters__dual-fill" id="saf-gdd-fill"></div>
+            <div class="scout-adv-filters__dual-range">
+              <input type="range" id="saf-gdd-range-min" min="0" max="2000" value="215" step="1" aria-label="GDD range lower bound" />
+              <input type="range" id="saf-gdd-range-max" min="0" max="2000" value="805" step="1" aria-label="GDD range upper bound" />
+            </div>
+          </div>
+          <div class="scout-adv-filters__gdd-values">
+            <span id="saf-gdd-val-min">21.5</span>
+            <span id="saf-gdd-val-max">402.5</span>
+          </div>
+        </div>
+      </div>
+      <div class="scout-adv-filters__block">
+        <div class="scout-adv-filters__block-head">
+          <span class="scout-adv-filters__label">Planting date</span>
+          <button type="button" class="scout-adv-filters__reset-link">Reset</button>
+        </div>
+        <div class="scout-adv-filters__pair scout-adv-filters__date-pair">
+          <input type="text" class="scout-adv-filters__input" placeholder="From" aria-label="Planting date from" />
+          <input type="text" class="scout-adv-filters__input" placeholder="To" aria-label="Planting date to" />
+        </div>
+      </div>
+    </div>
+    <footer class="scout-adv-filters-drawer__footer">
+      <button type="button" class="scout-adv-filters__reset-all" id="scout-adv-filters-reset-all">Reset all</button>
+      <button type="button" class="scout-adv-filters__apply" id="scout-adv-filters-apply">Apply</button>
+    </footer>
+  </aside>
+
 <script>
 (function () {
 
-  // ── Scout tabs ──────────────────────────────────────────────────────────
-  var tabs = document.querySelectorAll('.scout-tab');
-  tabs.forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      tabs.forEach(function (t) {
-        t.classList.remove('scout-tab--active');
-        t.removeAttribute('aria-selected');
-      });
-      this.classList.add('scout-tab--active');
-      this.setAttribute('aria-selected', 'true');
-
-      // Get the label text (last span before indicator)
-      var spans = this.querySelectorAll('span');
-      var label = '';
-      spans.forEach(function (s) {
-        if (!s.classList.contains('scout-tab__badge') && !s.classList.contains('scout-tab__indicator')) {
-          label = s.textContent.trim().toLowerCase();
+  (function applyScoutFieldTrialColumnsFromPresets() {
+    var spec = window.MYFS_SCOUT_DEMO_TRIAL_ROWS;
+    var byId = window.MYFS_MITRIALS_PROTOCOL_BY_ID;
+    var table = document.getElementById('scout-field-trials-table');
+    if (!spec || !byId || !table) return;
+    var trs = table.querySelectorAll('tbody tr');
+    spec.forEach(function (demo, i) {
+      var tr = trs[i];
+      if (!tr) return;
+      tr.removeAttribute('data-mitrials-protocol-id');
+      var tTrial = tr.querySelector('.td-trial-name');
+      var tProt = tr.querySelector('.td-protocol');
+      if (!demo.protocolId) {
+        if (tTrial) {
+          tTrial.textContent = '—';
+          tTrial.classList.add('td-na');
         }
-      });
-
-      // Filter rows
-      document.querySelectorAll('tbody tr').forEach(function (row) {
-        if (label === 'all') {
-          row.style.display = '';
-        } else {
-          var cats = (row.getAttribute('data-categories') || '').toLowerCase();
-          // Normalise tab label: "stand cnt." → "stand"
-          var key = label.replace('.', '').split(' ')[0];
-          row.style.display = cats.includes(key) ? '' : 'none';
+        if (tProt) {
+          tProt.textContent = 'N/A';
+          tProt.classList.add('td-na');
         }
-      });
-    });
-  });
-
-  // ── Tags dropdown ────────────────────────────────────────────────────────
-  var trigger = document.querySelector('.tags-trigger');
-  var panel   = document.getElementById('tags-panel');
-
-  trigger.addEventListener('click', function (e) {
-    e.stopPropagation();
-    var open = panel.style.display === 'block';
-    panel.style.display = open ? 'none' : 'block';
-  });
-
-  // Close on outside click
-  document.addEventListener('click', function (e) {
-    if (!panel.contains(e.target) && e.target !== trigger) {
-      panel.style.display = 'none';
-    }
-  });
-
-  // Cancel button
-  document.querySelector('.tags-cancel').addEventListener('click', function (e) {
-    e.stopPropagation();
-    // Uncheck all checkboxes
-    document.querySelectorAll('.tags-checkbox').forEach(function (cb) {
-      cb.classList.remove('tags-checkbox--checked');
-    });
-    // Restore "All" radio
-    var allRadio = document.querySelector('.tags-radio');
-    allRadio.classList.remove('tags-radio--empty');
-    panel.style.display = 'none';
-  });
-
-  // Apply button
-  document.querySelector('.tags-apply').addEventListener('click', function (e) {
-    e.stopPropagation();
-    var checked = [];
-    document.querySelectorAll('.tags-panel-row').forEach(function (row) {
-      var cb = row.querySelector('.tags-checkbox--checked');
-      if (cb) {
-        checked.push(row.querySelector('span:not(.tags-panel-row__count)').textContent.trim());
+        return;
       }
+      var meta = byId[demo.protocolId];
+      if (tTrial) {
+        tTrial.textContent = demo.listTrial;
+        tTrial.classList.remove('td-na');
+      }
+      if (tProt) {
+        tProt.textContent = meta ? meta.selectLabel : '';
+        tProt.classList.remove('td-na');
+      }
+      tr.setAttribute('data-mitrials-protocol-id', demo.protocolId);
     });
-    renderTagChips(checked);
-    panel.style.display = 'none';
+  })();
+
+  // ── Protocol tag filter; trial name + has-trial live in Advanced filters ─
+  var PROTOCOL_DEFAULT_NAMES =
+    typeof MYFS_SCOUT_PROTOCOL_TAG_LABELS !== 'undefined'
+      ? MYFS_SCOUT_PROTOCOL_TAG_LABELS.slice(0, 5)
+      : ['Corn standard', 'Nitrogen management', 'Post-emerge herbicide', 'Fungicide application', 'Carbon pilot'];
+  var PROTOCOL_DEFAULT_SET = {};
+  PROTOCOL_DEFAULT_NAMES.forEach(function (n) {
+    PROTOCOL_DEFAULT_SET[n] = true;
   });
 
-  // ── Tag checkboxes / "All" radio ──────────────────────────────────────────
-  document.querySelectorAll('.tags-panel-row').forEach(function (row) {
-    row.addEventListener('click', function (e) {
+  var EXTRA_PROTOCOL_CATALOG = [
+    { name: 'Soy herbicide', count: 6 },
+    { name: 'No till', count: 9 },
+    { name: 'Stand count', count: 14 },
+    { name: 'NE nitrogen', count: 8 },
+    { name: 'Great Lakes no-till', count: 5 },
+    { name: 'Corn — single treatment zone (demo)', count: 4 },
+    { name: 'Fungicide', count: 12 }
+  ];
+
+  var committedProtocols = [];
+
+  function buildTagsSummary(names, maxChars) {
+    maxChars = maxChars || 52;
+    if (!names.length) return '';
+    function lenOk(s) {
+      return s.length <= maxChars;
+    }
+    var full = names.join(', ');
+    if (lenOk(full)) return full;
+    var shown = [];
+    for (var i = 0; i < names.length; i++) {
+      var trial = shown.concat([names[i]]).join(', ');
+      var hidden = names.length - shown.length - 1;
+      var candidate = hidden > 0 ? trial + ' +' + hidden : trial;
+      if (!lenOk(candidate)) break;
+      shown.push(names[i]);
+    }
+    if (!shown.length) {
+      var first = names[0];
+      var rest = names.length - 1;
+      var suffix = rest > 0 ? ' +' + rest : '';
+      var budget = maxChars - suffix.length;
+      if (first.length <= budget) return first + suffix;
+      return first.slice(0, Math.max(1, budget - 1)) + '…' + suffix;
+    }
+    var overflow = names.length - shown.length;
+    return shown.join(', ') + (overflow ? ' +' + overflow : '');
+  }
+
+  function appendHighlighted(el, text, query) {
+    if (!query) {
+      el.textContent = text;
+      return;
+    }
+    var lower = text.toLowerCase();
+    var qLower = query.toLowerCase();
+    var len = query.length;
+    var pos = 0;
+    while (pos < text.length) {
+      var idx = lower.indexOf(qLower, pos);
+      if (idx === -1) {
+        el.appendChild(document.createTextNode(text.slice(pos)));
+        break;
+      }
+      if (idx > pos) {
+        el.appendChild(document.createTextNode(text.slice(pos, idx)));
+      }
+      var mark = document.createElement('mark');
+      mark.className = 'tags-hit';
+      mark.textContent = text.slice(idx, idx + len);
+      el.appendChild(mark);
+      pos = idx + len;
+    }
+  }
+
+  function syncCheckboxAria(cb) {
+    if (!cb || cb.getAttribute('role') !== 'checkbox') return;
+    cb.setAttribute('aria-checked', cb.classList.contains('tags-checkbox--checked') ? 'true' : 'false');
+  }
+
+  function initScoutTagFilter(cfg) {
+    var committed = cfg.committed;
+    var defaultNameSet = cfg.defaultNameSet;
+    var extraCatalog = cfg.extraCatalog;
+    var trigger = document.getElementById(cfg.triggerId);
+    var panel = document.getElementById(cfg.panelId);
+    var tagsSearch = document.getElementById(cfg.searchId);
+    var wrap = document.getElementById(cfg.wrapId);
+    var section = document.getElementById(cfg.searchSectionId);
+    var container = document.getElementById(cfg.searchResultsId);
+
+    function charBudgetForTrigger() {
+      var w = wrap && wrap.clientWidth ? wrap.clientWidth : 280;
+      return Math.max(24, Math.min(64, Math.floor((w - 36) / 7)));
+    }
+
+    function updateTrigger() {
+      var valuesEl = document.getElementById(cfg.valuesId);
+      if (!valuesEl || !trigger) return;
+      var summary = committed.length ? buildTagsSummary(committed, charBudgetForTrigger()) : '';
+      valuesEl.textContent = summary;
+      if (committed.length) {
+        trigger.setAttribute('aria-label', cfg.ariaLabelPrefix + ': ' + committed.join(', '));
+      } else {
+        trigger.setAttribute('aria-label', cfg.ariaLabelEmpty);
+      }
+    }
+
+    function renderSearchResults(query) {
+      var q = (query || '').trim();
+      if (!q) {
+        section.hidden = true;
+        container.innerHTML = '';
+        return;
+      }
+      var qLower = q.toLowerCase();
+      var matches = extraCatalog.filter(function (item) {
+        return item.name.toLowerCase().indexOf(qLower) !== -1 && !defaultNameSet[item.name];
+      });
+      section.hidden = false;
+      container.innerHTML = '';
+      if (!matches.length) {
+        var empty = document.createElement('p');
+        empty.className = 'tags-search-empty';
+        empty.textContent = cfg.emptySearchMsg;
+        container.appendChild(empty);
+        return;
+      }
+      matches.forEach(function (item) {
+        var row = document.createElement('div');
+        row.className = 'tags-panel-row tags-panel-row--search';
+        row.setAttribute('data-tag', item.name);
+        var left = document.createElement('div');
+        left.className = 'tags-panel-row__left';
+        var cb = document.createElement('div');
+        cb.className = 'tags-checkbox';
+        cb.setAttribute('role', 'checkbox');
+        cb.setAttribute('aria-checked', 'false');
+        cb.setAttribute('tabindex', '0');
+        var label = document.createElement('span');
+        label.className = 'tags-panel-row__label';
+        appendHighlighted(label, item.name, q);
+        left.appendChild(cb);
+        left.appendChild(label);
+        var count = document.createElement('span');
+        count.className = 'tags-panel-row__count';
+        count.textContent = String(item.count);
+        row.appendChild(left);
+        row.appendChild(count);
+        container.appendChild(row);
+      });
+    }
+
+    function refreshAllRadioState() {
+      var allRadio = panel.querySelector('.tags-radio');
+      if (!allRadio) return;
+      var anyChecked = panel.querySelector('.tags-checkbox--checked');
+      if (anyChecked) {
+        allRadio.classList.add('tags-radio--empty');
+      } else {
+        allRadio.classList.remove('tags-radio--empty');
+      }
+    }
+
+    function syncCheckboxesFromCommitted() {
+      panel.querySelectorAll('.tags-panel-row[data-tag]').forEach(function (row) {
+        var name = row.getAttribute('data-tag');
+        var cb = row.querySelector('.tags-checkbox');
+        if (!cb || !name) return;
+        var on = committed.indexOf(name) !== -1;
+        cb.classList.toggle('tags-checkbox--checked', on);
+        syncCheckboxAria(cb);
+      });
+      refreshAllRadioState();
+    }
+
+    function setPanelOpen(open) {
+      panel.hidden = !open;
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        tagsSearch.value = '';
+        renderSearchResults('');
+        syncCheckboxesFromCommitted();
+        setTimeout(function () { tagsSearch.focus(); }, 0);
+      }
+    }
+
+    trigger.addEventListener('click', function (e) {
       e.stopPropagation();
-      var cb    = this.querySelector('.tags-checkbox');
-      var radio = this.querySelector('.tags-radio');
+      setPanelOpen(panel.hidden);
+    });
+
+    tagsSearch.addEventListener('input', function () {
+      renderSearchResults(tagsSearch.value);
+    });
+
+    tagsSearch.addEventListener('click', function (e) {
+      e.stopPropagation();
+    });
+
+    panel.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var row = e.target.closest('.tags-panel-row');
+      if (!row || row.classList.contains('tags-panel-actions')) return;
+
+      var cb = row.querySelector('.tags-checkbox');
+      var radio = row.querySelector('.tags-radio');
 
       if (radio) {
-        // "All" row — clear all checkboxes, restore radio fill
-        document.querySelectorAll('.tags-checkbox').forEach(function (c) {
+        panel.querySelectorAll('.tags-checkbox').forEach(function (c) {
           c.classList.remove('tags-checkbox--checked');
+          syncCheckboxAria(c);
         });
         radio.classList.remove('tags-radio--empty');
+        return;
       }
 
       if (cb) {
         var isChecked = cb.classList.contains('tags-checkbox--checked');
         cb.classList.toggle('tags-checkbox--checked', !isChecked);
-        // Hollow out "All" radio when anything is checked
-        var allRadio = document.querySelector('.tags-radio');
-        var anyChecked = document.querySelector('.tags-checkbox--checked');
-        if (anyChecked) {
-          allRadio.classList.add('tags-radio--empty');
-        } else {
-          allRadio.classList.remove('tags-radio--empty');
-        }
+        syncCheckboxAria(cb);
+        refreshAllRadioState();
       }
     });
-  });
 
-  // ── Render active tag chips in status bar ────────────────────────────────
-  var chipsContainer = null;
+    document.getElementById(cfg.cancelId).addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      tagsSearch.value = '';
+      renderSearchResults('');
+      syncCheckboxesFromCommitted();
+      setPanelOpen(false);
+    });
 
-  function renderTagChips(tags) {
-    if (chipsContainer) {
-      chipsContainer.remove();
-      chipsContainer = null;
-    }
-    if (!tags.length) return;
-
-    chipsContainer = document.createElement('div');
-    chipsContainer.style.cssText = 'display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap;';
-
-    tags.forEach(function (tag) {
-      var chip = document.createElement('span');
-      chip.className = 'tag-chip';
-      chip.innerHTML = tag + '<button class="tag-chip__remove" aria-label="Remove ' + tag + '">×</button>';
-      chip.querySelector('.tag-chip__remove').addEventListener('click', function () {
-        // Uncheck in panel
-        document.querySelectorAll('.tags-panel-row').forEach(function (row) {
-          var span = row.querySelector('span:not(.tags-panel-row__count)');
-          if (span && span.textContent.trim() === tag) {
-            var cb = row.querySelector('.tags-checkbox');
-            if (cb) cb.classList.remove('tags-checkbox--checked');
-          }
-        });
-        chip.remove();
-        // Restore "All" if none left
-        if (!chipsContainer.querySelector('.tag-chip')) {
-          chipsContainer.remove();
-          chipsContainer = null;
-          document.querySelector('.tags-radio').classList.remove('tags-radio--empty');
+    document.getElementById(cfg.applyId).addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var checked = [];
+      panel.querySelectorAll('.tags-panel-row[data-tag]').forEach(function (row) {
+        var box = row.querySelector('.tags-checkbox--checked');
+        if (box) {
+          var name = row.getAttribute('data-tag');
+          if (name) checked.push(name);
         }
       });
-      chipsContainer.appendChild(chip);
+      committed.length = 0;
+      checked.forEach(function (n) { committed.push(n); });
+      updateTrigger();
+      setPanelOpen(false);
     });
 
-    // Insert after the tags-dropdown-wrap
-    var wrap = document.querySelector('.tags-dropdown-wrap');
-    wrap.parentNode.insertBefore(chipsContainer, wrap.nextSibling);
+    updateTrigger();
+
+    return {
+      updateTrigger: updateTrigger,
+      setPanelOpen: setPanelOpen,
+      syncCheckboxesFromCommitted: syncCheckboxesFromCommitted,
+      wrap: wrap
+    };
   }
 
-  // ── Status pills ─────────────────────────────────────────────────────────
-  document.querySelectorAll('.status-pill').forEach(function (pill) {
-    pill.addEventListener('click', function () {
-      document.querySelectorAll('.status-pill').forEach(function (p) {
-        p.classList.remove('status-pill--active-blue');
-      });
-      this.classList.add('status-pill--active-blue');
-    });
+  var protocolTagApi = initScoutTagFilter({
+    committed: committedProtocols,
+    defaultNameSet: PROTOCOL_DEFAULT_SET,
+    extraCatalog: EXTRA_PROTOCOL_CATALOG,
+    triggerId: 'tags-trigger-protocol',
+    panelId: 'tags-panel-protocol',
+    searchId: 'tags-search-protocol',
+    wrapId: 'protocol-tags-wrap',
+    searchSectionId: 'tags-search-section-protocol',
+    searchResultsId: 'tags-search-results-protocol',
+    valuesId: 'tags-trigger-values-protocol',
+    cancelId: 'tags-panel-cancel-protocol',
+    applyId: 'tags-apply-protocol',
+    ariaLabelPrefix: 'Protocols',
+    ariaLabelEmpty: 'Filter by protocols',
+    emptySearchMsg: 'No additional protocols match this search. Common protocols are listed above.'
   });
+
+  document.addEventListener('click', function (e) {
+    var w1 = document.getElementById('protocol-tags-wrap');
+    if (!w1) return;
+    if (w1.contains(e.target)) return;
+    protocolTagApi.setPanelOpen(false);
+  });
+
+  document.getElementById('tags-select-all-protocols').addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    committedProtocols.length = 0;
+    PROTOCOL_DEFAULT_NAMES.forEach(function (n) { committedProtocols.push(n); });
+    protocolTagApi.updateTrigger();
+    if (!document.getElementById('tags-panel-protocol').hidden) {
+      protocolTagApi.syncCheckboxesFromCommitted();
+    }
+  });
+
+  document.getElementById('tags-clear-all').addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    committedProtocols.length = 0;
+    protocolTagApi.updateTrigger();
+    if (!document.getElementById('tags-panel-protocol').hidden) {
+      protocolTagApi.syncCheckboxesFromCommitted();
+    }
+  });
+
+  window.addEventListener('resize', function () {
+    if (committedProtocols.length) protocolTagApi.updateTrigger();
+  });
+
+  (function () {
+    var bar = document.getElementById('scout-status-bar');
+    var slotM = document.querySelector('.scout-status-slot--mobile');
+    var slotD = document.querySelector('.scout-status-slot--desktop');
+    var btn = document.getElementById('scout-adv-filters-btn');
+    var backdrop = document.getElementById('scout-adv-filters-backdrop');
+    var drawer = document.getElementById('scout-adv-filters-drawer');
+    var closeBtn = document.getElementById('scout-adv-filters-close');
+    if (!bar || !slotM || !slotD) return;
+    var mq = window.matchMedia('(min-width: 900px)');
+    function placeStatusBar() {
+      if (mq.matches) {
+        slotD.appendChild(bar);
+      } else {
+        slotM.appendChild(bar);
+        closeAdvFilters();
+      }
+    }
+    function openAdvFilters() {
+      if (!drawer || !backdrop) return;
+      backdrop.hidden = false;
+      backdrop.setAttribute('aria-hidden', 'false');
+      drawer.hidden = false;
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      if (closeBtn) closeBtn.focus();
+    }
+    function closeAdvFilters() {
+      if (!drawer || !backdrop) return;
+      drawer.hidden = true;
+      backdrop.hidden = true;
+      backdrop.setAttribute('aria-hidden', 'true');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    placeStatusBar();
+    if (mq.addEventListener) mq.addEventListener('change', placeStatusBar);
+    else mq.addListener(placeStatusBar);
+    if (btn && drawer && backdrop) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!mq.matches) return;
+        if (drawer.hidden) openAdvFilters();
+        else closeAdvFilters();
+      });
+    }
+    if (backdrop) {
+      backdrop.addEventListener('click', function () {
+        closeAdvFilters();
+      });
+    }
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        closeAdvFilters();
+      });
+    }
+    var applyBtn = document.getElementById('scout-adv-filters-apply');
+    if (applyBtn) applyBtn.addEventListener('click', closeAdvFilters);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && drawer && !drawer.hidden) closeAdvFilters();
+    });
+
+    var gddMinR = document.getElementById('saf-gdd-range-min');
+    var gddMaxR = document.getElementById('saf-gdd-range-max');
+    var gddFill = document.getElementById('saf-gdd-fill');
+    var gddMinNum = document.getElementById('saf-gdd-min-num');
+    var gddMaxNum = document.getElementById('saf-gdd-max-num');
+    var gddLabMin = document.getElementById('saf-gdd-val-min');
+    var gddLabMax = document.getElementById('saf-gdd-val-max');
+    var GDD_SLIDER_MAX = 2000;
+    function sliderToDisplayMin(v) {
+      return (Number(v) * 0.1).toFixed(1);
+    }
+    function sliderToDisplayMax(v) {
+      return (Number(v) * 0.5).toFixed(1);
+    }
+    function displayMinToSlider(x) {
+      return Math.max(0, Math.min(GDD_SLIDER_MAX, Math.round(Number(x) / 0.1)));
+    }
+    function displayMaxToSlider(x) {
+      return Math.max(0, Math.min(GDD_SLIDER_MAX, Math.round(Number(x) / 0.5)));
+    }
+    function syncGddFromSliders() {
+      if (!gddMinR || !gddMaxR || !gddFill) return;
+      var a = Number(gddMinR.value);
+      var b = Number(gddMaxR.value);
+      var lo = Math.min(a, b);
+      var hi = Math.max(a, b);
+      if (a !== lo) {
+        gddMinR.value = String(lo);
+        gddMaxR.value = String(hi);
+      }
+      var p0 = (lo / GDD_SLIDER_MAX) * 100;
+      var p1 = (hi / GDD_SLIDER_MAX) * 100;
+      gddFill.style.left = p0 + '%';
+      gddFill.style.width = Math.max(0, p1 - p0) + '%';
+      if (gddMinNum) gddMinNum.value = sliderToDisplayMin(lo);
+      if (gddMaxNum) gddMaxNum.value = sliderToDisplayMax(hi);
+      if (gddLabMin) gddLabMin.textContent = sliderToDisplayMin(lo);
+      if (gddLabMax) gddLabMax.textContent = sliderToDisplayMax(hi);
+    }
+    function onGddNumberChange() {
+      if (!gddMinR || !gddMaxR || !gddMinNum || !gddMaxNum) return;
+      var lo = displayMinToSlider(gddMinNum.value);
+      var hi = displayMaxToSlider(gddMaxNum.value);
+      if (lo > hi) {
+        var t = lo;
+        lo = hi;
+        hi = t;
+      }
+      gddMinR.value = String(lo);
+      gddMaxR.value = String(hi);
+      syncGddFromSliders();
+    }
+    if (gddMinR && gddMaxR) {
+      gddMinR.addEventListener('input', syncGddFromSliders);
+      gddMaxR.addEventListener('input', syncGddFromSliders);
+      syncGddFromSliders();
+    }
+    if (gddMinNum && gddMaxNum) {
+      gddMinNum.addEventListener('change', onGddNumberChange);
+      gddMaxNum.addEventListener('change', onGddNumberChange);
+    }
+
+    var emergeR = document.getElementById('saf-emerge-range');
+    var emergeMin = document.getElementById('saf-emerge-min');
+    var emergeMax = document.getElementById('saf-emerge-max');
+    if (emergeR && emergeMin && emergeMax) {
+      emergeR.addEventListener('input', function () {
+        var v = emergeR.value;
+        emergeMin.value = v;
+        emergeMax.value = v;
+      });
+    }
+    var areaR = document.getElementById('saf-area-range');
+    var areaMin = document.getElementById('saf-area-min');
+    var areaMax = document.getElementById('saf-area-max');
+    if (areaR && areaMin && areaMax) {
+      areaR.addEventListener('input', function () {
+        var v = areaR.value;
+        areaMin.value = v;
+        areaMax.value = v;
+      });
+    }
+
+    function syncAdhocFromSelect(sel) {
+      var wrapId = sel.getAttribute('data-adhoc-target');
+      if (!wrapId) return;
+      var wrap = document.getElementById(wrapId);
+      if (!wrap) return;
+      var inp = wrap.querySelector('.scout-adv-filters__adhoc-field');
+      var on = sel.value === 'adhoc';
+      wrap.hidden = !on;
+      if (inp) {
+        inp.disabled = !on;
+        if (!on) inp.value = '';
+        else setTimeout(function () { inp.focus(); }, 0);
+      }
+    }
+
+    function syncAllAdhocPanels() {
+      drawer.querySelectorAll('.scout-adv-filters__select--adhoc').forEach(function (s) {
+        syncAdhocFromSelect(s);
+      });
+    }
+
+    drawer.querySelectorAll('.scout-adv-filters__select--adhoc').forEach(function (sel) {
+      sel.addEventListener('change', function () {
+        syncAdhocFromSelect(sel);
+      });
+    });
+    syncAllAdhocPanels();
+
+    var resetAll = document.getElementById('scout-adv-filters-reset-all');
+    if (resetAll && drawer) {
+      resetAll.addEventListener('click', function () {
+        drawer.querySelectorAll('input.scout-adv-filters__input, input.scout-adv-filters__range').forEach(function (el) {
+          if (el.type === 'range') {
+            el.value = el.min || '0';
+          } else if (el.type === 'number') {
+            el.value = '0';
+          } else {
+            el.value = '';
+          }
+        });
+        if (gddMinNum) gddMinNum.value = '21.5';
+        if (gddMaxNum) gddMaxNum.value = '402.5';
+        if (gddMinR) gddMinR.value = '215';
+        if (gddMaxR) gddMaxR.value = '805';
+        syncGddFromSliders();
+        drawer.querySelectorAll('select.scout-adv-filters__select').forEach(function (sel) {
+          sel.selectedIndex = 0;
+        });
+        syncAllAdhocPanels();
+      });
+    }
+  })();
+
+  (function () {
+    function closeAllViewSwitchers() {
+      document.querySelectorAll('[data-view-switcher].view-switcher--open').forEach(function (root) {
+        root.classList.remove('view-switcher--open');
+        var btn = root.querySelector('.view-switcher__trigger');
+        var menu = root.querySelector('.view-switcher__menu');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        if (menu) menu.setAttribute('hidden', '');
+      });
+    }
+    document.querySelectorAll('[data-view-switcher]').forEach(function (root) {
+      var btn = root.querySelector('.view-switcher__trigger');
+      var menu = root.querySelector('.view-switcher__menu');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var wasOpen = root.classList.contains('view-switcher--open');
+        closeAllViewSwitchers();
+        if (!wasOpen) {
+          root.classList.add('view-switcher--open');
+          btn.setAttribute('aria-expanded', 'true');
+          menu.removeAttribute('hidden');
+        }
+      });
+      menu.querySelectorAll('.view-switcher__option').forEach(function (opt) {
+        opt.addEventListener('click', function () {
+          var navHref = opt.getAttribute('data-view-nav');
+          if (navHref) {
+            closeAllViewSwitchers();
+            window.location.href = navHref;
+            return;
+          }
+          menu.querySelectorAll('.view-switcher__option').forEach(function (o) {
+            o.classList.remove('view-switcher__option--active');
+          });
+          opt.classList.add('view-switcher__option--active');
+          var labelEl = btn.querySelector('.view-switcher__label');
+          if (labelEl) {
+            var c = opt.cloneNode(true);
+            c.querySelectorAll('.material-symbols-outlined').forEach(function (s) {
+              s.remove();
+            });
+            labelEl.textContent = c.textContent.replace(/\s+/g, ' ').trim();
+          }
+          var ariaLabel = btn.getAttribute('aria-label');
+          if (ariaLabel && ariaLabel.indexOf('View mode') === 0) {
+            var shortLabel = labelEl ? labelEl.textContent.trim() : '';
+            btn.setAttribute('aria-label', 'View mode, ' + shortLabel);
+          }
+          closeAllViewSwitchers();
+        });
+      });
+    });
+    document.addEventListener('click', function () {
+      closeAllViewSwitchers();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAllViewSwitchers();
+    });
+  })();
 
 })();
 </script>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiTrials Phase 3 — Unified Analysis UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="analysis-ui.css" />
+</head>
+<body class="maa">
+  <header id="maa-entry" class="maa-top">
+    <img class="maa-top__logo" src="../../../assets/agmri-logo.png" alt="AgMRI" />
+    <nav class="maa-crumb" aria-label="Breadcrumb">
+      <a href="index.html">MiTrials</a>
+      · <a href="#">Nitrogen response — Smith East</a>
+      · <strong>Analyze</strong>
+    </nav>
+    <div class="maa-top__actions">
+      <span style="font-size:12px;color:var(--color-text-muted);">Deep link: <code style="font-size:11px;">/analysis?trial=…</code></span>
+      <button type="button" class="maa-btn maa-btn--ghost">Share view</button>
+      <button type="button" class="maa-btn">Close</button>
+    </div>
+  </header>
+
+  <div id="maa-trial-context" class="maa-subbar">
+    <div class="maa-trial-line">
+      <span class="maa-trial-line__name">Nitrogen response — Smith East</span>
+      <span class="maa-trial-line__meta">Protocol <code>VR-N-2025</code></span>
+      <span class="maa-trial-line__meta">Treatments: <strong>6</strong></span>
+      <span class="maa-trial-line__meta">Field: <strong>Home 4 South Dahlia’s 24</strong> · 664.9 ac · Corn · GDD 153</span>
+    </div>
+    <div class="maa-toolbar">
+      <div id="maa-time-range">
+        <span class="maa-label">Time range</span>
+        <div class="maa-time-range">
+          <input type="date" value="2025-05-01" aria-label="Start date" />
+          <span>–</span>
+          <input type="date" value="2025-09-15" aria-label="End date" />
+        </div>
+      </div>
+      <div id="maa-layer-toggle">
+        <span class="maa-label">Layer</span>
+        <div class="maa-seg" role="group" aria-label="NDVI or Yield">
+          <button type="button" aria-pressed="true">NDVI</button>
+          <button type="button" aria-pressed="false">Yield</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="maa-body">
+    <div id="maa-map" class="maa-map-col">
+      <div class="maa-map-bg" style="background-image: url('../../../assets/intelinair-hero-panorama.png');" role="img" aria-label="Field map (demo)"></div>
+      <div class="maa-map-overlay" aria-hidden="true">
+        <div class="maa-field-outline"></div>
+        <div id="maa-region-protocol" class="maa-region maa-region--protocol" title="Protocol-assigned region"></div>
+        <div id="maa-region-adhoc" class="maa-region maa-region--adhoc" title="Ad-hoc region"></div>
+        <div id="maa-exclusion-visual" class="maa-exclusion" title="Excluded from analysis"></div>
+      </div>
+
+      <div id="maa-map-tools" class="maa-map-tools">
+        <button type="button" class="maa-tool" title="Draw exclusion" aria-pressed="false">✂</button>
+        <button type="button" class="maa-tool" title="Point annotation" aria-pressed="false">📍</button>
+        <button type="button" class="maa-tool" title="Area annotation" aria-pressed="false">▢</button>
+      </div>
+
+      <div id="maa-legend" class="maa-map-legend">
+        <strong style="font-size:11px;">Regions &amp; overlays</strong>
+        <div class="maa-map-legend__row">
+          <span class="maa-swatch" style="background: rgba(59,130,246,0.4); border: 2px solid var(--color-primitive-500);"></span>
+          <span>Protocol region</span>
+        </div>
+        <div class="maa-map-legend__row">
+          <span class="maa-swatch" style="background: rgba(168,85,247,0.25); border: 2px solid #a855f7;"></span>
+          <span>Ad-hoc region</span>
+        </div>
+        <div class="maa-map-legend__row">
+          <span class="maa-swatch" style="background: repeating-linear-gradient(-45deg,#fca5a5,#fca5a5 4px,#fecaca 4px,#fecaca 8px);"></span>
+          <span>Exclusion (analysis only)</span>
+        </div>
+      </div>
+
+      <div id="maa-timeseries" class="maa-chart-strip">
+        <div class="maa-chart-title">NDVI trend (selected regions) · updates with range &amp; exclusions</div>
+        <div class="maa-spark" aria-hidden="true">
+          <span class="maa-spark__bar" style="height: 35%;"></span>
+          <span class="maa-spark__bar" style="height: 42%;"></span>
+          <span class="maa-spark__bar" style="height: 55%;"></span>
+          <span class="maa-spark__bar" style="height: 48%;"></span>
+          <span class="maa-spark__bar" style="height: 62%;"></span>
+          <span class="maa-spark__bar" style="height: 70%;"></span>
+          <span class="maa-spark__bar" style="height: 68%;"></span>
+          <span class="maa-spark__bar" style="height: 75%;"></span>
+          <span class="maa-spark__bar" style="height: 82%;"></span>
+          <span class="maa-spark__bar" style="height: 88%;"></span>
+        </div>
+        <div class="maa-spark-labels">
+          <span>May 1</span>
+          <span>Sep 15</span>
+        </div>
+      </div>
+    </div>
+
+    <aside id="maa-sidebar" class="maa-sidebar">
+      <div id="maa-raw-vs-analysis" class="maa-callout">
+        <strong>Raw vs analysis</strong>
+        Raw imagery &amp; yield stay immutable. Exclusions and overlays adjust the <em>analysis view</em> only. Reset restores defaults without touching source data.
+      </div>
+
+      <section id="maa-region-metadata" class="maa-section">
+        <h2>Season-long metadata</h2>
+        <p style="margin:0 0 10px;font-size:12px;color:var(--color-text-muted);">Parity with Season-Long Region Report — same field stats, crop, dates, and trial context.</p>
+        <dl class="maa-meta-grid">
+          <dt>Planting</dt><dd>11/5</dd>
+          <dt>Crop</dt><dd>Corn</dd>
+          <dt>Hybrid (dominant)</dt><dd>Pioneer P####</dd>
+          <dt>Soil</dt><dd>Drummer silty clay loam</dd>
+        </dl>
+        <p id="region-report-bridge" style="margin: 10px 0 0; font-size: 11px;">
+          <a href="modal-region-report-zones.html">Open legacy Region report tool (modal) →</a> <span style="color:var(--color-text-muted);">· “Open in Analysis UI” lands here from Region Report.</span>
+        </p>
+      </section>
+
+      <section id="maa-regions" class="maa-section">
+        <h2>Active regions</h2>
+        <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-muted);">Protocol-defined and ad-hoc regions both drive the time series.</p>
+        <div class="maa-pill-row">
+          <span class="maa-pill maa-pill--protocol">North VR — protocol</span>
+          <span class="maa-pill maa-pill--adhoc">Wet pocket — ad hoc</span>
+        </div>
+      </section>
+
+      <section id="maa-exclusions" class="maa-section">
+        <h2>Exclusions</h2>
+        <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-muted);">Draw or edit zones to omit poor/invalid area. Chart &amp; stats recalc; raw data unchanged.</p>
+        <ul class="maa-list">
+          <li>
+            <strong>Exclusion 1</strong> · 2.1 ac
+            <span class="maa-list__reason">Reason: Drowned-out area</span>
+          </li>
+        </ul>
+        <button type="button" class="maa-btn" style="margin-top:8px;">+ Draw exclusion</button>
+      </section>
+
+      <section id="maa-annotations" class="maa-section">
+        <h2>Annotations</h2>
+        <p style="margin:0 0 8px;font-size:12px;color:var(--color-text-muted);">Observational context — does not change official processed values unless promoted via QC.</p>
+        <ul class="maa-list">
+          <li>
+            <strong>Point</strong> — Waterway near headland
+            <span class="maa-list__reason">Reason: Field condition issue · “Standing water 48h after 1&quot; rain.”</span>
+          </li>
+          <li>
+            <strong>Area</strong> — Application misalignment
+            <span class="maa-list__reason">Reason: Poor application alignment</span>
+          </li>
+        </ul>
+        <label class="maa-label" for="maa-ann-reason" style="display:block;margin-top:10px;">Add — reason</label>
+        <select id="maa-ann-reason" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--color-border);font-size:13px;margin-bottom:8px;">
+          <option>Drowned-out area</option>
+          <option>Waterway</option>
+          <option>Poor application alignment</option>
+          <option>Field condition issue</option>
+          <option>Other</option>
+        </select>
+      </section>
+
+      <section id="maa-summary-comment" class="maa-section">
+        <h2>Trial summary comment</h2>
+        <label class="visually-hidden" for="maa-summary">Performance summary</label>
+        <textarea id="maa-summary" class="maa-textarea" placeholder="High-level performance context for collaborators…">Strong response on the east protocol blocks; west ad-hoc zone shows N loss pattern consistent with spring saturation.</textarea>
+      </section>
+
+      <div id="maa-reset" class="maa-foot">
+        <button type="button" class="maa-btn maa-btn--danger-ghost">Reset analysis</button>
+        <span style="font-size:11px;color:var(--color-text-muted);align-self:center;">Clears exclusions &amp; overlay analysis state</span>
+      </div>
+    </aside>
+  </div>
+
+</body>
+</html>

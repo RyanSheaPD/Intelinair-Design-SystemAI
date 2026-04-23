@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid placement — AgMRI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="agmri-hybrid-guide.css" />
+</head>
+<body class="agh">
+  <header class="agh-hero">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:var(--spacing-l);">
+      <div>
+        <h1 class="agh-hero__title"><span class="agh-hero__icon" aria-hidden="true"><span class="material-symbols-outlined" style="vertical-align:middle;">eco</span></span>McLean County corn hybrid placement</h1>
+        <p class="agh-hero__subtitle">Anonymized · McLean Co., IL · 2025 · 18 fields · 2,227 ac · 9 hybrids</p>
+      </div>
+      <div class="agh-price-widget">
+        <div>
+          <label for="cornPrice">Corn price</label>
+          <output id="cornOut" for="cornPrice">$4.50</output>
+        </div>
+        <input type="range" id="cornPrice" min="3" max="7" step="0.05" value="4.5" aria-label="Corn price per bushel" />
+      </div>
+    </div>
+  </header>
+
+  <div class="agh-toolbar">
+    <div class="agh-tabs-line" role="tablist">
+      <button type="button" class="agh-tabs-line__btn agh-tabs-line__btn--active" aria-selected="true"><span class="material-symbols-outlined">layers</span> Hybrid cards</button>
+      <button type="button" class="agh-tabs-line__btn" aria-selected="false"><span class="material-symbols-outlined">payments</span> Seed economics</button>
+      <button type="button" class="agh-tabs-line__btn" aria-selected="false"><span class="material-symbols-outlined">my_location</span> Field placement</button>
+    </div>
+    <span class="agh-toolbar__stat">243.1 bu/ac avg</span>
+  </div>
+
+  <main class="agh-main">
+    <a class="agh-back" href="index.html">← All demos</a>
+
+    <div class="agh-hybrid-grid">
+      <article class="agh-hybrid-card" style="--agh-accent-bar: #3b82f6;">
+        <div class="agh-hybrid-card__top">
+          <div>
+            <h2 class="agh-hybrid-card__name">6492</h2>
+            <p class="agh-hybrid-card__meta">RM 112 · 14 fields · 412 ac observed</p>
+          </div>
+          <div class="agh-hybrid-card__yield">
+            <div class="agh-hybrid-card__yield-val">269.9</div>
+            <div class="agh-hybrid-card__yield-unit">bu/ac predicted</div>
+          </div>
+        </div>
+        <div class="agh-pill-row">
+          <span class="agh-tag">Pop: 36.0K</span><span class="agh-tag">Moist: 17.7%</span>
+        </div>
+        <div class="agh-pill-row">
+          <span class="agh-tag">SD: 22.8 bu</span><span class="agh-tag">$315/bag</span>
+        </div>
+        <div class="agh-yield-soil">
+          <div class="agh-yield-soil__label">Yield by soil</div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">High</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--hi" style="width:92%"></div></div><span class="agh-soil-row__num">278</span></div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">Medium</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--med" style="width:78%"></div></div><span class="agh-soil-row__num">251</span></div>
+        </div>
+        <div class="agh-hybrid-card__foot">
+          <span class="agh-hybrid-card__net">$1081/ac net</span>
+          <a class="agh-link" href="#">Details →</a>
+        </div>
+      </article>
+
+      <article class="agh-hybrid-card" style="--agh-accent-bar: #c41e3a;">
+        <div class="agh-hybrid-card__top">
+          <div>
+            <h2 class="agh-hybrid-card__name">DKC 66-06</h2>
+            <p class="agh-hybrid-card__meta">RM 116 · 12 fields · 356 ac</p>
+          </div>
+          <div class="agh-hybrid-card__yield">
+            <div class="agh-hybrid-card__yield-val">265.2</div>
+            <div class="agh-hybrid-card__yield-unit">bu/ac predicted</div>
+          </div>
+        </div>
+        <div class="agh-pill-row"><span class="agh-tag">Pop: 35.5K</span><span class="agh-tag">Moist: 18.1%</span></div>
+        <div class="agh-pill-row"><span class="agh-tag">SD: 24.1 bu</span><span class="agh-tag">$328/bag</span></div>
+        <div class="agh-yield-soil">
+          <div class="agh-yield-soil__label">Yield by soil</div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">High</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--hi" style="width:88%"></div></div><span class="agh-soil-row__num">272</span></div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">Medium</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--med" style="width:74%"></div></div><span class="agh-soil-row__num">248</span></div>
+        </div>
+        <div class="agh-hybrid-card__foot">
+          <span class="agh-hybrid-card__net">$1042/ac net</span>
+          <a class="agh-link" href="#">Details →</a>
+        </div>
+      </article>
+
+      <article class="agh-hybrid-card" style="--agh-accent-bar: #22c55e;">
+        <div class="agh-hybrid-card__top">
+          <div>
+            <h2 class="agh-hybrid-card__name">DKC 64-22</h2>
+            <p class="agh-hybrid-card__meta">RM 114 · 11 fields · 310 ac</p>
+          </div>
+          <div class="agh-hybrid-card__yield">
+            <div class="agh-hybrid-card__yield-val">261.4</div>
+            <div class="agh-hybrid-card__yield-unit">bu/ac predicted</div>
+          </div>
+        </div>
+        <div class="agh-pill-row"><span class="agh-tag">Pop: 34.8K</span><span class="agh-tag">Moist: 18.4%</span></div>
+        <div class="agh-pill-row"><span class="agh-tag">SD: 23.5 bu</span><span class="agh-tag">$322/bag</span></div>
+        <div class="agh-yield-soil">
+          <div class="agh-yield-soil__label">Yield by soil</div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">High</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--hi" style="width:85%"></div></div><span class="agh-soil-row__num">268</span></div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">Medium</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--med" style="width:71%"></div></div><span class="agh-soil-row__num">245</span></div>
+        </div>
+        <div class="agh-hybrid-card__foot">
+          <span class="agh-hybrid-card__net">$998/ac net</span>
+          <a class="agh-link" href="#">Details →</a>
+        </div>
+      </article>
+
+      <article class="agh-hybrid-card" style="--agh-accent-bar: #f59e0b;">
+        <div class="agh-hybrid-card__top">
+          <div>
+            <h2 class="agh-hybrid-card__name">FS 6017V RIB</h2>
+            <p class="agh-hybrid-card__meta">RM 110 · 9 fields · 268 ac</p>
+          </div>
+          <div class="agh-hybrid-card__yield">
+            <div class="agh-hybrid-card__yield-val">258.0</div>
+            <div class="agh-hybrid-card__yield-unit">bu/ac predicted</div>
+          </div>
+        </div>
+        <div class="agh-pill-row"><span class="agh-tag">Pop: 35.2K</span><span class="agh-tag">Moist: 17.9%</span></div>
+        <div class="agh-pill-row"><span class="agh-tag">SD: 25.0 bu</span><span class="agh-tag">$305/bag</span></div>
+        <div class="agh-yield-soil">
+          <div class="agh-yield-soil__label">Yield by soil</div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">High</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--hi" style="width:82%"></div></div><span class="agh-soil-row__num">264</span></div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">Medium</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--med" style="width:69%"></div></div><span class="agh-soil-row__num">241</span></div>
+        </div>
+        <div class="agh-hybrid-card__foot">
+          <span class="agh-hybrid-card__net">$972/ac net</span>
+          <a class="agh-link" href="#">Details →</a>
+        </div>
+      </article>
+
+      <article class="agh-hybrid-card" style="--agh-accent-bar: #8b5cf6;">
+        <div class="agh-hybrid-card__top">
+          <div>
+            <h2 class="agh-hybrid-card__name">DKC 111-33</h2>
+            <p class="agh-hybrid-card__meta">RM 111 · 8 fields · 198 ac</p>
+          </div>
+          <div class="agh-hybrid-card__yield">
+            <div class="agh-hybrid-card__yield-val">254.6</div>
+            <div class="agh-hybrid-card__yield-unit">bu/ac predicted</div>
+          </div>
+        </div>
+        <div class="agh-pill-row"><span class="agh-tag">Pop: 34.5K</span><span class="agh-tag">Moist: 18.2%</span></div>
+        <div class="agh-pill-row"><span class="agh-tag">SD: 26.2 bu</span><span class="agh-tag">$318/bag</span></div>
+        <div class="agh-yield-soil">
+          <div class="agh-yield-soil__label">Yield by soil</div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">High</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--hi" style="width:79%"></div></div><span class="agh-soil-row__num">260</span></div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">Medium</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--med" style="width:66%"></div></div><span class="agh-soil-row__num">238</span></div>
+        </div>
+        <div class="agh-hybrid-card__foot">
+          <span class="agh-hybrid-card__net">$941/ac net</span>
+          <a class="agh-link" href="#">Details →</a>
+        </div>
+      </article>
+
+      <article class="agh-hybrid-card" style="--agh-accent-bar: #ec4899;">
+        <div class="agh-hybrid-card__top">
+          <div>
+            <h2 class="agh-hybrid-card__name">FS 6133VDG RIB</h2>
+            <p class="agh-hybrid-card__meta">RM 113 · 7 fields · 176 ac</p>
+          </div>
+          <div class="agh-hybrid-card__yield">
+            <div class="agh-hybrid-card__yield-val">250.1</div>
+            <div class="agh-hybrid-card__yield-unit">bu/ac predicted</div>
+          </div>
+        </div>
+        <div class="agh-pill-row"><span class="agh-tag">Pop: 34.0K</span><span class="agh-tag">Moist: 18.5%</span></div>
+        <div class="agh-pill-row"><span class="agh-tag">SD: 27.1 bu</span><span class="agh-tag">$312/bag</span></div>
+        <div class="agh-yield-soil">
+          <div class="agh-yield-soil__label">Yield by soil</div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">High</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--hi" style="width:76%"></div></div><span class="agh-soil-row__num">256</span></div>
+          <div class="agh-soil-row"><span class="agh-soil-row__name">Medium</span><div class="agh-soil-row__bar"><div class="agh-soil-row__fill agh-soil-row__fill--med" style="width:63%"></div></div><span class="agh-soil-row__num">234</span></div>
+        </div>
+        <div class="agh-hybrid-card__foot">
+          <span class="agh-hybrid-card__net">$905/ac net</span>
+          <a class="agh-link" href="#">Details →</a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var el = document.getElementById('cornPrice');
+      var out = document.getElementById('cornOut');
+      if (!el || !out) return;
+      function fmt() {
+        out.textContent = '$' + Number(el.value).toFixed(2);
+      }
+      el.addEventListener('input', fmt);
+      fmt();
+    })();
+  </script>
+</body>
+</html>

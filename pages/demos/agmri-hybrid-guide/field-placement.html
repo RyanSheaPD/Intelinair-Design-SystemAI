@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field placement — AgMRI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="agmri-hybrid-guide.css" />
+</head>
+<body class="agh">
+  <header class="agh-hero">
+    <h1 class="agh-hero__title"><span class="agh-hero__icon" aria-hidden="true"><span class="material-symbols-outlined" style="vertical-align:middle;">eco</span></span>McLean County corn hybrid placement</h1>
+    <p class="agh-hero__subtitle">Anonymized · McLean Co., IL · 2025</p>
+  </header>
+
+  <div class="agh-toolbar">
+    <div class="agh-tabs-line" role="tablist">
+      <button type="button" class="agh-tabs-line__btn" aria-selected="false"><span class="material-symbols-outlined">layers</span> Hybrid cards</button>
+      <button type="button" class="agh-tabs-line__btn" aria-selected="false"><span class="material-symbols-outlined">payments</span> Seed economics</button>
+      <button type="button" class="agh-tabs-line__btn agh-tabs-line__btn--active" aria-selected="true"><span class="material-symbols-outlined">my_location</span> Field placement</button>
+    </div>
+    <span class="agh-toolbar__stat">243.1 bu/ac avg</span>
+  </div>
+
+  <main class="agh-main">
+    <a class="agh-back" href="index.html">← All demos</a>
+
+    <h1 class="agh-page-title">Hybrid placement with predicted yield ranges</h1>
+    <p class="agh-page-lede">Yields adjusted for each field’s soil productivity and drainage class</p>
+
+    <section class="agh-field-block">
+      <div class="agh-field-block__head">
+        <h2 class="agh-field-block__name">Field D</h2>
+        <span class="agh-pill agh-pill--high">High prod</span>
+        <span class="agh-pill agh-pill--neutral">Poorly drained</span>
+        <span class="agh-field-block__meta">NCCPI 0.82 · 160 ac</span>
+      </div>
+      <div class="agh-table-wrap">
+        <table class="agh-table">
+          <thead>
+            <tr>
+              <th>Hybrid</th>
+              <th class="num">Pred yield</th>
+              <th class="num">Range (bu/ac)</th>
+              <th class="num">Acres</th>
+              <th class="num green">Net $/ac</th>
+              <th>Yield range</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="agh-row-highlight">
+              <td><span class="agh-dot" style="background:#c41e3a;"></span>DKC 66-06 <span class="agh-top-badge">Top</span></td>
+              <td class="num">268</td>
+              <td class="num">242–288</td>
+              <td class="num">160</td>
+              <td class="num green">$412</td>
+              <td class="agh-range-cell">
+                <div class="agh-range-track">
+                  <div class="agh-range-fill" style="left:8%;width:72%;background:#c41e3a;"></div>
+                  <div class="agh-range-marker" style="left:52%;"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="agh-dot" style="background:#3b82f6;"></span>6492</td>
+              <td class="num">261</td>
+              <td class="num">236–280</td>
+              <td class="num">160</td>
+              <td class="num green">$389</td>
+              <td class="agh-range-cell">
+                <div class="agh-range-track">
+                  <div class="agh-range-fill" style="left:10%;width:68%;background:#3b82f6;"></div>
+                  <div class="agh-range-marker" style="left:48%;"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="agh-dot" style="background:#f59e0b;"></span>DKC 64-22</td>
+              <td class="num">255</td>
+              <td class="num">230–274</td>
+              <td class="num">160</td>
+              <td class="num green">$364</td>
+              <td class="agh-range-cell">
+                <div class="agh-range-track">
+                  <div class="agh-range-fill" style="left:12%;width:65%;background:#f59e0b;"></div>
+                  <div class="agh-range-marker" style="left:45%;"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="agh-field-block">
+      <div class="agh-field-block__head">
+        <h2 class="agh-field-block__name">Field A</h2>
+        <span class="agh-pill agh-pill--high">High prod</span>
+        <span class="agh-pill agh-pill--neutral">Well drained</span>
+        <span class="agh-field-block__meta">NCCPI 0.88 · 145 ac</span>
+      </div>
+      <div class="agh-table-wrap">
+        <table class="agh-table">
+          <thead>
+            <tr>
+              <th>Hybrid</th>
+              <th class="num">Pred yield</th>
+              <th class="num">Range (bu/ac)</th>
+              <th class="num">Acres</th>
+              <th class="num green">Net $/ac</th>
+              <th>Yield range</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="agh-row-highlight">
+              <td><span class="agh-dot" style="background:#3b82f6;"></span>6492 <span class="agh-top-badge">Top</span></td>
+              <td class="num">272</td>
+              <td class="num">248–292</td>
+              <td class="num">145</td>
+              <td class="num green">$428</td>
+              <td class="agh-range-cell">
+                <div class="agh-range-track">
+                  <div class="agh-range-fill" style="left:6%;width:74%;background:#3b82f6;"></div>
+                  <div class="agh-range-marker" style="left:48%;"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="agh-dot" style="background:#c41e3a;"></span>DKC 66-06</td>
+              <td class="num">268</td>
+              <td class="num">244–288</td>
+              <td class="num">145</td>
+              <td class="num green">$412</td>
+              <td class="agh-range-cell">
+                <div class="agh-range-track">
+                  <div class="agh-range-fill" style="left:8%;width:72%;background:#c41e3a;"></div>
+                  <div class="agh-range-marker" style="left:46%;"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="agh-dot" style="background:#8b5cf6;"></span>DKC 111-33</td>
+              <td class="num">258</td>
+              <td class="num">234–278</td>
+              <td class="num">145</td>
+              <td class="num green">$371</td>
+              <td class="agh-range-cell">
+                <div class="agh-range-track">
+                  <div class="agh-range-fill" style="left:10%;width:68%;background:#8b5cf6;"></div>
+                  <div class="agh-range-marker" style="left:44%;"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="agh-field-block">
+      <div class="agh-field-block__head">
+        <h2 class="agh-field-block__name">Field F</h2>
+        <span class="agh-pill agh-pill--high">High prod</span>
+        <span class="agh-pill agh-pill--neutral">Moderately well drained</span>
+        <span class="agh-field-block__meta">NCCPI 0.79 · 135 ac</span>
+      </div>
+      <div class="agh-table-wrap">
+        <table class="agh-table">
+          <thead>
+            <tr>
+              <th>Hybrid</th>
+              <th class="num">Pred yield</th>
+              <th class="num">Range (bu/ac)</th>
+              <th class="num">Acres</th>
+              <th class="num green">Net $/ac</th>
+              <th>Yield range</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="agh-row-highlight">
+              <td><span class="agh-dot" style="background:#22c55e;"></span>DKC 64-22 <span class="agh-top-badge">Top</span></td>
+              <td class="num">262</td>
+              <td class="num">238–282</td>
+              <td class="num">135</td>
+              <td class="num green">$398</td>
+              <td class="agh-range-cell">
+                <div class="agh-range-track">
+                  <div class="agh-range-fill" style="left:9%;width:70%;background:#22c55e;"></div>
+                  <div class="agh-range-marker" style="left:47%;"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

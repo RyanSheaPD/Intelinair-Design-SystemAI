@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Region Report 2.0 — Region report tool (Machine data)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="region-report-2.css" />
+</head>
+<body class="rr2">
+  <div class="rr2-shell">
+    <div class="rr2-shell__map" style="background-image: url('../../../assets/intelinair-hero-panorama.png');"></div>
+    <div class="rr2-toast" role="status">Please select area to create zone.</div>
+
+    <aside class="rr2-sidebar" aria-label="Primary">
+      <a class="rr2-nav-item" href="#" title="Home">⌂</a>
+      <a class="rr2-nav-item" href="#" title="Growers">G</a>
+      <a class="rr2-nav-item" href="#" title="Fields">F</a>
+      <a class="rr2-nav-item rr2-nav-item--active" href="#" title="Scout">S</a>
+      <a class="rr2-nav-item" href="#" title="Weather">W</a>
+      <a class="rr2-nav-item" href="#" title="Analyze">A</a>
+    </aside>
+
+    <header class="rr2-topbar">
+      <img class="rr2-topbar__logo" src="../../../assets/agmri-logo.png" alt="AgMRI" />
+      <a class="rr2-topbar__back" href="index.html">‹ Back</a>
+      <div class="rr2-topbar__search">Search</div>
+      <div class="rr2-topbar__user">
+        <span>Caleb Wieber</span>
+        <span class="rr2-topbar__avatar" aria-hidden="true">CW</span>
+      </div>
+    </header>
+
+    <div class="rr2-modal-layer">
+      <div class="rr2-modal rr2-modal--wide" role="dialog" aria-labelledby="rr-md-title">
+        <div class="rr2-modal__head">
+          <div class="rr2-modal__title-row">
+            <div>
+              <h1 id="rr-md-title" class="rr2-modal__title">Region report tool</h1>
+              <div id="rr2-field-meta" class="rr2-field-meta">
+                <div>Home 4 South Dahlia’s 24</div>
+                <div class="rr2-field-meta__line2">South Shop, <a href="#">Campbell farms.</a></div>
+                <div class="rr2-field-meta__stats">
+                  <span><strong>664.9 ac</strong></span>
+                  <span>🌱 11/5</span>
+                  <span>🌽 Corn</span>
+                  <span>GDD: 153</span>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="rr2-icon-btn" aria-label="Close">×</button>
+          </div>
+
+          <nav id="rr2-report-tabs" class="rr2-tabs" aria-label="Report sections">
+            <a class="rr2-tab" href="modal-region-report-zones.html">Zones</a>
+            <span class="rr2-tab rr2-tab--active" aria-selected="true">Machine data</span>
+            <a class="rr2-tab" href="modal-region-report-summary.html">Summary</a>
+          </nav>
+        </div>
+
+        <div class="rr2-modal__body">
+          <h2 id="rr2-machine-planting" class="rr2-section-title">Planting · 24/11</h2>
+          <div class="rr2-table-wrap">
+            <table class="rr2-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Hybrid in</th>
+                  <th>Hybrid out</th>
+                  <th>Population in</th>
+                  <th>Population out</th>
+                  <th>Avg. speed in</th>
+                  <th>Avg. speed out</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Zone A</strong></td>
+                  <td>name</td>
+                  <td>name</td>
+                  <td>23.7K</td>
+                  <td>22.0K</td>
+                  <td>84</td>
+                  <td>12</td>
+                </tr>
+                <tr>
+                  <td><strong>Zone B</strong></td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td><strong>Zone C</strong></td>
+                  <td>name</td>
+                  <td>name</td>
+                  <td>8.1K</td>
+                  <td>4.7K</td>
+                  <td>2344</td>
+                  <td>451</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="rr2-machine-harvest" class="rr2-section-title">Harvest</h2>
+          <div class="rr2-table-wrap">
+            <table class="rr2-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Avg. dry yield in</th>
+                  <th>Avg. dry yield out</th>
+                  <th>Avg. speed in</th>
+                  <th>Avg. speed out</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Zone A</strong></td>
+                  <td>name</td>
+                  <td>name</td>
+                  <td>24/11</td>
+                  <td>23.7K</td>
+                </tr>
+                <tr>
+                  <td><strong>Zone B</strong></td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                  <td>N/A</td>
+                </tr>
+                <tr>
+                  <td><strong>Zone C</strong></td>
+                  <td>name</td>
+                  <td>name</td>
+                  <td>24/11</td>
+                  <td>8.1K</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="rr2-machine-tillage" class="rr2-section-title">Tillage · 24/11</h2>
+          <div class="rr2-table-wrap">
+            <table class="rr2-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Passes in</th>
+                  <th>Passes out</th>
+                  <th>Depth in</th>
+                  <th>Depth out</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Zone A</strong></td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td colspan="5" style="color: var(--color-text-muted); font-size: 12px;">Additional machine rows scroll with the modal body.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

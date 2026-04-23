@@ -107,7 +107,8 @@
       Map popover (<code>.mitrials-treatment-menu</code>), trial drawer <strong>left treatments column</strong> empty vs added
       (<code>#trial-treatments-placeholder</code>, <code>#trial-treatments-undetermined</code>,
       <code>#trial-treatments-predetermined</code>), and list selection (<code>.trial-drawer__treatments-row--selected</code>) match
-      <code>pages/trials/myfs-mitrials.html</code>. Serve over HTTP; HTML→Design with <code>#figmacapture=…</code>.
+      <code>pages/trials/myfs-mitrials.html</code>. Sample <strong>8</strong> shows multiple trials + <code>.mitrials-treatment-menu__trial-rows</code>.
+      Full export index: <a href="mitrials-figma-exports-hub.html">mitrials-figma-exports-hub.html</a>. Serve repo root over HTTP; HTML→Design with <code>#figmacapture=…</code>.
     </p>
 
     <h2 class="mitrials-menu-states-export__section-title">Map layer popover</h2>
@@ -339,6 +340,60 @@
                 <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
                   <span class="material-symbols-outlined" aria-hidden="true">edit</span>
                 </button>
+              </div>
+            </div>
+            <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
+            <button type="button" class="mitrials-treatment-menu__add" tabindex="-1">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add trial
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. Multiple trials in list (scrollable body in product) -->
+      <div class="mitrials-menu-states-export__sample">
+        <p class="mitrials-menu-states-export__label">8 · Multiple trials · second row selected · map on</p>
+        <div class="mitrials-treatment-menu mitrials-treatment-menu--export" aria-label="Trials and treatments">
+          <div class="mitrials-treatment-menu__card" role="region">
+            <div class="mitrials-treatment-menu__head">
+              <div class="mitrials-treatment-menu__head-left">
+                <input type="checkbox" id="export-s8-head" class="mitrials-treatment-menu__cb" aria-label="Trials on map" checked />
+                <label for="export-s8-head" class="mitrials-treatment-menu__head-title">Trials</label>
+              </div>
+              <button type="button" class="mitrials-treatment-menu__collapse" aria-expanded="true" aria-label="Collapse trial list" tabindex="-1">
+                <span class="material-symbols-outlined mitrials-treatment-menu__collapse-icon" aria-hidden="true">expand_less</span>
+              </button>
+            </div>
+            <div class="mitrials-treatment-menu__body">
+              <div class="mitrials-treatment-menu__trial-rows">
+                <div class="mitrials-treatment-menu__trial-row">
+                  <input type="checkbox" id="export-s8-trial-a" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" checked />
+                  <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1">
+                    26-ZEAMX-US800-IL04-FRON
+                  </button>
+                  <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                    <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                  </button>
+                </div>
+                <div class="mitrials-treatment-menu__trial-row mitrials-treatment-menu__trial-row--selected">
+                  <input type="checkbox" id="export-s8-trial-b" class="mitrials-treatment-menu__cb" aria-label="Select trial 27-SOYHX-US800-NE02-FRON" checked />
+                  <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1" aria-current="true">
+                    27-SOYHX-US800-NE02-FRON
+                  </button>
+                  <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                    <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                  </button>
+                </div>
+                <div class="mitrials-treatment-menu__trial-row">
+                  <input type="checkbox" id="export-s8-trial-c" class="mitrials-treatment-menu__cb" aria-label="Select trial NEW-0001" />
+                  <button type="button" class="mitrials-treatment-menu__trial-id" tabindex="-1">
+                    NEW-0001
+                  </button>
+                  <button type="button" class="mitrials-treatment-menu__trial-edit" aria-label="Edit trial" tabindex="-1">
+                    <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                  </button>
+                </div>
               </div>
             </div>
             <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>

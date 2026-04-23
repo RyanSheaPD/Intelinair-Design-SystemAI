@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiTrials — Figma export suite (index)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 32px 24px 64px;
+      font-family: var(--font-family-web, system-ui, sans-serif);
+      color: var(--color-text);
+      background: #f4f4f5;
+      line-height: 1.5;
+    }
+    .hub {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #18181b;
+    }
+    .hub__lede {
+      margin: 0 0 28px;
+      font-size: 14px;
+      color: #52525b;
+      max-width: 62ch;
+    }
+    .hub__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-radius: 12px;
+      border: 1px solid var(--color-border, #e5e5e5);
+      background: #fff;
+      overflow: hidden;
+    }
+    .hub__item {
+      border-bottom: 1px solid var(--color-neutral-100, #f0f0f0);
+    }
+    .hub__item:last-child {
+      border-bottom: none;
+    }
+    .hub__link {
+      display: block;
+      padding: 16px 18px;
+      color: var(--color-myfs-500, #c41e3a);
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+    }
+    .hub__link:hover {
+      background: var(--color-neutral-50, #fafafa);
+      text-decoration: underline;
+    }
+    .hub__desc {
+      margin: 4px 0 0;
+      font-size: 13px;
+      font-weight: 400;
+      color: #71717a;
+      line-height: 1.4;
+    }
+    .hub__note {
+      margin-top: 28px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #3f3f46;
+      background: #fff;
+      border-radius: 10px;
+      border: 1px dashed #d4d4d8;
+    }
+    code {
+      font-size: 12px;
+      background: #f4f4f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="hub">
+    <h1>MiTrials — Figma / HTML→Design exports</h1>
+    <p class="hub__lede">
+      <strong><a href="figma-export-index.html">Full export index (all MyFS + other figma-exports)</a></strong> — MiTrials, Scout, and every static export file.
+    </p>
+    <p class="hub__lede">
+      Static capture targets under <code>figma-exports/</code>. Open each file in a browser with the repo served from the project root
+      (for example <code>python3 -m http.server</code>) so <code>../design-tokens/</code> and <code>../components/</code> resolve. Use your
+      HTML→Design or Figma capture flow; add URL fragments such as <code>#figmacapture=…</code> if your tool requires them.
+    </p>
+    <ul class="hub__list">
+      <li class="hub__item">
+        <a class="hub__link" href="mitrials-treatment-menu-states-export.html">mitrials-treatment-menu-states-export.html</a>
+        <p class="hub__desc">Map chip popover: trials on/off, list collapsed, row selection, and <strong>multiple trials</strong> (sample 8).</p>
+      </li>
+      <li class="hub__item">
+        <a class="hub__link" href="mitrials-trial-drawer-full-export.html">mitrials-trial-drawer-full-export.html</a>
+        <p class="hub__desc">320px trial drawer: empty protocol, undetermined zones, predetermined zone list.</p>
+      </li>
+      <li class="hub__item">
+        <a class="hub__link" href="mitrials-trial-drawer-treatment-detail-export.html">mitrials-trial-drawer-treatment-detail-export.html</a>
+        <p class="hub__desc">Zone / treatment detail drill-in (slider states, product field, chips).</p>
+      </li>
+      <li class="hub__item">
+        <a class="hub__link" href="../pages/trials/myfs-mitrials.html">pages/trials/myfs-mitrials.html</a>
+        <p class="hub__desc">Live MiTrials page: add trials from the popover, open the drawer, and capture full map + interactions as needed.</p>
+      </li>
+    </ul>
+    <p class="hub__note">
+      Product UI lives in <code>pages/trials/</code>; export-only HTML stays in <code>figma-exports/</code> per project rules. Regenerate or replace
+      these snapshots when <code>myfs-trials-flow-shell.css</code> or trial markup changes.
+    </p>
+  </div>
+</body>
+</html>

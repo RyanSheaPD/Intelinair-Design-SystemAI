@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!--
+  Figma / HTML→Design: full Scout (My fields) page embedded for capture.
+  Serve repo root; same origin required for iframe. Scroll inside the frame to capture sections.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scout — embedded live page (Figma export)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../design-tokens/tokens.css" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      background: #a1a1aa;
+      font-family: var(--font-family-web, system-ui, sans-serif);
+    }
+    .embed-doc {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .embed-doc h1 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #18181b;
+    }
+    .embed-doc p {
+      margin: 0 0 14px;
+      font-size: 13px;
+      color: #27272a;
+      max-width: 70ch;
+      line-height: 1.45;
+    }
+    .embed-doc a {
+      color: var(--color-myfs-500, #c41e3a);
+      font-weight: 600;
+    }
+    .iframe-shell {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid #d4d4d8;
+    }
+    .iframe-shell iframe {
+      display: block;
+      width: 100%;
+      height: min(3200px, 92vh);
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="embed-doc">
+    <h1>Scout (My fields) — embedded for capture</h1>
+    <p>
+      Live page: <a href="../pages/scout/myfs-scouting.html">pages/scout/myfs-scouting.html</a>.
+      If the frame is empty, confirm you opened this file via HTTP (not <code>file://</code>) so the iframe can load.
+    </p>
+    <div class="iframe-shell">
+      <iframe src="../pages/scout/myfs-scouting.html" title="MyFS Scout list"></iframe>
+    </div>
+  </div>
+</body>
+</html>

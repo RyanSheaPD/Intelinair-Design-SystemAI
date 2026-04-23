@@ -21,8 +21,10 @@
   <link rel="stylesheet" href="../../components/header.css" />
   <link rel="stylesheet" href="../../components/view-switcher.css" />
   <link rel="stylesheet" href="../../components/myfs-trials-flow-shell.css" />
+  <link rel="stylesheet" href="../../components/dropdown.css" />
   <link rel="stylesheet" href="../../components/field-map-view-shell.css" />
   <link rel="stylesheet" href="../../components/modal.css" />
+  <script src="../../data/mitrials-protocol-presets.js"></script>
   <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
 </head>
 <body>
@@ -62,65 +64,146 @@
     <aside id="trial-drawer" class="trial-drawer" aria-label="Trial editor" aria-hidden="true">
       <div class="trial-drawer__inner">
         <div class="trial-drawer__overview-stack" id="trial-drawer-overview-stack">
-          <header class="trial-drawer__header">
-            <h2 class="trial-drawer__title">Trial</h2>
-            <button type="button" class="trial-drawer__close" aria-label="Close trial editor">
-              <span class="material-symbols-outlined" aria-hidden="true">close</span>
-            </button>
-          </header>
-          <p class="trial-drawer__code">26-ZEAMX-US800-IL04-FRON</p>
+          <div class="trial-drawer__top" id="trial-drawer-header-zone">
+            <header class="trial-drawer__header">
+              <h2 class="trial-drawer__title">Trial</h2>
+              <button type="button" class="trial-drawer__close" aria-label="Close trial editor">
+                <span class="material-symbols-outlined" aria-hidden="true">close</span>
+              </button>
+            </header>
+            <div class="trial-drawer__field">
+              <label class="trial-drawer__label" for="trial-drawer-trial-name">Trial name</label>
+              <input
+                type="text"
+                id="trial-drawer-trial-name"
+                class="trial-drawer__code-input"
+                value=""
+                autocomplete="off"
+                placeholder="Enter a trial name"
+                aria-label="Trial name"
+              />
+            </div>
 
-          <div class="trial-drawer__field">
-            <label class="trial-drawer__label" for="trial-protocol-select">Protocol</label>
-            <select id="trial-protocol-select" class="trial-drawer__select">
-              <option value="">Select protocol</option>
-              <option value="corn-standard">Corn standard protocol</option>
-              <option value="corn-single-zone">Corn — single treatment zone (demo)</option>
-              <option value="carbon">Carbon</option>
-              <option value="no-till">No till</option>
-              <option value="fungicide">Fungicide</option>
-              <option value="nitrogen">Nitrogen management</option>
-              <option value="cover-crop">Cover crop</option>
-              <option value="herbicide">Herbicide</option>
-              <option value="seed-treatment">Seed treatment</option>
-            </select>
+            <div class="trial-drawer__protocol-group" role="group" aria-labelledby="trial-protocol-group-heading">
+              <span class="trial-drawer__visually-hidden" id="trial-protocol-group-heading">Protocol</span>
+              <div class="trial-drawer__field">
+                <label class="trial-drawer__label" for="trial-protocol-select">Protocol</label>
+                <select id="trial-protocol-select" class="trial-drawer__select" data-protocol-options="presets">
+                  <option value="" selected>Select protocol</option>
+                </select>
+              </div>
+
+              <div id="protocol-adhoc-section" class="trial-drawer__adhoc-section" hidden>
+                <div class="trial-drawer__field">
+                  <label class="trial-drawer__label" for="trial-protocol-adhoc-name">Custom protocol name <span class="trial-drawer__req" aria-hidden="true">*</span></label>
+                  <input
+                    type="text"
+                    id="trial-protocol-adhoc-name"
+                    class="trial-drawer__code-input"
+                    autocomplete="off"
+                    placeholder="Name this protocol…"
+                    disabled
+                  />
+                </div>
+                <div class="trial-drawer__field">
+                  <label class="trial-drawer__label" for="trial-protocol-adoc">Protocol doc (AsciiDoc)</label>
+                  <textarea
+                    id="trial-protocol-adoc"
+                    class="trial-drawer__textarea"
+                    rows="5"
+                    spellcheck="true"
+                    placeholder="Free-form protocol documentation. Plain text or AsciiDoc (headings, lists, tables)."
+                    disabled
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="trial-drawer__section-rule" aria-hidden="true"></div>
+
+            <div class="trial-drawer__field">
+              <label class="trial-drawer__label" id="trial-assigned-label" for="trial-assigned-to-trigger">Trial owner</label>
+              <input type="hidden" id="trial-assigned-to" name="trial-assigned-to" value="creator" />
+              <div class="dropdown-search trial-drawer__assign-dropdown" id="trial-assigned-dropdown">
+                <button
+                  type="button"
+                  class="dropdown-search__trigger"
+                  id="trial-assigned-to-trigger"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="trial-assigned-list"
+                  aria-labelledby="trial-assigned-label"
+                >
+                  Caleb Wieber
+                </button>
+                <div class="dropdown-search__list" id="trial-assigned-list" role="listbox" aria-label="People" hidden>
+                  <div class="dropdown-search__search-wrap">
+                    <input
+                      type="search"
+                      class="dropdown-search__search"
+                      id="trial-assigned-search"
+                      placeholder="Search people…"
+                      aria-label="Filter people"
+                      autocomplete="off"
+                    />
+                  </div>
+                  <button type="button" class="dropdown-search__item" role="option" data-value="creator" aria-selected="true">Caleb Wieber</button>
+                  <button type="button" class="dropdown-search__item" role="option" data-value="field-specialist" aria-selected="false">Jordan Smith</button>
+                  <div class="trial-drawer__assign-optgroup" aria-hidden="true">Member company</div>
+                  <button type="button" class="dropdown-search__item" role="option" data-value="member-alex" aria-selected="false">Alex Johnson</button>
+                  <button type="button" class="dropdown-search__item" role="option" data-value="member-sam" aria-selected="false">Sam Rivera</button>
+                  <button type="button" class="dropdown-search__item" role="option" data-value="member-taylor" aria-selected="false">Taylor Chen</button>
+                  <button type="button" class="dropdown-search__item" role="option" data-value="member-morgan" aria-selected="false">Morgan Lee</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="trial-drawer__summary-rule" aria-hidden="true"></div>
+
+            <section class="trial-drawer__location" aria-label="Trial and field summary">
+              <input
+                type="text"
+                id="trial-field-name"
+                class="trial-drawer__location-name-field"
+                value="Fazenda ind 25"
+                autocomplete="off"
+                aria-label="Field name"
+              />
+              <p class="trial-drawer__grower-line">
+                <span class="trial-drawer__grower-muted">Frontier</span>
+                <span class="trial-drawer__grower-brand"> Frontier Farms</span>
+              </p>
+              <div class="trial-drawer__meta">
+                <span>150 ac</span>
+                <span class="trial-drawer__meta-sep" aria-hidden="true"></span>
+                <span class="trial-drawer__meta-item trial-drawer__meta-item--seed"><span class="material-symbols-outlined" aria-hidden="true">grass</span>5/15</span>
+                <span class="trial-drawer__meta-sep" aria-hidden="true"></span>
+                <span class="trial-drawer__meta-item trial-drawer__meta-crop"><span class="material-symbols-outlined" aria-hidden="true">eco</span>Corn</span>
+                <span class="trial-drawer__meta-sep" aria-hidden="true"></span>
+                <span class="trial-drawer__meta-gdd">GDD: 1200</span>
+              </div>
+            </section>
           </div>
 
-          <section class="trial-drawer__location" aria-label="Field location">
-            <h3 class="trial-drawer__location-name">Kallembach</h3>
-            <p class="trial-drawer__grower-line">
-              <span class="trial-drawer__grower-muted">Frontier</span>
-              <span class="trial-drawer__grower-brand">Frontier Farms</span>
-            </p>
-            <div class="trial-drawer__meta">
-              <span>78.6 ac</span>
-              <span class="trial-drawer__meta-sep" aria-hidden="true">·</span>
-              <span class="trial-drawer__meta-item"><span class="material-symbols-outlined" aria-hidden="true">grass</span>4/26</span>
-              <span class="trial-drawer__meta-sep" aria-hidden="true">·</span>
-              <span class="trial-drawer__meta-item trial-drawer__meta-crop"><span class="material-symbols-outlined" aria-hidden="true">eco</span>Corn</span>
-              <span class="trial-drawer__meta-sep" aria-hidden="true">·</span>
-              <span class="trial-drawer__meta-gdd">GDD: N/A</span>
-            </div>
-          </section>
-
+          <!-- Treatments / zones; Exclude & analyze tooling → phase 2 -->
+          <div class="trial-drawer__stage">
           <div
             class="trial-drawer__treatments"
             id="trial-treatments-root"
             aria-live="polite"
           >
             <div class="trial-drawer__treatments-panel" id="trial-treatments-placeholder">
-              <div class="trial-drawer__treatments-empty trial-drawer__treatments-empty--muted">
-                <span class="material-symbols-outlined trial-drawer__treatments-icon" aria-hidden="true">assignment</span>
-                <p class="trial-drawer__treatments-msg">Select a protocol to define treatments</p>
+              <div class="trial-drawer__treatments-empty trial-drawer__treatments-empty--minimal">
+                <p class="trial-drawer__treatments-msg">Select a protocol to define zones</p>
               </div>
             </div>
 
             <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--predetermined" id="trial-treatments-predetermined" hidden>
               <div class="trial-drawer__treatments-predetermined-inner">
-                <p class="trial-drawer__treatments-list-title">Treatments</p>
+                <p class="trial-drawer__treatments-list-title">Zones</p>
                 <ul class="trial-drawer__treatments-list" role="list">
                   <li>
-                    <button type="button" class="trial-drawer__treatments-row" data-treatment-detail data-treatment-title="Treated — G3 OS" data-treated="true">
+                    <button type="button" class="trial-drawer__treatments-row" data-treatment-detail data-treatment-title="Zone 1" data-treated="true">
                       <span class="trial-drawer__treatments-row-label">Treated — G3 OS</span>
                       <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
                     </button>
@@ -132,16 +215,15 @@
                     </button>
                   </li>
                 </ul>
-                <p class="trial-drawer__treatments-hint">Define where each zone is on the map.</p>
               </div>
             </div>
 
             <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--predetermined" id="trial-treatments-single-zone" hidden>
               <div class="trial-drawer__treatments-predetermined-inner">
-                <p class="trial-drawer__treatments-list-title">Treatments</p>
+                <p class="trial-drawer__treatments-list-title">Zones</p>
                 <ul class="trial-drawer__treatments-list" role="list">
                   <li>
-                    <button type="button" class="trial-drawer__treatments-row" data-treatment-detail data-treatment-title="Treated — G3 OS" data-treated="true">
+                    <button type="button" class="trial-drawer__treatments-row" data-treatment-detail data-treatment-title="Zone 1" data-treated="true">
                       <span class="trial-drawer__treatments-row-label">Treated</span>
                       <span class="material-symbols-outlined trial-drawer__treatments-row-chevron" aria-hidden="true">chevron_right</span>
                     </button>
@@ -155,111 +237,103 @@
             </div>
 
             <div class="trial-drawer__treatments-panel trial-drawer__treatments-panel--undetermined" id="trial-treatments-undetermined" hidden>
-              <div class="trial-drawer__treatments-empty">
-                <span class="material-symbols-outlined trial-drawer__treatments-icon" aria-hidden="true">texture</span>
-                <p class="trial-drawer__treatments-msg">No treatments created</p>
-                <p class="trial-drawer__treatments-sub">Add treatment zones for this trial so you can compare products reliably.</p>
+              <div class="trial-drawer__treatments-empty trial-drawer__treatments-empty--minimal">
+                <p class="trial-drawer__treatments-msg trial-drawer__treatments-msg--primary">No zones created</p>
+                <p class="trial-drawer__treatments-sub">Add one or more zones for this trial</p>
               </div>
               <div class="trial-drawer__treatments-actions">
-                <button type="button" class="trial-drawer__add-treatment" id="trial-add-treatment-btn" data-treatment-detail data-treatment-title="New treatment" data-treated="true">+ Add treatment</button>
+                <button type="button" class="trial-drawer__add-treatment" id="trial-add-treatment-btn" data-treatment-detail data-treatment-title="Zone 1" data-treated="true">+ Add zone</button>
               </div>
             </div>
           </div>
 
-          <footer class="trial-drawer__footer">
-            <button type="button" class="trial-drawer__cancel">Cancel</button>
-            <button type="button" class="trial-drawer__save">Save trial</button>
-          </footer>
-        </div>
+          <div
+            class="trial-drawer-treatment"
+            id="trial-drawer-treatment-detail"
+            aria-hidden="true"
+          >
+          <div class="trial-drawer-treatment__scroll">
+            <div class="trial-drawer-treatment__card">
+              <header class="trial-drawer-treatment__header">
+                <button type="button" class="trial-drawer-treatment__back" id="trial-treatment-back" aria-label="Back to trial">
+                  <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+                </button>
+                <div class="trial-drawer-treatment__title-col">
+                  <label class="trial-drawer-treatment__zone-label" for="trial-treatment-detail-title">Zone name</label>
+                  <input
+                    type="text"
+                    id="trial-treatment-detail-title"
+                    class="trial-drawer-treatment__title-field"
+                    value=""
+                    autocomplete="off"
+                    placeholder="Zone 1"
+                    aria-label="Zone name"
+                  />
+                </div>
+                <button type="button" class="trial-drawer-treatment__delete" id="trial-treatment-delete" aria-label="Delete zone">
+                  <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+                </button>
+              </header>
+              <div class="trial-drawer-treatment__card-body">
+                <fieldset class="trial-drawer-treatment__radios">
+                  <legend class="trial-drawer-treatment__legend-visually-hidden">Zone type</legend>
+                  <label class="trial-drawer-treatment__radio-label">
+                    <input type="radio" name="trial-zone-type" value="treated" class="trial-drawer-treatment__radio" id="trial-zone-treated" checked />
+                    <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
+                    Treated
+                  </label>
+                  <label class="trial-drawer-treatment__radio-label">
+                    <input type="radio" name="trial-zone-type" value="untreated" class="trial-drawer-treatment__radio" id="trial-zone-untreated" />
+                    <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
+                    Untreated
+                  </label>
+                </fieldset>
 
-        <div class="trial-drawer-treatment" id="trial-drawer-treatment-detail" hidden>
-          <header class="trial-drawer-treatment__header">
-            <button type="button" class="trial-drawer-treatment__back" id="trial-treatment-back" aria-label="Back to trial">
-              <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-            </button>
-            <h2 class="trial-drawer-treatment__title" id="trial-treatment-detail-title">Treated — G3 OS</h2>
-            <button type="button" class="trial-drawer-treatment__delete" id="trial-treatment-delete" aria-label="Delete zone">
-              <span class="material-symbols-outlined" aria-hidden="true">delete</span>
-            </button>
-          </header>
-          <div class="trial-drawer-treatment__rule" aria-hidden="true"></div>
-          <div class="trial-drawer-treatment__body">
-            <fieldset class="trial-drawer-treatment__radios">
-              <legend class="trial-drawer-treatment__legend-visually-hidden">Zone type</legend>
-              <label class="trial-drawer-treatment__radio-label">
-                <input type="radio" name="trial-zone-type" value="treated" class="trial-drawer-treatment__radio" id="trial-zone-treated" checked />
-                <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
-                Treated
-              </label>
-              <label class="trial-drawer-treatment__radio-label">
-                <input type="radio" name="trial-zone-type" value="untreated" class="trial-drawer-treatment__radio" id="trial-zone-untreated" />
-                <span class="trial-drawer-treatment__radio-ui" aria-hidden="true"></span>
-                Untreated
-              </label>
-            </fieldset>
-
-            <div class="trial-drawer-treatment__field">
-              <label class="trial-drawer-treatment__label" for="trial-zone-product">Product <span class="trial-drawer-treatment__req" aria-hidden="true">*</span></label>
-              <select id="trial-zone-product" class="trial-drawer-treatment__select">
-                <option value="g3" selected>G3 OS</option>
-                <option value="g2">G2 Hybrid</option>
-                <option value="other">Other product</option>
-              </select>
-            </div>
-
-            <div class="trial-drawer-treatment__field">
-              <span class="trial-drawer-treatment__label" id="trial-add-product-label">
-                Add product <span class="trial-drawer-treatment__req" aria-hidden="true">*</span><span class="trial-drawer-treatment__label-optional"> (optional)</span>
-              </span>
-              <div class="trial-drawer-treatment__complimentary-row">
-                <input type="text" class="trial-drawer-treatment__input" id="trial-add-product-input" placeholder="Type to add" aria-labelledby="trial-add-product-label" aria-required="false" autocomplete="off" />
-                <button type="button" class="trial-drawer-treatment__add-link" id="trial-add-product-add">Add</button>
+                <div class="trial-drawer-treatment__field">
+                  <div class="trial-drawer-treatment__label-row">
+                    <label class="trial-drawer-treatment__label" for="trial-zone-product-input">Product</label>
+                  </div>
+                  <p class="trial-drawer-treatment__hint" id="trial-product-field-hint">
+                    Search loads matches from your org catalog (demo: simulated API). You can still add a name that is not listed.
+                  </p>
+                  <div class="trial-drawer-treatment__product-row">
+                    <div class="trial-drawer-treatment__product-combobox">
+                      <input
+                        type="text"
+                        class="trial-drawer-treatment__input"
+                        id="trial-zone-product-input"
+                        placeholder="Type to search catalog…"
+                        autocomplete="off"
+                        aria-label="Product"
+                        role="combobox"
+                        aria-autocomplete="list"
+                        aria-expanded="false"
+                        aria-controls="trial-product-listbox"
+                      />
+                      <div class="trial-drawer-treatment__product-status" id="trial-product-search-status" aria-live="polite"></div>
+                      <ul
+                        class="trial-drawer-treatment__product-listbox"
+                        id="trial-product-listbox"
+                        role="listbox"
+                        aria-label="Product search results"
+                        hidden
+                      ></ul>
+                    </div>
+                    <button type="button" class="trial-drawer-treatment__add-link trial-drawer-treatment__add-link--brand" id="trial-product-add">Add</button>
+                  </div>
+                  <div class="trial-drawer-treatment__tags" id="trial-product-tags" role="list" hidden></div>
+                </div>
               </div>
-              <div class="trial-drawer-treatment__tags" id="trial-add-product-tags" role="list"></div>
-            </div>
-
-            <div class="trial-drawer-treatment__field">
-              <label class="trial-drawer-treatment__label" for="trial-zone-nfactor">N-Factor</label>
-              <select id="trial-zone-nfactor" class="trial-drawer-treatment__select">
-                <option value="gsp" selected>GSP</option>
-                <option value="standard">Standard</option>
-                <option value="custom">Custom</option>
-              </select>
-            </div>
-
-            <div class="trial-drawer-treatment__field">
-              <span class="trial-drawer-treatment__label" id="trial-complimentary-label">Complimentary products</span>
-              <div class="trial-drawer-treatment__complimentary-row">
-                <input type="text" class="trial-drawer-treatment__input" id="trial-complimentary-input" placeholder="Type to add" aria-labelledby="trial-complimentary-label" />
-                <button type="button" class="trial-drawer-treatment__add-link" id="trial-complimentary-add">Add</button>
-              </div>
-              <div class="trial-drawer-treatment__tags" id="trial-complimentary-tags" role="list"></div>
-            </div>
-
-            <div class="trial-drawer-treatment__field trial-drawer-treatment__field--exclude">
-              <label class="trial-drawer-treatment__check-label" for="trial-exclude-treatment">
-                <input type="checkbox" id="trial-exclude-treatment" class="trial-drawer-treatment__check" />
-                <span class="trial-drawer-treatment__check-text">Exclude treatment</span>
-              </label>
-            </div>
-
-            <div class="trial-drawer-treatment__field trial-drawer-treatment__exclude-comment-field">
-              <label class="trial-drawer-treatment__label" for="trial-exclude-comment">Exclusion comment</label>
-              <textarea
-                id="trial-exclude-comment"
-                class="trial-drawer-treatment__textarea"
-                name="trial-exclude-comment"
-                rows="3"
-                disabled
-                placeholder="Explain why this treatment area is excluded…"
-                aria-label="Reason for excluding this treatment area"
-              ></textarea>
-              <p class="trial-drawer-treatment__exclude-hint" id="trial-exclude-comment-hint" hidden>
-                Add a comment describing why this zone is excluded.
-              </p>
             </div>
           </div>
+          </div>
+          </div>
+
         </div>
+        <footer class="trial-drawer__footer">
+          <button type="button" class="trial-drawer__cancel" id="trial-drawer-footer-cancel">Cancel</button>
+          <button type="button" class="trial-drawer__save" id="trial-drawer-footer-save">Save trial</button>
+        </footer>
       </div>
     </aside>
 
@@ -313,7 +387,7 @@
               </button>
             </div>
             <div id="myfs-mitrials-view-switcher-menu" class="view-switcher__menu" role="menu" hidden>
-              <button type="button" class="view-switcher__option" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">view_list</span> List view</button>
+              <button type="button" class="view-switcher__option" role="menuitem" data-view-nav="../scout/myfs-scouting.html"><span class="material-symbols-outlined" aria-hidden="true">view_list</span> List view</button>
               <button type="button" class="view-switcher__option" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">grid_view</span> Thumbnail view</button>
               <button type="button" class="view-switcher__option view-switcher__option--active" role="menuitem"><span class="material-symbols-outlined" aria-hidden="true">map</span> Map view</button>
             </div>
@@ -370,7 +444,7 @@
         </div>
 
         <!-- Trials chip popover — trials on field (list + collapse) -->
-        <div id="mitrials-overlay" class="mitrials-treatment-menu" hidden aria-label="Trials and treatments">
+        <div id="mitrials-overlay" class="mitrials-treatment-menu" hidden aria-label="Trials and zones">
           <div class="mitrials-treatment-menu__card" role="region">
             <div class="mitrials-treatment-menu__head">
               <div class="mitrials-treatment-menu__head-left">
@@ -382,14 +456,25 @@
               </button>
             </div>
             <div class="mitrials-treatment-menu__body" id="mitrials-trial-list-panel">
-              <div class="mitrials-treatment-menu__trial-row">
-                <input type="checkbox" id="mitrials-trial-1-cb" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" />
-                <button type="button" class="mitrials-treatment-menu__trial-id" id="mitrials-open-existing-trial">
-                  26-ZEAMX-US800-IL04-FRON
-                </button>
-                <button type="button" class="mitrials-treatment-menu__trial-edit" id="mitrials-edit-existing-trial" aria-label="Edit trial">
-                  <span class="material-symbols-outlined" aria-hidden="true">edit</span>
-                </button>
+              <div id="mitrials-trial-rows" class="mitrials-treatment-menu__trial-rows">
+                <div class="mitrials-treatment-menu__trial-row mitrials-treatment-menu__trial-row--selected" data-trial-code="26-ZEAMX-US800-IL04-FRON">
+                  <input type="checkbox" id="mitrials-trial-1-cb" class="mitrials-treatment-menu__cb" aria-label="Select trial 26-ZEAMX-US800-IL04-FRON" />
+                  <button type="button" class="mitrials-treatment-menu__trial-id" data-open-trial aria-current="true">
+                    26-ZEAMX-US800-IL04-FRON
+                  </button>
+                  <button type="button" class="mitrials-treatment-menu__trial-edit" data-edit-trial aria-label="Edit trial">
+                    <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                  </button>
+                </div>
+                <div class="mitrials-treatment-menu__trial-row" data-trial-code="27-SOYHX-US800-NE02-FRON">
+                  <input type="checkbox" id="mitrials-trial-2-cb" class="mitrials-treatment-menu__cb" aria-label="Select trial 27-SOYHX-US800-NE02-FRON" />
+                  <button type="button" class="mitrials-treatment-menu__trial-id" data-open-trial>
+                    27-SOYHX-US800-NE02-FRON
+                  </button>
+                  <button type="button" class="mitrials-treatment-menu__trial-edit" data-edit-trial aria-label="Edit trial">
+                    <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+                  </button>
+                </div>
               </div>
             </div>
             <div class="mitrials-treatment-menu__rule" aria-hidden="true"></div>
@@ -773,6 +858,30 @@
     </div>
   </div>
 
+  <div
+    class="modal-overlay modal-overlay--sm"
+    id="trial-last-zone-modal"
+    aria-hidden="true"
+    aria-modal="true"
+    role="alertdialog"
+    aria-labelledby="trial-last-zone-modal-title"
+  >
+    <div class="modal" role="document">
+      <div class="modal__header">
+        <h2 class="modal__title" id="trial-last-zone-modal-title">Cannot remove zone</h2>
+        <button type="button" class="modal__close" id="trial-last-zone-modal-dismiss" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <p style="margin: 0;">A trial must keep at least one zone. Add another zone before removing this one.</p>
+      </div>
+      <div class="modal__footer">
+        <button type="button" class="trial-drawer__save" id="trial-last-zone-modal-ok">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     (function () {
       function closeAllViewSwitchers() {
@@ -800,6 +909,12 @@
         });
         menu.querySelectorAll('.view-switcher__option').forEach(function (opt) {
           opt.addEventListener('click', function () {
+            var navHref = opt.getAttribute('data-view-nav');
+            if (navHref) {
+              closeAllViewSwitchers();
+              window.location.href = navHref;
+              return;
+            }
             menu.querySelectorAll('.view-switcher__option').forEach(function (o) {
               o.classList.remove('view-switcher__option--active');
             });
@@ -824,21 +939,106 @@
       });
     })();
     (function () {
+      (function populateTrialProtocolSelectFromPresets() {
+        var sel = document.getElementById('trial-protocol-select');
+        if (!sel || !window.MYFS_MITRIALS_PROTOCOL_PRESETS) return;
+        var prev = sel.value;
+        sel.textContent = '';
+        var o0 = document.createElement('option');
+        o0.value = '';
+        o0.textContent = 'Select protocol';
+        sel.appendChild(o0);
+        window.MYFS_MITRIALS_PROTOCOL_PRESETS.forEach(function (p) {
+          var o = document.createElement('option');
+          o.value = p.id;
+          o.textContent = p.selectLabel;
+          sel.appendChild(o);
+        });
+        var hasPrev = false;
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === prev) {
+            hasPrev = true;
+            break;
+          }
+        }
+        sel.value = hasPrev ? prev : '';
+      })();
+
       var btn = document.getElementById('mitrials-layer-btn');
       var overlay = document.getElementById('mitrials-overlay');
       var drawer = document.getElementById('trial-drawer');
       var mapEl = document.getElementById('mitrials-map-container');
       var mapFieldTrial = document.getElementById('mitrials-demo-field');
-      var trialRowCheckbox = document.getElementById('mitrials-trial-1-cb');
+      var mitrialsTrialRowsRoot = document.getElementById('mitrials-trial-rows');
+      var mitrialsNextTrialDomId = 3;
+      var mitrialsNewTrialSeq = 1;
       if (!btn || !overlay) return;
 
-      function syncMitrialsTrialZones() {
-        if (!mapFieldTrial || !trialRowCheckbox) return;
-        var on = trialRowCheckbox.checked;
-        mapFieldTrial.classList.toggle('map-field--show-trial-zones', on);
-        var z = document.getElementById('mitrials-field-trial-zones');
-        if (z) z.setAttribute('aria-hidden', on ? 'false' : 'true');
+      function getMitrialsTrialRowCheckboxes() {
+        if (!mitrialsTrialRowsRoot) return [];
+        return Array.prototype.slice.call(mitrialsTrialRowsRoot.querySelectorAll('.mitrials-treatment-menu__cb'));
       }
+
+      function syncMitrialsTrialZones() {
+        if (!mapFieldTrial) return;
+        var any = getMitrialsTrialRowCheckboxes().some(function (cb) {
+          return cb.checked;
+        });
+        mapFieldTrial.classList.toggle('map-field--show-trial-zones', any);
+        var z = document.getElementById('mitrials-field-trial-zones');
+        if (z) z.setAttribute('aria-hidden', any ? 'false' : 'true');
+      }
+
+      function selectMitrialsTrialRow(rowEl) {
+        if (!mitrialsTrialRowsRoot || !rowEl) return;
+        mitrialsTrialRowsRoot.querySelectorAll('.mitrials-treatment-menu__trial-row').forEach(function (r) {
+          r.classList.remove('mitrials-treatment-menu__trial-row--selected');
+          var ob = r.querySelector('[data-open-trial]');
+          if (ob) ob.removeAttribute('aria-current');
+        });
+        rowEl.classList.add('mitrials-treatment-menu__trial-row--selected');
+        var openBtn = rowEl.querySelector('[data-open-trial]');
+        if (openBtn) openBtn.setAttribute('aria-current', 'true');
+      }
+
+      function nextNewTrialCode() {
+        return 'NEW-' + String(mitrialsNewTrialSeq++).padStart(4, '0');
+      }
+
+      function appendMitrialsTrialRow(trialCode) {
+        if (!mitrialsTrialRowsRoot) return null;
+        var row = document.createElement('div');
+        row.className = 'mitrials-treatment-menu__trial-row';
+        row.setAttribute('data-trial-code', trialCode);
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.className = 'mitrials-treatment-menu__cb';
+        cb.id = 'mitrials-trial-' + mitrialsNextTrialDomId + '-cb';
+        mitrialsNextTrialDomId += 1;
+        cb.setAttribute('aria-label', 'Select trial ' + trialCode);
+        var openB = document.createElement('button');
+        openB.type = 'button';
+        openB.className = 'mitrials-treatment-menu__trial-id';
+        openB.setAttribute('data-open-trial', '');
+        openB.textContent = trialCode;
+        var editB = document.createElement('button');
+        editB.type = 'button';
+        editB.className = 'mitrials-treatment-menu__trial-edit';
+        editB.setAttribute('data-edit-trial', '');
+        editB.setAttribute('aria-label', 'Edit trial');
+        editB.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">edit</span>';
+        row.appendChild(cb);
+        row.appendChild(openB);
+        row.appendChild(editB);
+        mitrialsTrialRowsRoot.appendChild(row);
+        cb.addEventListener('change', syncMitrialsTrialZones);
+        selectMitrialsTrialRow(row);
+        return row;
+      }
+
+      getMitrialsTrialRowCheckboxes().forEach(function (cb) {
+        cb.addEventListener('change', syncMitrialsTrialZones);
+      });
 
       var syncTrialTreatmentsPanel = function () {};
 
@@ -872,60 +1072,123 @@
         setTrialDrawerOpen(false);
       }
 
-      var overviewStack = document.getElementById('trial-drawer-overview-stack');
       var treatmentDetail = document.getElementById('trial-drawer-treatment-detail');
       var treatmentTitleEl = document.getElementById('trial-treatment-detail-title');
-      var complimentaryTags = document.getElementById('trial-complimentary-tags');
-      var complimentaryInput = document.getElementById('trial-complimentary-input');
 
-      function hideTreatmentDetailView() {
-        if (overviewStack) overviewStack.hidden = false;
-        if (treatmentDetail) treatmentDetail.hidden = true;
+      /** Demo catalog — production would call GET /api/products?q=… */
+      var MYFS_PRODUCT_CATALOG_DEMO = [
+        { id: 'p-g3', label: 'G3 OS', meta: 'System · default trial product' },
+        { id: 'p-gly', label: 'Glyphosate 4L', meta: 'Herbicide · Group 9' },
+        { id: 'p-atr', label: 'Atrazine 4L', meta: 'Herbicide · Group 5' },
+        { id: 'p-dic', label: 'Dicamba DMA', meta: 'Herbicide · Group 4' },
+        { id: 'p-24d', label: '2,4-D Ester', meta: 'Herbicide · Group 4' },
+        { id: 'p-mes', label: 'Mesotrione', meta: 'Herbicide · Group 27' },
+        { id: 'p-uan', label: 'UAN 28%', meta: 'Nitrogen solution' },
+        { id: 'p-sta', label: 'Starter 10-34-0', meta: 'Liquid fertilizer' },
+        { id: 'p-pot', label: 'Potash 0-0-60', meta: 'Dry fertilizer' },
+        { id: 'p-rye', label: 'Cover crop rye', meta: 'Seed' },
+        { id: 'p-lam', label: 'Lambda-cyhalothrin', meta: 'Insecticide · Group 3' },
+        { id: 'p-azo', label: 'Azoxystrobin', meta: 'Fungicide · Group 11' },
+        { id: 'p-prem', label: 'Herbicide premix A', meta: 'Pre-mix' },
+        { id: 'p-seed', label: 'Seed treatment fungicide', meta: 'Seed treatment' },
+        { id: 'p-nst', label: 'Nitrogen stabilizer', meta: 'Adjuvant' },
+        { id: 'p-sul', label: 'Sulfur 90', meta: 'Dry fertilizer' },
+        { id: 'p-lim', label: 'Lime', meta: 'Soil amendment' },
+        { id: 'p-man', label: 'Manure incorporated', meta: 'Organic amendment' },
+        { id: 'p-coc', label: 'Crop oil concentrate', meta: 'Adjuvant' },
+        { id: 'p-ams', label: 'AMS', meta: 'Water conditioner' }
+      ];
+
+      function mockProductSearchRequest(query) {
+        var q = (query || '').trim().toLowerCase();
+        return new Promise(function (resolve) {
+          window.setTimeout(function () {
+            if (!q) {
+              resolve([]);
+              return;
+            }
+            var out = MYFS_PRODUCT_CATALOG_DEMO.filter(function (p) {
+              return (
+                p.label.toLowerCase().indexOf(q) >= 0 ||
+                (p.meta && p.meta.toLowerCase().indexOf(q) >= 0) ||
+                (p.id && p.id.toLowerCase().indexOf(q) >= 0)
+              );
+            }).slice(0, 8);
+            resolve(out);
+          }, 240);
+        });
       }
 
-      function seedComplimentaryTags() {
-        if (!complimentaryTags) return;
-        complimentaryTags.innerHTML =
-          '<span class="trial-drawer-treatment__tag" role="listitem">' +
-          'Starter Fertilizer' +
-          '<button type="button" class="trial-drawer-treatment__tag-remove" aria-label="Remove Starter Fertilizer">' +
-          '<span class="material-symbols-outlined" aria-hidden="true">close</span></button></span>';
-        var rm = complimentaryTags.querySelector('.trial-drawer-treatment__tag-remove');
-        if (rm) {
-          rm.addEventListener('click', function () {
-            var row = rm.closest('.trial-drawer-treatment__tag');
-            if (row) row.remove();
-          });
+      function appendProductChip(tagsEl, val) {
+        if (!tagsEl) return;
+        val = (String(val || '')).trim();
+        if (!val) return;
+        var span = document.createElement('span');
+        span.className = 'trial-drawer-treatment__chip';
+        span.setAttribute('role', 'listitem');
+        var label = document.createElement('span');
+        label.className = 'trial-drawer-treatment__chip-text';
+        label.textContent = val;
+        var rm = document.createElement('button');
+        rm.type = 'button';
+        rm.className = 'trial-drawer-treatment__chip-remove';
+        rm.setAttribute('aria-label', 'Remove ' + val);
+        rm.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">close</span>';
+        rm.addEventListener('click', function () {
+          span.remove();
+          if (!tagsEl.children.length) tagsEl.setAttribute('hidden', '');
+        });
+        span.appendChild(label);
+        span.appendChild(rm);
+        tagsEl.appendChild(span);
+        tagsEl.removeAttribute('hidden');
+      }
+
+      function hideTrialProductCombobox() {
+        var lb = document.getElementById('trial-product-listbox');
+        var inp = document.getElementById('trial-zone-product-input');
+        var st = document.getElementById('trial-product-search-status');
+        if (lb) {
+          lb.hidden = true;
+          lb.innerHTML = '';
         }
+        if (inp) inp.setAttribute('aria-expanded', 'false');
+        if (st) st.textContent = '';
+      }
+
+      function hideTreatmentDetailView() {
+        if (drawer) drawer.classList.remove('trial-drawer--treatment-slider-open');
+        if (treatmentDetail) treatmentDetail.setAttribute('aria-hidden', 'true');
       }
 
       function showTreatmentDetail(title, treated) {
-        if (!overviewStack || !treatmentDetail || !treatmentTitleEl) return;
-        treatmentTitleEl.textContent = title;
+        if (!treatmentDetail || !treatmentTitleEl) return;
+        if (treatmentTitleEl.tagName === 'INPUT' || treatmentTitleEl.tagName === 'TEXTAREA') {
+          treatmentTitleEl.value = title;
+        } else {
+          treatmentTitleEl.textContent = title;
+        }
         var rT = document.getElementById('trial-zone-treated');
         var rU = document.getElementById('trial-zone-untreated');
         if (rT && rU) {
           rT.checked = !!treated;
           rU.checked = !treated;
         }
-        var prod = document.getElementById('trial-zone-product');
-        if (prod && treated) prod.value = 'g3';
-        seedComplimentaryTags();
-        var apTags = document.getElementById('trial-add-product-tags');
-        var apInput = document.getElementById('trial-add-product-input');
-        if (apTags) apTags.innerHTML = '';
-        if (apInput) apInput.value = '';
-        var excl = document.getElementById('trial-exclude-treatment');
-        var exclTa = document.getElementById('trial-exclude-comment');
-        var exclHint = document.getElementById('trial-exclude-comment-hint');
-        if (excl) excl.checked = false;
-        if (exclTa) {
-          exclTa.value = '';
-          exclTa.disabled = true;
+        var prodInput = document.getElementById('trial-zone-product-input');
+        if (prodInput) {
+          prodInput.value = '';
         }
-        if (exclHint) exclHint.hidden = true;
-        overviewStack.hidden = true;
-        treatmentDetail.hidden = false;
+        hideTrialProductCombobox();
+        var productTags = document.getElementById('trial-product-tags');
+        if (productTags) {
+          productTags.innerHTML = '';
+          productTags.setAttribute('hidden', '');
+          if (treated) {
+            appendProductChip(productTags, 'G3 OS');
+          }
+        }
+        if (drawer) drawer.classList.add('trial-drawer--treatment-slider-open');
+        treatmentDetail.setAttribute('aria-hidden', 'false');
       }
 
       function resetTrialDrawerUi() {
@@ -933,13 +1196,92 @@
       }
 
       function treatmentDetailFromButton(el) {
-        var title = el.getAttribute('data-treatment-title') || 'Treatment';
+        var title = el.getAttribute('data-treatment-title') || 'Zone 1';
         var treated = el.getAttribute('data-treated') !== 'false';
         showTreatmentDetail(title, treated);
       }
 
       function isTreatmentDetailVisible() {
-        return treatmentDetail && !treatmentDetail.hidden;
+        return !!(drawer && drawer.classList.contains('trial-drawer--treatment-slider-open'));
+      }
+
+      function initTrialAssignedDropdown() {
+        var wrap = document.getElementById('trial-assigned-dropdown');
+        var trigger = document.getElementById('trial-assigned-to-trigger');
+        var list = document.getElementById('trial-assigned-list');
+        var searchInput = document.getElementById('trial-assigned-search');
+        var hidden = document.getElementById('trial-assigned-to');
+        if (!wrap || !trigger || !list || !searchInput || !hidden) return;
+        var items = list.querySelectorAll('.dropdown-search__item');
+
+        function syncOptgroupLabels() {
+          list.querySelectorAll('.trial-drawer__assign-optgroup').forEach(function (group) {
+            var el = group.nextElementSibling;
+            var any = false;
+            while (el && !el.classList.contains('trial-drawer__assign-optgroup')) {
+              if (el.classList.contains('dropdown-search__item') && el.style.display !== 'none') {
+                any = true;
+                break;
+              }
+              el = el.nextElementSibling;
+            }
+            group.style.display = any ? '' : 'none';
+          });
+        }
+
+        function open() {
+          trigger.setAttribute('aria-expanded', 'true');
+          list.removeAttribute('hidden');
+          searchInput.value = '';
+          items.forEach(function (item) {
+            item.style.display = '';
+          });
+          syncOptgroupLabels();
+          searchInput.focus();
+        }
+        function close() {
+          trigger.setAttribute('aria-expanded', 'false');
+          list.setAttribute('hidden', '');
+        }
+        function filter() {
+          var q = (searchInput.value || '').toLowerCase().trim();
+          items.forEach(function (item) {
+            var show = !q || item.textContent.toLowerCase().indexOf(q) !== -1;
+            item.style.display = show ? '' : 'none';
+          });
+          syncOptgroupLabels();
+        }
+
+        trigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (trigger.getAttribute('aria-expanded') === 'true') close();
+          else open();
+        });
+        searchInput.addEventListener('input', filter);
+        searchInput.addEventListener('click', function (e) {
+          e.stopPropagation();
+        });
+        searchInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            e.stopPropagation();
+            close();
+            trigger.focus();
+          }
+        });
+        items.forEach(function (item) {
+          item.addEventListener('click', function () {
+            var val = item.getAttribute('data-value') || '';
+            hidden.value = val;
+            trigger.textContent = item.textContent.trim();
+            items.forEach(function (i) {
+              i.setAttribute('aria-selected', i === item ? 'true' : 'false');
+            });
+            close();
+          });
+        });
+        document.addEventListener('click', function (e) {
+          if (!wrap.contains(e.target)) close();
+        });
       }
 
       btn.addEventListener('click', function (e) {
@@ -947,43 +1289,44 @@
         setMitrialsOpen(overlay.hasAttribute('hidden'));
       });
 
-      var addTrialBtn = overlay.querySelector('.mitrials-treatment-menu__add');
-      if (addTrialBtn && drawer) {
-        addTrialBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          setMitrialsOpen(false);
-          hideTreatmentDetailView();
-          setTrialDrawerOpen(true);
-        });
+      function trialDrawerNameForCode(code) {
+        if (!code) return 'IL corn field trial (demo)';
+        if (String(code).indexOf('NEW-') === 0) return '';
+        if (code === '26-ZEAMX-US800-IL04-FRON') return 'IL corn field trial (demo)';
+        return 'Field trial — ' + code;
       }
 
-      function openExistingTrialFromPopover() {
+      function openExistingTrialFromPopover(row) {
         if (!drawer) return;
         setMitrialsOpen(false);
-        if (trialRowCheckbox) {
-          trialRowCheckbox.checked = true;
-          syncMitrialsTrialZones();
+        if (row) {
+          selectMitrialsTrialRow(row);
+          var cb = row.querySelector('.mitrials-treatment-menu__cb');
+          if (cb) {
+            cb.checked = true;
+            syncMitrialsTrialZones();
+          }
         }
-        var protocolSelect = document.getElementById('trial-protocol-select');
-        if (protocolSelect) protocolSelect.value = 'corn-standard';
-        syncTrialTreatmentsPanel();
+        var code = row ? row.getAttribute('data-trial-code') || '' : '';
+        var pr = document.getElementById('trial-protocol-select');
+        var trialName = document.getElementById('trial-drawer-trial-name');
+        if (pr) pr.value = 'corn-standard';
+        if (trialName) trialName.value = trialDrawerNameForCode(code);
+        if (pr) pr.dispatchEvent(new Event('change', { bubbles: true }));
         setTrialDrawerOpen(true);
-        showTreatmentDetail('Treated — G3 OS', true);
+        showTreatmentDetail('Zone 1', true);
       }
-      var existingTrialBtn = document.getElementById('mitrials-open-existing-trial');
-      var editExistingTrialBtn = document.getElementById('mitrials-edit-existing-trial');
-      if (existingTrialBtn && drawer) {
-        existingTrialBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          openExistingTrialFromPopover();
-        });
-      }
-      if (editExistingTrialBtn && drawer) {
-        editExistingTrialBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          openExistingTrialFromPopover();
-        });
-      }
+
+      overlay.addEventListener('click', function (e) {
+        var t = e.target;
+        var openBtn = t.closest && t.closest('[data-open-trial]');
+        var editBtn = t.closest && t.closest('[data-edit-trial]');
+        if (!openBtn && !editBtn) return;
+        var row = (openBtn || editBtn).closest('.mitrials-treatment-menu__trial-row');
+        if (!row || !overlay.contains(row)) return;
+        e.stopPropagation();
+        openExistingTrialFromPopover(row);
+      });
       var mitrialsCollapseBtn = document.getElementById('mitrials-trial-list-toggle');
       var mitrialsTrialListPanel = document.getElementById('mitrials-trial-list-panel');
       if (mitrialsCollapseBtn && mitrialsTrialListPanel) {
@@ -998,9 +1341,6 @@
         });
       }
 
-      if (trialRowCheckbox) {
-        trialRowCheckbox.addEventListener('change', syncMitrialsTrialZones);
-      }
       syncMitrialsTrialZones();
 
       if (drawer) {
@@ -1015,10 +1355,27 @@
 
         function treatmentsModeForProtocol(value) {
           if (!value) return 'placeholder';
+          if (value === 'adhoc') return 'undetermined';
           if (value === 'corn-single-zone') return 'single-zone';
           if (protocolsWithPredeterminedZones.indexOf(value) !== -1) return 'predetermined';
           if (protocolsWithUndeterminedZones.indexOf(value) !== -1) return 'undetermined';
           return 'undetermined';
+        }
+
+        function syncProtocolAdhocUi() {
+          var sel = document.getElementById('trial-protocol-select');
+          var section = document.getElementById('protocol-adhoc-section');
+          if (!sel || !section) return;
+          var on = sel.value === 'adhoc';
+          section.hidden = !on;
+          var nameEl = document.getElementById('trial-protocol-adhoc-name');
+          var adoc = document.getElementById('trial-protocol-adoc');
+          [nameEl, adoc].forEach(function (el) {
+            if (!el) return;
+            el.disabled = !on;
+            if (!on) el.value = '';
+          });
+          if (nameEl) nameEl.setAttribute('aria-required', on ? 'true' : 'false');
         }
 
         syncTrialTreatmentsPanel = function () {
@@ -1032,13 +1389,67 @@
           treatmentsUndetermined.hidden = mode !== 'undetermined';
         };
 
+        function onProtocolChange() {
+          hideTreatmentDetailView();
+          syncProtocolAdhocUi();
+          syncTrialTreatmentsPanel();
+        }
+
+        function prepareBlankNewTrial() {
+          hideTreatmentDetailView();
+          var tn = document.getElementById('trial-drawer-trial-name');
+          if (tn) tn.value = '';
+          if (protocolSelect) protocolSelect.value = '';
+          var ownerHidden = document.getElementById('trial-assigned-to');
+          if (ownerHidden) ownerHidden.value = 'creator';
+          var ownerTrigger = document.getElementById('trial-assigned-to-trigger');
+          if (ownerTrigger) ownerTrigger.textContent = 'Caleb Wieber';
+          var ownerSearch = document.getElementById('trial-assigned-search');
+          if (ownerSearch) ownerSearch.value = '';
+          var ownerList = document.getElementById('trial-assigned-list');
+          if (ownerList) {
+            ownerList.querySelectorAll('.dropdown-search__item').forEach(function (item) {
+              var v = item.getAttribute('data-value') || '';
+              item.setAttribute('aria-selected', v === 'creator' ? 'true' : 'false');
+              item.style.display = '';
+            });
+          }
+          if (treatmentTitleEl) treatmentTitleEl.value = '';
+          var prodIn = document.getElementById('trial-zone-product-input');
+          if (prodIn) prodIn.value = '';
+          hideTrialProductCombobox();
+          var prodTags = document.getElementById('trial-product-tags');
+          if (prodTags) {
+            prodTags.innerHTML = '';
+            prodTags.setAttribute('hidden', '');
+          }
+          var rT = document.getElementById('trial-zone-treated');
+          var rU = document.getElementById('trial-zone-untreated');
+          if (rT && rU) {
+            rT.checked = true;
+            rU.checked = false;
+          }
+          syncProtocolAdhocUi();
+          syncTrialTreatmentsPanel();
+        }
+
         if (protocolSelect) {
-          protocolSelect.addEventListener('change', function () {
-            hideTreatmentDetailView();
-            syncTrialTreatmentsPanel();
+          protocolSelect.addEventListener('change', onProtocolChange);
+        }
+        syncProtocolAdhocUi();
+
+        syncTrialTreatmentsPanel();
+
+        var addTrialBtn = overlay.querySelector('.mitrials-treatment-menu__add');
+        if (addTrialBtn) {
+          addTrialBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            appendMitrialsTrialRow(nextNewTrialCode());
+            setMitrialsOpen(false);
+            prepareBlankNewTrial();
+            setTrialDrawerOpen(true);
           });
         }
-        syncTrialTreatmentsPanel();
 
         drawer.addEventListener('click', function (e) {
           var t = e.target.closest('[data-treatment-detail]');
@@ -1053,75 +1464,242 @@
             hideTreatmentDetailView();
           });
         }
+        var lastZoneModal = document.getElementById('trial-last-zone-modal');
+        function openLastZoneModal() {
+          if (!lastZoneModal) return;
+          lastZoneModal.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('modal-overlay-open');
+          lastZoneModal.classList.add('modal-overlay--open');
+        }
+        function closeLastZoneModal() {
+          if (!lastZoneModal) return;
+          lastZoneModal.classList.remove('modal-overlay--open');
+          document.body.classList.remove('modal-overlay-open');
+          setTimeout(function () {
+            lastZoneModal.setAttribute('aria-hidden', 'true');
+          }, 200);
+        }
+        function countVisibleTreatmentZoneRows() {
+          if (!treatmentsRoot) return 0;
+          var panels = treatmentsRoot.querySelectorAll('.trial-drawer__treatments-panel');
+          var n = 0;
+          panels.forEach(function (p) {
+            if (p.hidden) return;
+            n += p.querySelectorAll('.trial-drawer__treatments-row').length;
+          });
+          return n;
+        }
+        var lastZoneOk = document.getElementById('trial-last-zone-modal-ok');
+        var lastZoneDismiss = document.getElementById('trial-last-zone-modal-dismiss');
+        if (lastZoneOk) lastZoneOk.addEventListener('click', closeLastZoneModal);
+        if (lastZoneDismiss) lastZoneDismiss.addEventListener('click', closeLastZoneModal);
+        if (lastZoneModal) {
+          lastZoneModal.addEventListener('click', function (e) {
+            if (e.target === lastZoneModal) closeLastZoneModal();
+          });
+        }
+
         var delBtn = document.getElementById('trial-treatment-delete');
         if (delBtn) {
           delBtn.addEventListener('click', function () {
+            if (countVisibleTreatmentZoneRows() <= 1) {
+              openLastZoneModal();
+              return;
+            }
             hideTreatmentDetailView();
           });
         }
 
-        function wireTrialTagAdd(addBtn, inputEl, tagsEl) {
+        function initTrialProductCombobox(addBtn, inputEl, tagsEl) {
           if (!addBtn || !inputEl || !tagsEl) return;
-          addBtn.addEventListener('click', function () {
+          var listbox = document.getElementById('trial-product-listbox');
+          var statusEl = document.getElementById('trial-product-search-status');
+          if (!listbox) return;
+
+          var debounceTimer = null;
+          var activeSeq = 0;
+          var highlightIdx = -1;
+          var lastResults = [];
+
+          function setOpen(open) {
+            inputEl.setAttribute('aria-expanded', open ? 'true' : 'false');
+          }
+
+          function renderResults(items) {
+            listbox.innerHTML = '';
+            highlightIdx = -1;
+            lastResults = items || [];
+            if (!lastResults.length) {
+              var empty = document.createElement('li');
+              empty.className = 'trial-drawer-treatment__product-empty';
+              empty.setAttribute('role', 'presentation');
+              empty.textContent =
+                'No catalog matches. Type a product name and tap Add, or try a different search.';
+              listbox.appendChild(empty);
+              listbox.hidden = false;
+              setOpen(true);
+              return;
+            }
+            lastResults.forEach(function (item, idx) {
+              var li = document.createElement('li');
+              var btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'trial-drawer-treatment__product-option';
+              btn.setAttribute('role', 'option');
+              btn.setAttribute('id', 'trial-product-opt-' + idx);
+              btn.setAttribute('data-idx', String(idx));
+              var lab = document.createElement('span');
+              lab.className = 'trial-drawer-treatment__product-option-label';
+              lab.textContent = item.label;
+              btn.appendChild(lab);
+              if (item.meta) {
+                var meta = document.createElement('span');
+                meta.className = 'trial-drawer-treatment__product-option-meta';
+                meta.textContent = item.meta;
+                btn.appendChild(meta);
+              }
+              btn.addEventListener('mousedown', function (e) {
+                e.preventDefault();
+              });
+              btn.addEventListener('click', function () {
+                pickIndex(idx);
+              });
+              li.appendChild(btn);
+              listbox.appendChild(li);
+            });
+            listbox.hidden = false;
+            setOpen(true);
+          }
+
+          function syncHighlight() {
+            var opts = listbox.querySelectorAll('.trial-drawer-treatment__product-option');
+            opts.forEach(function (o, i) {
+              o.classList.toggle('trial-drawer-treatment__product-option--keyboard-focus', i === highlightIdx);
+              o.setAttribute('aria-selected', i === highlightIdx ? 'true' : 'false');
+            });
+            if (highlightIdx >= 0 && opts[highlightIdx]) {
+              inputEl.setAttribute('aria-activedescendant', opts[highlightIdx].id);
+            } else {
+              inputEl.removeAttribute('aria-activedescendant');
+            }
+          }
+
+          function pickIndex(idx) {
+            if (idx < 0 || idx >= lastResults.length) return;
+            var item = lastResults[idx];
+            appendProductChip(tagsEl, item.label);
+            inputEl.value = '';
+            hideTrialProductCombobox();
+          }
+
+          function commitFreeText() {
             var val = (inputEl.value || '').trim();
             if (!val) return;
-            var span = document.createElement('span');
-            span.className = 'trial-drawer-treatment__tag';
-            span.setAttribute('role', 'listitem');
-            var label = document.createElement('span');
-            label.textContent = val;
-            var rm = document.createElement('button');
-            rm.type = 'button';
-            rm.className = 'trial-drawer-treatment__tag-remove';
-            rm.setAttribute('aria-label', 'Remove ' + val);
-            rm.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">close</span>';
-            rm.addEventListener('click', function () {
-              span.remove();
-            });
-            span.appendChild(label);
-            span.appendChild(rm);
-            tagsEl.appendChild(span);
+            appendProductChip(tagsEl, val);
             inputEl.value = '';
+            hideTrialProductCombobox();
+          }
+
+          function scheduleSearch() {
+            var q = (inputEl.value || '').trim();
+            if (debounceTimer) window.clearTimeout(debounceTimer);
+            if (!q) {
+              hideTrialProductCombobox();
+              return;
+            }
+            var seq = ++activeSeq;
+            if (statusEl) statusEl.textContent = 'Searching catalog…';
+            debounceTimer = window.setTimeout(function () {
+              mockProductSearchRequest(q).then(function (rows) {
+                if (seq !== activeSeq) return;
+                if (statusEl) statusEl.textContent = '';
+                renderResults(rows);
+              });
+            }, 200);
+          }
+
+          inputEl.addEventListener('input', function () {
+            scheduleSearch();
+          });
+
+          inputEl.addEventListener('keydown', function (e) {
+            var opts = listbox.querySelectorAll('.trial-drawer-treatment__product-option');
+            var n = opts.length;
+            if (e.key === 'ArrowDown') {
+              if (listbox.hidden || !n) return;
+              e.preventDefault();
+              highlightIdx = Math.min(highlightIdx + 1, n - 1);
+              syncHighlight();
+              return;
+            }
+            if (e.key === 'ArrowUp') {
+              if (listbox.hidden || !n) return;
+              e.preventDefault();
+              highlightIdx = Math.max(highlightIdx - 1, 0);
+              syncHighlight();
+              return;
+            }
+            if (e.key === 'Enter') {
+              if (!listbox.hidden && highlightIdx >= 0 && lastResults[highlightIdx]) {
+                e.preventDefault();
+                pickIndex(highlightIdx);
+                return;
+              }
+              e.preventDefault();
+              commitFreeText();
+              return;
+            }
+            if (e.key === 'Escape') {
+              if (!listbox.hidden) {
+                e.preventDefault();
+                e.stopPropagation();
+                hideTrialProductCombobox();
+              }
+            }
+          });
+
+          addBtn.addEventListener('click', function () {
+            commitFreeText();
+          });
+
+          document.addEventListener('click', function (e) {
+            var combo = inputEl.closest('.trial-drawer-treatment__product-combobox');
+            if (combo && !combo.contains(e.target) && addBtn !== e.target && !addBtn.contains(e.target)) {
+              hideTrialProductCombobox();
+            }
           });
         }
-        wireTrialTagAdd(document.getElementById('trial-complimentary-add'), complimentaryInput, complimentaryTags);
-        wireTrialTagAdd(
-          document.getElementById('trial-add-product-add'),
-          document.getElementById('trial-add-product-input'),
-          document.getElementById('trial-add-product-tags')
+
+        initTrialProductCombobox(
+          document.getElementById('trial-product-add'),
+          document.getElementById('trial-zone-product-input'),
+          document.getElementById('trial-product-tags')
         );
 
-        var trialExcludeCb = document.getElementById('trial-exclude-treatment');
-        var trialExcludeTa = document.getElementById('trial-exclude-comment');
-        var trialExcludeHint = document.getElementById('trial-exclude-comment-hint');
-        function syncTrialExcludeComment() {
-          if (!trialExcludeCb || !trialExcludeTa) return;
-          var on = trialExcludeCb.checked;
-          trialExcludeTa.disabled = !on;
-          if (on) {
-            trialExcludeTa.setAttribute('aria-required', 'true');
-            trialExcludeTa.focus();
-          } else {
-            trialExcludeTa.removeAttribute('aria-required');
-          }
-          if (trialExcludeHint) trialExcludeHint.hidden = !on;
-        }
-        if (trialExcludeCb) {
-          trialExcludeCb.addEventListener('change', syncTrialExcludeComment);
-        }
-
-        drawer.querySelectorAll('.trial-drawer__close, .trial-drawer__cancel').forEach(function (el) {
+        drawer.querySelectorAll('.trial-drawer__close').forEach(function (el) {
           el.addEventListener('click', function () {
             closeTrialDrawer();
           });
         });
-        var saveBtn = drawer.querySelector('.trial-drawer__save');
-        if (saveBtn) {
-          saveBtn.addEventListener('click', function () {
+        var footerCancel = document.getElementById('trial-drawer-footer-cancel');
+        if (footerCancel) {
+          footerCancel.addEventListener('click', function () {
+            if (drawer.classList.contains('trial-drawer--treatment-slider-open')) {
+              hideTreatmentDetailView();
+            } else {
+              closeTrialDrawer();
+            }
+          });
+        }
+        var footerSave = document.getElementById('trial-drawer-footer-save');
+        if (footerSave) {
+          footerSave.addEventListener('click', function () {
             closeTrialDrawer();
           });
         }
       }
+
+      initTrialAssignedDropdown();
 
       document.addEventListener('click', function (e) {
         if (overlay.hasAttribute('hidden')) return;

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiTrials Phase 3 — Analysis UI (modal)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="region-report-2.css" />
+  <link rel="stylesheet" href="mitrials-analysis-modal.css" />
+</head>
+<body class="rr2">
+  <div class="rr2-shell">
+    <div class="rr2-shell__map" style="background-image: url('../../../assets/intelinair-hero-panorama.png');"></div>
+
+    <aside class="rr2-sidebar" aria-label="Primary">
+      <a class="rr2-nav-item" href="#" title="Home">⌂</a>
+      <a class="rr2-nav-item" href="#" title="Fields">F</a>
+      <a class="rr2-nav-item rr2-nav-item--active" href="#" title="MiTrials">T</a>
+    </aside>
+
+    <header class="rr2-topbar">
+      <img class="rr2-topbar__logo" src="../../../assets/agmri-logo.png" alt="AgMRI" />
+      <a class="rr2-topbar__back" href="index.html">‹ Back</a>
+      <div class="rr2-topbar__search">Search</div>
+      <div class="rr2-topbar__user">
+        <span>Caleb Wieber</span>
+        <span class="rr2-topbar__avatar" aria-hidden="true">CW</span>
+      </div>
+    </header>
+
+    <div class="rr2-modal-layer">
+      <div class="rr2-modal rr2-modal--mitrials-analysis" role="dialog" aria-labelledby="m3a-dialog-title">
+        <div class="rr2-modal__head">
+          <div class="rr2-modal__title-row">
+            <div>
+              <h1 id="m3a-dialog-title" class="rr2-modal__title">Analysis</h1>
+              <p class="rr2-modal__subtitle" style="margin-top: 4px;">Nitrogen response — Smith East · Home 4 South Dahlia’s 24</p>
+              <p class="rr2-modal__subtitle" style="margin-top: 2px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-muted);">Detect · Investigate · Act</p>
+            </div>
+            <button type="button" class="rr2-icon-btn" aria-label="Close">×</button>
+          </div>
+        </div>
+
+        <div class="rr2-modal__body">
+          <div class="m3a">
+            <!-- Top bar -->
+            <header class="m3a-top" aria-label="Analysis controls">
+              <div class="m3a-top__group">
+                <span class="m3a-label" id="m3a-lbl-trial">Trial</span>
+                <select class="m3a-select" aria-labelledby="m3a-lbl-trial">
+                  <option>Nitrogen response — Smith East</option>
+                  <option>Population ramp — North 40</option>
+                </select>
+              </div>
+              <div class="m3a-top__group">
+                <span class="m3a-label" id="m3a-lbl-range">Time range</span>
+                <input type="date" value="2025-05-01" aria-label="Start date" />
+                <span style="color: var(--color-text-muted); font-size: 13px;">–</span>
+                <input type="date" value="2025-09-15" aria-label="End date" />
+              </div>
+              <div class="m3a-top__group">
+                <span class="m3a-label" id="m3a-lbl-metric">Metric</span>
+                <div class="m3a-seg" role="group" aria-labelledby="m3a-lbl-metric">
+                  <button type="button" aria-pressed="true">NDVI</button>
+                  <button type="button" aria-pressed="false">Yield</button>
+                </div>
+              </div>
+              <div class="m3a-top__reset">
+                <button type="button" class="m3a-btn m3a-btn--danger">Reset analysis</button>
+              </div>
+            </header>
+
+            <!-- Left: regions -->
+            <aside class="m3a-left" aria-label="Regions">
+              <p class="m3a-panel-title">Region list</p>
+              <div class="m3a-region-group">
+                <h3>Protocol regions</h3>
+                <div class="m3a-region-row">
+                  <label>
+                    <input type="checkbox" checked />
+                    <span class="m3a-swatch-inline" style="background: var(--color-primitive-500);"></span>
+                    North VR strip
+                  </label>
+                </div>
+                <div class="m3a-region-row">
+                  <label>
+                    <input type="checkbox" checked />
+                    <span class="m3a-swatch-inline" style="background: var(--color-primitive-300);"></span>
+                    South check
+                  </label>
+                </div>
+              </div>
+              <div class="m3a-region-group">
+                <h3>Ad-hoc regions</h3>
+                <div class="m3a-region-row">
+                  <label>
+                    <input type="checkbox" checked />
+                    <span class="m3a-swatch-inline" style="background: #a855f7;"></span>
+                    Wet pocket
+                  </label>
+                </div>
+              </div>
+              <button type="button" class="m3a-btn m3a-create">Create region</button>
+            </aside>
+
+            <!-- Main canvas -->
+            <main class="m3a-canvas" aria-label="Map and overlays">
+              <div class="m3a-canvas__bg" style="background-image: url('../../../assets/intelinair-hero-panorama.png');"></div>
+              <div class="m3a-canvas__overlay" aria-hidden="true">
+                <div class="m3a-field"></div>
+                <div class="m3a-ov-protocol" title="Protocol region overlay"></div>
+                <div class="m3a-ov-adhoc" title="Ad-hoc region overlay"></div>
+                <div class="m3a-ov-exclusion" title="Exclusion zone"></div>
+                <div class="m3a-marker m3a-marker--p" title="Point annotation"></div>
+                <div class="m3a-marker m3a-marker--a" title="Area annotation"></div>
+              </div>
+              <div class="m3a-tools">
+                <button type="button" class="m3a-tool" title="Draw region" aria-pressed="false">▢</button>
+                <button type="button" class="m3a-tool" title="Draw exclusion" aria-pressed="false">✂</button>
+                <button type="button" class="m3a-tool" title="Place annotation" aria-pressed="false">📍</button>
+              </div>
+              <div class="m3a-legend">
+                <strong>Legend</strong>
+                <div class="m3a-legend__row"><span class="m3a-swatch-inline" style="background: rgba(59,130,246,0.5); border: 1px solid var(--color-primitive-500);"></span> Protocol</div>
+                <div class="m3a-legend__row"><span class="m3a-swatch-inline" style="background: rgba(168,85,247,0.4); border: 1px solid #a855f7;"></span> Ad-hoc</div>
+                <div class="m3a-legend__row"><span class="m3a-swatch-inline" style="background: repeating-linear-gradient(-45deg,#fca5a5,#fca5a5 3px,#fecaca 3px,#fecaca 6px);"></span> Exclusion</div>
+              </div>
+            </main>
+
+            <!-- Right: analysis + annotations -->
+            <aside class="m3a-right" aria-label="Analysis and annotations">
+              <section aria-labelledby="m3a-sum-h">
+                <h2 id="m3a-sum-h" class="m3a-section-title">Analysis summary</h2>
+                <dl class="m3a-dl">
+                  <dt>Avg NDVI</dt>
+                  <dd>0.74</dd>
+                  <dt>Avg yield</dt>
+                  <dd>192 bu/ac</dd>
+                  <dt>Acres included</dt>
+                  <dd>612.4</dd>
+                  <dt>Acres excluded</dt>
+                  <dd>52.5</dd>
+                </dl>
+              </section>
+              <section aria-labelledby="m3a-ann-h">
+                <h2 id="m3a-ann-h" class="m3a-section-title">Annotations</h2>
+                <div class="m3a-ann-item">
+                  <span class="m3a-ann-item__type">point</span>
+                  <span class="m3a-ann-meta">Reason: Field condition · Comment: Standing water 48h after rain · Author: C. Wieber</span>
+                </div>
+                <div class="m3a-ann-item">
+                  <span class="m3a-ann-item__type">area</span>
+                  <span class="m3a-ann-meta">Reason: Poor alignment · Comment: Double application on turn · Author: C. Wieber</span>
+                </div>
+                <div class="m3a-ann-item">
+                  <span class="m3a-ann-item__type">exclusion</span>
+                  <span class="m3a-ann-meta">Reason: Drowned-out area · Comment: Linked exclusion poly · Author: C. Wieber</span>
+                </div>
+              </section>
+              <section aria-labelledby="m3a-trial-sum-h">
+                <h2 id="m3a-trial-sum-h" class="m3a-section-title">Trial summary</h2>
+                <label class="visually-hidden" for="m3a-trial-summary">Trial summary comment</label>
+                <textarea id="m3a-trial-summary" class="m3a-textarea">East blocks show strong response; west ad-hoc zone consistent with N loss after saturation.</textarea>
+              </section>
+            </aside>
+
+            <!-- Bottom: charts -->
+            <footer class="m3a-charts" aria-label="Time series charts">
+              <p class="m3a-panel-title" style="margin-bottom: 10px;">Time series · shared axis</p>
+              <div class="m3a-charts__row">
+                <div class="m3a-chart-block">
+                  <h4>NDVI time series</h4>
+                  <div class="m3a-spark m3a-spark--ndvi" aria-hidden="true">
+                    <span style="height:32%"></span><span style="height:38%"></span><span style="height:45%"></span><span style="height:41%"></span><span style="height:52%"></span>
+                    <span style="height:58%"></span><span style="height:61%"></span><span style="height:59%"></span><span style="height:64%"></span><span style="height:68%"></span>
+                  </div>
+                  <div class="m3a-axis"><span>May 1, 2025</span><span>Sep 15, 2025</span></div>
+                </div>
+                <div class="m3a-chart-block">
+                  <h4>Yield time series</h4>
+                  <div class="m3a-spark m3a-spark--yield" aria-hidden="true">
+                    <span style="height:40%"></span><span style="height:42%"></span><span style="height:44%"></span><span style="height:43%"></span><span style="height:46%"></span>
+                    <span style="height:48%"></span><span style="height:50%"></span><span style="height:49%"></span><span style="height:51%"></span><span style="height:52%"></span>
+                  </div>
+                  <div class="m3a-axis"><span>May 1, 2025</span><span>Sep 15, 2025</span></div>
+                </div>
+              </div>
+              <div class="m3a-chart-legend" role="group" aria-label="Region series visibility">
+                <span class="m3a-label" style="margin-right: 4px;">Series</span>
+                <label><input type="checkbox" checked /> North VR</label>
+                <label><input type="checkbox" checked /> South check</label>
+                <label><input type="checkbox" checked /> Wet pocket</label>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

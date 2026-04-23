@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Region Report 2.0 — Advanced analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="region-report-2.css" />
+</head>
+<body class="rr2">
+  <div class="rr2-shell">
+    <div class="rr2-shell__map" style="background-image: url('../../../assets/intelinair-hero-panorama.png');"></div>
+
+    <aside class="rr2-sidebar" aria-label="Primary">
+      <a class="rr2-nav-item" href="#" title="Home">⌂</a>
+      <a class="rr2-nav-item rr2-nav-item--active" href="#" title="Scout">S</a>
+    </aside>
+
+    <header class="rr2-topbar">
+      <img class="rr2-topbar__logo" src="../../../assets/agmri-logo.png" alt="AgMRI" />
+      <a class="rr2-topbar__back" href="index.html">‹ Back</a>
+      <div class="rr2-topbar__search">Search</div>
+      <div class="rr2-topbar__user">
+        <span>Caleb Wieber</span>
+        <span class="rr2-topbar__avatar" aria-hidden="true">CW</span>
+      </div>
+    </header>
+
+    <div class="rr2-modal-layer">
+      <div class="rr2-modal rr2-modal--wide rr2-modal--analytics" role="dialog" aria-labelledby="aa-title">
+        <div class="rr2-modal__head">
+          <div class="rr2-modal__title-row">
+            <div>
+              <h1 id="aa-title" class="rr2-modal__title">Advanced analytics</h1>
+              <p class="rr2-modal__subtitle">Sample date: 2/11</p>
+            </div>
+            <div id="rr2-aa-actions" class="rr2-modal__actions">
+              <button type="button" class="rr2-btn">⬇ Create PDF</button>
+              <button type="button" class="rr2-icon-btn" aria-label="Close">×</button>
+            </div>
+          </div>
+
+          <div id="rr2-aa-trials" class="rr2-trial-tabs" role="tablist" aria-label="Trials">
+            <button type="button" class="rr2-trial-tab" aria-selected="true">Trial 1</button>
+            <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 2</button>
+            <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 3</button>
+            <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 4</button>
+            <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 5</button>
+            <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 6</button>
+            <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 7</button>
+            <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 8</button>
+          </div>
+
+          <div id="rr2-aa-sample-pills" class="rr2-pill-row">
+            <button type="button" class="rr2-pill" aria-selected="true">Tissue sample</button>
+            <button type="button" class="rr2-pill" aria-selected="false">Reese-Nevins</button>
+          </div>
+        </div>
+
+        <div class="rr2-modal__body">
+          <div id="rr2-aa-baseline">
+            <div class="rr2-select-label">Baseline</div>
+            <label class="visually-hidden" for="aa-baseline">Baseline</label>
+            <select id="aa-baseline" class="rr2-select">
+              <option>This is the baseline selected</option>
+              <option>Field average</option>
+              <option>Check strip</option>
+            </select>
+          </div>
+
+          <div id="rr2-aa-nutrients">
+          <!-- N: scale 3.25–3.55 -->
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue nitrogen percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% N</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 96.7%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">3.54</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% N – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 76.7%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">3.48</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% N</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 56.7%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">3.42</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% N – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 43.3%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">3.38</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% N – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 27.7%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">3.33</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% N – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 10%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">3.28</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>3.25</span><span>3.30</span><span>3.35</span><span>3.40</span><span>3.45</span><span>3.50</span><span>3.55</span>
+            </div>
+          </div>
+
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue phosphorus percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% P</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 92%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">0.41</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% P – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 70%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">0.34</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% P</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 55%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">0.33</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% P – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 40%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">0.31</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% P – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 25%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">0.30</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% P – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 12%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">0.29</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>0.29</span><span>0.31</span><span>0.33</span><span>0.35</span><span>0.37</span><span>0.39</span><span>0.41</span>
+            </div>
+          </div>
+
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue potassium percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% K</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 88%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">1.67</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% K – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 72%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">1.64</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% K</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 58%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">1.62</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% K – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 45%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">1.60</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% K – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 30%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">1.53</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% K – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 15%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">1.51</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>1.51</span><span>1.53</span><span>1.55</span><span>1.57</span><span>1.59</span><span>1.62</span><span>1.67</span>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
