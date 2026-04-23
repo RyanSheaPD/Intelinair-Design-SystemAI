@@ -65,6 +65,21 @@
   --color-pb-900: #0D1117;
   --color-pb-rgb: 43, 58, 77;
 
+  /* AgMRI green (multi-brand) — retailer PWA chrome (e.g. msapplication-TileColor #00a300) */
+  --color-brand-agmri: var(--color-agmri-500);
+  --color-brand-agmri-rgb: var(--color-agmri-rgb);
+
+  --color-agmri-100: #e6f7e6;
+  --color-agmri-200: #c5eec5;
+  --color-agmri-300: #94e094;
+  --color-agmri-400: #52c452;
+  --color-agmri-500: #00a300;
+  --color-agmri-600: #008f00;
+  --color-agmri-700: #0d7a0d;
+  --color-agmri-800: #0f5c0f;
+  --color-agmri-900: #0a3d0a;
+  --color-agmri-rgb: 0, 163, 0;
+
   /* Primary alias */
   --color-primary: var(--color-brand);
   --color-primary-rgb: var(--color-brand-rgb);
@@ -154,6 +169,8 @@
   --color-text-on-myfs-500: #fff;
   --color-text-on-brand-pb: var(--color-text-on-pb-500);
   --color-text-on-pb-500: #fff;
+  --color-text-on-brand-agmri: var(--color-text-on-agmri-500);
+  --color-text-on-agmri-500: #fff;
   --color-text-on-danger: #fff;
   --color-text-on-warning: #fff;
   --color-text-on-success: #fff;
@@ -169,6 +186,7 @@
   --color-text-on-primitive-100: #1e5a96;
   --color-text-on-brand-100: #1e5a96;
   --color-text-on-pb-100: var(--color-pb-700);
+  --color-text-on-brand-100-agmri: var(--color-agmri-900);
   --color-text-on-success-100: var(--color-success-900);
   --color-text-on-warning-100: var(--color-warning-900);
   --color-text-on-danger-100: var(--color-danger-900);
@@ -227,6 +245,31 @@
   --spacing-3xl: 40px;
   --spacing-4xl: 48px;
   --spacing-5xl: 64px;
+
+  /*
+   * Step scale (4px base) — Material / AGMRI retailer shell parity (toolbars, forms, chip gaps).
+   * Prefer these when legacy --spacing-s (5px) or --spacing-m (10px) does not match live product.
+   */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Semantic aliases */
+  --spacing-toolbar-y: var(--space-2);
+  --spacing-toolbar-x: var(--space-4);
+  --spacing-chrome-x: var(--space-6);
+  --spacing-form-stack-gap: var(--space-4);
+
+  /* Shell chrome */
+  --header-min-height: 56px;
+  --radius-search-field: 30px;
 
   /* ========== RADIUS SCALE ========== */
   --radius-none: 0;
@@ -288,6 +331,9 @@
   --font-size-34: 34px;
   --font-size-38: 38px;
   --font-size-52: 52px;
+
+  /* Aliases used by demos / docs (maps to existing scale) */
+  --font-size-footnote: var(--font-size-14);
 
   --font-size-callout: var(--font-size-12);
   --font-weight-regular: 400;
@@ -425,4 +471,36 @@
   /* Counter badge */
   --counter-badge-bg: var(--color-pb-500);
   --counter-badge-text: var(--color-text-on-pb-500);
+}
+
+/* ═══ THEME: AgMRI (green) ═══
+ * Apply .theme-agmri to a page shell or demo card to swap brand + nav to AgMRI green.
+ * Primitives, neutrals, and default action blue stay as defined unless you override locally.
+ */
+.theme-agmri {
+  --color-brand-100: var(--color-agmri-100);
+  --color-brand-200: var(--color-agmri-200);
+  --color-brand-300: var(--color-agmri-300);
+  --color-brand-400: var(--color-agmri-400);
+  --color-brand-500: var(--color-agmri-500);
+  --color-brand-600: var(--color-agmri-600);
+  --color-brand-700: var(--color-agmri-700);
+  --color-brand-800: var(--color-agmri-800);
+  --color-brand-900: var(--color-agmri-900);
+  --color-brand: var(--color-agmri-500);
+  --color-brand-rgb: var(--color-agmri-rgb);
+  --color-text-on-brand: var(--color-text-on-agmri-500);
+  --color-text-on-brand-100: var(--color-text-on-brand-100-agmri);
+
+  --nav-background: var(--color-agmri-500);
+  --nav-text-active: var(--color-agmri-500);
+  --nav-icon-active: var(--color-agmri-500);
+
+  --nav-mobile-text-active: var(--color-agmri-500);
+  --nav-mobile-icon-active: var(--color-agmri-500);
+
+  --counter-badge-bg: var(--color-agmri-500);
+  --counter-badge-text: var(--color-text-on-agmri-500);
+
+  --color-action-brand: var(--color-agmri-500);
 }

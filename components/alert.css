@@ -14,7 +14,7 @@
   gap: var(--spacing-m, 10px);
   width: 360px;
   min-height: 58px;
-  padding: 8px var(--spacing-m, 10px) 8px var(--spacing-l, 20px);
+  padding: var(--space-2) var(--spacing-m, 10px) var(--space-2) var(--spacing-l, 20px);
   padding-right: 40px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);

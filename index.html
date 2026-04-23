@@ -113,7 +113,7 @@
     .demo-controls__switch-row {
       display: flex;
       gap: 0;
-      border-radius: var(--radius-button, 8px);
+      border-radius: var(--radius-md, 8px);
       overflow: hidden;
       border: 1px solid var(--color-border);
     }
@@ -2439,15 +2439,15 @@
   <details class="demo-details demo-section">
     <summary class="demo-details__summary"><h2 class="type-title3">Dashboard widget tabs</h2></summary>
     <div class="demo-details__content">
-    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.75rem;">Home dashboard shell in three brands: <strong>AgMRI</strong> (default green), <strong>MyFS</strong> (red nav + header), <strong>Pivot Bio</strong> (<code>.theme-pb</code> on the card for nav tokens + <code>.header--pb</code>). Side nav uses SVG assets from <code>assets/icons/nav/</code> (and timeline assets for widget tiles). Active widget tab: full opacity + shadow; edit controls unchanged.</p>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.75rem;">Home dashboard shell in three brands: <strong>AgMRI</strong> (<code>.theme-agmri</code> on the card + <code>.nav--agmri</code> + <code>.header--agmri</code> for green tokens), <strong>MyFS</strong> (red nav + header), <strong>Pivot Bio</strong> (<code>.theme-pb</code> on the card + <code>.header--pb</code>). Side nav uses SVG assets from <code>assets/icons/nav/</code> (and timeline assets for widget tiles). Active widget tab: full opacity + shadow; edit controls unchanged.</p>
 
     <div class="dashboard-brand-demos">
 
       <!-- AgMRI -->
-      <div class="dashboard-brand-demo">
+      <div class="dashboard-brand-demo theme-agmri">
         <div class="dashboard-brand-demo__label">AgMRI — Home</div>
         <div class="dashboard-brand-demo__shell">
-          <nav class="nav" aria-label="AgMRI dashboard nav">
+          <nav class="nav nav--agmri" aria-label="AgMRI dashboard nav">
             <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><img src="assets/icons/nav/home-filled.svg" alt="" /></span><span class="nav__label">Home</span></a>
             <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/growers-hollow.svg" alt="" /></span><span class="nav__label">Growers</span></a>
             <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/map-hollow.svg" alt="" /></span><span class="nav__label">Fields</span></a>
@@ -2458,8 +2458,8 @@
             <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Settings</span></a>
           </nav>
           <div class="dashboard-brand-demo__main">
-            <header class="header" role="banner">
-              <div class="header__left"><a href="#" class="header__logo" aria-label="AgMRI home"><img src="https://ag-mri.intelinair.com/assets/agmri-theme/img/logo.png" alt="AgMRI" /></a></div>
+            <header class="header header--agmri" role="banner">
+              <div class="header__left"><a href="#" class="header__logo" aria-label="AgMRI home"><img src="assets/agmri-logo.png" alt="AgMRI" /></a></div>
               <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
               <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
             </header>

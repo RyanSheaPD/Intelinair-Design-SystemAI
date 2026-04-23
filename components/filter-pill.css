@@ -53,7 +53,7 @@
 /* Disabled */
 .filter-pill:disabled {
   background: var(--filter-pill-bg-disabled, var(--color-primitive-100));
-  color: var(--filter-pill-text-disabled, #999);
+  color: var(--filter-pill-text-disabled, var(--color-text-disabled));
   cursor: not-allowed;
 }
 

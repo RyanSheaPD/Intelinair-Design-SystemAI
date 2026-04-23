@@ -10,18 +10,82 @@
   <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
     body {
-      margin: 0;
-      min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      min-height: 100vh;
       font-family: var(--font-family, Figtree, system-ui, sans-serif);
       color: var(--color-text);
       background: var(--color-neutral-100);
     }
+    .hub-nav {
+      flex: 0 0 auto;
+      width: 220px;
+      max-width: 32vw;
+      min-height: 100vh;
+      padding: var(--space-4) var(--space-3);
+      border-right: 1px solid var(--color-neutral-200, #e5e5e5);
+      background: var(--color-surface, #fff);
+      overflow-y: auto;
+    }
+    .hub-nav__title {
+      margin: 0 0 var(--space-2);
+      font-size: var(--font-size-11, 11px);
+      font-weight: var(--font-weight-bold, 700);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .hub-nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .hub-nav li { margin: 0; }
+    .hub-nav__link {
+      display: block;
+      padding: var(--space-2) var(--space-2);
+      margin-bottom: 2px;
+      border-radius: var(--radius-md, 8px);
+      font-size: var(--font-size-13, 0.8125rem);
+      font-weight: var(--font-weight-semibold, 600);
+      color: var(--color-text);
+      text-decoration: none;
+      line-height: 1.35;
+    }
+    .hub-nav__link:hover {
+      background: var(--color-neutral-100, #f5f5f5);
+      color: var(--color-brand-600, #2563eb);
+    }
+    .hub-nav__link[aria-current="page"] {
+      background: var(--color-primitive-100, #DBEAFE);
+      color: var(--color-primitive-600, #2563EB);
+    }
+    .hub-nav__meta {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      font-family: ui-monospace, monospace;
+      color: var(--color-text-muted);
+      margin-top: 2px;
+      word-break: break-all;
+    }
+    .hub-nav__section {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--color-border, #e5e5e5);
+    }
+    .hub-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
     .chrome {
       flex: 0 0 auto;
-      padding: var(--spacing-m, 16px) var(--spacing-l, 24px);
+      padding: var(--space-4) var(--space-6);
       border-bottom: 1px solid var(--color-neutral-200, #e5e5e5);
       background: #fff;
     }
@@ -62,20 +126,89 @@
   </style>
 </head>
 <body>
-  <div class="chrome">
-    <h1>Analysis workspace — live DOM snapshot</h1>
-    <p>
-      The frame below loads a cleaned copy of the HTML you pasted (single document, analytics scripts removed, <code>base</code> set to this folder).
-      The Angular bundle <code>styles.cef64a1bc5706731.css</code> and the saved Google Fonts CSS stubs (<code>icon</code>, <code>css2</code>, <code>css</code>) live in this folder; the bundle’s first line imports those files locally instead of fonts.googleapis.com. Actual font files are still loaded from <code>fonts.gstatic.com</code> inside those stubs, so you need network (or download the <code>.woff2</code> files and rewrite the <code>url()</code>s) for full typography. Absolute image URLs under <code>/assets/…</code> in the snapshot still need your app origin or a mirrored <code>assets</code> tree.
-    </p>
-    <p class="actions">
-      <a href="live-snapshot.html" target="_blank" rel="noopener">Open snapshot in new tab</a>
-      ·
-      <a href="../region-report-2/index.html">← Region Report / MiTrials demos</a>
-    </p>
+  <nav class="hub-nav" aria-label="AGMRI canonical pages">
+    <p class="hub-nav__title">Scout / fields</p>
+    <ul>
+      <li>
+        <a class="hub-nav__link" href="../../scout/fields-map-view.html" target="agmri-snapshot-frame" data-default>Fields map view<span class="hub-nav__meta">pages/scout/fields-map-view.html</span></a>
+      </li>
+      <li>
+        <a class="hub-nav__link" href="../../scout/scout-map-view.html" target="agmri-snapshot-frame">Scout map view<span class="hub-nav__meta">pages/scout/scout-map-view.html</span></a>
+      </li>
+      <li>
+        <a class="hub-nav__link" href="../../scout/fields-thumbnail-view.html" target="agmri-snapshot-frame">Fields thumbnail view<span class="hub-nav__meta">pages/scout/fields-thumbnail-view.html</span></a>
+      </li>
+      <li>
+        <a class="hub-nav__link" href="../../scout/myfs-scouting.html" target="agmri-snapshot-frame">My fields (MyFS shell + links)<span class="hub-nav__meta">pages/scout/myfs-scouting.html</span></a>
+      </li>
+    </ul>
+    <div class="hub-nav__section">
+      <p class="hub-nav__title">Retailer routes</p>
+      <ul>
+        <li>
+          <a class="hub-nav__link" href="../../home.html" target="agmri-snapshot-frame">Home<span class="hub-nav__meta">pages/home.html</span></a>
+        </li>
+        <li>
+          <a class="hub-nav__link" href="../../groups.html" target="agmri-snapshot-frame">Groups<span class="hub-nav__meta">pages/groups.html</span></a>
+        </li>
+        <li>
+          <a class="hub-nav__link" href="../../growers.html" target="agmri-snapshot-frame">Growers<span class="hub-nav__meta">pages/growers.html</span></a>
+        </li>
+        <li>
+          <a class="hub-nav__link" href="../../weather.html" target="agmri-snapshot-frame">Weather<span class="hub-nav__meta">pages/weather.html</span></a>
+        </li>
+        <li>
+          <a class="hub-nav__link" href="../../weather-map-view.html" target="agmri-snapshot-frame">Weather map view<span class="hub-nav__meta">pages/weather-map-view.html</span></a>
+        </li>
+      </ul>
+    </div>
+    <div class="hub-nav__section">
+      <p class="hub-nav__title">More demos</p>
+      <ul>
+        <li>
+          <a class="hub-nav__link" href="../region-report-2/index.html" target="agmri-snapshot-frame">Region report / MiTrials<span class="hub-nav__meta">pages/demos/region-report-2/</span></a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="hub-main">
+    <div class="chrome">
+      <h1>Analysis workspace — live DOM snapshot</h1>
+      <p>
+        Use the <strong>left nav</strong> to load a canonical page in the frame. Default: <strong>AGMRI fields map view</strong> (<code>pages/scout/fields-map-view.html</code>). <strong>Scout map view</strong> is a different surface; <code>scout-map-view.html</code> currently embeds the <strong>alerts-sort</strong> slice. Styles: <code>styles.cef64a1bc5706731.css</code> in this folder; fonts may still load from <code>fonts.gstatic.com</code>. Mirrored assets include <code>assets/img/retailer/alertBadges/</code> for offline badge icons where snapshots reference them.
+      </p>
+      <p class="actions">
+        <a href="../../scout/fields-map-view.html" target="_blank" rel="noopener">Open current frame in new tab</a>
+        ·
+        <a href="../../../index.html#layouts">← Design system index</a>
+      </p>
+    </div>
+    <div class="frame-wrap">
+      <iframe name="agmri-snapshot-frame" src="../../scout/fields-map-view.html" title="AGMRI live snapshot preview"></iframe>
+    </div>
   </div>
-  <div class="frame-wrap">
-    <iframe src="live-snapshot.html" title="AGMRI live DOM snapshot"></iframe>
-  </div>
+
+  <script>
+    (function () {
+      var links = document.querySelectorAll('.hub-nav__link[target="agmri-snapshot-frame"]');
+      function setCurrent(active) {
+        links.forEach(function (a) {
+          if (a === active) {
+            a.setAttribute("aria-current", "page");
+          } else {
+            a.removeAttribute("aria-current");
+          }
+        });
+      }
+      links.forEach(function (a) {
+        a.addEventListener("click", function () {
+          setCurrent(a);
+        });
+      });
+      var def = document.querySelector(".hub-nav__link[data-default]");
+      if (def) setCurrent(def);
+    })();
+  </script>
 </body>
 </html>

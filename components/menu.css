@@ -20,7 +20,7 @@
   background: var(--color-surface);
   color: var(--color-text);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-button, 8px);
+  border-radius: var(--radius-md, 8px);
   font-family: var(--font-family);
   font-size: var(--font-size-callout, 12px);
   font-weight: var(--font-weight-regular);

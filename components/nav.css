@@ -95,6 +95,13 @@
   --nav-icon-active: var(--color-myfs-500);
 }
 
+/* AgMRI green brand variant — uses AgMRI color ramp */
+.nav--agmri {
+  --nav-background: var(--color-agmri-500);
+  --nav-text-active: var(--color-agmri-500);
+  --nav-icon-active: var(--color-agmri-500);
+}
+
 /* ----- Mobile bottom nav (iOS / Android) — 4 items: Fields, Scout, Weather, More ----- */
 /* Background: neutral-100 or neutral-500 (use .nav--bottom-dark for 500). Active item uses brand/primary color. */
 .nav--bottom {
@@ -160,4 +167,10 @@
 .nav--bottom.nav--myfs {
   --nav-mobile-text-active: var(--color-myfs-500);
   --nav-mobile-icon-active: var(--color-myfs-500);
+}
+
+/* AgMRI green on mobile bottom nav */
+.nav--bottom.nav--agmri {
+  --nav-mobile-text-active: var(--color-agmri-500);
+  --nav-mobile-icon-active: var(--color-agmri-500);
 }

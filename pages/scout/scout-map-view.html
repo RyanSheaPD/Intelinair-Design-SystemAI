@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- Scout map view: partial live DOM slice (alerts-sort + color-range). Full map snapshot still TODO. Loads same AGMRI bundle as fields-map-view for Material styling. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGMRI — Scout map view (alerts sort chrome)</title>
+  <link rel="stylesheet" href="../demos/agmri-analysis-workspace/styles.cef64a1bc5706731.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: Figtree, system-ui, sans-serif; background: #eceff1; color: #18181b; }
+    .ds-scout-wrap { max-width: 960px; margin: 0 auto; padding: 24px 20px 40px; }
+    .ds-scout-note {
+      font-size: 0.875rem; line-height: 1.5; color: #52525b; margin: 0 0 16px; max-width: 70ch;
+    }
+    .ds-scout-note code { font-size: 0.92em; }
+    .ds-scout-slice {
+      background: #fff;
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+    }
+    .ds-scout-slice h2 {
+      margin: 0 0 12px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #71717a;
+    }
+    .ds-scout-links { margin-top: 20px; font-size: 0.875rem; }
+    .ds-scout-links a { color: #2563eb; font-weight: 600; margin-right: 16px; }
+  </style>
+</head>
+<body>
+  <div class="ds-scout-wrap">
+    <p class="ds-scout-note">
+      <strong>Scout map</strong> includes this <code>alerts-sort</code> row (Sort by + alert severity palette) beside the map; the retailer <strong>Fields map</strong> snapshot in <code>fields-map-view.html</code> does not use this block the same way. Markup below is a static slice from live AGMRI (Material select is non-interactive without Angular).
+    </p>
+    <div class="ds-scout-slice">
+      <h2>Scout map — alerts sort (live DOM slice)</h2>
+      <div class="alerts-sort ng-star-inserted"><div class="sort-by custom-mat-form-field"><span class="title f-16"> Sort by </span><mat-form-field class="mat-mdc-form-field ng-tns-c3736059725-85 mat-mdc-form-field-type-mat-select mat-form-field-appearance-fill mat-primary ng-untouched ng-pristine ng-valid ng-star-inserted"><!----><div class="mat-mdc-text-field-wrapper mdc-text-field ng-tns-c3736059725-85 mdc-text-field--filled mdc-text-field--no-label"><div class="mat-mdc-form-field-focus-overlay ng-tns-c3736059725-85 ng-star-inserted"></div><!----><div class="mat-mdc-form-field-flex ng-tns-c3736059725-85"><!----><!----><!----><div class="mat-mdc-form-field-infix ng-tns-c3736059725-85"><!----><!----><!----><mat-select role="combobox" aria-autocomplete="none" aria-haspopup="listbox" disableoptioncentering="" panelclass="sort-list" class="mat-mdc-select ng-tns-c1771602899-86 ng-tns-c3736059725-85 ng-untouched ng-pristine ng-valid ng-star-inserted" aria-labelledby="mat-select-value-scout-ds" id="mat-select-scout-ds" tabindex="0" aria-expanded="false" aria-required="false" aria-disabled="false" aria-invalid="false"><div cdk-overlay-origin="" class="mat-mdc-select-trigger ng-tns-c1771602899-86"><div class="mat-mdc-select-value ng-tns-c1771602899-86" id="mat-select-value-scout-ds"><span class="mat-mdc-select-value-text ng-tns-c1771602899-86 ng-star-inserted"><span class="mat-mdc-select-min-line ng-tns-c1771602899-86 ng-star-inserted">Area affected</span><!----><!----></span><!----><!----></div><div class="mat-mdc-select-arrow-wrapper ng-tns-c1771602899-86"><div class="mat-mdc-select-arrow ng-tns-c1771602899-86"><svg viewBox="0 0 24 24" width="24px" height="24px" focusable="false" aria-hidden="true" class="ng-tns-c1771602899-86"><path d="M7 10l5 5 5-5z" class="ng-tns-c1771602899-86"></path></svg></div></div></div><!----></mat-select></div><!----><!----></div><div matformfieldlineripple="" class="mdc-line-ripple ng-tns-c3736059725-85 mdc-line-ripple--deactivating ng-star-inserted"></div><!----></div><div class="mat-mdc-form-field-subscript-wrapper mat-mdc-form-field-bottom-align ng-tns-c3736059725-85 mat-mdc-form-field-subscript-dynamic-size"><div class="mat-mdc-form-field-hint-wrapper ng-tns-c3736059725-85 ng-trigger ng-trigger-transitionMessages ng-star-inserted" style="opacity: 1; transform: translateY(0%);"><!----><div class="mat-mdc-form-field-hint-spacer ng-tns-c3736059725-85"></div></div><!----><!----></div></mat-form-field><!----></div><div class="color-range"><div class="palette"><div class="alert-color ng-star-inserted" style="background-color: rgb(80, 211, 41); width: 34.75px;"></div><div class="alert-color ng-star-inserted" style="background-color: rgb(255, 214, 19); width: 34.75px;"></div><div class="alert-color ng-star-inserted" style="background-color: rgb(255, 164, 10); width: 34.75px;"></div><div class="alert-color ng-star-inserted" style="background-color: rgb(255, 118, 18); width: 34.75px;"></div><div class="alert-color ng-star-inserted" style="background-color: rgb(255, 0, 15); width: 34.75px;"></div><div class="alert-color ng-star-inserted" style="background-color: rgb(255, 0, 15); width: 34.75px;"></div><div class="alert-color ng-star-inserted" style="background-color: rgb(255, 0, 15); width: 34.75px;"></div><div class="alert-color ng-star-inserted" style="background-color: rgb(255, 0, 15); width: 34.75px;"></div><!----></div><div class="range ng-star-inserted"><div class="f-12 ng-star-inserted">0</div><div class="f-12 ng-star-inserted">0</div><!----><!----></div><!----><!----></div></div>
+    </div>
+    <div class="ds-scout-links">
+      <a href="fields-map-view.html">Fields map view</a>
+      <a href="myfs-scouting.html">MyFS scouting list</a>
+    </div>
+  </div>
+</body>
+</html>
