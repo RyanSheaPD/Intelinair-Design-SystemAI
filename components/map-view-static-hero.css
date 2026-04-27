@@ -1,0 +1,37 @@
+/**
+ * Static satellite + field plate for map UIs (path is relative to this file).
+ * Canonical asset: assets/scout-map-satellite-plate.png
+ */
+:root {
+  --ds-map-view-static-photo: url("../assets/scout-map-satellite-plate.png");
+}
+
+.ds-map-view-static-hero-fill {
+  background-color: #0b1220;
+  background-image: var(--ds-map-view-static-photo);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Design-system field map shell */
+.map-container .map-canvas {
+  background: var(--ds-map-view-static-photo) center / cover no-repeat #0b1220;
+}
+
+.map-container .map-canvas::before {
+  display: none;
+}
+
+/* AGMRI HTML snapshots (Mapbox DOM) — plate shows through when canvas is hidden */
+.mapboxgl-map {
+  background-color: #0b1220;
+  background-image: var(--ds-map-view-static-photo);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.mapboxgl-map .mapboxgl-canvas {
+  opacity: 0 !important;
+}

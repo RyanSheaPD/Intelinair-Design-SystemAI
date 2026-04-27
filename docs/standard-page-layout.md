@@ -206,7 +206,8 @@ The remaining viewport space below the tab bar (or below the header on pages wit
 The user toggles between these via the view mode dropdown in the page toolbar. Only one view is visible at a time.
 
 #### Table View (default)
-- Component: `ds-data-table` inside `ds-data-table-shell`
+- **Canonical spec:** [data-tables.md](./data-tables.md) — default layout for styling and handling of tabular information (weather / retailer list parity).
+- Component: `ds-data-table` inside `ds-data-table-shell`; use `ds-data-table-region` when the table lives in flex main content so scrolling stays inside the grid.
 - Full-width table with fixed `50px` row height
 - Sortable column headers, sticky first column
 - Columns: checkbox, star, field name, grower, farm, acres, crop, last flight, GDD, disease pills, status pill

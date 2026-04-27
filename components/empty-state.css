@@ -34,6 +34,23 @@
   stroke-linejoin: round;
 }
 
+/* Filled illustration (e.g. retailer home dashboard empty state) — not stroke line art */
+.empty-state__icon--illustration {
+  color: transparent;
+}
+
+.empty-state__icon--illustration svg {
+  stroke: none;
+  fill: none;
+}
+
+.empty-state__icon--illustration img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .empty-state__message {
   font-size: var(--font-size-14);
   line-height: 1.4;

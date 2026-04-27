@@ -136,6 +136,12 @@
         <a class="hub-nav__link" href="../../scout/scout-map-view.html" target="agmri-snapshot-frame">Scout map view<span class="hub-nav__meta">pages/scout/scout-map-view.html</span></a>
       </li>
       <li>
+        <a class="hub-nav__link" href="../../scout/scout-list-view.html" target="agmri-snapshot-frame">Scout list view<span class="hub-nav__meta">pages/scout/scout-list-view.html</span></a>
+      </li>
+      <li>
+        <a class="hub-nav__link" href="../../scout/scout-map-layers-multiselect.html" target="agmri-snapshot-frame">Scout map · layers menu (test)<span class="hub-nav__meta">pages/scout/scout-map-layers-multiselect.html</span></a>
+      </li>
+      <li>
         <a class="hub-nav__link" href="../../scout/fields-thumbnail-view.html" target="agmri-snapshot-frame">Fields thumbnail view<span class="hub-nav__meta">pages/scout/fields-thumbnail-view.html</span></a>
       </li>
       <li>
@@ -176,7 +182,7 @@
     <div class="chrome">
       <h1>Analysis workspace — live DOM snapshot</h1>
       <p>
-        Use the <strong>left nav</strong> to load a canonical page in the frame. Default: <strong>AGMRI fields map view</strong> (<code>pages/scout/fields-map-view.html</code>). <strong>Scout map view</strong> is a different surface; <code>scout-map-view.html</code> currently embeds the <strong>alerts-sort</strong> slice. Styles: <code>styles.cef64a1bc5706731.css</code> in this folder; fonts may still load from <code>fonts.gstatic.com</code>. Mirrored assets include <code>assets/img/retailer/alertBadges/</code> for offline badge icons where snapshots reference them.
+        Use the <strong>left nav</strong> to load a canonical page in the frame. Default: <strong>AGMRI fields map view</strong> (<code>pages/scout/fields-map-view.html</code>). <strong>Scout map view</strong> (<code>pages/scout/scout-map-view.html</code>) is an exported <strong>live Angular DOM slice</strong> (first <code>&lt;app-root&gt;</code> from the app HTML dump): retailer shell, scouting filters, Mapbox map markup, plus <code>map-view-static-hero.css</code> so the static plate shows through the hidden canvas. <strong>Scout list view</strong> (<code>pages/scout/scout-list-view.html</code>) remains a companion mock: scouting toolbar, Material-style table inside a <code>cdk-virtual-scroll-viewport</code> shell, and an advanced-filters drawer. Live snapshot pages such as <code>fields-map-view.html</code> still use <code>styles.cef64a1bc5706731.css</code> where noted. Mirrored assets include <code>assets/img/retailer/alertBadges/</code> for offline badge icons where snapshots reference them.
       </p>
       <p class="actions">
         <a href="../../scout/fields-map-view.html" target="_blank" rel="noopener">Open current frame in new tab</a>

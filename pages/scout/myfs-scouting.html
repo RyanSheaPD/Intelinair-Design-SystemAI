@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-pb">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -1299,34 +1299,32 @@
 
   <!-- ── Left nav ── -->
   <aside class="app-nav">
+    <!-- Same structure / icons as AgMRI retailer left rail (pages/fields/map-view.html); MyFS brand via .nav--myfs -->
     <nav class="nav nav--myfs" aria-label="Main navigation">
-      <a href="#" class="nav__item" aria-label="Home">
-        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><svg viewBox="0 0 17.3333 18.9583" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.16667 18.9583C1.57083 18.9583 1.06094 18.7464 0.637 18.3224C0.212333 17.8977 0 17.3875 0 16.7917V7.04167C0 6.69861 0.0769165 6.37361 0.23075 6.06667C0.383861 5.75972 0.595833 5.50694 0.866667 5.30833L7.36667 0.433333C7.56528 0.288889 7.77292 0.180555 7.98958 0.108333C8.20625 0.036111 8.43194 0 8.66667 0C8.90139 0 9.12708 0.036111 9.34375 0.108333C9.56042 0.180555 9.76805 0.288889 9.96667 0.433333L16.4667 5.30833C16.7375 5.50694 16.9498 5.75972 17.1037 6.06667C17.2568 6.37361 17.3333 6.69861 17.3333 7.04167V16.7917C17.3333 17.3875 17.1214 17.8977 16.6974 18.3224C16.2727 18.7464 15.7625 18.9583 15.1667 18.9583H10.8333V11.375H6.5V18.9583H2.16667Z" fill="currentColor"/></svg></span>
         <span class="nav__label">Home</span>
       </a>
-      <a href="#" class="nav__item" aria-label="Alerts">
-        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
-        <span class="nav__label">Alerts</span>
-      </a>
-      <a href="#" class="nav__item" aria-label="Growers">
-        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">group</span></span>
         <span class="nav__label">Growers</span>
       </a>
-      <a href="#" class="nav__item nav__item--active" aria-current="page" aria-label="Fields">
-        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
+      <a href="#" class="nav__item nav__item--active" aria-current="page">
+        <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">grass</span></span>
         <span class="nav__label">Fields</span>
       </a>
-      <a href="#" class="nav__item" aria-label="Scout">
-        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">search</span></span>
         <span class="nav__label">Scout</span>
       </a>
-      <a href="#" class="nav__item" aria-label="Weather">
-        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">cloud</span></span>
         <span class="nav__label">Weather</span>
       </a>
-      <a href="#" class="nav__item" aria-label="Disease">
-        <span class="nav__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg></span>
-        <span class="nav__label">Disease</span>
+      <div class="nav__spacer"></div>
+      <a href="#" class="nav__item">
+        <span class="nav__icon"><span class="material-symbols-outlined" style="font-size:26px;">settings</span></span>
+        <span class="nav__label">Settings</span>
       </a>
     </nav>
   </aside>
@@ -1413,7 +1411,7 @@
           </button>
         </div>
       </div>
-      <p class="scout-filter-parity-note">Advanced filters apply to list, thumbnail, and map views where the product supports them. <strong>Fields map</strong> and <strong>thumbnail</strong> use AGMRI full-page live DOM snapshots. <strong>Scout map</strong> is a different surface (e.g. <code>alerts-sort</code> Sort by + severity legend); <code>scout-map-view.html</code> currently shows that chrome slice plus the same AGMRI stylesheet—full map body can be merged in when captured. Retailer <strong>Home</strong>, <strong>Groups</strong>, <strong>Growers</strong>, and <strong>Weather</strong> (list vs. <strong>map</strong> view) are separate canonical snapshots: <a href="../home.html"><code>pages/home.html</code></a>, <a href="../groups.html"><code>pages/groups.html</code></a>, <a href="../growers.html"><code>pages/growers.html</code></a>, <a href="../weather.html"><code>pages/weather.html</code></a>, <a href="../weather-map-view.html"><code>pages/weather-map-view.html</code></a>.</p>
+      <p class="scout-filter-parity-note">Advanced filters apply to list, thumbnail, and map views where the product supports them. <strong>Fields map</strong> and <strong>thumbnail</strong> use AGMRI full-page live DOM snapshots. <strong>Scout map</strong> is a different surface; <code>scout-map-view.html</code> is a full-page export of the live Angular scout map DOM (first <code>&lt;app-root&gt;</code> slice) with <code>map-view-static-hero.css</code> for the static plate behind the Mapbox canvas, not the MyFS list shell. Retailer <strong>Home</strong>, <strong>Groups</strong>, <strong>Growers</strong>, and <strong>Weather</strong> (list vs. <strong>map</strong> view) are separate canonical snapshots: <a href="../home.html"><code>pages/home.html</code></a>, <a href="../groups.html"><code>pages/groups.html</code></a>, <a href="../growers.html"><code>pages/growers.html</code></a>, <a href="../weather.html"><code>pages/weather.html</code></a>, <a href="../weather-map-view.html"><code>pages/weather-map-view.html</code></a>.</p>
 
       <!-- Scout category tabs -->
       <div class="tabs-wrap">
@@ -1421,11 +1419,51 @@
 
           <button type="button" class="scout-tab scout-tab--active" role="tab" aria-selected="true">
             <div class="scout-tab__icon-wrap">
-              <img class="scout-tab__icon" src="https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/all.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <img class="scout-tab__icon" src="../../assets/img/retailer/scouting/badges/all.png" width="44" height="44" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
               <span style="display:none;width:44px;height:44px;background:#e0f2fe;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌾</span>
               <span class="scout-tab__badge">1234</span>
             </div>
             <span>All</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button type="button" class="scout-tab" role="tab" aria-selected="false" tabindex="-1">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="../../assets/img/retailer/scouting/badges/crop-health.png" width="44" height="44" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#dcfce7;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌱</span>
+              <span class="scout-tab__badge">731</span>
+            </div>
+            <span>Crop health</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button type="button" class="scout-tab" role="tab" aria-selected="false" tabindex="-1">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="../../assets/img/retailer/scouting/badges/other.png" width="44" height="44" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#fef3c7;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🚩</span>
+              <span class="scout-tab__badge">312</span>
+            </div>
+            <span>Other</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button type="button" class="scout-tab" role="tab" aria-selected="false" tabindex="-1">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="../../assets/img/retailer/scouting/badges/weeds.png" width="44" height="44" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#fef9c3;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌼</span>
+              <span class="scout-tab__badge">189</span>
+            </div>
+            <span>Weeds</span>
+            <span class="scout-tab__indicator"></span>
+          </button>
+
+          <button type="button" class="scout-tab" role="tab" aria-selected="false" tabindex="-1">
+            <div class="scout-tab__icon-wrap">
+              <img class="scout-tab__icon" src="../../assets/img/retailer/scouting/badges/stand-count.png" width="44" height="44" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              <span style="display:none;width:44px;height:44px;background:#ecfccb;border-radius:8px;align-items:center;justify-content:center;font-size:18px;">🌱</span>
+              <span class="scout-tab__badge">56</span>
+            </div>
+            <span>Stand count</span>
             <span class="scout-tab__indicator"></span>
           </button>
 

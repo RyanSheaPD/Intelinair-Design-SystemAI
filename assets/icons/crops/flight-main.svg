@@ -1,0 +1,9 @@
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 20" fill="none" aria-hidden="true">
+  <!-- AgMRI retailer mat-icon Main (aerial flight). Tint: parent `color` + `fill="currentColor"`. Spec: docs/field-view-flight-chicklets.md -->
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    fill="currentColor"
+    d="M7.27205 19.9937H9.21932C9.81848 20.0436 10.4176 19.794 10.7671 19.3446L15.2608 12.0049H17.2081C21.2524 12.0049 23 11.5056 23 10.0077C23 8.5098 21.2025 8.0105 17.2081 8.0105H15.2608L10.7172 0.670789C10.3677 0.171489 9.76855 -0.078161 9.21932 0.021699L7.27205 0.021699L10.168 8.31008L4.07653 8.70952L2.5287 5.91344C2.37891 5.66379 2.07933 5.514 1.77975 5.514L0.032198 5.514L1.38031 10.0077L0.032198 14.5014H1.82968C2.12926 14.5014 2.37891 14.3516 2.57863 14.1519L4.12646 11.3558L10.2179 11.7053L7.27205 19.9937Z"
+  />
+</svg>

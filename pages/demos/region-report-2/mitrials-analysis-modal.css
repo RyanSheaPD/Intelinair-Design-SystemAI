@@ -200,7 +200,11 @@
 .m3a-canvas__bg {
   position: absolute;
   inset: 0;
-  background: center / cover no-repeat;
+  background-color: #0f172a;
+  background-image: var(--ds-map-view-static-photo);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   opacity: 0.88;
 }
 

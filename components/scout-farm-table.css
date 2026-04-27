@@ -1,0 +1,264 @@
+/**
+ * Farm / scout list grid: pinned thumb + field + farm + grower, inset row lines,
+ * vertical column rules, brand field links, single-line row height. Used by
+ * test/scout-farm-table.html and pages that embed the same list grid (e.g. scout-list-view).
+ *
+ * Reference (tables + pills + crop SVGs): docs/scout-list-table-pills-crop-icons.md
+ */
+
+/* Optional: flatten shell so the grid is not a bordered “card”
+   (do not set display — .ds-data-table-shell is a flex column) */
+.scout-farm-table-shell {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Default: horizontal scroll only (test page). For full-height lists, add
+   .scout-farm-table-shell--scroll-xy on the shell for vertical table scroll. */
+.scout-farm-table-shell .ds-data-table-shell__scroll {
+  flex: none;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scout-farm-table-shell--scroll-xy .ds-data-table-shell__scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.ds-data-table.scout-farm-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1592px;
+  --scout-farm-h-line-inset: 4px;
+  --scout-farm-line-color: var(--ds-table-border-row, var(--color-border));
+  --scout-farm-v-rule-color: var(--color-border-strong);
+  --scout-pin-thumb: 56px;
+  --scout-pin-field: 200px;
+  --scout-pin-farm: 200px;
+  --scout-pin-grower: 152px;
+}
+
+/* Wider when many scrolling columns (scout list) */
+.scout-farm-table--scout-list {
+  min-width: 2200px;
+}
+
+.scout-farm-table .scout-farm-table__pin {
+  position: sticky !important;
+  box-sizing: border-box;
+}
+.scout-farm-table .scout-farm-table__pin--thumb {
+  left: 0 !important;
+  width: var(--scout-pin-thumb);
+  min-width: var(--scout-pin-thumb);
+  max-width: var(--scout-pin-thumb);
+  z-index: 2;
+  text-align: center;
+}
+.scout-farm-table .scout-farm-table__pin--field {
+  left: var(--scout-pin-thumb) !important;
+  width: var(--scout-pin-field);
+  min-width: var(--scout-pin-field);
+  max-width: var(--scout-pin-field);
+  z-index: 3;
+}
+.scout-farm-table .scout-farm-table__pin--farm {
+  left: calc(var(--scout-pin-thumb) + var(--scout-pin-field)) !important;
+  width: var(--scout-pin-farm);
+  min-width: var(--scout-pin-farm);
+  max-width: var(--scout-pin-farm);
+  z-index: 4;
+}
+.scout-farm-table .scout-farm-table__pin--grower {
+  left: calc(var(--scout-pin-thumb) + var(--scout-pin-field) + var(--scout-pin-farm)) !important;
+  width: var(--scout-pin-grower);
+  min-width: var(--scout-pin-grower);
+  max-width: var(--scout-pin-grower);
+  z-index: 5;
+}
+.scout-farm-table thead .scout-farm-table__pin--thumb {
+  z-index: 12;
+}
+.scout-farm-table thead .scout-farm-table__pin--field {
+  z-index: 13;
+}
+.scout-farm-table thead .scout-farm-table__pin--farm {
+  z-index: 14;
+}
+.scout-farm-table thead .scout-farm-table__pin--grower {
+  z-index: 15;
+}
+
+.scout-farm-table__thumb-cell {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  min-width: 0;
+}
+.scout-farm-table__field-graphic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+.scout-farm-table__field-graphic svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+.scout-farm-table__field-name-link {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  color: var(--color-brand);
+  font-weight: 500;
+  text-decoration: none;
+  user-select: all;
+  -webkit-user-select: all;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.scout-farm-table__field-name-link .ds-data-table__text {
+  color: inherit;
+  min-width: 0;
+}
+.scout-farm-table__field-name-link:hover {
+  color: var(--color-brand-700);
+  text-decoration: underline;
+}
+.scout-farm-table__field-name-link:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+.scout-farm-table__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.scout-farm-table__field-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.scout-farm-table__field-cell .scout-farm-table__field-name-link {
+  min-width: 0;
+}
+.scout-farm-table__field-cell app-favorite {
+  flex-shrink: 0;
+}
+
+.scout-farm-table thead th:not(:first-child),
+.scout-farm-table tbody td:not(:first-child) {
+  position: relative;
+}
+.scout-farm-table thead th:not(:first-child)::before,
+.scout-farm-table tbody td:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: calc(1em - 2px);
+  width: 1px;
+  background: var(--scout-farm-v-rule-color);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.scout-farm-table thead th,
+.scout-farm-table tbody td {
+  height: var(--ds-table-row-min-height);
+  max-height: var(--ds-table-row-min-height);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.scout-farm-table .ds-data-table__cell-inner {
+  position: relative;
+  z-index: 1;
+  min-height: calc(var(--ds-table-row-min-height) - 2px);
+  max-height: calc(var(--ds-table-row-min-height) - 2px);
+  height: calc(var(--ds-table-row-min-height) - 2px);
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.scout-farm-table .ds-data-table__text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scout-farm-table thead tr {
+  background-image: linear-gradient(var(--scout-farm-line-color), var(--scout-farm-line-color));
+  background-size: calc(100% - 2 * var(--scout-farm-h-line-inset)) 1px;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+.scout-farm-table thead th {
+  font-family: Figtree, var(--font-family, sans-serif);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: normal;
+  border-bottom: none;
+  background-color: transparent;
+  background-image: linear-gradient(var(--ds-table-bg-header), var(--ds-table-bg-header));
+  background-size: 100% calc(100% - 1px);
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+.scout-farm-table thead th.scout-farm-table__pin {
+  background-color: transparent;
+  background-image: linear-gradient(var(--ds-table-bg-header), var(--ds-table-bg-header));
+  background-size: 100% calc(100% - 1px);
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+.scout-farm-table tbody tr {
+  background-image: linear-gradient(var(--scout-farm-line-color), var(--scout-farm-line-color));
+  background-size: calc(100% - 2 * var(--scout-farm-h-line-inset)) 1px;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+.scout-farm-table tbody tr:last-child {
+  background-image: none;
+}
+.scout-farm-table tbody td {
+  border-bottom: none;
+  background-color: transparent;
+  background-image: linear-gradient(var(--ds-table-bg-row), var(--ds-table-bg-row));
+  background-size: 100% calc(100% - 1px);
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+.scout-farm-table tbody td.scout-farm-table__pin {
+  background-color: transparent;
+  background-image: linear-gradient(var(--ds-table-bg-row), var(--ds-table-bg-row));
+  background-size: 100% calc(100% - 1px);
+  background-position: top center;
+  background-repeat: no-repeat;
+}
+.scout-farm-table tbody tr:hover td {
+  background-image: linear-gradient(var(--color-brand-100), var(--color-brand-100));
+}

@@ -1,0 +1,26 @@
+---
+description: New AGMRI retailer HTML screens use the same left nav + top header shell as weather-map-view
+alwaysApply: true
+---
+
+# Retailer screen shell (left nav + header)
+
+When adding or extending **static AGMRI retailer-style pages** (scout, maps, demos—not product-language docs):
+
+1. **Use the same chrome as** `pages/weather-map-view.html` (live DOM) **or the hand-built layout in** `pages/scout/scout-list-view.html` (`app-shell`, `aside.app-nav` / `nav.nav`, `div.app-main`, `header.header`).
+2. **Left nav icons and order** should match the **Fields map** live snapshot (`pages/scout/fields-map-view.html` — `homeIcon`, `fieldsIcon`, `scoutingIcon`, `weatherIcon`, etc.). On **Scout** flows (list, map tests, layers demo), keep **Fields** unselected and put **`nav__item--active` + `aria-current="page"` on Scout** linking to the page you are building.
+3. **Stylesheets:** `design-tokens/tokens.css`, `components/nav.css`, `components/header.css`, and usually `components/button.css` when the page has toolbar buttons. Add `pages/demos/agmri-analysis-workspace/styles.cef64a1bc5706731.css` only when the page uses Angular Material markup.
+4. **Weather entry in the left nav** should link to **`pages/weather-map-view.html`** (`../weather-map-view.html` from `pages/scout/`) so it matches the canonical weather map snapshot unless the screen is explicitly a list-only weather view.
+5. Put page-specific UI (map stage, tables, drawers) **below** the shared `header`, inside `app-main`, in a flex child with `flex: 1; min-height: 0; overflow: hidden` so the shell fills the viewport.
+
+Reference implementation: `pages/scout/scout-map-layers-multiselect.html`.
+
+**Scouting category pills** (table “Categories” column, tag-style chips): use the live DOM shape `scouting-pill` + `f-14` + nested `title` / `d-flex align-items-center` / `count` (see `components/scouting-pill.css` and `pages/scout/scout-list-view.html`). Link **`scouting-pill.css` after** `styles.cef64a1bc5706731.css` so pill styles override the Material/Bootstrap bundle. **Single reference doc:** `docs/scout-list-table-pills-crop-icons.md`.
+
+**Workflow status** (table “Status” column, toolbar summaries): use `app-combined-status-pill` + inner `div.d-flex.align-items-center.status.f-14` with state classes such as `APPROVED active` or `IN_PROGRESS active`, plus `div.status-name` (optional `span.status-count` when showing a number). Same stylesheet: `components/scouting-pill.css`.
+
+**Scout category tab icons** (All, Crop health, Other, Weeds, Stand count, …): canonical raster badges live under **`assets/img/retailer/scouting/badges/`** (e.g. `all.png`, `crop-health.png`, `other.png`, `weeds.png`, `stand-count.png` from `https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/`). Prefer **repo-relative** `src` in static pages so file:// and workspace previews work offline.
+
+**Crop column glyphs** (Corn, Soybeans, wheat, …): see **`docs/scout-list-table-pills-crop-icons.md`** §3 — canonical **soybean** file **`assets/icons/crops/soybean.svg`**, brand **`--color-brand-500`** + **`fill="currentColor"`** on paths.
+
+**Field map flight strip** (season + activity filter + flight chicklets: tractor, aerial `Main`, planter, spray, scouting, harvest): canonical SVGs live in **`assets/icons/crops/`** (`equipment-tillage.svg`, `flight-main.svg`, `equipment-planter.svg`, `equipment-spray.svg`, `scouting-flight.svg`, `equipment-harvest.svg`). Index: **`assets/icons/crops/README.md`**; DOM/spec: **`docs/field-view-flight-chicklets.md`**; CSS: **`components/field-map-flight-strip.css`** (root **`field-map-flight-strip`**). Full shell: **`pages/scout/field-view-screen.html`** · strip-only demo: **`pages/scout/field-map-flight-strip-component.html`**.

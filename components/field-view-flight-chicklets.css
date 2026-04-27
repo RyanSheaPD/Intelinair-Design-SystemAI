@@ -1,0 +1,5 @@
+/**
+ * Re-exports the field map flight strip. Prefer linking `field-map-flight-strip.css` in new pages.
+ * @see components/field-map-flight-strip.css
+ */
+@import url("field-map-flight-strip.css");

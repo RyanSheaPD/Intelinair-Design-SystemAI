@@ -1,18 +1,32 @@
 /**
- * Data table (web)
+ * Data table (web) — **default layout for tabular information**
  *
- * Static HTML / design-system parity with retailer **Angular Material MDC** tables.
- * In the app, equivalent rules hang off:
+ * All static pages and demos that present sortable/scrolling lists should use this
+ * contract unless a product explicitly requires a different pattern. It matches the
+ * **Weather list** / retailer **Angular Material MDC** table (see `docs/data-tables.md`).
+ * Scout list + category pills + crop column: `docs/scout-list-table-pills-crop-icons.md`.
+ *
+ * **Canonical markup**
+ *   `.ds-data-table-region` (optional; use inside flex main content so height is bounded)
+ *     → `.ds-data-table-shell`
+ *       → optional `.loading-linear.loading-linear--indeterminate.loading-linear--table`
+ *       → `.ds-data-table-shell__scroll`
+ *         → `<table class="ds-data-table ds-data-table--fixed-height">`
+ *           → every body/header cell: `.ds-data-table__cell-inner` > `.ds-data-table__text`
+ *
+ * **Information handling:** fixed 50px row band, ellipsis on `.ds-data-table__text`,
+ * optional `.ds-data-table__cell--sticky` on first column (or as needed), optional
+ * `.ds-data-table__row--clickable` for row actions. Prefer design tokens above.
+ *
+ * In the Angular app, equivalent rules hang off:
  *   `.retailer-table .mat-mdc-table:not(.inner-table) .mat-mdc-row:not(.expanded-row) …`
  *   `.mdc-data-table__cell`, `.mat-mdc-table-sticky`, etc.
  *
- * Use `.ds-data-table` on `<table>` and BEM cells below for demos and non-Angular pages.
- * Typography: **Figtree** 14px / 400 / 17px line-height (match `mat-mdc-cell` stack).
+ * **Table loading bar:** link `loading.css` after tokens. Do not use the linear bar
+ * outside this shell pattern; use `.loading-spinner` elsewhere.
  *
- * **Table loading bar:** link `loading.css` after tokens. Wrap table in
- * `.ds-data-table-shell` → optional `.loading-linear.loading-linear--indeterminate.loading-linear--table`
- * (first child, full width) → `.ds-data-table-shell__scroll` → `<table class="ds-data-table">`.
- * Do not use the linear bar outside this pattern; use `.loading-spinner` elsewhere.
+ * **Reference:** `pages/weather/agmri-weather.html` (ds-data-table), `test/index.html`
+ * (frozen MDC snapshot for visual parity).
  */
 
 :root {
@@ -45,6 +59,24 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
+}
+
+/**
+ * Flex main content: gives the shell a bounded height so only the table body scrolls
+ * (default list-pane / “weather table” behavior).
+ */
+.ds-data-table-region {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ds-data-table-region > .ds-data-table-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
 }
 
 .ds-data-table {

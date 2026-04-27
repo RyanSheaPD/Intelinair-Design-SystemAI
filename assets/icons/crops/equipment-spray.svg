@@ -1,0 +1,15 @@
+<svg id="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <!-- AgMRI retailer mat-icon Equipment_Application (spray / application). Tint: parent `color` + `fill="currentColor"`. Spec: docs/field-view-flight-chicklets.md -->
+  <ellipse cx="12.002" cy="12.9995" rx="1.25" ry="1.25" fill="currentColor" />
+  <ellipse cx="9.50195" cy="16.7495" rx="1.25" ry="1.25" fill="currentColor" />
+  <ellipse cx="7.00195" cy="20.4995" rx="1.25" ry="1.25" fill="currentColor" />
+  <ellipse cx="12.002" cy="20.4995" rx="1.25" ry="1.25" fill="currentColor" />
+  <circle cx="17.002" cy="20.4995" r="1.25" fill="currentColor" />
+  <circle cx="14.502" cy="16.7495" r="1.25" fill="currentColor" />
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    fill="currentColor"
+    d="M2.50601 3C2.32467 3 2.23694 3.22197 2.36928 3.34595L8.61362 9.19596C8.65068 9.23068 8.69957 9.25 8.75035 9.25H15.2585C15.3094 9.25 15.3583 9.23064 15.3954 9.19586L21.6313 3.34586C21.7635 3.22184 21.6758 3 21.4945 3H2.50601Z"
+  />
+</svg>

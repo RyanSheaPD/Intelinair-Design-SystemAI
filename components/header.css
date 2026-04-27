@@ -418,24 +418,90 @@
   background: var(--color-pb-200);
 }
 
-/* AgMRI brand variant — uses AgMRI green ramp */
+/* AgMRI brand variant — app primary #3c84c7; PWA / left nav green stays in nav.css */
 .header--agmri .header__logo {
-  color: var(--color-agmri-500);
+  color: var(--color-agmri-app-primary-500, #3c84c7);
 }
 
 .header--agmri .header__avatar {
-  background: var(--color-agmri-500);
-  color: var(--color-text-on-agmri-500, #fff);
+  background: var(--color-agmri-app-primary-500, #3c84c7);
+  color: #fff;
 }
 
 .header--agmri .header__back.btn--secondary {
-  color: var(--color-agmri-500);
+  color: var(--color-agmri-app-primary-500, #3c84c7);
 }
 
 .header--agmri .header__back.btn--secondary:hover:not(:disabled) {
-  background: var(--color-agmri-100);
+  background: var(--color-brand-100);
 }
 
 .header--agmri .header__back.btn--secondary:active:not(:disabled) {
-  background: var(--color-agmri-200);
+  background: var(--color-brand-200);
+}
+
+/* SeedTrax brand variant — full-color logo; lockup reads on #000 (asset background) */
+.header--seedtrax .header__logo {
+  color: var(--color-seedtrax-500);
+  padding: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #000;
+  line-height: 0;
+}
+
+.header--seedtrax .header__logo img {
+  display: block;
+  height: 28px;
+  width: auto;
+  padding: 2px 8px;
+  box-sizing: content-box;
+}
+
+.header--seedtrax .header__avatar {
+  background: var(--color-seedtrax-500);
+  color: var(--color-text-on-seedtrax-500, #fff);
+}
+
+.header--seedtrax .header__back.btn--secondary {
+  color: var(--color-seedtrax-500);
+}
+
+.header--seedtrax .header__back.btn--secondary:hover:not(:disabled) {
+  background: var(--color-seedtrax-100);
+}
+
+.header--seedtrax .header__back.btn--secondary:active:not(:disabled) {
+  background: var(--color-seedtrax-200);
+}
+
+/* Agtrinsic brand variant — full-color horizontal logo on light bar */
+.header--agtrinsic .header__logo {
+  color: var(--color-agtrinsic-500);
+}
+
+.header--agtrinsic .header__logo img {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.header--agtrinsic .header__avatar {
+  background: var(--color-agtrinsic-500);
+  color: var(--color-text-on-agtrinsic-500, #fff);
+}
+
+.header--agtrinsic .header__back.btn--secondary {
+  color: var(--color-agtrinsic-500);
+}
+
+.header--agtrinsic .header__back.btn--secondary:hover:not(:disabled) {
+  background: var(--color-agtrinsic-100);
+}
+
+.header--agtrinsic .header__back.btn--secondary:active:not(:disabled) {
+  background: var(--color-agtrinsic-200);
 }

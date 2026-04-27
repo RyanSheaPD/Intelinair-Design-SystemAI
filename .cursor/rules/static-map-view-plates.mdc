@@ -1,0 +1,24 @@
+---
+description: Map UIs use static user-provided PNG plates in assets/ wired via map-view-static-hero.css
+alwaysApply: true
+---
+
+# Static map images (design system)
+
+**Convention:** Any **map area** (field map, scout map stage, Mapbox HTML snapshots, MiTrials map canvas, test harness map stage) uses a **static raster** the user supplies—not live Mapbox tiles or procedural placeholders—as the primary map visual.
+
+## Implementation (do not bypass)
+
+1. **Shared wiring:** [`components/map-view-static-hero.css`](components/map-view-static-hero.css) defines `--ds-map-view-static-photo` and applies it to `.map-container .map-canvas`, `.mapboxgl-map`, and `.ds-map-view-static-hero-fill`.
+2. **Assets:** Store PNGs under **`assets/`** with stable, descriptive kebab-case names (e.g. `map-scout-field-heatmap-1.png`). Paths in that CSS file are **relative to `components/`** (`../assets/your-map.png`).
+3. **HTML:** Map-facing pages should **`<link rel="stylesheet" href="…/components/map-view-static-hero.css">`** (path depends on page folder depth). Reuse existing pages as reference: `pages/fields/map-view.html`, `pages/scout/fields-map-view.html`, `pages/scout/scout-map-view.html`, `pages/weather-map-view.html`, `pages/trials/myfs-mitrials.html`, `test/index.html`.
+
+## When the user provides a new map image
+
+1. Copy the file into **`assets/`** and pick a clear filename.
+2. Update **`--ds-map-view-static-photo`** in `map-view-static-hero.css` to point at the new file (or add a second variable / modifier class if they want multiple products side by side).
+3. For **Mapbox snapshots**, keep the rule that hides the WebGL canvas (`opacity: 0`) so the background image reads as the map.
+
+## Do not
+
+- Revert map areas to solid gradients, placeholder greens, or live tile URLs for these static HTML demos unless the user explicitly asks to remove the plate.

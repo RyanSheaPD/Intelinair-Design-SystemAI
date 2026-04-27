@@ -100,10 +100,11 @@ CSS lives in **`components/`**. Compose pages by linking `tokens.css` first, the
 | `switch.css` | Material-style switch (52×32 track, thumb) |
 | `loading.css` | **Spinner** (indeterminate): modals, widgets, panels — not on tables. **Linear bar** + `.loading-linear--table`: **only** above `<table>` (with `data-table.css` shell). Native: system UI (see demo) |
 | `progress.css` | Optional determinate **circular** ring (`--progress-indicator-progress` 0–1); not the table bar |
-| `data-table.css` | Web data tables — MDC retailer parity; `.ds-data-table-shell` + optional top loading bar from `loading.css` |
+| `data-table.css` | Web data tables — MDC retailer parity; `.ds-data-table-shell` + optional top loading bar from `loading.css` — [docs/data-tables.md](./docs/data-tables.md) |
+| `scouting-pill.css` | Scout **category** chips + **combined status** pills (Angular DOM shape); load after Material bundle — [docs/scout-list-table-pills-crop-icons.md](./docs/scout-list-table-pills-crop-icons.md) |
 | `ai-assistant-widget.css` | Floating LLM assistant: type or mic (STT); demo `pages/demos/ai-assistant-widget-demo.html` |
 | `header.css` | App / page headers |
-| `nav.css` | Navigation patterns |
+| `nav.css` | **Web left navigation** — AgMRI retailer **left rail** (`aside.app-nav` + vertical `nav.nav`, SVG icons + labels) and **mobile bottom bar** (`.nav--bottom`). Uses `--nav-*` tokens. Shell / scroll: [docs/primary-pages-layout.md](./docs/primary-pages-layout.md); gold DOM + `href` rules: [.cursor/skills/agmri-left-navigation/SKILL.md](./.cursor/skills/agmri-left-navigation/SKILL.md) |
 | `tabs.css` | Tabbed interfaces |
 | `view-switcher.css` | Fields toolbar view menu (map / list / thumbnail) — AGMRI `mapViewIcon` + `arrowCollapseIcon` trigger, `mat-menu`–style panel; see `pages/fields/map-view.html` |
 | `menu.css` | Menus and menu items |
@@ -132,6 +133,7 @@ Add new components here with a short description in this table when you introduc
 | `figma-exports/` | Figma / HTML→Design export targets (optional; see folder README) |
 | `pages/demos/ios-assistant-widget-screens.html` | iOS-style widget gallery + home placement + assistant sheet interaction |
 | `pages/analytics/csv-data-table.html` | Default `data/adam_ford_s170.csv` (paginated, optional hide geometry cols); file picker or any CSV → `data-table.css` |
+| `pages/scout/scout-list-view.html` | **Scout list reference:** `data-table` + `scout-farm-table` + category pills + crop SVGs — [docs/scout-list-table-pills-crop-icons.md](./docs/scout-list-table-pills-crop-icons.md) |
 | `pages/trials/myfs-mitrials.html` | **Default starter** for MyFS MiTrials (4th layer chip + inline trials SVG replaces grid; Fields toolbar) + `myfs-trials-flow-shell.css` + `field-map-view-shell.css` |
 
 Link new demos from `index.html` when they represent approved patterns.

@@ -1,11 +1,18 @@
 /**
- * Nav — sidebar navigation
- * Uses nav tokens. Background brand-primary; default text/icon white;
+ * Nav — web primary navigation (AgMRI retailer shell)
+ *
+ * Left rail: `aside.app-nav` wrapping `nav.nav` (vertical icons + labels). See
+ * docs/primary-pages-layout.md and .cursor/skills/agmri-left-navigation/SKILL.md
+ * for shell layout, gold-copy DOM, and relative href rules.
+ *
+ * Uses `--nav-*` tokens: background brand-primary; default text/icon white;
  * active item white background, brand text/icon.
  *
  * When used as the left sidebar: the sidebar container (e.g. .dashboard__side) must be
  * the first child of the layout, flush left (left: 0), full height, with z-index above
  * main content so no header, toolbar, or overlay can sit on top of it.
+ *
+ * Mobile: `.nav.nav--bottom` (and `.nav--bottom-dark`) — horizontal bar, safe-area padding.
  */
 
 .nav {
@@ -19,6 +26,12 @@
   gap: var(--spacing-xs);
   font-family: var(--font-family);
   box-sizing: border-box;
+}
+
+/* Default inherited color for sidebar (not bottom bar). Beats global `a,a:hover{color:inherit}` and
+   `a:hover{color:unset!important}` so labels/icons stay on-brand when those load after this file. */
+.nav:not(.nav--bottom) {
+  color: var(--nav-text-default);
 }
 
 /* Spacer pushes subsequent items to the bottom of the sidebar */
@@ -44,11 +57,50 @@
   font-weight: var(--nav-font-weight);
   line-height: var(--line-height-tight);
   box-sizing: border-box;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* Hover: one hairline stroke along the item shape (no fill wash) */
 .nav__item:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: var(--nav-text-default);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.nav__item:hover .nav__icon {
+  color: var(--nav-icon-default);
+}
+
+.nav__item:focus-visible {
+  outline: none;
+  color: var(--nav-text-default);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.75);
+}
+
+.nav__item:focus-visible .nav__icon {
+  color: var(--nav-icon-default);
+}
+
+.nav__item[aria-current="page"]:hover,
+.nav__item--active:hover {
+  color: var(--nav-text-active);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.nav__item[aria-current="page"]:hover .nav__icon,
+.nav__item--active:hover .nav__icon {
+  color: var(--nav-icon-active);
+}
+
+.nav__item[aria-current="page"]:focus-visible,
+.nav__item--active:focus-visible {
+  color: var(--nav-text-active);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.nav__item[aria-current="page"]:focus-visible .nav__icon,
+.nav__item--active:focus-visible .nav__icon {
+  color: var(--nav-icon-active);
 }
 
 .nav__item[aria-current="page"],
@@ -154,6 +206,61 @@
 .nav--bottom .nav__item[aria-current="page"] .nav__icon,
 .nav--bottom .nav__item--active .nav__icon {
   color: var(--nav-mobile-icon-active);
+}
+
+/*
+ * Left sidebar only: some app shells (e.g. AgMRI analysis workspace CSS) load after nav.css and
+ * include `a:hover{color:unset!important}`, which forces link text to inherit from body (black).
+ * Scoped !important keeps brand sidebar labels/icons readable; excludes .nav--bottom.
+ */
+.nav:not(.nav--bottom) .nav__item {
+  color: var(--nav-text-default) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item:hover {
+  color: var(--nav-text-default) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item:hover .nav__icon {
+  color: var(--nav-icon-default) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item:focus-visible {
+  color: var(--nav-text-default) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item:focus-visible .nav__icon {
+  color: var(--nav-icon-default) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item[aria-current="page"]:hover,
+.nav:not(.nav--bottom) .nav__item--active:hover {
+  color: var(--nav-text-active) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item[aria-current="page"]:hover .nav__icon,
+.nav:not(.nav--bottom) .nav__item--active:hover .nav__icon {
+  color: var(--nav-icon-active) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item[aria-current="page"]:focus-visible,
+.nav:not(.nav--bottom) .nav__item--active:focus-visible {
+  color: var(--nav-text-active) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item[aria-current="page"]:focus-visible .nav__icon,
+.nav:not(.nav--bottom) .nav__item--active:focus-visible .nav__icon {
+  color: var(--nav-icon-active) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item[aria-current="page"],
+.nav:not(.nav--bottom) .nav__item--active {
+  color: var(--nav-text-active) !important;
+}
+
+.nav:not(.nav--bottom) .nav__item[aria-current="page"] .nav__icon,
+.nav:not(.nav--bottom) .nav__item--active .nav__icon {
+  color: var(--nav-icon-active) !important;
 }
 
 /* Optional: dark bottom bar (neutral-500 background); active still uses brand color */

@@ -1,0 +1,328 @@
+/**
+ * Field map flight strip — repeatable retailer bottom bar (season, activity filter, flight chicklets).
+ * Root: add class `field-map-flight-strip` on `<footer>` (or any host). Legacy alias: `.field-view__timeline`.
+ * Tokens: `--color-field-map-flight-strip-*` and `--color-field-map-flight-*` in design-tokens/tokens.css.
+ * Docs: docs/field-view-flight-chicklets.md · icons: assets/icons/crops/README.md
+ */
+
+/* Bar chrome (immersive field view bottom strip) */
+:is(.field-map-flight-strip, .field-view__timeline) {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 8px 0;
+  background: var(--color-field-map-flight-strip-bg);
+  border-top: 1px solid var(--color-field-map-flight-strip-border);
+  box-shadow: var(--color-field-map-flight-strip-shadow);
+  border-radius: var(--radius-md, 8px);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-actions-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: stretch;
+  gap: 12px;
+  width: 100%;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-actions-container > .flights-list-container {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .pointer-events-all {
+  pointer-events: auto;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .w-100 {
+  width: 100%;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .d-flex {
+  display: flex;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flex-column {
+  flex-direction: column;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .align-items-center {
+  align-items: center;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .align-items-start {
+  align-items: flex-start;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .justify-content-center {
+  justify-content: center;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .justify-content-start {
+  justify-content: flex-start;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .text-center {
+  text-align: center;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .position-relative {
+  position: relative;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .overflow-hidden {
+  overflow: hidden;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .cursor-pointer {
+  cursor: pointer;
+}
+
+/* ── flights-list-container (dark strip) ── */
+
+:is(.field-map-flight-strip, .field-view__timeline) .flights-list-container {
+  box-sizing: border-box;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+/* One row: year + filter + chicklet scroller */
+:is(.field-map-flight-strip, .field-view__timeline) .flight-strip-row {
+  gap: 8px;
+  min-width: 0;
+  /* 10px from the bar’s inner left to “2024” (before the chicklet rail). */
+  padding-left: 10px;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-navigation {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-season-select,
+:is(.field-map-flight-strip, .field-view__timeline) .selection {
+  font-family: var(--font-family);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--color-field-map-flight-strip-label);
+  flex-grow: 0;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-season-select {
+  display: inline-block;
+  letter-spacing: -0.02em;
+  padding: 2px 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .selection {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 4px 0;
+  border-radius: var(--radius-sm, 4px);
+  width: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+  text-align: left;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .selection:hover {
+  background: var(--color-field-map-flight-strip-menu-hover-bg);
+}
+
+/* ── flight navigation row ── */
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-navigation-container {
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .left-nav,
+:is(.field-map-flight-strip, .field-view__timeline) .right-nav {
+  flex-shrink: 0;
+  width: 22px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-field-map-flight-strip-chevron);
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .left-nav:hover,
+:is(.field-map-flight-strip, .field-view__timeline) .right-nav:hover {
+  color: var(--color-field-map-flight-strip-chevron-hover);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .right-nav.is-invisible {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flights-scroll-wrapper {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flights-list.flight-slider {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-field-map-flight-scrollbar-thumb-hover) transparent;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flights-list.flight-slider::-webkit-scrollbar {
+  height: 4px;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flights-list.flight-slider::-webkit-scrollbar-thumb {
+  background: var(--color-field-map-flight-scrollbar-thumb);
+  border-radius: 4px;
+}
+
+/* ── flight-element (tile) ── */
+
+:is(.field-map-flight-strip, .field-view__timeline) button.flight-element {
+  flex: 0 0 auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  box-sizing: border-box;
+  min-width: 44px;
+  height: 44px;
+  padding: 2px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--color-field-map-flight-strip-chicklet-border);
+  background: var(--color-field-map-flight-strip-chicklet-bg);
+  color: var(--color-field-map-flight-strip-chicklet-fg);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) button.flight-element:hover .flight-element__inner {
+  box-shadow: var(--color-field-map-flight-strip-chicklet-hover-shadow);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) button.flight-element.selected .flight-element__inner {
+  border-color: var(--color-field-map-flight-strip-chicklet-selected-border);
+  box-shadow: 0 0 0 2px var(--color-field-map-flight-strip-chicklet-selected-ring);
+  background: var(--color-field-map-flight-strip-chicklet-selected-bg);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element__icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  line-height: 0;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element .provider-icon {
+  font-size: 18px !important;
+  width: 18px;
+  height: 18px;
+  line-height: 18px !important;
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element .provider-icon--svg,
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element .provider-icon--svg svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  line-height: 0 !important;
+}
+
+/* External `<use href="…crops/*.svg#icon">`: inherit tint from `.Equipment_* .provider-icon { color }` */
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element .provider-icon--svg > svg {
+  color: inherit;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .resolution-index:empty {
+  display: none;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .resolution-index:not(:empty) {
+  font-size: 8px;
+  font-weight: 800;
+  min-width: 14px;
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--color-neutral-800);
+  color: var(--color-field-map-flight-strip-label);
+  line-height: 14px;
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .activity-date {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* Provider tints (icon + date) */
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Equipment_Tillage .provider-icon,
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Equipment_Tillage .activity-date {
+  color: var(--color-field-map-flight-tillage);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Main .provider-icon,
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Main .activity-date {
+  color: var(--color-field-map-flight-aerial);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Equipment_Planter .provider-icon,
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Equipment_Planter .activity-date {
+  color: var(--color-field-map-flight-planter);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Equipment_Application .provider-icon,
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Equipment_Application .activity-date {
+  color: var(--color-field-map-flight-application);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Scouting .provider-icon,
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Scouting .activity-date {
+  color: var(--color-field-map-flight-scouting);
+}
+
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Equipment_Harvest .provider-icon,
+:is(.field-map-flight-strip, .field-view__timeline) .flight-element.Equipment_Harvest .activity-date {
+  color: var(--color-field-map-flight-harvest);
+}

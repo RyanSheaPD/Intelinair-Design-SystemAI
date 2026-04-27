@@ -22,18 +22,35 @@
   --color-primitive-800: #1E40AF;
   --color-primitive-900: #1E3A8A;
 
-  /* Brand blue (100–900) — use for buttons, primary CTAs, nav brand elements. Switch these values per brand. */
-  --color-brand-100: #e8f0fa;
-  --color-brand-200: #c5daf0;
-  --color-brand-300: #9ec2e5;
-  --color-brand-400: #6ba3d6;
-  --color-brand-500: #3c84c7;
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
-  --color-brand-800: #1e40af;
-  --color-brand-900: #1e3a8a;
+  /*
+   * AgMRI web app primary (CTA / link blue). **100–500** are correct (authoritative) — 100 / 400 / 500 match live
+   * `--app-primary-color-*`; 200–300 are supporting tints. **600–900** are the darker extension from **500 = #3c84c7**
+   * (same hue family; not a re-tint of 100–500). Type: `font-family: Figtree, sans-serif`. PWA green: `--color-agmri-*`.
+   */
+  --color-agmri-app-primary-100: #c5daee;
+  --color-agmri-app-primary-200: #b0d4ed;
+  --color-agmri-app-primary-300: #8ec0e3;
+  --color-agmri-app-primary-400: #3677b3;
+  --color-agmri-app-primary-500: #3c84c7;
+  --color-agmri-app-primary-600: #2f6ba3;
+  --color-agmri-app-primary-700: #265a88;
+  --color-agmri-app-primary-800: #1c4566;
+  --color-agmri-app-primary-900: #15324d;
+  --color-agmri-app-primary: var(--color-agmri-app-primary-500);
+  --color-agmri-app-primary-rgb: 60, 132, 199;
+
+  /* Brand blue (100–900) — default = AgMRI: 100–500 authoritative; 600–900 = darker from 500 (#3c84c7). */
+  --color-brand-100: var(--color-agmri-app-primary-100);
+  --color-brand-200: var(--color-agmri-app-primary-200);
+  --color-brand-300: var(--color-agmri-app-primary-300);
+  --color-brand-400: var(--color-agmri-app-primary-400);
+  --color-brand-500: var(--color-agmri-app-primary-500);
+  --color-brand-600: var(--color-agmri-app-primary-600);
+  --color-brand-700: var(--color-agmri-app-primary-700);
+  --color-brand-800: var(--color-agmri-app-primary-800);
+  --color-brand-900: var(--color-agmri-app-primary-900);
   --color-brand: var(--color-brand-500);
-  --color-brand-rgb: 60, 132, 199;
+  --color-brand-rgb: var(--color-agmri-app-primary-rgb);
 
   /* MyFS Red (multi-brand) — use MyFS ramp below for all MyFS UI */
   --color-brand-myfs: var(--color-myfs-500);
@@ -65,9 +82,9 @@
   --color-pb-900: #0D1117;
   --color-pb-rgb: 43, 58, 77;
 
-  /* AgMRI green (multi-brand) — retailer PWA chrome (e.g. msapplication-TileColor #00a300) */
-  --color-brand-agmri: var(--color-agmri-500);
-  --color-brand-agmri-rgb: var(--color-agmri-rgb);
+  /* AgMRI: primary = app blue #3c84c7. Shell / PWA / nav = green --color-agmri-* (not "brand primary"). */
+  --color-brand-agmri: var(--color-agmri-app-primary-500);
+  --color-brand-agmri-rgb: var(--color-agmri-app-primary-rgb);
 
   --color-agmri-100: #e6f7e6;
   --color-agmri-200: #c5eec5;
@@ -79,6 +96,51 @@
   --color-agmri-800: #0f5c0f;
   --color-agmri-900: #0a3d0a;
   --color-agmri-rgb: 0, 163, 0;
+
+  /* SeedTrax (multi-brand) — primary / logo green #3FA72C */
+  --color-brand-seedtrax: var(--color-seedtrax-500);
+  --color-brand-seedtrax-rgb: var(--color-seedtrax-rgb);
+
+  --color-seedtrax-100: #ecf8ea;
+  --color-seedtrax-200: #d6efd2;
+  --color-seedtrax-300: #b0e0a5;
+  --color-seedtrax-400: #7ac868;
+  --color-seedtrax-500: #3fa72c;
+  --color-seedtrax-600: #359024;
+  --color-seedtrax-700: #2a731d;
+  --color-seedtrax-800: #1d5614;
+  --color-seedtrax-900: #143a0e;
+  --color-seedtrax-rgb: 63, 167, 44;
+
+  /* Agtrinsic (multi-brand) — primary / logo green #03951B */
+  --color-brand-agtrinsic: var(--color-agtrinsic-500);
+  --color-brand-agtrinsic-rgb: var(--color-agtrinsic-rgb);
+
+  --color-agtrinsic-100: #e6f4e7;
+  --color-agtrinsic-200: #b8e3bd;
+  --color-agtrinsic-300: #7cc88a;
+  --color-agtrinsic-400: #2ba847;
+  --color-agtrinsic-500: #03951b;
+  --color-agtrinsic-600: #028016;
+  --color-agtrinsic-700: #026a12;
+  --color-agtrinsic-800: #014c0c;
+  --color-agtrinsic-900: #012b07;
+  --color-agtrinsic-rgb: 3, 149, 27;
+
+  /* Sky Scout (multi-brand) — logo / primary green #76B149 */
+  --color-brand-skyscout: var(--color-skyscout-500);
+  --color-brand-skyscout-rgb: var(--color-skyscout-rgb);
+
+  --color-skyscout-100: #eef6e8;
+  --color-skyscout-200: #d8ebd0;
+  --color-skyscout-300: #b8dcb0;
+  --color-skyscout-400: #96c880;
+  --color-skyscout-500: #76b149;
+  --color-skyscout-600: #63973e;
+  --color-skyscout-700: #507d32;
+  --color-skyscout-800: #3d6126;
+  --color-skyscout-900: #2a4519;
+  --color-skyscout-rgb: 118, 177, 73;
 
   /* Primary alias */
   --color-primary: var(--color-brand);
@@ -151,6 +213,8 @@
   /* Interactive (filter pill selected) */
   --color-interactive: #04b8f1;
   --color-interactive-overlay: rgba(255, 255, 255, 0.85);
+  /* Scouting table category pills — see docs/scout-list-table-pills-crop-icons.md */
+  --color-scouting-category-pill-bg: #d9f4fd;
 
   /* Semantic (error = accent, info = ramp blue) */
   --color-success: #22c55e;
@@ -161,7 +225,7 @@
   --color-error-rgb: var(--color-accent-rgb);
   --color-danger: var(--color-error);
   --color-info: var(--color-primitive-500);
-  --color-info-rgb: 60, 132, 199;
+  --color-info-rgb: var(--color-agmri-app-primary-rgb);
 
   /* Text on colored backgrounds (badges, status pills, buttons). WCAG AA: chosen for ≥4.5:1 on that background. */
   --color-text-on-brand: #fff;
@@ -169,8 +233,15 @@
   --color-text-on-myfs-500: #fff;
   --color-text-on-brand-pb: var(--color-text-on-pb-500);
   --color-text-on-pb-500: #fff;
-  --color-text-on-brand-agmri: var(--color-text-on-agmri-500);
+  --color-text-on-brand-agmri: #fff; /* on --color-brand-agmri (app primary blue) */
   --color-text-on-agmri-500: #fff;
+  --color-text-on-brand-seedtrax: var(--color-text-on-seedtrax-500);
+  --color-text-on-seedtrax-500: #fff;
+  --color-text-on-brand-agtrinsic: var(--color-text-on-agtrinsic-500);
+  --color-text-on-agtrinsic-500: #fff;
+  --color-text-on-brand-skyscout: var(--color-text-on-skyscout-500);
+  /* WCAG AA on #76B149 — use for UI text on solid Sky Scout green */
+  --color-text-on-skyscout-500: #163614;
   --color-text-on-danger: #fff;
   --color-text-on-warning: #fff;
   --color-text-on-success: #fff;
@@ -187,6 +258,9 @@
   --color-text-on-brand-100: #1e5a96;
   --color-text-on-pb-100: var(--color-pb-700);
   --color-text-on-brand-100-agmri: var(--color-agmri-900);
+  --color-text-on-brand-100-seedtrax: var(--color-seedtrax-900);
+  --color-text-on-brand-100-agtrinsic: var(--color-agtrinsic-900);
+  --color-text-on-brand-100-skyscout: var(--color-skyscout-900);
   --color-text-on-success-100: var(--color-success-900);
   --color-text-on-warning-100: var(--color-warning-900);
   --color-text-on-danger-100: var(--color-danger-900);
@@ -234,6 +308,38 @@
   --color-cyan-700: #0e7490;
   --color-cyan-800: #155e75;
   --color-cyan-900: #164e63;
+
+  /*
+   * Field map flight strip — retailer field view bottom bar (season, activity filter, flight chicklets).
+   * Used by `components/field-map-flight-strip.css`. Override on a host (e.g. `.theme-myfs`) if needed.
+   */
+  --color-field-map-flight-strip-bg: rgb(0 0 0 / 0.4);
+  --color-field-map-flight-strip-border: rgb(255 255 255 / 0.1);
+  --color-field-map-flight-strip-shadow: 0 -4px 24px rgb(0 0 0 / 0.18);
+  --color-field-map-flight-strip-label: var(--color-text-inverse);
+  --color-field-map-flight-strip-chevron: rgb(255 255 255 / 0.45);
+  --color-field-map-flight-strip-chevron-hover: rgb(255 255 255 / 0.85);
+  --color-field-map-flight-strip-menu-hover-bg: rgb(255 255 255 / 0.08);
+  --color-field-map-flight-strip-chicklet-bg: var(--color-neutral-100);
+  --color-field-map-flight-strip-chicklet-fg: var(--color-neutral-800);
+  --color-field-map-flight-strip-chicklet-border: rgb(255 255 255 / 0.12);
+  --color-field-map-flight-strip-chicklet-hover-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+  --color-field-map-flight-strip-chicklet-selected-border: var(--color-primitive-500);
+  --color-field-map-flight-strip-chicklet-selected-bg: var(--color-primitive-100);
+  --color-field-map-flight-strip-chicklet-selected-ring: color-mix(
+    in srgb,
+    var(--color-field-map-flight-strip-chicklet-selected-border) 35%,
+    transparent
+  );
+  --color-field-map-flight-scrollbar-thumb: rgb(255 255 255 / 0.2);
+  --color-field-map-flight-scrollbar-thumb-hover: rgb(255 255 255 / 0.22);
+  /* Flight-type tints (icon + date) — chicklet glyph colors (fill via currentColor) */
+  --color-field-map-flight-tillage: #875f3c; /* tractor / tillage */
+  --color-field-map-flight-aerial: #9e99e7; /* Main / aerial flight */
+  --color-field-map-flight-planter: #8dc843; /* seeding */
+  --color-field-map-flight-application: #78b3c0; /* spray / application */
+  --color-field-map-flight-scouting: var(--color-cyan-600);
+  --color-field-map-flight-harvest: #ffba68;
 
   /* ========== SPACING SCALE ========== */
   --spacing-xs: 4px;
@@ -473,25 +579,11 @@
   --counter-badge-text: var(--color-text-on-pb-500);
 }
 
-/* ═══ THEME: AgMRI (green) ═══
- * Apply .theme-agmri to a page shell or demo card to swap brand + nav to AgMRI green.
- * Primitives, neutrals, and default action blue stay as defined unless you override locally.
+/* ═══ THEME: AgMRI ═══
+ * Apply .theme-agmri to a page shell. Primary / CTAs: app blue #3c84c7 (inherits :root --color-brand-* from --color-agmri-app-primary-*).
+ * Nav, tile, and counter badge: green PWA --color-agmri-500. Do not map --color-brand-* to green.
  */
 .theme-agmri {
-  --color-brand-100: var(--color-agmri-100);
-  --color-brand-200: var(--color-agmri-200);
-  --color-brand-300: var(--color-agmri-300);
-  --color-brand-400: var(--color-agmri-400);
-  --color-brand-500: var(--color-agmri-500);
-  --color-brand-600: var(--color-agmri-600);
-  --color-brand-700: var(--color-agmri-700);
-  --color-brand-800: var(--color-agmri-800);
-  --color-brand-900: var(--color-agmri-900);
-  --color-brand: var(--color-agmri-500);
-  --color-brand-rgb: var(--color-agmri-rgb);
-  --color-text-on-brand: var(--color-text-on-agmri-500);
-  --color-text-on-brand-100: var(--color-text-on-brand-100-agmri);
-
   --nav-background: var(--color-agmri-500);
   --nav-text-active: var(--color-agmri-500);
   --nav-icon-active: var(--color-agmri-500);
@@ -502,5 +594,69 @@
   --counter-badge-bg: var(--color-agmri-500);
   --counter-badge-text: var(--color-text-on-agmri-500);
 
-  --color-action-brand: var(--color-agmri-500);
+  --color-action-brand: var(--color-agmri-app-primary-500);
+}
+
+/* ═══ THEME: SeedTrax (green) ═══
+ * Apply .theme-seedtrax to a page shell or demo card to swap brand + nav to SeedTrax.
+ * Primitives, neutrals, and default action blue stay as defined unless you override locally.
+ */
+.theme-seedtrax {
+  --color-brand-100: var(--color-seedtrax-100);
+  --color-brand-200: var(--color-seedtrax-200);
+  --color-brand-300: var(--color-seedtrax-300);
+  --color-brand-400: var(--color-seedtrax-400);
+  --color-brand-500: var(--color-seedtrax-500);
+  --color-brand-600: var(--color-seedtrax-600);
+  --color-brand-700: var(--color-seedtrax-700);
+  --color-brand-800: var(--color-seedtrax-800);
+  --color-brand-900: var(--color-seedtrax-900);
+  --color-brand: var(--color-seedtrax-500);
+  --color-brand-rgb: var(--color-seedtrax-rgb);
+  --color-text-on-brand: var(--color-text-on-seedtrax-500);
+  --color-text-on-brand-100: var(--color-text-on-brand-100-seedtrax);
+
+  --nav-background: var(--color-seedtrax-500);
+  --nav-text-active: var(--color-seedtrax-500);
+  --nav-icon-active: var(--color-seedtrax-500);
+
+  --nav-mobile-text-active: var(--color-seedtrax-500);
+  --nav-mobile-icon-active: var(--color-seedtrax-500);
+
+  --counter-badge-bg: var(--color-seedtrax-500);
+  --counter-badge-text: var(--color-text-on-seedtrax-500);
+
+  --color-action-brand: var(--color-seedtrax-500);
+}
+
+/* ═══ THEME: Agtrinsic (green) ═══
+ * Apply .theme-agtrinsic to a page shell or demo card to swap brand + nav to Agtrinsic.
+ * Primitives, neutrals, and default action blue stay as defined unless you override locally.
+ */
+.theme-agtrinsic {
+  --color-brand-100: var(--color-agtrinsic-100);
+  --color-brand-200: var(--color-agtrinsic-200);
+  --color-brand-300: var(--color-agtrinsic-300);
+  --color-brand-400: var(--color-agtrinsic-400);
+  --color-brand-500: var(--color-agtrinsic-500);
+  --color-brand-600: var(--color-agtrinsic-600);
+  --color-brand-700: var(--color-agtrinsic-700);
+  --color-brand-800: var(--color-agtrinsic-800);
+  --color-brand-900: var(--color-agtrinsic-900);
+  --color-brand: var(--color-agtrinsic-500);
+  --color-brand-rgb: var(--color-agtrinsic-rgb);
+  --color-text-on-brand: var(--color-text-on-agtrinsic-500);
+  --color-text-on-brand-100: var(--color-text-on-brand-100-agtrinsic);
+
+  --nav-background: var(--color-agtrinsic-500);
+  --nav-text-active: var(--color-agtrinsic-500);
+  --nav-icon-active: var(--color-agtrinsic-500);
+
+  --nav-mobile-text-active: var(--color-agtrinsic-500);
+  --nav-mobile-icon-active: var(--color-agtrinsic-500);
+
+  --counter-badge-bg: var(--color-agtrinsic-500);
+  --counter-badge-text: var(--color-text-on-agtrinsic-500);
+
+  --color-action-brand: var(--color-agtrinsic-500);
 }

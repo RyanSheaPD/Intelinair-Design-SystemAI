@@ -1,0 +1,184 @@
+/**
+ * Scouting + combined status pills (live Angular DOM shape).
+ * IMPORTANT: Link this file AFTER `pages/demos/agmri-analysis-workspace/styles.cef64a1bc5706731.css`
+ * so these rules win over Bootstrap / MDC in static mocks.
+ *
+ * Full reference (tables + pills + crop icons): docs/scout-list-table-pills-crop-icons.md
+ */
+
+/* Angular host for category chips in scouting table */
+app-scouting-pill {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.scouting-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Category chips — live app (cyan surface + interactive label); ng host attrs omitted in static HTML */
+.scouting-pill.f-14 {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  vertical-align: middle;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 20px;
+  background-color: var(--color-scouting-category-pill-bg, #d9f4fd);
+  color: var(--color-interactive, #04b8f1);
+  font-family: var(--font-family, Figtree, system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.25;
+  padding: 5px 10px;
+}
+
+.scouting-pill.f-14 .title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  color: var(--color-interactive, #04b8f1);
+  white-space: nowrap;
+}
+
+.scouting-pill .d-flex.align-items-center {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.scouting-pill .count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--color-interactive, #04b8f1) 22%, transparent);
+  color: var(--color-interactive, #04b8f1);
+}
+
+.scouting-pill--accent {
+  border: 1px solid var(--color-interactive, #04b8f1);
+  background-color: var(
+    --color-scouting-category-pill-bg-accent,
+    color-mix(in srgb, var(--color-interactive, #04b8f1) 12%, var(--color-scouting-category-pill-bg, #d9f4fd))
+  );
+  color: var(--color-interactive, #04b8f1);
+}
+
+.scouting-pill--accent .count {
+  background: var(--color-interactive, #04b8f1);
+  color: #fff;
+}
+
+/* Sky Scout partner / source chip — uses --color-skyscout-* from design-tokens/tokens.css */
+.scouting-pill.f-14.scouting-pill--skyscout {
+  background: color-mix(in srgb, var(--color-skyscout-500, #76b149) 12%, var(--color-neutral-0, #fff));
+  color: var(--color-skyscout-700, #507d32);
+  border: 1px solid color-mix(in srgb, var(--color-skyscout-500, #76b149) 28%, transparent);
+}
+
+.scouting-pill.f-14.scouting-pill--skyscout .title {
+  color: var(--color-skyscout-700, #507d32);
+}
+
+/**
+ * Combined workflow status pill — DOM mirrors live Angular:
+ * app-combined-status-pill[fontsize="f-14"] > .d-flex.status.f-14.{STATUS}.active > .status-name
+ */
+
+app-combined-status-pill {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  vertical-align: middle;
+  max-width: 100%;
+  font-family: var(--font-family, Figtree, system-ui, sans-serif);
+}
+
+app-combined-status-pill .status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border, #e2e8f0);
+  background: var(--color-neutral-50, #f8fafc);
+  color: var(--color-text-muted, #64748b);
+}
+
+app-combined-status-pill .status-name {
+  white-space: nowrap;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+app-combined-status-pill .status.APPROVED.active {
+  background: var(--color-success-50, #ecfdf5);
+  color: var(--color-success-700, #047857);
+  border-color: var(--color-success-200, #a7f3d0);
+}
+
+app-combined-status-pill .status.IN_PROGRESS.active {
+  background: #f5f3ff;
+  color: #5b21b6;
+  border-color: #ddd6fe;
+}
+
+app-combined-status-pill .status-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+app-combined-status-pill .status.IN_PROGRESS.active .status-count {
+  background: #7c3aed;
+  color: #fff;
+}
+
+app-combined-status-pill .status.APPROVED.active .status-count {
+  background: var(--color-success-500, #10b981);
+  color: #fff;
+}
+
+/**
+ * Load scouting-pill.css AFTER styles.cef64a1bc5706731.css.
+ * These guards beat late generic .d-flex / table rules when needed.
+ */
+app-combined-status-pill .status.d-flex.align-items-center {
+  display: flex;
+  align-items: center;
+}

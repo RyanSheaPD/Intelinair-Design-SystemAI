@@ -1,0 +1,418 @@
+/**
+ * Page subnav toolbar — row below the app header (Scout / list-style surfaces).
+ * Pairs with Bootstrap-style utilities (d-flex, align-items-center, justify-content-between).
+ *
+ * Markup (Angular-compatible class names):
+ *   <div class="page-subnav menu-border d-flex align-items-center">
+ *     <div class="menu-container scout scout-toolbar d-flex justify-content-between align-items-center">
+ *       <div class="tabs d-flex gap-20 cursor-pointer align-items-center">…</div>
+ *       <div class="filters d-flex align-items-center">…</div>
+ *     </div>
+ *   </div>
+ *
+ * Primary segment: .tabs.tabs--text + .tabs__item (underline; see components/tabs.css).
+ * Legacy Angular: .tabs .tab / .tab.active still get the same underline treatment.
+ * Toolbar pills: add class `page-subnav-pill` (favorites, filters, table, list view trigger).
+ */
+
+.page-subnav,
+.menu-border {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-sizing: border-box;
+}
+
+.page-subnav > .menu-container.scout,
+.menu-border > .menu-container.scout {
+  flex: 1;
+  min-width: 0;
+}
+
+.scout-toolbar.menu-container.scout {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 12px 20px 10px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  width: 100%;
+}
+
+.menu-border > .menu-container.scout {
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding: 12px 20px 10px;
+  background: var(--color-surface);
+  border-bottom: none;
+}
+
+/* Outer .menu-border already draws the row border; avoid a second line on inner toolbar */
+.menu-border > .menu-container.scout.scout-toolbar {
+  border-bottom: none;
+}
+
+/* ----- Text tabs (underline) — toolbar row; extends components/tabs.css .tabs--text ----- */
+.menu-container.scout .tabs,
+.menu-border .tabs {
+  flex-wrap: wrap;
+}
+
+.menu-container.scout .tabs.tabs--text,
+.menu-border .tabs.tabs--text {
+  border-bottom: none;
+  gap: 20px;
+}
+
+.menu-container.scout .tabs.tabs--text .tabs__item,
+.menu-border .tabs.tabs--text .tabs__item {
+  margin-bottom: 0;
+  border-bottom-width: 3px;
+  font-size: var(--font-size-16);
+  text-decoration: none;
+}
+
+.menu-container.scout .tabs.tabs--text .tabs__item:hover,
+.menu-border .tabs.tabs--text .tabs__item:hover {
+  color: var(--color-text);
+}
+
+.menu-container.scout .tabs.tabs--text .tabs__item:focus-visible,
+.menu-border .tabs.tabs--text .tabs__item:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--color-brand-rgb), 0.35);
+  border-radius: var(--radius-sm);
+}
+
+.menu-container.scout .tabs.tabs--text .tabs__item[aria-selected="true"],
+.menu-container.scout .tabs.tabs--text .tabs__item--active,
+.menu-border .tabs.tabs--text .tabs__item[aria-selected="true"],
+.menu-border .tabs.tabs--text .tabs__item--active {
+  color: var(--pst-toolbar-tab-active-fg, var(--color-brand-500));
+  font-weight: var(--font-weight-semibold);
+  border-bottom-color: var(--pst-toolbar-tab-indicator, var(--tab-indicator-color));
+}
+
+/* Legacy: .tab (Angular export) */
+.menu-container.scout .tabs .tab,
+.menu-border .tabs .tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  line-height: 1.2;
+  white-space: nowrap;
+  padding: var(--spacing-m) var(--spacing-l);
+  margin-bottom: 0;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.menu-container.scout .tabs .tab:hover,
+.menu-border .tabs .tab:hover {
+  color: var(--color-text);
+}
+
+.menu-container.scout .tabs .tab:focus-visible,
+.menu-border .tabs .tab:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--color-brand-rgb), 0.35);
+  border-radius: var(--radius-sm);
+}
+
+.menu-container.scout .tabs .tab.active,
+.menu-container.scout .tabs .tab[aria-current="page"],
+.menu-border .tabs .tab.active,
+.menu-border .tabs .tab[aria-current="page"] {
+  font-weight: var(--font-weight-semibold);
+  color: var(--pst-toolbar-tab-active-fg, var(--color-brand-500));
+  border-bottom-color: var(--pst-toolbar-tab-indicator, var(--tab-indicator-color));
+}
+
+/* ----- Filters rail ----- */
+.menu-container.scout .filters,
+.menu-border .filters {
+  flex-wrap: wrap;
+  gap: 4px 0;
+  row-gap: 6px;
+}
+
+.menu-container.scout .filters .icon-color,
+.menu-border .filters .icon-color {
+  color: var(--color-text);
+}
+
+/* Toolbar pill — favorites, advanced filters, customize table, list view (match spec) */
+.page-subnav-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 30px;
+  background-color: rgb(242, 241, 246);
+  background-image: none;
+  border: none;
+  font-family: inherit;
+  font-size: var(--font-size-12);
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: filter 0.12s ease, background-color 0.12s ease;
+}
+
+.page-subnav-pill:hover {
+  filter: brightness(0.96);
+}
+
+.menu-container.scout .page-subnav-pill:focus-visible,
+.menu-border .page-subnav-pill:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(var(--color-brand-rgb), 0.25);
+}
+
+.menu-container.scout .filter-favorite,
+.menu-border .filter-favorite {
+  display: inline-flex;
+  align-items: center;
+}
+
+.menu-container.scout .filter-favorite + .filter-favorite,
+.menu-border .filter-favorite + .filter-favorite {
+  margin-inline-start: 10px;
+}
+
+.menu-container.scout .app-favorite.margin-right-5,
+.menu-border .app-favorite.margin-right-5 {
+  margin-right: 5px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.menu-container.scout .filters .mat-icon,
+.menu-border .filters .mat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.menu-container.scout .filters .icon-16,
+.menu-border .filters .icon-16 {
+  width: 16px;
+  height: 16px;
+}
+
+.menu-container.scout .filters .icon-18,
+.menu-border .filters .icon-18 {
+  width: 18px;
+  height: 18px;
+}
+
+.menu-container.scout .filters .mr-1,
+.menu-border .filters .mr-1 {
+  margin-right: 4px;
+}
+
+.menu-container.scout .filters .vertical-divider,
+.menu-border .filters .vertical-divider {
+  width: 1px;
+  align-self: stretch;
+  min-height: 22px;
+  max-height: 28px;
+  background: var(--color-border);
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+
+.menu-container.scout .filter-icon,
+.menu-border .filter-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.menu-container.scout .filter-icon .mat-icon,
+.menu-container.scout .filter-icon svg,
+.menu-border .filter-icon .mat-icon,
+.menu-border .filter-icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Advanced filters, customize table, list/map view — pill shell (live AGMRI computed-style parity) */
+.menu-border .menu-container .filters .filter-icon,
+.menu-border .menu-container .filters .app-table-columns-ordering .page-subnav-pill.popup-trigger,
+.menu-border .menu-container .filters .scout-map-dd summary.page-subnav-pill,
+.menu-container.scout .filters .filter-icon,
+.menu-container.scout .filters .app-table-columns-ordering .page-subnav-pill.popup-trigger,
+.menu-container.scout .filters .scout-map-dd summary.page-subnav-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 3px 10px;
+  border-radius: 30px;
+  background-color: rgb(242, 241, 246);
+  background-image: none;
+  color: rgba(0, 0, 0, 0.8);
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.menu-border .menu-container .filters .filter-icon .icon-color,
+.menu-border .menu-container .filters .filter-icon .mat-icon,
+.menu-border .menu-container .filters .app-table-columns-ordering .page-subnav-pill .icon-color,
+.menu-border .menu-container .filters .app-table-columns-ordering .page-subnav-pill .mat-icon,
+.menu-border .menu-container .filters .scout-map-dd summary.page-subnav-pill .icon-color,
+.menu-border .menu-container .filters .scout-map-dd summary.page-subnav-pill .mat-icon,
+.menu-container.scout .filters .filter-icon .icon-color,
+.menu-container.scout .filters .filter-icon .mat-icon,
+.menu-container.scout .filters .app-table-columns-ordering .page-subnav-pill .icon-color,
+.menu-container.scout .filters .app-table-columns-ordering .page-subnav-pill .mat-icon,
+.menu-container.scout .filters .scout-map-dd summary.page-subnav-pill .icon-color,
+.menu-container.scout .filters .scout-map-dd summary.page-subnav-pill .mat-icon {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.menu-border .menu-container .filters button.mat-mdc-tooltip-trigger.page-subnav-pill,
+.menu-container.scout .filters button.mat-mdc-tooltip-trigger.page-subnav-pill {
+  min-height: 0;
+  line-height: 1.25;
+}
+
+.menu-container.scout .app-table-columns-ordering .view-icons.popup-trigger,
+.menu-border .app-table-columns-ordering .view-icons.popup-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.menu-container.scout .filters .view-icons.cursor-pointer,
+.menu-border .filters .view-icons.cursor-pointer {
+  border-radius: var(--radius-md);
+}
+
+.menu-container.scout .filters .scout-map-dd summary,
+.menu-border .filters .scout-map-dd summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-12);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.menu-container.scout .filters .scout-map-dd summary::-webkit-details-marker,
+.menu-border .filters .scout-map-dd summary::-webkit-details-marker {
+  display: none;
+}
+
+.menu-container.scout .filters .scout-map-dd summary:hover,
+.menu-border .filters .scout-map-dd summary:hover {
+  background: var(--color-neutral-100);
+}
+
+/* Chevron comes from inline SVG in markup; hide generated arrow */
+.menu-container.scout .filters .scout-map-dd summary::after,
+.menu-border .filters .scout-map-dd summary::after {
+  display: none;
+}
+
+.menu-container.scout .collapse-arrow,
+.menu-border .collapse-arrow {
+  border: none;
+  background: transparent;
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.menu-container.scout .collapse-arrow:hover,
+.menu-border .collapse-arrow:hover {
+  background: var(--color-neutral-100);
+}
+
+.menu-container.scout .collapse-arrow .active-icon,
+.menu-border .collapse-arrow .active-icon {
+  color: var(--color-brand-500);
+}
+
+.menu-container.scout .filters .scout-map-dd,
+.menu-border .filters .scout-map-dd {
+  position: relative;
+}
+
+.menu-container.scout .scout-map-dd__menu,
+.menu-border .scout-map-dd__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  min-width: 220px;
+  padding: 6px 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.menu-container.scout .scout-map-dd__menu a,
+.menu-border .scout-map-dd__menu a {
+  display: block;
+  padding: 10px 14px;
+  font-size: var(--font-size-13);
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.menu-container.scout .scout-map-dd__menu a:hover,
+.menu-border .scout-map-dd__menu a:hover {
+  background: var(--color-neutral-100);
+}
+
+.menu-container.scout .scout-map-dd__menu a[aria-current="page"],
+.menu-border .scout-map-dd__menu a[aria-current="page"] {
+  background: var(--color-brand-100);
+  color: var(--color-brand-700);
+}
+
+/* Small layout helpers used beside this component */
+.gap-8 {
+  gap: 8px;
+}
+
+.gap-20 {
+  gap: 20px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.f-12 {
+  font-size: 12px;
+}
+
+.f-16 {
+  font-size: 16px;
+}

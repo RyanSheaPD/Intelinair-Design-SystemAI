@@ -1,0 +1,558 @@
+/**
+ * Farm / field header — large modal vs map popover (info select).
+ * Large modal: `.modal-farm-info` (20px title, 14px farm line, 16px meta, hybrid row).
+ * Map view: add `.modal-farm-info--map-view` (16px title + copy, 12px farm line, flight meta row, 14px field meta, no hybrid).
+ * Compose with components/modal.css (.modal-harvest__icon-btn) for favorite / copy.
+ */
+
+.modal-farm-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  font-family: var(--font-family);
+  color: var(--color-text);
+}
+
+.modal-farm-info__title-row,
+.modal-farm-info__context-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-1, 4px);
+}
+
+.modal-farm-info__field-name {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: var(--font-size-20);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-tight, 1.25);
+  color: var(--color-action, var(--color-primitive-600));
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-farm-info__field-name:hover {
+  text-decoration: underline;
+}
+
+.modal-farm-info__location {
+  font-size: var(--font-size-14);
+  color: var(--color-text);
+  line-height: 1.35;
+}
+
+.modal-farm-info__grower-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+}
+
+.modal-farm-info__grower {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.35;
+  color: var(--color-action, var(--color-primitive-600));
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.modal-farm-info__grower:hover {
+  text-decoration: underline;
+}
+
+/* app-pop-up-header-info row */
+.modal-farm-info__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: var(--space-3, 12px);
+  row-gap: var(--space-2, 8px);
+  font-size: var(--font-size-16);
+  line-height: 1.35;
+}
+
+.modal-farm-info__acreage {
+  display: inline-flex;
+  align-items: center;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.modal-farm-info__planting {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  color: var(--color-text);
+}
+
+.modal-farm-info__planting--na {
+  color: var(--color-text-muted);
+}
+
+.modal-farm-info__icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.modal-farm-info__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.modal-farm-info__crop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--color-brand-500, var(--color-brand));
+}
+
+.modal-farm-info__crop-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.modal-farm-info__crop-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.modal-farm-info__hybrid {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-1, 4px);
+}
+
+.modal-farm-info__hybrid-label {
+  font-size: var(--font-size-16);
+  color: var(--color-neutral-600);
+}
+
+.modal-farm-info__hybrid-value {
+  font-size: var(--font-size-16);
+  color: var(--color-neutral-400);
+}
+
+.modal-farm-info__gdd {
+  display: inline-flex;
+  align-items: center;
+  font-weight: var(--font-weight-semibold, 600);
+  font-variant-numeric: tabular-nums;
+  color: #ca8a04;
+}
+
+.modal-farm-info__gdd--na {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* ----- Map field popover (narrow info card, gap-6 stack) ----- */
+
+.modal-farm-info--map-view {
+  gap: 6px;
+}
+
+.modal-farm-info--map-view .modal-farm-info__title-row {
+  gap: var(--space-1, 4px);
+}
+
+.modal-farm-info__title-row--clickable {
+  cursor: pointer;
+}
+
+.modal-farm-info__copy-btn {
+  margin-left: var(--space-1, 4px);
+  color: var(--color-text-muted);
+}
+
+.modal-farm-info__copy-btn:hover {
+  color: var(--color-action, var(--color-primitive-600));
+}
+
+.modal-farm-info--map-view .modal-farm-info__field-name {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.modal-farm-info--map-view .modal-farm-info__context-row {
+  gap: var(--space-2, 8px);
+}
+
+.modal-farm-info--map-view .modal-farm-info__location {
+  font-size: var(--font-size-12);
+  color: var(--color-neutral-600);
+}
+
+.modal-farm-info--map-view .modal-farm-info__grower {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-semibold, 600);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.modal-farm-info__notes {
+  font-size: var(--font-size-12);
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.modal-farm-info__notes-inner {
+  min-height: 0;
+}
+
+.modal-farm-info__notes-inner:empty {
+  display: none;
+}
+
+.modal-farm-info__notes:has(.modal-farm-info__notes-inner:empty) {
+  display: none;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+.modal-farm-info__copy-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.modal-farm-info__copy-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.modal-farm-info--map-view .modal-farm-info__meta {
+  font-size: var(--font-size-14);
+  column-gap: var(--space-3, 12px);
+  row-gap: var(--space-2, 8px);
+}
+
+.modal-farm-info--map-view .modal-farm-info__hybrid {
+  display: none;
+}
+
+.modal-farm-info--map-view .modal-farm-info__crop-icon {
+  width: 14px;
+  height: 22px;
+}
+
+/* app-retailer-field-info: flight row (scout + datetime | Event GDD | flight code + copy) */
+.modal-farm-info--map-view .modal-farm-info__flight-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin-top: 10px;
+  width: 100%;
+  font-size: var(--font-size-14);
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.modal-farm-info__flight-meta-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  min-width: 0;
+}
+
+.modal-farm-info__scout-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-text);
+}
+
+.modal-farm-info__scout-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.modal-farm-info__flight-datetime {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.modal-farm-info__flight-meta-sep {
+  width: 1px;
+  height: 14px;
+  flex-shrink: 0;
+  background: var(--color-neutral-300, #e5e5e5);
+  align-self: center;
+}
+
+.modal-farm-info__event-gdd {
+  display: inline-flex;
+  align-items: center;
+  font-weight: var(--font-weight-medium, 500);
+  white-space: nowrap;
+}
+
+.modal-farm-info__event-gdd--na {
+  color: var(--color-text-muted);
+}
+
+.modal-farm-info__flight-code-copy {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  max-width: 100%;
+}
+
+.modal-farm-info__flight-code-copy:hover {
+  color: var(--color-action, var(--color-primitive-600));
+}
+
+.modal-farm-info__flight-code {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.modal-farm-info__copy-icon--inline {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.modal-farm-info__flight-code-copy:hover .modal-farm-info__copy-icon--inline {
+  color: var(--color-action, var(--color-primitive-600));
+}
+
+/* ----- mde-popover + mat-card field-info-card (full map field info) ----- */
+
+.modal-harvest__header--field-info-full {
+  padding-bottom: var(--space-2, 8px);
+}
+
+.field-info-popover {
+  padding: 8px 0;
+  width: 100%;
+}
+
+.field-info-card {
+  margin: 0;
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-surface, #fff);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.field-info-card__content {
+  padding: 12px 16px 16px;
+}
+
+.field-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.field-details__stack.modal-farm-info.modal-farm-info--map-view {
+  gap: 24px;
+}
+
+.modal-farm-info__title-row--map-popover {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: var(--space-1, 4px);
+  cursor: pointer;
+}
+
+.modal-farm-info__field-name--popover-link {
+  font-size: var(--font-size-16);
+  font-weight: var(--font-weight-semibold, 600);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.modal-farm-info__title-copy-wrap {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--space-1, 4px);
+  flex-shrink: 0;
+}
+
+.modal-farm-info__copy-btn--dim {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+.modal-farm-info__copy-btn--dim:hover {
+  color: var(--color-action, var(--color-primitive-600));
+}
+
+.modal-farm-info__context-row--map-popover {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.modal-farm-info__location--faint {
+  font-size: var(--font-size-12);
+  color: rgba(0, 0, 0, 0.42);
+}
+
+.modal-farm-info--map-view .modal-farm-info__grower.modal-farm-info__grower--caps {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.modal-farm-info__notes--f12 {
+  font-size: var(--font-size-12);
+}
+
+.modal-farm-info__pop-up-header-info.modal-farm-info__meta {
+  align-items: center;
+  row-gap: 8px;
+}
+
+.modal-farm-info__total-acreage {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.modal-farm-info__planting--tight {
+  gap: var(--space-1, 8px);
+}
+
+.modal-farm-info__icon--16 {
+  width: 16px;
+  height: 16px;
+}
+
+.modal-farm-info__crop-item {
+  display: inline-flex;
+  margin: 0;
+  padding: 0;
+}
+
+.modal-farm-info__crop--inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 8px);
+}
+
+.modal-farm-info__crop-icon--corn {
+  color: #127115;
+}
+
+.modal-farm-info__gdd--header {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.modal-farm-info__footer-actions {
+  min-height: 4px;
+  margin-top: 4px;
+}
+
+.equipment-details-container {
+  padding-top: var(--space-4, 16px);
+  margin-top: var(--space-2, 8px);
+  border-top: 1px solid var(--color-neutral-200, #e5e5e5);
+}
+
+.equipment-details__heading {
+  font-size: var(--font-size-14);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text);
+  margin: 0 0 var(--space-3, 12px);
+}
+
+.equipment-details__block + .equipment-details__block {
+  margin-top: var(--space-4, 16px);
+}
+
+.equipment-details__label {
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--color-neutral-600, #525252);
+  margin: 0 0 var(--space-1, 4px);
+}
+
+.equipment-details__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+}
+
+.equipment-details__row--base-map {
+  gap: var(--space-2, 8px);
+  flex-wrap: wrap;
+}
+
+.equipment-details__base-map-brand {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.equipment-details__skyscout-logo {
+  display: block;
+  height: 22px;
+  width: auto;
+  max-width: min(100%, 160px);
+  object-fit: contain;
+  object-position: left center;
+}
+
+.equipment-details__muted {
+  font-size: var(--font-size-14);
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.equipment-details__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.26);
+  cursor: pointer;
+}
+
+.equipment-details__icon-btn:hover {
+  color: var(--color-action, var(--color-primitive-600));
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.equipment-details__pill-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: var(--space-1, 4px);
+}

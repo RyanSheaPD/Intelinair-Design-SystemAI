@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Field map flight strip — Intelinair Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../../components/field-map-flight-strip.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; font-family: var(--font-family); }
+    .flight-strip-demo { min-height: 100%; display: flex; flex-direction: column; background: linear-gradient(165deg, #6b8f72 0%, #3d5a48 45%, #1e2a22 100%); }
+    .flight-strip-demo__fill { flex: 1 1 auto; min-height: 120px; }
+    .flight-strip-demo .field-map-flight-strip { flex: 0 0 auto; width: 100%; margin: 0 8px 16px; max-width: calc(100vw - 16px); align-self: center; }
+  </style>
+</head>
+<body>
+  <div class="flight-strip-demo">
+    <div class="flight-strip-demo__fill" aria-hidden="true"></div>
+        <footer class="field-map-flight-strip" aria-label="Field flights and activities">
+          <div class="flight-actions-container d-flex fields pointer-events-all">
+            <div class="flights-list-container flight-strip-row d-flex align-items-center pointer-events-all w-100">
+              <span class="flight-season-select" role="text">2024</span>
+              <button type="button" class="selection d-flex align-items-center justify-content-start">All activities</button>
+              <nav class="flight-navigation" aria-label="Flights by date">
+              <div class="d-flex flight-navigation-container">
+                <button type="button" class="d-flex left-nav cursor-pointer" aria-label="Scroll flights earlier">
+                  <svg width="10" height="16" viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M228.86 45a24 24 0 0 1 33.94 0l22.67 22.63a23.93 23.93 0 0 1 0 33.85L131.5 256l154 154.5a23.93 23.93 0 0 1 0 33.85L262.8 467a24 24 0 0 1-33.94 0L34.53 273a23.93 23.93 0 0 1 0-33.88z"/></svg>
+                </button>
+                <div class="d-flex flights-scroll-wrapper overflow-hidden">
+                  <div class="d-flex flights-list position-relative flight-slider overflow-hidden" id="flightChickletsList" role="list">
+                    <button type="button" class="flight-element Equipment_Tillage" id="FZ3D7CYAF" role="listitem" aria-label="Tillage, Apr 25">
+                      <span class="flight-element__inner">
+                        <span class="flight-element__icon-row">
+                          <span class="provider-icon provider-icon--svg" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                              <!-- Source: assets/icons/crops/equipment-tillage.svg -->
+                              <path fill="currentColor" d="M14.2 11.4C12.985 11.4 12 12.385 12 13.6C12 14.815 12.985 15.8 14.2 15.8C15.415 15.8 16.4 14.815 16.4 13.6C16.4 12.385 15.415 11.4 14.2 11.4ZM14.2 14.2C13.8693 14.2 13.6 13.9307 13.6 13.6C13.6 13.2692 13.8693 13 14.2 13C14.5308 13 14.8 13.2692 14.8 13.6C14.8 13.9307 14.5308 14.2 14.2 14.2ZM16.2 7H14.6V5.995C14.6 5.642 14.7175 5.301 14.9288 5.024C15.0393 4.879 15.0175 4.6725 14.8958 4.53675L14.355 3.9325C14.1885 3.74625 13.897 3.7595 13.7375 3.952C13.2645 4.5225 13 5.24525 13 5.995V7H10.4418L9.0395 3.7285C8.94739 3.51221 8.79366 3.3278 8.59748 3.19826C8.4013 3.06872 8.17134 2.99977 7.93625 3H4.6C3.93825 3 3.4 3.53825 3.4 4.2V7.863C3.18425 7.69475 2.876 7.7015 2.67775 7.89975L1.9 8.6775C1.68525 8.89225 1.68525 9.2405 1.9 9.45525L2.0265 9.58175C1.90175 9.81325 1.8025 10.0522 1.72875 10.2997H1.55C1.24625 10.2997 1 10.546 1 10.8498V11.9497C1 12.2535 1.24625 12.4998 1.55 12.4998H1.7285C1.8025 12.7475 1.9015 12.9862 2.02625 13.218L1.89975 13.3445C1.685 13.5592 1.685 13.9075 1.89975 14.1223L2.6775 14.9C2.89225 15.1147 3.2405 15.1147 3.45525 14.9L3.58175 14.7735C3.81325 14.8983 4.05225 14.9975 4.29975 15.0712V15.25C4.29975 15.5538 4.546 15.8 4.84975 15.8H5.94975C6.2535 15.8 6.49975 15.5538 6.49975 15.25V15.0715C6.74725 14.9977 6.98625 14.8985 7.21775 14.7738L7.34425 14.9003C7.559 15.115 7.90725 15.115 8.122 14.9003L8.89975 14.1225C9.1145 13.9078 9.1145 13.5595 8.89975 13.3448L8.77325 13.2183C8.898 12.9868 8.99725 12.7478 9.071 12.5003H9.25C9.55375 12.5003 9.8 12.254 9.8 11.9503V11.8003H11.8135C12.3613 11.0755 13.2215 10.6003 14.2 10.6003C14.666 10.6003 15.1018 10.7155 15.495 10.9053L16.7655 9.63475C16.9155 9.48475 16.9998 9.28125 16.9998 9.069V7.8C17 7.35825 16.6418 7 16.2 7ZM5.4 13.4C4.2955 13.4 3.4 12.5045 3.4 11.4C3.4 10.2955 4.2955 9.4 5.4 9.4C6.5045 9.4 7.4 10.2955 7.4 11.4C7.4 12.5045 6.5045 13.4 5.4 13.4ZM5.95 7H5V4.6H7.67225L8.701 7H5.95Z" />
+                            </svg>
+                          </span>
+                          <span class="resolution-index" aria-hidden="true"></span>
+                        </span>
+                        <span class="activity-date">Apr 25</span>
+                      </span>
+                    </button>
+                    <button type="button" class="flight-element Main" id="QQMEDV6UB" role="listitem" aria-label="Aerial imagery, May 1">
+                      <span class="flight-element__inner">
+                        <span class="flight-element__icon-row">
+                          <span class="provider-icon provider-icon--svg" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                              <!-- Source: assets/icons/crops/flight-main.svg -->
+                              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M7.27205 19.9937H9.21932C9.81848 20.0436 10.4176 19.794 10.7671 19.3446L15.2608 12.0049H17.2081C21.2524 12.0049 23 11.5056 23 10.0077C23 8.5098 21.2025 8.0105 17.2081 8.0105H15.2608L10.7172 0.670789C10.3677 0.171489 9.76855 -0.078161 9.21932 0.021699L7.27205 0.021699L10.168 8.31008L4.07653 8.70952L2.5287 5.91344C2.37891 5.66379 2.07933 5.514 1.77975 5.514L0.032198 5.514L1.38031 10.0077L0.032198 14.5014H1.82968C2.12926 14.5014 2.37891 14.3516 2.57863 14.1519L4.12646 11.3558L10.2179 11.7053L7.27205 19.9937Z" />
+                            </svg>
+                          </span>
+                          <span class="resolution-index"></span>
+                        </span>
+                        <span class="activity-date">May 1</span>
+                      </span>
+                    </button>
+                    <button type="button" class="flight-element Equipment_Planter" id="VA27P8P1Z" role="listitem" aria-label="Planter, May 24">
+                      <span class="flight-element__inner">
+                        <span class="flight-element__icon-row">
+                          <span class="provider-icon provider-icon--svg" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                              <!-- Source: assets/icons/crops/equipment-planter.svg -->
+                              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M3.66508 5.99874C4.71015 6.35266 5.85802 5.83948 6.23182 4.85C6.60717 3.86051 6.66947 1.17223 5.6244 0.81684C4.58088 0.462925 2.82404 2.57757 2.45024 3.56558C2.078 4.55507 2.62156 5.64483 3.66508 5.99874ZM4.07816 12.9724C4.80495 13.4432 5.76915 13.2274 6.2343 12.493C6.70065 11.7574 6.48625 10.7802 5.75946 10.3082C5.03267 9.83734 2.88986 9.28929 2.42592 10.0262C1.96199 10.763 3.34895 12.5016 4.07816 12.9724ZM7.87949 8.87401C7.2134 8.22469 8.26235 6.09062 8.91664 5.42958C9.56961 4.76724 10.6395 4.75683 11.3069 5.40746C11.9743 6.05679 11.9848 7.11992 11.3305 7.78096C10.6763 8.442 8.54557 9.52334 7.87949 8.87401Z" />
+                            </svg>
+                          </span>
+                          <span class="resolution-index"></span>
+                        </span>
+                        <span class="activity-date">May 24</span>
+                      </span>
+                    </button>
+                    <button type="button" class="flight-element Equipment_Application" id="TT9DH6JYA" role="listitem" aria-label="Application, May 24">
+                      <span class="flight-element__inner">
+                        <span class="flight-element__icon-row">
+                          <span class="provider-icon provider-icon--svg" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                              <!-- Source: assets/icons/crops/equipment-spray.svg -->
+                              <ellipse cx="12.002" cy="12.9995" rx="1.25" ry="1.25" fill="currentColor" />
+                              <ellipse cx="9.50195" cy="16.7495" rx="1.25" ry="1.25" fill="currentColor" />
+                              <ellipse cx="7.00195" cy="20.4995" rx="1.25" ry="1.25" fill="currentColor" />
+                              <ellipse cx="12.002" cy="20.4995" rx="1.25" ry="1.25" fill="currentColor" />
+                              <circle cx="17.002" cy="20.4995" r="1.25" fill="currentColor" />
+                              <circle cx="14.502" cy="16.7495" r="1.25" fill="currentColor" />
+                              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M2.50601 3C2.32467 3 2.23694 3.22197 2.36928 3.34595L8.61362 9.19596C8.65068 9.23068 8.69957 9.25 8.75035 9.25H15.2585C15.3094 9.25 15.3583 9.23064 15.3954 9.19586L21.6313 3.34586C21.7635 3.22184 21.6758 3 21.4945 3H2.50601Z" />
+                            </svg>
+                          </span>
+                          <span class="resolution-index"></span>
+                        </span>
+                        <span class="activity-date">May 24</span>
+                      </span>
+                    </button>
+                    <button type="button" class="flight-element Scouting" id="XN2PJ4VL9" role="listitem" aria-label="Scouting, Jun 6">
+                      <span class="flight-element__inner">
+                        <span class="flight-element__icon-row">
+                          <span class="provider-icon provider-icon--svg" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 20 19" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                              <!-- Source: assets/icons/crops/scouting-flight.svg -->
+                              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M18.7736 11.061L16.5609 5.46923C16.5392 5.41526 16.5074 5.36608 16.4672 5.32443L15.2596 4.09714L14.0153 0.735871C13.9938 0.678513 13.9607 0.626284 13.9183 0.582459C13.0062 -0.194153 11.6747 -0.194153 10.7626 0.582459C10.6828 0.663432 10.6381 0.773191 10.6383 0.887559V5.18567C10.3617 5.15982 10.08 5.14172 9.78724 5.14172C9.64257 5.14172 9.50216 5.14861 9.36174 5.15551L9.36171 5.15551V0.889283C9.36191 0.774918 9.31721 0.665159 9.23746 0.584186C8.32531 -0.192427 6.99386 -0.192427 6.08172 0.584186C6.03929 0.628011 6.00626 0.680239 5.98469 0.737597L4.74044 4.09714L3.53193 5.32444C3.49173 5.36608 3.45993 5.41526 3.43831 5.46923L1.2264 11.061C-0.518058 12.9931 -0.385607 15.9914 1.52225 17.758C3.4301 19.5246 6.39089 19.3905 8.13535 17.4584C8.9265 16.5822 9.36414 15.4372 9.36171 14.2499V9.47517C9.49363 9.46224 9.6332 9.45362 9.78725 9.45362C10.0729 9.45173 10.358 9.47887 10.6383 9.53464V14.2482C10.633 16.8661 12.7243 18.9928 15.3094 18.9982C17.8946 19.0037 19.9946 16.8858 20 14.2678C20.0024 13.0805 19.5648 11.9355 18.7736 11.0593L18.7736 11.061ZM7.65921 14.2481C7.65921 15.9141 6.32559 17.2646 4.68048 17.2646C3.03538 17.2646 1.70176 15.9141 1.70176 14.2481C1.70176 12.5821 3.03538 11.2316 4.68048 11.2316C6.32559 11.2316 7.6592 12.5821 7.65921 14.2481ZM12.34 14.2481C12.34 15.9141 13.6736 17.2646 15.3187 17.2646C16.9639 17.2646 18.2975 15.9141 18.2975 14.2481C18.2975 12.5821 16.9639 11.2316 15.3187 11.2316C13.6736 11.2316 12.34 12.5821 12.34 14.2481Z" />
+                            </svg>
+                          </span>
+                          <span class="resolution-index"></span>
+                        </span>
+                        <span class="activity-date">Jun 6</span>
+                      </span>
+                    </button>
+                    <button type="button" class="flight-element Main" id="ZKETLN88U" role="listitem" aria-label="Aerial imagery, Jul 22">
+                      <span class="flight-element__inner">
+                        <span class="flight-element__icon-row">
+                          <span class="provider-icon provider-icon--svg" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 23 20" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                              <!-- Source: assets/icons/crops/flight-main.svg -->
+                              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M7.27205 19.9937H9.21932C9.81848 20.0436 10.4176 19.794 10.7671 19.3446L15.2608 12.0049H17.2081C21.2524 12.0049 23 11.5056 23 10.0077C23 8.5098 21.2025 8.0105 17.2081 8.0105H15.2608L10.7172 0.670789C10.3677 0.171489 9.76855 -0.078161 9.21932 0.021699L7.27205 0.021699L10.168 8.31008L4.07653 8.70952L2.5287 5.91344C2.37891 5.66379 2.07933 5.514 1.77975 5.514L0.032198 5.514L1.38031 10.0077L0.032198 14.5014H1.82968C2.12926 14.5014 2.37891 14.3516 2.57863 14.1519L4.12646 11.3558L10.2179 11.7053L7.27205 19.9937Z" />
+                            </svg>
+                          </span>
+                          <span class="resolution-index"></span>
+                        </span>
+                        <span class="activity-date">Jul 22</span>
+                      </span>
+                    </button>
+                    <button type="button" class="flight-element Equipment_Harvest" id="MDLKXMCK4" role="listitem" aria-label="Harvest, Oct 28">
+                      <span class="flight-element__inner">
+                        <span class="flight-element__icon-row">
+                          <span class="provider-icon provider-icon--svg" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                              <!-- Source: assets/icons/crops/equipment-harvest.svg -->
+                              <path fill="currentColor" d="M2.28571 5.71429C2.28571 5.0831 1.77404 4.57143 1.14286 4.57143C0.511675 4.57143 0 5.0831 0 5.71429C0 5.86092 0.027617 6.00111 0.0779335 6.12993L0.754692 9.73931C1.36558 9.36114 2.08587 9.14286 2.85714 9.14286C5.06628 9.14286 6.85714 10.9337 6.85714 13.1429C6.85714 13.3369 6.84333 13.5277 6.81664 13.7143H9.18337C9.15667 13.5277 9.14286 13.3369 9.14286 13.1429C9.14286 10.9337 10.9337 9.14286 13.1429 9.14286C13.9141 9.14286 14.6344 9.36114 15.2453 9.73931L15.9221 6.12993C15.9724 6.00111 16 5.86092 16 5.71429C16 5.0831 15.4883 4.57143 14.8571 4.57143C14.226 4.57143 13.7143 5.0831 13.7143 5.71429H12.5714C12.5714 5.0831 12.0598 4.57143 11.4286 4.57143C10.7974 4.57143 10.2857 5.0831 10.2857 5.71429H9.14286C9.14286 5.0831 8.63118 4.57143 8 4.57143C7.36882 4.57143 6.85714 5.0831 6.85714 5.71429H5.71429C5.71429 5.0831 5.20261 4.57143 4.57143 4.57143C3.94025 4.57143 3.42857 5.0831 3.42857 5.71429H2.28571Z" />
+                            </svg>
+                          </span>
+                          <span class="resolution-index"></span>
+                        </span>
+                        <span class="activity-date">Oct 28</span>
+                      </span>
+                    </button>
+                    <button type="button" class="flight-element Equipment_Tillage selected" id="67BCUZV16" role="listitem" aria-label="Tillage, Oct 30 (selected)">
+                      <span class="flight-element__inner">
+                        <span class="flight-element__icon-row">
+                          <span class="provider-icon provider-icon--svg" aria-hidden="true">
+                            <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                              <!-- Source: assets/icons/crops/equipment-tillage.svg -->
+                              <path fill="currentColor" d="M14.2 11.4C12.985 11.4 12 12.385 12 13.6C12 14.815 12.985 15.8 14.2 15.8C15.415 15.8 16.4 14.815 16.4 13.6C16.4 12.385 15.415 11.4 14.2 11.4ZM14.2 14.2C13.8693 14.2 13.6 13.9307 13.6 13.6C13.6 13.2692 13.8693 13 14.2 13C14.5308 13 14.8 13.2692 14.8 13.6C14.8 13.9307 14.5308 14.2 14.2 14.2ZM16.2 7H14.6V5.995C14.6 5.642 14.7175 5.301 14.9288 5.024C15.0393 4.879 15.0175 4.6725 14.8958 4.53675L14.355 3.9325C14.1885 3.74625 13.897 3.7595 13.7375 3.952C13.2645 4.5225 13 5.24525 13 5.995V7H10.4418L9.0395 3.7285C8.94739 3.51221 8.79366 3.3278 8.59748 3.19826C8.4013 3.06872 8.17134 2.99977 7.93625 3H4.6C3.93825 3 3.4 3.53825 3.4 4.2V7.863C3.18425 7.69475 2.876 7.7015 2.67775 7.89975L1.9 8.6775C1.68525 8.89225 1.68525 9.2405 1.9 9.45525L2.0265 9.58175C1.90175 9.81325 1.8025 10.0522 1.72875 10.2997H1.55C1.24625 10.2997 1 10.546 1 10.8498V11.9497C1 12.2535 1.24625 12.4998 1.55 12.4998H1.7285C1.8025 12.7475 1.9015 12.9862 2.02625 13.218L1.89975 13.3445C1.685 13.5592 1.685 13.9075 1.89975 14.1223L2.6775 14.9C2.89225 15.1147 3.2405 15.1147 3.45525 14.9L3.58175 14.7735C3.81325 14.8983 4.05225 14.9975 4.29975 15.0712V15.25C4.29975 15.5538 4.546 15.8 4.84975 15.8H5.94975C6.2535 15.8 6.49975 15.5538 6.49975 15.25V15.0715C6.74725 14.9977 6.98625 14.8985 7.21775 14.7738L7.34425 14.9003C7.559 15.115 7.90725 15.115 8.122 14.9003L8.89975 14.1225C9.1145 13.9078 9.1145 13.5595 8.89975 13.3448L8.77325 13.2183C8.898 12.9868 8.99725 12.7478 9.071 12.5003H9.25C9.55375 12.5003 9.8 12.254 9.8 11.9503V11.8003H11.8135C12.3613 11.0755 13.2215 10.6003 14.2 10.6003C14.666 10.6003 15.1018 10.7155 15.495 10.9053L16.7655 9.63475C16.9155 9.48475 16.9998 9.28125 16.9998 9.069V7.8C17 7.35825 16.6418 7 16.2 7ZM5.4 13.4C4.2955 13.4 3.4 12.5045 3.4 11.4C3.4 10.2955 4.2955 9.4 5.4 9.4C6.5045 9.4 7.4 10.2955 7.4 11.4C7.4 12.5045 6.5045 13.4 5.4 13.4ZM5.95 7H5V4.6H7.67225L8.701 7H5.95Z" />
+                            </svg>
+                          </span>
+                          <span class="resolution-index"></span>
+                        </span>
+                        <span class="activity-date">Oct 30</span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <button type="button" class="d-flex right-nav cursor-pointer is-invisible" aria-label="Scroll flights later" tabindex="-1" aria-hidden="true">
+                  <svg width="10" height="16" viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M91.14 467a24 24 0 0 1-33.94 0l-22.67-22.65a23.93 23.93 0 0 1 0-33.85L188.5 256l-154-154.5a23.93 23.93 0 0 1 0-33.85L57.2 45a24 24 0 0 1 33.94 0l194.33 194a23.93 23.93 0 0 1 0 33.88z"/></svg>
+                </button>
+              </div>
+            </nav>
+          </div>
+        </div>
+        </footer>
+  </div>
+  <p style="padding:12px 16px;font-size:12px;color:var(--color-text-muted);max-width:720px;margin:0 auto;">Repeatable component: link <code>design-tokens/tokens.css</code> + <code>components/field-map-flight-strip.css</code>. Root class <code>field-map-flight-strip</code> on <code>&lt;footer&gt;</code> (or host). Full immersive example: <a href="field-view-screen.html">field-view-screen.html</a>. Spec: <a href="../../docs/field-view-flight-chicklets.md">docs/field-view-flight-chicklets.md</a>.</p>
+</body>
+</html>

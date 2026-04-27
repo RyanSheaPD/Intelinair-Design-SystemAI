@@ -6,6 +6,7 @@
   --maa-sidebar-w: 380px;
   --maa-top-h: 52px;
   --maa-sub-h: 52px;
+  --ds-map-view-static-photo: url("../../../assets/scout-map-satellite-plate.png");
   font-family: var(--font-family, "Figtree", system-ui, sans-serif);
   color: var(--color-text);
   background: var(--color-neutral-900);
@@ -201,7 +202,11 @@
 .maa-map-bg {
   position: absolute;
   inset: 0;
-  background: center / cover no-repeat;
+  background-color: #0f172a;
+  background-image: var(--ds-map-view-static-photo);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   opacity: 0.85;
 }
 

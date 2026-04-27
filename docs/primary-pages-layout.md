@@ -12,7 +12,7 @@ Use a **fixed-height viewport shell** so the global chrome stays visible while o
 
 | Layer | Role |
 |--------|------|
-| **Left rail** | Primary navigation (`nav.css` — vertical `.nav`). First column of the shell, full viewport height, flush left. |
+| **Left rail** | **Web left nav** — `aside.app-nav` + `nav.nav` from `nav.css` (vertical icons + labels). First column, full viewport height, flush left. Markup parity: [.cursor/skills/agmri-left-navigation/SKILL.md](../.cursor/skills/agmri-left-navigation/SKILL.md). |
 | **Main column** | Global header + scrollable page body. |
 
 ### Structure (conceptual)
@@ -56,7 +56,7 @@ Order regions top to bottom as needed; common patterns:
 1. **Page header** — Title, optional subtitle or metadata, optional actions (primary CTA belongs here or in a toolbar, not duplicated without reason). Use `typography.css` scale; keep hierarchy clear (one dominant title per view).
 2. **Secondary navigation** — Horizontal tabs or a sub-nav bar under the global header (see `tabs.css` or page-local tab bars). Fixed/sticky behavior is optional; if fixed, keep height stable to avoid layout shift.
 3. **Toolbars** — Filters, search scoped to the page, bulk actions. Align with `filter-pill.css`, `dropdown.css`, `input.css` as appropriate.
-4. **Primary content** — Cards, tables (`data-table.css` + loading bar rules from `loading.css`), charts, maps. For empty data, follow [empty-states.md](./empty-states.md).
+4. **Primary content** — Cards, tables (`data-table.css` + loading bar rules from `loading.css`; default table contract in [data-tables.md](./data-tables.md)), charts, maps. For empty data, follow [empty-states.md](./empty-states.md).
 
 Use spacing tokens (`--spacing-*`) between sections rather than arbitrary pixels, except where matching a spec’d demo exactly.
 
@@ -79,10 +79,11 @@ For small viewports, primary nav often moves to a **bottom bar** instead of a le
 | Resource | Use |
 |----------|-----|
 | `components/header.css` | Global app header |
-| `components/nav.css` | Sidebar + mobile bottom nav |
+| `components/nav.css` | **Web left rail** + mobile bottom nav (`nav.css`) |
 | `components/tabs.css` | Tabbed sections inside a page |
 | [DESIGN-SYSTEM.md](../DESIGN-SYSTEM.md) | Tokens, typography, component index |
 | [empty-states.md](./empty-states.md) | Zero-data views inside primary content |
+| [scout-list-table-pills-crop-icons.md](./scout-list-table-pills-crop-icons.md) | Scout-style **list tables** + **category pills** + **crop column SVGs** (single reference) |
 
 ---
 
