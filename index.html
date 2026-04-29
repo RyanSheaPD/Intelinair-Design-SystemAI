@@ -60,6 +60,7 @@
   <link rel="stylesheet" href="components/modal.css" />
   <link rel="stylesheet" href="components/field-card.css" />
   <link rel="stylesheet" href="components/field-map-flight-strip.css" />
+  <link rel="stylesheet" href="components/chicklet.css" />
   <link rel="stylesheet" href="components/tabs.css" />
   <link rel="stylesheet" href="components/nav.css" />
   <link rel="stylesheet" href="components/counter-badge.css" />
@@ -398,10 +399,10 @@
       max-width: 100%;
     }
 
-    /* Dashboard — AgMRI / MyFS / Pivot Bio shells + design-system nav SVGs */
+    /* Dashboard — AgMRI / MyFS / Pivot Bio / SeedTrax shells + design-system nav SVGs */
     .dashboard-brand-demos {
       display: grid;
-      grid-template-columns: repeat(3, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 20px;
       align-items: stretch;
     }
@@ -488,6 +489,15 @@
     }
     .dashboard-brand-demo--agmri-home .dashboard-widget-tabs-bar {
       flex: 0 0 auto;
+    }
+    /* AgMRI home dashboard: app-primary chrome — not legacy PWA green (see Brand(s) ramp note) */
+    .dashboard-brand-demo.theme-agmri.dashboard-brand-demo--agmri-home {
+      --counter-badge-bg: var(--color-agmri-app-primary-500);
+    }
+    .dashboard-brand-demo.theme-agmri.dashboard-brand-demo--agmri-home .nav.nav--agmri {
+      --nav-background: var(--color-agmri-app-primary-500);
+      --nav-text-active: var(--color-agmri-app-primary-500);
+      --nav-icon-active: var(--color-agmri-app-primary-500);
     }
 
     /* Header demo: show Web headers only on Web; show iOS/Android placeholder headers when platform switched */
@@ -809,7 +819,7 @@
         </article>
         <article class="ds-core-card">
           <h3>4 · Product surfaces</h3>
-          <p>Standalone screens grouped by app area (<code>home</code>, <code>fields</code>, <code>weather</code>, <code>scout</code>, <code>trials</code>, <code>yield</code>, …). Use <code>pages/demos/</code> for experiments. Figma / HTML→Design captures live in <code>figma-exports/</code> (optional; see <code>figma-exports/README.md</code>).</p>
+          <p>Standalone screens grouped by app area (<code>home</code>, <code>fields</code>, <code>weather</code>, <code>scout</code>, <code>trials</code>, <code>yield</code>, …). Figma / HTML→Design captures use the same pages over HTTP (see <code>docs/figma-mcp.md</code>).</p>
           <span class="ds-core-card__path">pages/&lt;area&gt;/*.html</span>
           <span class="ds-core-card__path" style="margin-top:0.35rem;"><a href="pages/system/product-language.html" target="_blank" rel="noopener">Product language map</a> · <a href="docs/system-voice.md" target="_blank" rel="noopener">System voice (copy)</a></span>
         </article>
@@ -830,14 +840,14 @@
     </p>
 
     <h3 class="type-title3" style="margin: 0 0 0.5rem 0;">Brand examples</h3>
-    <p class="type-footnote" style="color: var(--color-text-muted); margin: 0 0 1rem 0;">Each card uses a logo lockup, a compact ramp (key stops), a primary CTA, and <strong>corn / soybean</strong> actions with crop icons (<code>assets/icons/crops/corn.svg</code>, <code>soybean.svg</code>).</p>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin: 0 0 1rem 0;">Cards for <strong>AgMRI</strong>, <strong>MyFS</strong>, <strong>Pivot Bio</strong>, <strong>SeedTrax</strong>, and <strong>Agtrinsic</strong> use the <strong>same layout</strong>: brand name, logo lockup, one compact ramp row (key token stops), then a primary CTA plus <strong>corn</strong> and <strong>soybean</strong> secondary actions. Crop icons use in-page symbols (<code>#ag-crop-corn</code> / <code>#ag-crop-soy</code>); canonical SVGs: <code>assets/icons/crops/corn.svg</code>, <code>soybean.svg</code>. Theme class on the card (<code>.theme-agmri</code>, <code>.theme-pb</code>, <code>.theme-seedtrax</code>, <code>.theme-agtrinsic</code>) maps <code>.btn</code> primary/secondary to that brand where applicable; MyFS uses <code>.btn--myfs</code>.</p>
     <div class="ds-brand-showcase" role="list">
       <article class="ds-brand-card theme-agmri" role="listitem">
         <h4 class="ds-brand-card__name">AgMRI</h4>
         <div class="ds-brand-card__logo">
           <img src="assets/agmri-logo.png" alt="AgMRI" width="120" height="32" />
         </div>
-        <div class="ds-brand-card__ramp" aria-label="AgMRI app primary and PWA green">
+        <div class="ds-brand-card__ramp" aria-label="AgMRI app primary and legacy chrome green">
           <span class="ds-brand-card__ramp-label">App primary — 100, 200, 500, 800, 900 (500 = #3c84c7)</span>
           <div class="ds-brand-card__ramp-row" role="img" aria-label="brand blue key stops">
             <span class="ds-brand-card__sw" style="background: var(--color-brand-100)"></span>
@@ -846,8 +856,8 @@
             <span class="ds-brand-card__sw" style="background: var(--color-brand-800)"></span>
             <span class="ds-brand-card__sw" style="background: var(--color-brand-900)"></span>
           </div>
-          <span class="ds-brand-card__ramp-label" style="margin-top:6px">PWA / nav green</span>
-          <div class="ds-brand-card__ramp-row" role="img" aria-label="agmri green key stops">
+          <span class="ds-brand-card__ramp-label" style="margin-top:6px">Legacy chrome green (Settings / old UI only)</span>
+          <div class="ds-brand-card__ramp-row" role="img" aria-label="AgMRI legacy chrome green key stops">
             <span class="ds-brand-card__sw" style="background: var(--color-agmri-100)"></span>
             <span class="ds-brand-card__sw" style="background: var(--color-agmri-500)"></span>
             <span class="ds-brand-card__sw" style="background: var(--color-agmri-800)"></span>
@@ -914,8 +924,8 @@
       </article>
       <article class="ds-brand-card theme-seedtrax" role="listitem">
         <h4 class="ds-brand-card__name">SeedTrax</h4>
-        <div class="ds-brand-card__logo ds-brand-card__logo--on-dark">
-          <img src="assets/brands/seedtrax-logo.png" alt="SeedTrax" width="160" height="32" />
+        <div class="ds-brand-card__logo">
+          <img src="assets/brands/seedtrax-logo.png" alt="SeedTrax" width="120" height="32" />
         </div>
         <div class="ds-brand-card__ramp" aria-label="Key SeedTrax color stops">
           <span class="ds-brand-card__ramp-label">Key ramp</span>
@@ -999,7 +1009,7 @@
     </div>
     <div class="color-ramp">
       <div class="color-ramp__title">Brand blue (100–900)</div>
-      <p class="type-footnote" style="color: var(--color-text-muted); margin: 0.25rem 0 0.5rem 0;"><code>--color-brand-*</code> / <code>--color-brand</code> — <strong>AgMRI app primary</strong> (<code>--color-agmri-app-primary-*</code>): <strong>100–500</strong> are correct; <strong>600–900</strong> extend darker from <strong>500 = #3c84c7</strong> in the same hue family. Live: <code>--app-primary-color: #3c84c7</code>, <code>--app-primary-color-100: #c5daee</code>, <code>--app-primary-color-400: #3677b3</code>. Product UI: <code>font-family: Figtree, sans-serif</code>. PWA / nav green is a separate ramp (below). Switch per brand theme.</p>
+      <p class="type-footnote" style="color: var(--color-text-muted); margin: 0.25rem 0 0.5rem 0;"><code>--color-brand-*</code> / <code>--color-brand</code> — <strong>AgMRI app primary</strong> (<code>--color-agmri-app-primary-*</code>): <strong>100–500</strong> are correct; <strong>600–900</strong> extend darker from <strong>500 = #3c84c7</strong> in the same hue family. Live: <code>--app-primary-color: #3c84c7</code>, <code>--app-primary-color-100: #c5daee</code>, <code>--app-primary-color-400: #3677b3</code>. Product UI: <code>font-family: Figtree, sans-serif</code>. Legacy chrome green (<code>--color-agmri-*</code>) is a separate ramp (below) — not for new work. Switch per brand theme.</p>
       <div class="color-ramp__swatches">
         <div class="color-ramp__swatch-item"><span class="color-ramp__swatch" style="background: var(--color-brand-100);"></span><span class="color-ramp__swatch-meta">100<br>#c5daee</span></div>
         <div class="color-ramp__swatch-item"><span class="color-ramp__swatch" style="background: var(--color-brand-200);"></span><span class="color-ramp__swatch-meta">200<br>#b0d4ed</span></div>
@@ -1013,8 +1023,8 @@
       </div>
     </div>
     <div class="color-ramp">
-      <div class="color-ramp__title">AgMRI (green, PWA / nav)</div>
-      <p class="type-footnote" style="color: var(--color-text-muted); margin: 0.25rem 0 0.5rem 0;">PWA / nav / tile: <code>#00a300</code> at 500 — use <code>--color-agmri-*</code> for green chrome. <strong>Primary</strong> is <code>#3c84c7</code> (<code>--color-brand-agmri</code>, <code>--color-agmri-app-primary-500</code>); <code>--color-brand-*</code> in <code>.theme-agmri</code> stays the app primary blue, not the green.</p>
+      <div class="color-ramp__title">AgMRI legacy chrome green (<code>--color-agmri-*</code>)</div>
+      <p class="type-footnote" style="color: var(--color-text-muted); margin: 0.25rem 0 0.5rem 0;"><strong>Deprecated for new UI.</strong> This <code>#00a300</code> ramp is the <strong>old</strong> AgMRI green (PWA / nav / tile). Use it only for <strong>Settings</strong> (not yet updated) and other <strong>legacy</strong> sections of the app — <strong>do not</strong> introduce it elsewhere. Product <strong>primary</strong> is app blue <code>#3c84c7</code> (<code>--color-brand-agmri</code>, <code>--color-agmri-app-primary-500</code>); <code>--color-brand-*</code> under <code>.theme-agmri</code> remains that blue, not this green. <code>.theme-agmri</code> / <code>.nav--agmri</code> still wire nav tokens to <code>--color-agmri-*</code> for demo and parity with existing shells until chrome is refreshed.</p>
       <div class="color-ramp__swatches">
         <div class="color-ramp__swatch-item"><span class="color-ramp__swatch" style="background: var(--color-agmri-100);"></span><span class="color-ramp__swatch-meta">100<br>#e6f7e6</span></div>
         <div class="color-ramp__swatch-item"><span class="color-ramp__swatch" style="background: var(--color-agmri-200);"></span><span class="color-ramp__swatch-meta">200<br>#c5eec5</span></div>
@@ -1192,7 +1202,7 @@
   <div class="page-content page-content--components">
   <section id="components" class="demo-section" style="margin-top: 2.5rem;">
     <h2 class="type-title2" style="margin-bottom: 0.5rem;">Components</h2>
-    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Header, Buttons, Inputs, Checkbox / Radio / Switch, Loading / progress indicators, Data table (web), Menus, Nav, Tabs, Pills, Alerts, Modals, Field cards, AI assistant widget (see layouts demo), Legends and Charts.</p>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Header, Buttons, Inputs, Checkbox / Radio / Switch, Loading / progress indicators, Data table (web), Menus, Nav, Tabs, Chicklets, Pills, Alerts, Modals, Field cards, AI assistant widget (see layouts demo), Legends and Charts.</p>
   </section>
 
   <details class="demo-details demo-section">
@@ -2019,6 +2029,92 @@
   </details>
 
   <details class="demo-details demo-section">
+    <summary class="demo-details__summary"><h2 class="type-title3">Chicklets</h2></summary>
+    <div class="demo-details__content">
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.75rem;">Compact <strong>icon + label</strong> tiles for dated flights / activities. Stylesheet <code>components/chicklet.css</code> (BEM: <code>.chicklet</code>, <code>.chicklet__inner</code>, <code>.chicklet__label</code>). Uses <code>--color-field-map-flight-strip-chicklet-*</code> and flight tint tokens. <strong>Icons:</strong> <code>assets/icons/timeline/</code> — 24×24 filled SVGs (satellite, scout, spray, planting, flight, drone, plant, field, pin). Retailer map parity still uses <code>button.flight-element</code> in <code>field-map-flight-strip.css</code>; use chicklets for new static UI. <a href="docs/chicklet.md" target="_blank" rel="noopener">docs/chicklet.md</a> · <a href="docs/field-view-flight-chicklets.md" target="_blank" rel="noopener">Field map flight chicklets</a>.</p>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.5rem;">Default + flight-type modifiers (strip on neutral surface)</p>
+    <div class="demo-row" style="flex-wrap: wrap; align-items: flex-start; gap: 16px;">
+      <div class="chicklet-row" style="max-width: 100%; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-muted);">
+        <button type="button" class="chicklet chicklet--tillage" aria-label="Planting Apr 12">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/planting.svg" alt="" width="24" height="24" /></span></span>
+            <span class="chicklet__label">Apr 12</span>
+          </span>
+        </button>
+        <button type="button" class="chicklet chicklet--aerial" aria-label="Flight Apr 18">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/flight.svg" alt="" width="24" height="24" /></span></span>
+            <span class="chicklet__label">Apr 18</span>
+          </span>
+        </button>
+        <button type="button" class="chicklet chicklet--planter" aria-label="Plant May 2">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/plant.svg" alt="" width="24" height="24" /></span></span>
+            <span class="chicklet__label">May 2</span>
+          </span>
+        </button>
+        <button type="button" class="chicklet chicklet--application" aria-label="Spray May 9">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/spray.svg" alt="" width="24" height="24" /></span></span>
+            <span class="chicklet__label">May 9</span>
+          </span>
+        </button>
+        <button type="button" class="chicklet chicklet--scouting" aria-pressed="true" aria-label="Scout May 20, selected">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row">
+              <span class="chicklet__icon-wrap">
+                <span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/scout.svg" alt="" width="24" height="24" /></span>
+                <span class="chicklet__badge">3</span>
+              </span>
+            </span>
+            <span class="chicklet__label">May 20</span>
+          </span>
+        </button>
+        <button type="button" class="chicklet chicklet--drone" aria-label="Drone Oct 4">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/drone.svg" alt="" width="24" height="24" /></span></span>
+            <span class="chicklet__label">Oct 4</span>
+          </span>
+        </button>
+        <button type="button" class="chicklet chicklet--neutral" aria-label="Field Oct 8">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/field.svg" alt="" width="24" height="24" /></span></span>
+            <span class="chicklet__label">Oct 8</span>
+          </span>
+        </button>
+        <button type="button" class="chicklet chicklet--satellite" aria-label="Satellite Oct 12">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/satellite.svg" alt="" width="24" height="24" /></span></span>
+            <span class="chicklet__label">Oct 12</span>
+          </span>
+        </button>
+        <button type="button" class="chicklet chicklet--pin" aria-label="Pin Oct 15">
+          <span class="chicklet__inner">
+            <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/pin.svg" alt="" width="24" height="24" /></span></span>
+            <span class="chicklet__label">Oct 15</span>
+          </span>
+        </button>
+      </div>
+    </div>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin: 1rem 0 0.5rem 0;"><code>chicklet--compact</code> (narrower field-card style)</p>
+    <div class="demo-row chicklet-row" style="max-width: 280px; border: 1px dashed var(--color-border); border-radius: var(--radius-md); padding: 8px;">
+      <button type="button" class="chicklet chicklet--compact chicklet--aerial" aria-label="Flight Jul 13">
+        <span class="chicklet__inner">
+          <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/flight.svg" alt="" width="24" height="24" /></span></span>
+          <span class="chicklet__label">Jul 13</span>
+        </span>
+      </button>
+      <button type="button" class="chicklet chicklet--compact chicklet--scouting" aria-pressed="true" aria-label="Scout Jul 20, selected">
+        <span class="chicklet__inner">
+          <span class="chicklet__icon-row"><span class="chicklet__icon" aria-hidden="true"><img src="assets/icons/timeline/scout.svg" alt="" width="24" height="24" /></span></span>
+          <span class="chicklet__label">Jul 20</span>
+        </span>
+      </button>
+    </div>
+    </div>
+  </details>
+
+  <details class="demo-details demo-section">
     <summary class="demo-details__summary"><h2 class="type-title3">Pills / Filter pills</h2></summary>
     <div class="demo-details__content">
     <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.75rem;">30px height, primitive 100 → 500. States: normal, hover, active, disabled. Unselected (normal) state uses WCAG AA text contrast (≥4.5:1 on ramp-100 bg). Optional leading icon. Use <code>.filter-pill__divider</code> between text segments.</p>
@@ -2730,7 +2826,7 @@
   <details class="demo-details demo-section">
     <summary class="demo-details__summary"><h2 class="type-title3">Dashboard widget tabs</h2></summary>
     <div class="demo-details__content">
-    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.75rem;">Home dashboard shell in three brands: <strong>AgMRI</strong> (<code>.theme-agmri</code> + <code>.nav--agmri</code> + <code>.header--agmri</code>: green nav / chrome, primary CTA <code>#3c84c7</code> via <code>--color-brand</code>), <strong>MyFS</strong> (red nav + header), <strong>Pivot Bio</strong> (<code>.theme-pb</code> on the card + <code>.header--pb</code>). Side nav uses SVG assets from <code>assets/icons/nav/</code> (and timeline assets for widget tiles). Active widget tab: full opacity + shadow; edit controls unchanged.</p>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 0.75rem;">Home dashboard shell in four brands: <strong>AgMRI</strong> (<code>.theme-agmri</code> + <code>.nav--agmri</code> + <code>.header--agmri</code>: this demo scopes the left nav to <strong>app primary blue</strong> <code>#3c84c7</code> — not legacy PWA green; primary CTA matches via <code>--color-brand</code>), <strong>MyFS</strong> (red nav + header), <strong>Pivot Bio</strong> (<code>.theme-pb</code> on the card + <code>.header--pb</code>), <strong>SeedTrax</strong> (<code>.theme-seedtrax</code> on the card + <code>.header--seedtrax</code>, brand green via <code>--color-brand</code>). Side nav uses SVG assets from <code>assets/icons/nav/</code> (and timeline assets for widget tiles). Active widget tab: full opacity + shadow; edit controls unchanged.</p>
 
     <div class="dashboard-brand-demos">
 
@@ -2835,6 +2931,45 @@
           <div class="dashboard-brand-demo__main">
             <header class="header header--pb" role="banner">
               <div class="header__left"><a href="#" class="header__logo" aria-label="Pivot Bio home"><img src="assets/icons/pb-logo-header.svg" alt="Pivot Bio" /></a></div>
+              <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
+              <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
+            </header>
+            <div class="dashboard-widget-tabs-bar">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><img src="assets/icons/timeline/plant.svg" alt="" style="width:26px;height:26px;" /></div><span style="font-size:10px;font-weight:600;color:var(--color-text);">Crop growth</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/notifications-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Alerts</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/satellite.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Weather</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/field.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Fields</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/scout-hollow.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Scouting</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/drone.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Droning</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/nav/region-report.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Reports</span></div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;opacity:0.55;"><div style="width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;"><img src="assets/icons/timeline/planting.svg" alt="" style="width:24px;height:24px;" /></div><span style="font-size:10px;font-weight:500;color:var(--color-text-muted);">Spore cam</span></div>
+              <div style="margin-left:auto;display:flex;gap:8px;flex-shrink:0;">
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Reset layout"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Cancel"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <button type="button" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--color-border);background:var(--color-surface);display:flex;align-items:center;justify-content:center;cursor:pointer;" aria-label="Confirm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SeedTrax -->
+      <div class="dashboard-brand-demo theme-seedtrax">
+        <div class="dashboard-brand-demo__label">SeedTrax — Home</div>
+        <div class="dashboard-brand-demo__shell">
+          <nav class="nav" aria-label="SeedTrax dashboard nav">
+            <a href="#" class="nav__item" aria-current="page"><span class="nav__icon"><img src="assets/icons/nav/home-filled.svg" alt="" /></span><span class="nav__label">Home</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/growers-hollow.svg" alt="" /></span><span class="nav__label">Growers</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/map-hollow.svg" alt="" /></span><span class="nav__label">Fields</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/scout-hollow.svg" alt="" /></span><span class="nav__label">Scout</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/timeline/satellite.svg" alt="" /></span><span class="nav__label">Weather</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon"><img src="assets/icons/nav/notifications-hollow.svg" alt="" /></span><span class="nav__label">Alerts</span></a>
+            <div class="nav__spacer"></div>
+            <a href="#" class="nav__item"><span class="nav__icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span><span class="nav__label">Settings</span></a>
+          </nav>
+          <div class="dashboard-brand-demo__main">
+            <header class="header header--seedtrax" role="banner">
+              <div class="header__left"><a href="#" class="header__logo" aria-label="SeedTrax home"><img src="assets/brands/seedtrax-logo.png" alt="SeedTrax" /></a></div>
               <div class="header__center"><div class="header__search-wrap"><span class="header__search-icon"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10.5417 19C14.7759 19 18.2083 15.4183 18.2083 11C18.2083 6.58172 14.7759 3 10.5417 3C6.30748 3 2.875 6.58172 2.875 11C2.875 15.4183 6.30748 19 10.5417 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20.125 21L15.9562 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><input type="search" class="header__search" placeholder="Search fields, growers…" /></div></div>
               <div class="header__right"><span class="header__user-name">Alex Grower</span><span class="header__avatar" aria-label="User avatar">AG</span></div>
             </header>
@@ -3035,7 +3170,7 @@
   <details class="demo-details demo-section">
     <summary class="demo-details__summary"><h2 class="type-title3">AI assistant widget</h2></summary>
     <div class="demo-details__content">
-    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Floating entry point for LLM chat + speech-to-text. Two launcher buttons: "Assistant" opens the panel text-first; mic icon opens in listening mode. Panel has messages list, composer with text input + mic + send. <a href="pages/demos/ai-assistant-widget-demo.html" target="_blank" rel="noopener">Full interactive demo →</a></p>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Floating entry point for LLM chat + speech-to-text. Two launcher buttons: "Assistant" opens the panel text-first; mic icon opens in listening mode. Panel has messages list, composer with text input + mic + send. Styles: <code>components/ai-assistant-widget.css</code> (live examples on this page).</p>
 
     <h3 class="type-callout" style="margin: 0 0 0.5rem 0; font-weight: 600;">Collapsed — launcher strip</h3>
     <div style="border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 2rem; display: flex; justify-content: flex-end; background: var(--color-neutral-50); margin-bottom: 1.5rem;">
@@ -3796,7 +3931,7 @@
   <div class="page-content page-content--icons">
   <section id="icons" class="demo-section" style="margin-top: 2.5rem;">
     <h2 class="type-title2" style="margin-bottom: 0.5rem;">SVGs and Icons</h2>
-    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1.5rem;">Scouting and disease badges, <strong>crop type SVGs</strong> (tables, chips, filters), <strong>empty-state</strong> illustrations (retailer dashboards and Emergence analytics), navigation icon sets, and other inline SVG assets used across the design system.</p>
+    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1.5rem;">Scouting and disease badges, <strong>crop type SVGs</strong> (tables, chips, filters), and <strong>empty-state</strong> illustrations (retailer dashboards and Emergence analytics).</p>
 
     <h3 class="type-title3" style="margin: 0 0 0.75rem 0;">Scouting badges (ag-mri)</h3>
     <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Base URL: <code>https://ag-mri.intelinair.com/assets/img/retailer/scouting/badges/</code></p>
@@ -3968,71 +4103,6 @@
       <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);"><span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 21.3333 19.6923" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path id="Shape" fill-rule="evenodd" clip-rule="evenodd" d="M6.16769 14.569C6.03742 14.5874 5.90622 14.5972 5.77409 14.5972V14.5972C4.21458 14.4142 2.80489 13.5384 1.9051 12.1925C0.0338741 9.88619 -0.770073 3.72814 0.939245 0.34647C1.02671 0.172277 1.18583 0.0496612 1.37006 0.0117086C1.5543 -0.0252709 1.74412 0.0263057 1.88742 0.152814C3.13242 1.14737 4.56631 1.85095 6.09325 2.2188C7.73371 2.54967 9.24111 3.39144 10.4154 4.63511C11.518 5.72601 12.0484 7.30639 11.8409 8.87899C11.6371 9.70519 11.1691 10.4331 10.515 10.9421C10.2842 11.1377 10.2181 11.4763 10.3577 11.7507C10.8788 12.7745 11.3347 13.8342 11.7218 14.9212C11.7488 14.9971 11.8018 15.0604 11.8707 15.0974C12.0224 15.1791 12.2085 15.1168 12.2866 14.9582C12.4169 14.6984 12.5555 14.4327 12.7044 14.1641C12.8226 13.95 12.8151 13.6844 12.6839 13.479C12.3834 13.0256 12.2206 12.4884 12.2168 11.9376C12.2931 10.7523 12.9315 9.68475 13.9168 9.09405C14.7785 8.54034 15.7267 8.14816 16.7186 7.93699C17.8538 7.7083 18.9294 7.22562 19.8711 6.52301C20.0209 6.40623 20.2135 6.36536 20.3959 6.41207C20.5773 6.46073 20.729 6.5921 20.8072 6.77019C21.8074 9.70324 21.3645 12.9633 19.6236 15.4896C18.8745 16.4033 17.8054 16.9619 16.6572 17.0388C16.4906 17.0388 16.325 17.0232 16.1612 16.9911C15.9751 16.9532 15.7937 16.8938 15.6206 16.815C15.5992 16.8052 15.5778 16.7936 15.5573 16.7809C15.2614 16.6019 15.16 16.2048 15.3321 15.8944C16.0272 14.46 17.0852 13.2533 18.3916 12.4057C18.6987 12.2451 18.8233 11.8558 18.6698 11.5347C18.5163 11.2145 18.1441 11.0841 17.837 11.2447C15.3731 12.5312 13.4618 16.3138 12.6653 19.0036C12.5453 19.4123 12.1843 19.6916 11.7758 19.6916C11.7525 19.6926 11.7302 19.6926 11.7069 19.6916C11.2742 19.6585 10.9207 19.3169 10.8546 18.8683C10.2982 15.2521 7.72069 10.254 5.31071 7.06116C5.09762 6.77992 4.70682 6.73224 4.4379 6.95509C4.16899 7.17696 4.1234 7.58568 4.33648 7.86692C5.59916 9.53391 6.69621 11.3313 7.61089 13.2309C7.74953 13.5199 7.663 13.8722 7.40804 14.0561C7.03863 14.3266 6.61433 14.5018 6.16769 14.569Z" fill="currentColor"/> </svg></span><p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Plant</p></div>
       <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);"><span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 21 21" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"> <g id="Group 4946"> <path id="Rectangle 3659" d="M0 2C0 0.89543 0.895431 0 2 0H7.875V6.5625H0V2Z" fill="currentColor"/> <path id="Rectangle 3662" d="M0 7.875H3.9375V21H2C0.895431 21 0 20.1046 0 19V7.875Z" fill="currentColor"/> <rect id="Rectangle 3660" x="9.1875" width="7.875" height="6.5625" fill="currentColor"/> <rect id="Rectangle 3663" x="5.25" y="7.875" width="6.5625" height="13.125" fill="currentColor"/> <path id="Rectangle 3661" d="M18.375 0H19C20.1046 0 21 0.895431 21 2V13.125H18.375V0Z" fill="currentColor"/> <rect id="Rectangle 3664" x="13.125" y="7.875" width="3.9375" height="5.25" fill="currentColor"/> <path id="Rectangle 3665" d="M13.125 14.4375H21V19C21 20.1046 20.1046 21 19 21H13.125V14.4375Z" fill="currentColor"/> </g> </svg></span><p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Field</p></div>
       <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);"><span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 16.129" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"> <g id="Group 4972"> <path id="Subtract" d="M12.5501 1.11914C12.8075 1.11914 13.0627 1.13991 13.3157 1.18164C13.5684 1.22378 13.8149 1.29154 14.054 1.38477C13.9344 1.47799 13.8375 1.59889 13.7639 1.74805C13.6904 1.89714 13.6536 2.06027 13.6536 2.2373C13.6536 2.54487 13.7616 2.80848 13.9778 3.02734C14.1937 3.24657 14.4537 3.3564 14.7571 3.35645H15.3089V3.91602C15.3089 4.22345 15.4173 4.48629 15.6331 4.70508C15.8493 4.9243 16.109 5.03412 16.4124 5.03418C16.5043 5.03418 16.5923 5.02548 16.6751 5.00684C16.7577 4.98819 16.836 4.9601 16.9094 4.92285C16.9278 5.05326 16.9413 5.18404 16.9505 5.31445C16.9596 5.44486 16.9641 5.57564 16.9641 5.70605C16.964 6.60095 16.633 7.56352 15.971 8.59375C15.3089 9.62366 14.3066 10.7398 12.9641 11.9424C12.909 11.989 12.8443 12.0267 12.7708 12.0547C12.6972 12.0826 12.6236 12.0967 12.5501 12.0967C12.4765 12.0967 12.4029 12.0826 12.3294 12.0547C12.2558 12.0267 12.1912 11.989 12.136 11.9424C10.7936 10.7398 9.79124 9.62366 9.12917 8.59375C8.46714 7.56352 8.1361 6.60095 8.13601 5.70605C8.13601 4.30769 8.57954 3.19301 9.46706 2.36328C10.3543 1.53357 11.3822 1.11917 12.5501 1.11914ZM12.5501 4.47461C12.2467 4.47464 11.9867 4.58484 11.7708 4.80371C11.5547 5.02291 11.4466 5.28626 11.4466 5.59375C11.4466 5.90137 11.5545 6.1649 11.7708 6.38379C11.9867 6.60303 12.2467 6.71286 12.5501 6.71289C12.8535 6.71289 13.114 6.60307 13.3303 6.38379C13.5462 6.16492 13.6536 5.90133 13.6536 5.59375C13.6536 5.2863 13.546 5.0229 13.3303 4.80371C13.114 4.58481 12.8535 4.47461 12.5501 4.47461ZM16.4124 0C16.5687 0 16.7004 0.0531283 16.8059 0.160156C16.9119 0.267552 16.9641 0.401093 16.9641 0.55957V1.67773H18.0676C18.224 1.67773 18.3556 1.73184 18.4612 1.83887C18.5669 1.94617 18.6194 2.07905 18.6194 2.2373C18.6194 2.39568 18.567 2.52875 18.4612 2.63574C18.3556 2.74314 18.224 2.79688 18.0676 2.79688H16.9641V3.91602C16.9641 4.07423 16.9116 4.20718 16.8059 4.31445C16.7004 4.42148 16.5687 4.47461 16.4124 4.47461C16.2561 4.47455 16.1253 4.42143 16.0198 4.31445C15.9139 4.20713 15.8607 4.07435 15.8606 3.91602V2.79688H14.7571C14.6009 2.79683 14.47 2.74309 14.3645 2.63574C14.2586 2.52871 14.2053 2.3958 14.2053 2.2373C14.2054 2.07893 14.2587 1.94621 14.3645 1.83887C14.4701 1.73188 14.6009 1.67778 14.7571 1.67773H15.8606V0.55957C15.8606 0.401079 15.9139 0.267557 16.0198 0.160156C16.1253 0.0533279 16.2563 5.54784e-05 16.4124 0Z" fill="currentColor"/> <path id="Subtract_2" fill-rule="evenodd" clip-rule="evenodd" d="M12.2484 13.7368C12.3446 13.7723 12.4408 13.79 12.537 13.79C12.6332 13.79 12.7294 13.7723 12.8256 13.7368C12.9218 13.7014 13.006 13.6542 13.0782 13.5951C13.374 13.3384 13.6572 13.0849 13.9278 12.8344L14.5867 16.129H10.9577L11.1235 12.8133C11.4009 13.0707 11.6917 13.3313 11.9958 13.5951C12.068 13.6542 12.1522 13.7014 12.2484 13.7368ZM16.6786 9.829C16.7957 9.66876 16.9064 9.51012 17.0106 9.35305C17.2402 9.00705 17.4393 8.66707 17.608 8.33312C17.7084 8.39967 17.8018 8.47779 17.8861 8.56658L23.7766 14.7671C24.2646 15.2808 23.9005 16.129 23.192 16.129H19.8286L16.6786 9.829ZM14.7701 12.0239C15.2708 11.5216 15.7179 11.0325 16.1113 10.5566L18.6189 16.129H15.7964L14.7701 12.0239ZM7.34523 8.08381C7.53708 8.49747 7.77647 8.92056 8.06339 9.35305C8.55752 10.0976 9.19657 10.8778 9.98052 11.6936H3.29655L6.45313 8.53698C6.69643 8.29368 7.00945 8.13614 7.34523 8.08381ZM2.49011 12.5L0.237817 14.7523C-0.270211 15.2603 0.0895953 16.129 0.808056 16.129H3.69977L5.71587 12.5H2.49011ZM5.31265 16.129L6.92553 12.5H10.1513L9.74807 16.129H5.31265Z" fill="currentColor"/> </g> </svg></span><p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Pin</p></div>
-    </div>
-
-    <h3 class="type-title3" style="margin: 0 0 0.75rem 0;">Inline SVG icons (category tabs, nav, UI)</h3>
-    <p class="type-footnote" style="color: var(--color-text-muted); margin-bottom: 1rem;">Stroke-based 24×24 icons used in tabs, navigation, buttons, and cards. Copy the SVG markup from the design system or dashboard sources.</p>
-    <div class="icons-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 1rem;">
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">All (grid)</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 22V12M12 12c-2 0-3-2-3-4s1-4 3-4 3 2 3 4-1 4-3 4z"/><path d="M8 14l-2 4h12l-2-4"/><path d="M7 10c-1 1-2 3-2 4"/><path d="M17 10c1 1 2 3 2 4"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Weeds</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Disease</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M10 2v6h4V2M9 22h6v-6H9z"/><path d="M14 8V2h-4v6M4 12v10h4V12M16 12v10h4V12"/><path d="M6 12h12"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Fertility</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Irrigation</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M4 22L4 8l8-6 8 6v14"/><path d="M4 12h16"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Other (flag)</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 12c-2 2-4 2-4 5s2 5 4 5 4-2 4-5-2-3-4-5z"/><path d="M12 12c2 2 4 2 4 5s-2 5-4 5-4-2-4-5 2-3 4-5z"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Pests</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Stand cnt.</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="9" cy="10" r="2.5"/><circle cx="15" cy="10" r="2.5"/><circle cx="12" cy="14" r="2.5"/><path d="M9 10h6M12 7v6M9 12l6-2"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Vines</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Home</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Alerts</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Scout</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Weather</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Search</p>
-      </div>
-      <div class="icons-grid__item" style="text-align: center; padding: 0.75rem; background: var(--color-neutral-50); border-radius: var(--radius-xl);">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; color: var(--color-text);"><svg viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
-        <p class="type-footnote" style="margin: 0.5rem 0 0 0; font-weight: 600;">Close</p>
-      </div>
     </div>
   </section>
   </div>

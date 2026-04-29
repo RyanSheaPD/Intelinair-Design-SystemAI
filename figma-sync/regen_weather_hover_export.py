@@ -2,7 +2,7 @@
 """Validate data/weather-hover-states.json.
 
 Hover export UI is built client-side in pages/weather/weather-hover-states.html (table + TOC + iframes).
-Edit the JSON manifest and reload that page; legacy figma-exports/weather-hover-states-export.html redirects there.
+Edit the JSON manifest and reload that page.
 """
 import json
 import sys

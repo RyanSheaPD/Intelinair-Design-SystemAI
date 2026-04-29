@@ -1,6 +1,2 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-
-# Figma / HTML→Design capture pages: on merge, keep the checked-out branch’s
-# version so export churn does not block integrating product pages under pages/.
-figma-exports/** merge=ours

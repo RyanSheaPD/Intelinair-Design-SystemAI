@@ -30,7 +30,7 @@
 2. `components/data-table.css`  
 3. `components/scout-farm-table.css`  
 4. Other page chrome (`nav.css`, `header.css`, …)  
-5. If the page uses Angular Material markup from the workspace bundle: `pages/demos/agmri-analysis-workspace/styles.cef64a1bc5706731.css` **before** scouting pills (below).
+5. If the page uses Angular Material markup from the workspace bundle: `components/agmri-analysis-workspace-bundle/styles.cef64a1bc5706731.css` **before** scouting pills (below).
 
 ---
 

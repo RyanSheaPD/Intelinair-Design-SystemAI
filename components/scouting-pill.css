@@ -1,6 +1,6 @@
 /**
  * Scouting + combined status pills (live Angular DOM shape).
- * IMPORTANT: Link this file AFTER `pages/demos/agmri-analysis-workspace/styles.cef64a1bc5706731.css`
+ * IMPORTANT: Link this file AFTER `components/agmri-analysis-workspace-bundle/styles.cef64a1bc5706731.css`
  * so these rules win over Bootstrap / MDC in static mocks.
  *
  * Full reference (tables + pills + crop icons): docs/scout-list-table-pills-crop-icons.md

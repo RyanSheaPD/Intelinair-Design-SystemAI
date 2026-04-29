@@ -1,0 +1,240 @@
+/**
+ * Chicklet — compact selectable tile (icon + short label, optional badge).
+ *
+ * Use for retailer field-map flights, timelines, and any horizontal scroller of dated activities.
+ * Defaults align with `field-map-flight-strip` tokens (`--color-field-map-flight-strip-chicklet-*`,
+ * `--color-field-map-flight-*`). Retailer Angular parity still uses `button.flight-element` inside
+ * `field-map-flight-strip.css`; this BEM block is for **new** static pages and prototypes.
+ *
+ * @see components/field-map-flight-strip.css · docs/chicklet.md · docs/field-view-flight-chicklets.md
+ */
+
+.chicklet {
+  --chicklet-bg: var(--color-field-map-flight-strip-chicklet-bg, var(--color-neutral-100));
+  --chicklet-fg: var(--color-field-map-flight-strip-chicklet-fg, var(--color-neutral-800));
+  --chicklet-border: var(--color-field-map-flight-strip-chicklet-border, var(--color-border));
+  --chicklet-accent: var(--chicklet-fg);
+  --chicklet-hover-shadow: var(
+    --color-field-map-flight-strip-chicklet-hover-shadow,
+    0 2px 8px rgb(0 0 0 / 0.12)
+  );
+  --chicklet-selected-border: var(
+    --color-field-map-flight-strip-chicklet-selected-border,
+    var(--color-primitive-500)
+  );
+  --chicklet-selected-bg: var(
+    --color-field-map-flight-strip-chicklet-selected-bg,
+    var(--color-primitive-100)
+  );
+  --chicklet-selected-ring: var(
+    --color-field-map-flight-strip-chicklet-selected-ring,
+    color-mix(in srgb, var(--color-primitive-500) 35%, transparent)
+  );
+
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  border-radius: var(--radius-md, 8px);
+  box-sizing: border-box;
+}
+
+.chicklet:focus {
+  outline: none;
+}
+
+.chicklet:focus-visible .chicklet__inner {
+  box-shadow: var(--chicklet-hover-shadow), 0 0 0 2px var(--color-primitive-300, #93c5fd);
+}
+
+.chicklet__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  box-sizing: border-box;
+  min-width: 44px;
+  height: 44px;
+  padding: 2px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--chicklet-border);
+  background: var(--chicklet-bg);
+  color: var(--chicklet-fg);
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.chicklet:hover:not([aria-pressed="true"]):not(.chicklet--selected) .chicklet__inner {
+  box-shadow: var(--chicklet-hover-shadow);
+}
+
+.chicklet[aria-pressed="true"] .chicklet__inner,
+.chicklet.chicklet--selected .chicklet__inner {
+  border-color: var(--chicklet-selected-border);
+  box-shadow: 0 0 0 2px var(--chicklet-selected-ring);
+  background: var(--chicklet-selected-bg);
+}
+
+.chicklet__icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  line-height: 0;
+}
+
+.chicklet__icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chicklet__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--chicklet-accent);
+}
+
+.chicklet__icon .material-symbols-outlined,
+.chicklet__glyph.material-symbols-outlined {
+  font-size: 18px !important;
+  width: 18px;
+  height: 18px;
+  line-height: 18px !important;
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+  color: inherit;
+}
+
+.chicklet__icon svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+  color: inherit;
+}
+
+/* Timeline strip assets: assets/icons/timeline/*.svg (filled, typically black paths) */
+.chicklet__icon img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.chicklet__badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 18px;
+  padding: 0 4px;
+  height: 14px;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 14px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--color-neutral-800);
+  color: var(--color-neutral-0);
+  letter-spacing: -0.02em;
+}
+
+.chicklet__label {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+  margin-top: 1px;
+  max-width: 100%;
+  color: var(--chicklet-accent);
+  word-break: break-word;
+}
+
+/* Flight-type accents (match --color-field-map-flight-* tokens) */
+.chicklet--tillage {
+  --chicklet-accent: var(--color-field-map-flight-tillage, #875f3c);
+}
+.chicklet--aerial {
+  --chicklet-accent: var(--color-field-map-flight-aerial, #9e99e7);
+}
+.chicklet--planter {
+  --chicklet-accent: var(--color-field-map-flight-planter, #8dc843);
+}
+.chicklet--application {
+  --chicklet-accent: var(--color-field-map-flight-application, #78b3c0);
+}
+.chicklet--scouting {
+  --chicklet-accent: var(--color-field-map-flight-scouting, var(--color-cyan-600));
+}
+.chicklet--harvest {
+  --chicklet-accent: var(--color-field-map-flight-harvest, #ffba68);
+}
+
+/* Drone timeline tile (same accent slot as harvest imagery in app) */
+.chicklet--drone {
+  --chicklet-accent: var(--color-field-map-flight-harvest, #ffba68);
+}
+
+/* Timeline strip extras (same assets folder; tints are DS defaults) */
+.chicklet--neutral {
+  --chicklet-accent: var(--color-neutral-700, #404040);
+}
+.chicklet--satellite {
+  --chicklet-accent: #dc2626;
+}
+.chicklet--pin {
+  --chicklet-accent: var(--color-neutral-800, #262626);
+}
+
+/* Tighter tile (e.g. field cards) */
+.chicklet.chicklet--compact .chicklet__inner {
+  min-width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  padding: 1px 3px;
+}
+
+.chicklet.chicklet--compact .chicklet__icon .material-symbols-outlined,
+.chicklet.chicklet--compact .chicklet__glyph.material-symbols-outlined {
+  font-size: 16px !important;
+  width: 16px;
+  height: 16px;
+  line-height: 16px !important;
+}
+
+.chicklet.chicklet--compact .chicklet__icon img {
+  width: 22px;
+  height: 22px;
+}
+
+.chicklet.chicklet--compact .chicklet__label {
+  font-size: 9px;
+}
+
+/* Horizontal strip helper */
+.chicklet-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 2px 6px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.chicklet-row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.chicklet-row::-webkit-scrollbar-thumb {
+  background: var(--color-field-map-flight-scrollbar-thumb, rgb(0 0 0 / 0.15));
+  border-radius: 4px;
+}

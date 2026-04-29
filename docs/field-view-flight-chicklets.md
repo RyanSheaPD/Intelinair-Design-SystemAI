@@ -61,3 +61,4 @@ Sibling row: `div.d-flex.align-items-start` → `app-retailer-scouting` → `div
 | `flights-list-container` | Same class; styled in `field-map-flight-strip.css` on `:is(.field-map-flight-strip, .field-view__timeline)`. |
 | `flight-element` + provider classes | Same; `selected` = active tile. |
 | `activity-chicklet` / `activity-timeline__track` | **Not** the same DOM as live flight list; those classes are for simpler timeline mocks in `activity-chicklet.css`. Field view uses **flight-element** to match retailer map. |
+| `.chicklet` (BEM) | **New** pages and DS demos: `components/chicklet.css` — same visual tokens as flight tiles; see [chicklet.md](./chicklet.md). |

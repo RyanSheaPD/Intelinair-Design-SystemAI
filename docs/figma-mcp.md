@@ -6,7 +6,7 @@ This project is set up to work with **Figma MCP** so you can get the design syst
 
 **Destination in Figma:** Push captures into this file under the **Test layouts** page (create or use that page so all design-system captures live in one place).
 
-**Where to put new export HTML in this repo:** Always under **`figma-exports/`** at the repository root (e.g. `figma-exports/feature-name-export.html`). Do not add Figma-only capture pages under `pages/`. See `figma-exports/README.md` and the Cursor rule `.cursor/rules/figma-export-placement.mdc`.
+**Where to capture from:** Use **`index.html`** and **`pages/<area>/…`** (product and system pages). This repo does not maintain a separate `figma-exports/` dump folder; see `.cursor/rules/figma-export-placement.mdc` for placement guidance.
 
 ## Which plugin is needed to push designs in
 
@@ -73,7 +73,7 @@ After that, the design system (or the captured page) will appear in your Figma f
 
 - **`index.html`** includes the Figma capture script so the main design system demo is ready to be captured.
 - **`design-tokens/tokens.css`** and **`tokens.json`** align with the Figma Variable Design System so tokens stay in sync when you export from Figma and update the repo.
-- **`pages/demos/variable-design-system.html`** — mirrors the Figma **Variable Design System (test)** variables (see file link in page header); capture with MCP for parity checks against node `26:571` (or your current frame).
+- **Variable parity:** compare **`design-tokens/tokens.css`** / **`tokens.json`** to the Figma **Variable Design System (test)** file, or capture **`index.html`** / any `pages/<area>/` screen with MCP for layout checks against your target frame (e.g. node `26:571`).
 - **`pages/`** (e.g. YP1K Analysis, field card demos) can be captured the same way by opening their URLs (e.g. `http://localhost:3000/pages/analytics/yp1k-analysis-2024.html`) and using the MCP/capture flow.
 - **`pages/trials/myfs-mitrials.html`** — MyFS Mitrials (map + trials table). Serve the repo, then open `http://localhost:<port>/pages/trials/myfs-mitrials.html` and run the same MCP capture or **html.to.design** `import-url` so the frame lands on **Test layouts** in [Variable Design System (test)](https://www.figma.com/design/0njyFuWX2qzunGeGrKHyHi/Variable-Design-System--test-?m=dev).
 

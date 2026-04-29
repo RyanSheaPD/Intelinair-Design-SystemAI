@@ -37,9 +37,9 @@ Typically one level up to `pages/`, then into scout:
 
 - `../scout/fields-map-view.html`, `../scout/scout-list-view.html`, `../weather-map-view.html`, etc.
 
-## From `pages/demos/**` (nested)
+## From `pages/_partials/` (snippets)
 
-Count `../` to reach `pages/`, then append the remainder (e.g. `../../scout/fields-map-view.html` from `pages/demos/some-folder/page.html`).
+Snippet `href`s default to one level up into `pages/` (e.g. `../scout/fields-map-view.html`). If you paste the snippet elsewhere, adjust each `href` so it resolves from the **page file’s** directory.
 
 ## Relative URL rule
 

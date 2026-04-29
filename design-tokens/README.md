@@ -6,7 +6,7 @@ Design variables and tokens derived from the Figma **Variable Design System (tes
 
 - **tokens.css** — CSS custom properties (colors, spacing, radius, typography). Use in your app via `@import` or `<link>`.
 - **tokens.json** — Same tokens in JSON for build pipelines or JS (kept aligned with `tokens.css`; includes AgMRI / MyFS / PB ramps and `--space-*` step scale).
-- **Multi-brand:** apply `.theme-pb` for Pivot Bio (navy). Apply `.theme-agmri` for AgMRI green (`#00a300` ramp); pair with `.nav--agmri` and `.header--agmri` on markup that should pick up brand-colored chrome.
+- **Multi-brand:** apply `.theme-pb` for Pivot Bio (navy). Apply `.theme-agmri` for AgMRI: **primary** is app blue (`--color-agmri-app-primary-*` / `--color-brand-*`). The **`--color-agmri-*` green ramp (`#00a300`)** is **legacy chrome only** (Settings until refreshed, old product areas) — do not use for new UI; `.nav--agmri` / `.header--agmri` still reference it for existing shell demos.
 - **Step spacing:** `--space-1` … `--space-16` (4px base) plus aliases `--spacing-toolbar-x`, `--spacing-chrome-x`, etc., for Material / retailer shell parity when legacy `--spacing-m` (10px) is too tight.
 
 Tokens were extracted from the Figma API (file + node 32-818). To get **Figma Variables** (named collections) via API, your Figma token needs the `file_variables:read` scope when generating a new token in Figma settings.

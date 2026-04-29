@@ -147,7 +147,7 @@
   --nav-icon-active: var(--color-myfs-500);
 }
 
-/* AgMRI green brand variant — uses AgMRI color ramp */
+/* AgMRI legacy chrome (green #00a300 ramp) — matches old left nav; reserved for Settings / legacy surfaces only */
 .nav--agmri {
   --nav-background: var(--color-agmri-500);
   --nav-text-active: var(--color-agmri-500);

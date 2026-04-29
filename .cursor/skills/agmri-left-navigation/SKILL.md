@@ -3,7 +3,7 @@ name: agmri-left-navigation
 description: >-
   Applies the canonical AgMRI retailer left sidebar (aside.app-nav + nav.nav with
   SVG icons and labels) to full-page static HTML shells. Use when adding or editing
-  any non-overlay page under pages/ (scout, weather, fields, demos, home, etc.),
+  any non-overlay page under pages/ (scout, weather, fields, home, etc.),
   when the user mentions left nav, sidebar, app-shell chrome, or aligning with
   fields-map / weather-map-view. Do not use for modal-only HTML, CDK overlay
   fragments, isolated popovers, or embedded partials that intentionally omit chrome.

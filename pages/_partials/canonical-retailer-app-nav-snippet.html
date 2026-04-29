@@ -1,23 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Region Report 2.0 — Region report tool (Summary)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
-  <link rel="stylesheet" href="../../../components/nav.css" />
-  <link rel="stylesheet" href="../../../components/header.css" />
-  <link rel="stylesheet" href="../../../components/button.css" />
-  <link rel="stylesheet" href="region-report-2.css" />
-</head>
-<body class="rr2">
-<div class="app-shell">
+<!--
+  Canonical retailer left nav (Region Report / shell reference).
+  Lives at pages/_partials/ — copy into <div class="app-shell"> as first child. Retarget hrefs from your page’s directory if needed.
+
+  SVG fixes: Analyze mask + Crop plan clip use same-document url(#id).
+-->
 <aside class="app-nav">
   <nav class="nav" aria-label="Main navigation">
-    <a href="../../home.html" class="nav__item">
+    <a href="../home.html" class="nav__item">
       <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
     <path d="M3.00195 8.50391L12.002 1.50391L21.002 8.50391V19.5039C21.002 20.0343 20.7912 20.543 20.4162 20.9181C20.0411 21.2932 19.5324 21.5039 19.002 21.5039H5.00195C4.47152 21.5039 3.96281 21.2932 3.58774 20.9181C3.21267 20.543 3.00195 20.0343 3.00195 19.5039V8.50391Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
     <path d="M9.00195 21.5039V11.5039H15.002V21.5039" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -33,13 +22,13 @@
 </svg></span>
       <span class="nav__label">AI Chat</span>
     </a>
-    <a href="../../growers.html" class="nav__item">
+    <a href="../growers.html" class="nav__item">
       <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 24 20" xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
   <path fill-rule="evenodd" clip-rule="evenodd" d="M6 5C6 3.34315 7.34315 2 9 2C10.6569 2 12 3.34315 12 5C12 6.65685 10.6569 8 9 8C7.34315 8 6 6.65685 6 5ZM9 0C6.23858 0 4 2.23858 4 5C4 7.76142 6.23858 10 9 10C11.7614 10 14 7.76142 14 5C14 2.23858 11.7614 0 9 0ZM5 12C3.67392 12 2.40215 12.5268 1.46447 13.4645C0.526784 14.4021 0 15.6739 0 17V19C0 19.5523 0.447715 20 1 20C1.55228 20 2 19.5523 2 19V17C2 16.2044 2.31607 15.4413 2.87868 14.8787C3.44129 14.3161 4.20435 14 5 14H13C13.7956 14 14.5587 14.3161 15.1213 14.8787C15.6839 15.4413 16 16.2043 16 17V19C16 19.5523 16.4477 20 17 20C17.5523 20 18 19.5523 18 19V17C18 15.6739 17.4732 14.4021 16.5355 13.4645C15.5979 12.5268 14.3261 12 13 12H5ZM19.0318 12.8799C19.1698 12.3451 19.7153 12.0236 20.25 12.1616C21.3227 12.4386 22.273 13.064 22.9517 13.9395C23.6304 14.8151 23.9992 15.8913 24 16.9991V16.9999V18.9999C24 19.5522 23.5523 19.9999 23 19.9999C22.4477 19.9999 22 19.5522 22 18.9999V17.0006V17.0003C21.9994 16.3357 21.7782 15.6901 21.371 15.1649C20.9638 14.6395 20.3936 14.2643 19.75 14.0981C19.2153 13.9601 18.8937 13.4146 19.0318 12.8799ZM16.248 0.161133C15.713 0.0241445 15.1682 0.346818 15.0312 0.881844C14.8943 1.41687 15.2169 1.96164 15.752 2.09863C16.3973 2.26386 16.9692 2.63916 17.3777 3.16537C17.7861 3.69157 18.0078 4.33876 18.0078 5.00488C18.0078 5.67101 17.7861 6.31819 17.3777 6.8444C16.9692 7.37061 16.3973 7.74591 15.752 7.91113C15.2169 8.04812 14.8943 8.5929 15.0312 9.12792C15.1682 9.66295 15.713 9.98562 16.248 9.84863C17.3236 9.57326 18.2768 8.94776 18.9576 8.07074C19.6383 7.19373 20.0078 6.1151 20.0078 5.00488C20.0078 3.89467 19.6383 2.81603 18.9576 1.93902C18.2768 1.06201 17.3236 0.436509 16.248 0.161133Z"></path>
 </svg></span>
       <span class="nav__label">Growers</span>
     </a>
-    <a href="../../groups.html" class="nav__item">
+    <a href="../groups.html" class="nav__item">
       <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
 <path d="M7.69299 7.42704C7.73485 9.28751 9.22157 10.726 11.0915 10.7158C12.9729 10.7058 14.4096 9.26342 14.4153 7.37842C14.4208 5.51076 12.967 4.02442 11.1109 4.00028C9.22346 3.97595 7.65056 5.5528 7.69299 7.42704Z" fill="currentColor"></path>
 <path d="M4.69728 13.1099C5.93544 13.0617 6.874 12.0662 6.85967 10.8167H6.85972C6.84572 9.58643 5.85815 8.57811 4.64413 8.55416C3.37971 8.52925 2.33294 9.583 2.34426 10.8693C2.35555 12.1636 3.40254 13.1609 4.69728 13.1099Z" fill="currentColor"></path>
@@ -50,25 +39,25 @@
 </svg></span>
       <span class="nav__label">Groups</span>
     </a>
-    <a href="../../scout/fields-map-view.html" class="nav__item nav__item--active" aria-current="page">
+    <a href="../scout/fields-map-view.html" class="nav__item nav__item--active" aria-current="page">
       <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 25 24" xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
   <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M12.6562 3.125C13.2315 3.125 13.6979 2.65863 13.6979 2.08333V1.04167C13.6979 0.46637 13.2315 0 12.6562 0C12.0809 0 11.6146 0.46637 11.6146 1.04167V2.08333C11.6146 2.65863 12.0809 3.125 12.6562 3.125ZM6.21249 5.18541C6.61923 5.59243 7.27891 5.59267 7.68593 5.18593C8.09295 4.7792 8.09319 4.11952 7.68645 3.7125L6.94791 2.975C6.53411 2.57533 5.87466 2.58679 5.47499 3.0006C5.08512 3.40427 5.08512 4.04424 5.47499 4.44791L6.21249 5.18541ZM5.08333 11.1979H4.04166C3.46636 11.1979 2.99999 10.7316 2.99999 10.1563C2.99999 9.58096 3.46636 9.11459 4.04166 9.11459H5.08333C5.65862 9.11459 6.12499 9.58096 6.12499 10.1563C6.12499 10.7316 5.65862 11.1979 5.08333 11.1979ZM19.1 5.18541L19.8375 4.44791C20.2372 4.03411 20.2257 3.37466 19.8119 2.97499C19.4082 2.58512 18.7682 2.58512 18.3646 2.97499L17.626 3.71249C17.2193 4.11952 17.2195 4.77919 17.6266 5.18593C18.0336 5.59267 18.6933 5.59243 19.1 5.18541ZM20.0417 11.1979C19.4664 11.1979 19 10.7316 19 10.1563C19 9.58096 19.4664 9.11459 20.0417 9.11459H21.0833C21.6586 9.11459 22.125 9.58096 22.125 10.1563C22.125 10.7316 21.6586 11.1979 21.0833 11.1979H20.0417ZM7.19988 10.9699C7.34655 11.4773 7.87681 11.7698 8.38424 11.6231C8.88411 11.4786 9.17676 10.961 9.04287 10.4582C8.51426 8.54928 9.63324 6.57327 11.5422 6.04467C13.4511 5.51606 15.4271 6.63504 15.9557 8.54398C16.1292 9.17028 16.1292 9.83193 15.9557 10.4582C15.8198 10.9686 16.1234 11.4926 16.6338 11.6285C17.1366 11.7624 17.6542 11.4698 17.7987 10.9699C18.6101 8.0431 16.8953 5.01269 13.9685 4.20128C11.0417 3.38987 8.01129 5.10472 7.19988 8.0315C6.93336 8.99284 6.93336 10.0086 7.19988 10.9699ZM12.5 12.5417C12.7641 12.5415 12.992 12.7268 13.0458 12.9854L15.1979 23.375C15.2049 23.4093 15.2085 23.4442 15.2084 23.4793C15.2084 23.7669 14.9752 24 14.6875 24H10.3156C10.2806 24 10.2457 23.9965 10.2114 23.9895C9.92952 23.9319 9.74768 23.6568 9.80521 23.375L11.9552 12.9854C12.0086 12.727 12.2361 12.5416 12.5 12.5417ZM5.31667 13.35C5.42502 13.3237 5.53799 13.3699 5.59688 13.4646C5.65966 13.5596 5.65245 13.6847 5.57917 13.7719L0.462506 20.0927C0.413211 20.1534 0.339284 20.1887 0.261131 20.1889C0.117307 20.1893 0.000397735 20.073 6.74173e-06 19.9292V16.3958C-0.00166409 15.8257 0.307341 15.2999 0.806255 15.024C2.22873 14.2682 3.74554 13.7052 5.31667 13.35ZM9.30105 12.6958C9.18053 12.7067 9.0696 12.7661 8.99376 12.8604L0.646881 23.1729C0.47084 23.3916 0.505417 23.7116 0.72411 23.8876C0.814119 23.9601 0.926126 23.9997 1.04167 24H7.12396C7.37111 23.9996 7.58391 23.8255 7.63334 23.5833L9.77709 13.225C9.82654 12.9856 9.67252 12.7514 9.43307 12.7019C9.38967 12.6929 9.34516 12.6905 9.30105 12.6948L9.30105 12.6958ZM19.6833 13.35C21.2545 13.7052 22.7713 14.2682 24.1938 15.024C24.6927 15.2999 25.0017 15.8257 25 16.3958V19.924C24.9998 20.0021 24.9645 20.076 24.9038 20.1253C24.7922 20.216 24.6282 20.1991 24.5375 20.0875L19.4208 13.7667C19.3706 13.7042 19.352 13.622 19.3703 13.544C19.4032 13.404 19.5433 13.3171 19.6833 13.35ZM16.0063 12.8604C15.9303 12.7663 15.8194 12.7069 15.699 12.6958C15.4556 12.6724 15.2393 12.8506 15.2158 13.094C15.2116 13.1381 15.214 13.1826 15.2229 13.226L17.3667 23.5833C17.4161 23.8255 17.6289 23.9996 17.876 24H23.9583C24.2391 24.0022 24.4684 23.7764 24.4706 23.4956C24.4715 23.3755 24.4299 23.259 24.3531 23.1667L16.0063 12.8604Z"></path>
 </svg></span>
       <span class="nav__label">Fields</span>
     </a>
-    <a href="../../scout/scout-list-view.html" class="nav__item">
+    <a href="../scout/scout-list-view.html" class="nav__item">
       <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 25 23" xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M13.3424 0.80922C14.5785 -0.26974 16.4215 -0.26974 17.6576 0.809222C17.7502 0.89004 17.8268 0.986993 17.884 1.09502L17.9345 1.20655L19.358 4.94258L20.7071 6.29248C20.7671 6.35245 20.8191 6.41968 20.8619 6.49249L20.9191 6.60566L23.7903 13.305L23.9497 13.4645L23.89 13.523L24.0283 13.7242C25.5026 15.9823 25.2992 19.0154 23.4183 21.0596L23.2426 21.2426C20.8995 23.5858 17.1005 23.5858 14.7574 21.2426C13.7994 20.2846 13.233 19.0833 13.0584 17.8375C13.0332 17.7672 13.0156 17.6932 13.0067 17.6166L13 17.5V9.0035C12.9331 9.00241 12.8639 9.00157 12.7924 9.00095L12 9.00025V18C12 18.2398 11.9156 18.4599 11.7748 18.6322C11.5056 19.5882 10.9949 20.4904 10.2426 21.2426C7.8995 23.5858 4.1005 23.5858 1.75736 21.2426C-0.37908 19.1062 -0.567551 15.7594 1.19194 13.4095L4.08086 6.66867C4.11427 6.59071 4.15739 6.51748 4.20908 6.45067L4.2929 6.35548L5.639 5.00759L7.06368 1.21146C7.1073 1.09514 7.17207 0.988315 7.25438 0.896218L7.3424 0.809225C8.57846 -0.269736 10.4215 -0.269736 11.6576 0.809224C11.8441 0.971998 11.9624 1.19706 11.9925 1.43989L12 1.56259V5.56259C12 6.11487 11.5523 6.56259 11 6.56259C10.4872 6.56259 10.0645 6.17655 10.0067 5.67921L10 5.56259L9.999 2.10059L9.88176 2.05803C9.55071 1.95487 9.1865 1.98926 8.87757 2.1612L8.833 2.18859L7.43633 5.91371C7.39874 6.01396 7.34538 6.10729 7.27846 6.19028L7.20711 6.26969L5.843 7.63459L4.29511 11.2461C6.23482 10.6733 8.40707 11.1004 10 12.5276V9.05759C9.32351 9.13836 9.08354 9.31971 8.89465 9.69751C8.64766 10.1915 8.04698 10.3917 7.55301 10.1447C7.05903 9.89774 6.8588 9.29706 7.10579 8.80308C7.86065 7.29337 8.79757 7.01104 11.4002 7H12.6002C15.2029 7.01104 16.1398 7.29337 16.8946 8.80308C17.1416 9.29706 16.9414 9.89774 16.4474 10.1447C15.9535 10.3917 15.3528 10.1915 15.1058 9.69751C15.0728 9.63148 15.0382 9.57144 15 9.5169V12.5276C16.6014 11.0928 18.7883 10.6687 20.7359 11.2554L19.157 7.57158L17.7929 6.20669C17.7264 6.14023 17.6698 6.0649 17.6246 5.98303L17.5655 5.85562L16.168 2.18958L16.1224 2.16119C15.8135 1.98925 15.4493 1.95487 15.1182 2.05803L15 2.10058V5.49958C15 6.01242 14.614 6.43509 14.1166 6.49285L14 6.49958C13.4872 6.49958 13.0645 6.11354 13.0067 5.6162L13 5.49958V1.56258C13 1.2738 13.1248 0.999123 13.3424 0.80922ZM10 17C10 16.0446 9.65981 15.0891 8.97943 14.3309L8.82843 14.1716L8.66906 14.0206C7.09857 12.6112 4.6816 12.6615 3.17157 14.1716C3.08501 14.2581 3.00325 14.3477 2.92628 14.4399L2.91915 14.4565C2.85391 14.6087 2.75537 14.7365 2.63568 14.8348C1.63657 16.3839 1.8152 18.4721 3.17157 19.8284C4.73367 21.3905 7.26633 21.3905 8.82843 19.8284C9.60948 19.0474 10 18.0237 10 17ZM16.1716 19.8284C15.3905 19.0474 15 18.0237 15 17C15 15.9763 15.3905 14.9526 16.1716 14.1716C17.6816 12.6615 20.0986 12.6112 21.6691 14.0206L21.8284 14.1716L21.9794 14.3309C22.0516 14.4113 22.1199 14.4939 22.1844 14.5785C22.1952 14.5938 22.2064 14.6086 22.2179 14.6231C23.3775 16.1889 23.2476 18.4092 21.8284 19.8284C20.2663 21.3905 17.7337 21.3905 16.1716 19.8284Z"></path>
 </svg></span>
       <span class="nav__label">Scout</span>
     </a>
-    <a href="../../weather-map-view.html" class="nav__item">
+    <a href="../weather-map-view.html" class="nav__item">
       <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M12.475 5.29994C12.6837 5.5094 12.9426 5.61412 13.2517 5.61412C13.5608 5.61412 13.8201 5.5094 14.0295 5.29994C14.2383 5.09121 14.3426 4.83231 14.3426 4.52321V2.3414C14.3426 2.03231 14.2383 1.77303 14.0295 1.56358C13.8201 1.35485 13.5608 1.25049 13.2517 1.25049C12.9426 1.25049 12.6837 1.35485 12.475 1.56358C12.2655 1.77303 12.1608 2.03231 12.1608 2.3414V4.52321C12.1608 4.83231 12.2655 5.09121 12.475 5.29994ZM18.3517 7.09994C18.3517 7.40031 18.4517 7.65049 18.6517 7.85049C18.8517 8.05049 19.1063 8.15049 19.4153 8.15049C19.7244 8.15049 19.979 8.05049 20.179 7.85049L21.7335 6.29594C21.9335 6.09594 22.0335 5.8414 22.0335 5.53231C22.0335 5.22322 21.9335 4.96867 21.7335 4.76867C21.5153 4.55049 21.2561 4.4414 20.9557 4.4414C20.6561 4.4414 20.3972 4.55049 20.179 4.76867L18.6517 6.32321C18.4517 6.5414 18.3517 6.80031 18.3517 7.09994ZM21.2023 14.0272C21.411 14.2367 21.6699 14.3414 21.979 14.3414H24.1608C24.4699 14.3414 24.7288 14.2367 24.9375 14.0272C25.147 13.8185 25.2517 13.5596 25.2517 13.2505C25.2517 12.9414 25.147 12.6821 24.9375 12.4727C24.7288 12.2639 24.4699 12.1596 24.1608 12.1596H21.979C21.6699 12.1596 21.411 12.2639 21.2023 12.4727C20.9928 12.6821 20.8881 12.9414 20.8881 13.2505C20.8881 13.5596 20.9928 13.8185 21.2023 14.0272ZM12.475 24.9363C12.6837 25.1458 12.9426 25.2505 13.2517 25.2505C13.5608 25.2505 13.8201 25.1458 14.0295 24.9363C14.2383 24.7276 14.3426 24.4687 14.3426 24.1596V21.9778C14.3426 21.6687 14.2383 21.4098 14.0295 21.201C13.8201 20.9916 13.5608 20.8868 13.2517 20.8868C12.9426 20.8868 12.6837 20.9916 12.475 21.201C12.2655 21.4098 12.1608 21.6687 12.1608 21.9778V24.1596C12.1608 24.4687 12.2655 24.7276 12.475 24.9363ZM4.76989 6.32321L6.32444 7.85049C6.54262 8.05049 6.79716 8.15049 7.08807 8.15049C7.37898 8.15049 7.63353 8.05049 7.85171 7.85049C8.05171 7.65049 8.15171 7.39594 8.15171 7.08685C8.15171 6.77776 8.05171 6.52321 7.85171 6.32321L6.29716 4.76867C6.09716 4.56867 5.84262 4.46867 5.53353 4.46867C5.22444 4.46867 4.96989 4.56867 4.76989 4.76867C4.55171 4.96867 4.44262 5.22322 4.44262 5.53231C4.44262 5.8414 4.55171 6.10503 4.76989 6.32321ZM18.6517 20.1778L20.179 21.7323C20.379 21.9505 20.6335 22.0596 20.9426 22.0596C21.2517 22.0596 21.5153 21.9505 21.7335 21.7323C21.9335 21.5141 22.0379 21.2505 22.0466 20.9414C22.0561 20.6323 21.9517 20.3778 21.7335 20.1778L20.179 18.6505C19.9608 18.4505 19.7019 18.3505 19.4023 18.3505C19.1019 18.3505 18.8517 18.4505 18.6517 18.6505C18.4517 18.8505 18.3517 19.1007 18.3517 19.401C18.3517 19.7007 18.4517 19.9596 18.6517 20.1778ZM1.56589 14.0272C1.77462 14.2367 2.03353 14.3414 2.34262 14.3414H4.52444C4.83353 14.3414 5.0928 14.2367 5.30225 14.0272C5.51098 13.8185 5.61534 13.5596 5.61534 13.2505C5.61534 12.9414 5.51098 12.6821 5.30225 12.4727C5.0928 12.2639 4.83353 12.1596 4.52444 12.1596H2.34262C2.03353 12.1596 1.77462 12.2639 1.56589 12.4727C1.35644 12.6821 1.25171 12.9414 1.25171 13.2505C1.25171 13.5596 1.35644 13.8185 1.56589 14.0272ZM4.46989 20.9687C4.46989 21.2778 4.56989 21.5323 4.76989 21.7323C4.96989 21.9505 5.22444 22.0596 5.53353 22.0596C5.84262 22.0596 6.10625 21.9505 6.32444 21.7323L7.85171 20.205C8.06989 19.9868 8.17898 19.7279 8.17898 19.4283C8.17898 19.1279 8.06989 18.8687 7.85171 18.6505C7.63353 18.4505 7.37462 18.3505 7.07498 18.3505C6.77462 18.3505 6.52444 18.4505 6.32444 18.6505L4.76989 20.205C4.56989 20.405 4.46989 20.6596 4.46989 20.9687ZM8.61534 17.8868C9.88807 19.1596 11.4335 19.7959 13.2517 19.7959C15.0699 19.7959 16.6153 19.1596 17.8881 17.8868C19.1608 16.6141 19.7972 15.0687 19.7972 13.2505C19.7972 11.4323 19.1608 9.88685 17.8881 8.61412C16.6153 7.3414 15.0699 6.70503 13.2517 6.70503C11.4335 6.70503 9.88807 7.3414 8.61534 8.61412C7.34262 9.88685 6.70625 11.4323 6.70625 13.2505C6.70625 15.0687 7.34262 16.6141 8.61534 17.8868Z" fill="currentColor"></path>
 </svg></span>
       <span class="nav__label">Weather</span>
     </a>
-    <a href="../agmri-analysis-workspace/index.html" class="nav__item">
+    <a href="../reports/region-report.html" class="nav__item">
       <span class="nav__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" fit="" preserveAspectRatio="xMidYMid meet" focusable="false">
     <mask id="rr2-nav-analyze-mask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
         <rect x="0.17627" y="0.0458984" width="23.6476" height="23.6476" fill="#D9D9D9"></rect>
@@ -120,111 +109,3 @@
     </a>
   </nav>
 </aside>
-<div class="app-main rr2-app-main">
-    <header class="header" role="banner">
-      <div class="header__left">
-        <a href="../../home.html" class="header__logo" aria-label="AgMRI home">
-          <img src="../../../assets/agmri-logo.png" height="28" alt="AgMRI" />
-        </a>
-        <a href="index.html" class="rr2-header-back">‹ Back</a>
-      </div>
-      <div class="header__center">
-        <div class="header__search-wrap">
-          <span class="header__search-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          </span>
-          <input type="search" class="header__search" placeholder="Search" aria-label="Search" />
-        </div>
-      </div>
-      <div class="header__right">
-        <span class="header__user-name">Caleb Wieber</span>
-        <div class="header__avatar" aria-hidden="true">CW</div>
-        <div class="header__notifications">
-          <button type="button" class="header__notifications-btn" aria-label="Notifications">
-            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span class="header__notifications-badge">12</span>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <div class="rr2-shell">
-      <div class="rr2-shell__map"></div>
-      <div class="rr2-toast" role="status">Please select area to create zone.</div>
-      <div class="rr2-modal-layer">
-      <div class="rr2-modal" role="dialog" aria-labelledby="rr-sum-title">
-        <div class="rr2-modal__head">
-          <div class="rr2-modal__title-row">
-            <div>
-              <h1 id="rr-sum-title" class="rr2-modal__title">Region report tool</h1>
-              <div id="rr2-field-meta" class="rr2-field-meta">
-                <div>Home 4 South Dahlia’s 24</div>
-                <div class="rr2-field-meta__line2">South Shop, <a href="#">Campbell farms.</a></div>
-                <div class="rr2-field-meta__stats">
-                  <span><strong>664.9 ac</strong></span>
-                  <span>🌱 11/5</span>
-                  <span>🌽 Corn</span>
-                  <span>GDD: 153</span>
-                </div>
-              </div>
-            </div>
-            <button type="button" class="rr2-icon-btn" aria-label="Close">×</button>
-          </div>
-
-          <nav id="rr2-report-tabs" class="rr2-tabs" aria-label="Report sections">
-            <a class="rr2-tab" href="modal-region-report-zones.html">Zones</a>
-            <a class="rr2-tab" href="modal-region-report-machine-data.html">Machine data</a>
-            <span class="rr2-tab rr2-tab--active" aria-selected="true">Summary</span>
-          </nav>
-        </div>
-
-        <div class="rr2-modal__body">
-          <div id="rr2-summary-zone-chips" class="rr2-zone-row">
-            <button type="button" class="rr2-zone-chip rr2-zone-chip--selected" style="--chip-color: var(--rr2-zone-1)">Zone 1</button>
-            <button type="button" class="rr2-zone-chip" style="--chip-color: var(--rr2-zone-2)">Zone 2</button>
-            <button type="button" class="rr2-zone-chip" style="--chip-color: var(--rr2-zone-3)">Zone 3</button>
-            <button type="button" class="rr2-zone-chip" style="--chip-color: var(--rr2-zone-4)">Zone 4</button>
-          </div>
-
-          <div id="rr2-summary-name-tags" class="rr2-summary-grid">
-            <div>
-              <div class="rr2-field-label">Zone name</div>
-              <div class="rr2-input-row">
-                <input type="text" value="Zone 1" aria-label="Zone name" />
-                <span aria-hidden="true" title="Saved" style="color: var(--color-brand-600); font-size: 18px;">✓</span>
-              </div>
-            </div>
-            <div>
-              <div class="rr2-field-label">Tags</div>
-              <div class="rr2-tag-list">
-                <span class="rr2-tag">Compaction <button type="button" aria-label="Remove Compaction">×</button></span>
-                <span class="rr2-tag">Crusted soil <button type="button" aria-label="Remove Crusted soil">×</button></span>
-                <span class="rr2-tag">Double plant <button type="button" aria-label="Remove Double plant">×</button></span>
-              </div>
-            </div>
-          </div>
-
-          <div id="rr2-summary-suggested" style="margin-top: 20px;">
-            <div class="rr2-field-label">Suggested</div>
-            <div class="rr2-suggested">
-              <button type="button">Compaction</button>
-              <button type="button">Crusted soil</button>
-              <button type="button">Double plant</button>
-              <button type="button">Planter skip</button>
-              <button type="button">Poor placement</button>
-              <button type="button">Stunted plants</button>
-            </div>
-            <button type="button" class="rr2-btn rr2-btn--ghost" style="margin-top: 12px;">+ Custom tag</button>
-          </div>
-        </div>
-
-        <div id="rr2-save-summary" class="rr2-modal__footer">
-          <button type="button" class="rr2-btn rr2-btn--primary">Save summary</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
-</div>
-</body>
-</html>

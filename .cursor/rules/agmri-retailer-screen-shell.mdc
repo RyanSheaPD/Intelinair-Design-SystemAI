@@ -5,15 +5,21 @@ alwaysApply: true
 
 # Retailer screen shell (left nav + header)
 
-When adding or extending **static AGMRI retailer-style pages** (scout, maps, demos—not product-language docs):
+When adding or extending **static AGMRI retailer-style pages** (scout, maps—not product-language docs):
 
 1. **Use the same chrome as** `pages/weather-map-view.html` (live DOM) **or the hand-built layout in** `pages/scout/scout-list-view.html` (`app-shell`, `aside.app-nav` / `nav.nav`, `div.app-main`, `header.header`).
 2. **Left nav icons and order** should match the **Fields map** live snapshot (`pages/scout/fields-map-view.html` — `homeIcon`, `fieldsIcon`, `scoutingIcon`, `weatherIcon`, etc.). On **Scout** flows (list, map tests, layers demo), keep **Fields** unselected and put **`nav__item--active` + `aria-current="page"` on Scout** linking to the page you are building.
-3. **Stylesheets:** `design-tokens/tokens.css`, `components/nav.css`, `components/header.css`, and usually `components/button.css` when the page has toolbar buttons. Add `pages/demos/agmri-analysis-workspace/styles.cef64a1bc5706731.css` only when the page uses Angular Material markup.
+3. **Stylesheets:** `design-tokens/tokens.css`, `components/nav.css`, `components/header.css`, and usually `components/button.css` when the page has toolbar buttons. Add `components/agmri-analysis-workspace-bundle/styles.cef64a1bc5706731.css` only when the page uses Angular Material markup.
 4. **Weather entry in the left nav** should link to **`pages/weather-map-view.html`** (`../weather-map-view.html` from `pages/scout/`) so it matches the canonical weather map snapshot unless the screen is explicitly a list-only weather view.
 5. Put page-specific UI (map stage, tables, drawers) **below** the shared `header`, inside `app-main`, in a flex child with `flex: 1; min-height: 0; overflow: hidden` so the shell fills the viewport.
 
 Reference implementation: `pages/scout/scout-map-layers-multiselect.html`.
+
+**Use only the canonical left nav** for new pages. Do not use older or simplified left-nav variants; keep canonical SVG structure, icon set, and nav order.
+
+If a simplified/legacy left nav is encountered while editing a page, treat it as a cleanup task in that same change: replace it with canonical left-nav markup (or the canonical snippet), then retarget `href`s and set the correct active item.
+
+If you need a reusable snippet with fixed mask/clip IDs, use `pages/_partials/canonical-retailer-app-nav-snippet.html` and retarget `href`s for the current directory.
 
 **Scouting category pills** (table “Categories” column, tag-style chips): use the live DOM shape `scouting-pill` + `f-14` + nested `title` / `d-flex align-items-center` / `count` (see `components/scouting-pill.css` and `pages/scout/scout-list-view.html`). Link **`scouting-pill.css` after** `styles.cef64a1bc5706731.css` so pill styles override the Material/Bootstrap bundle. **Single reference doc:** `docs/scout-list-table-pills-crop-icons.md`.
 

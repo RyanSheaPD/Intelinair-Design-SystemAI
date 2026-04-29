@@ -25,7 +25,7 @@
   /*
    * AgMRI web app primary (CTA / link blue). **100–500** are correct (authoritative) — 100 / 400 / 500 match live
    * `--app-primary-color-*`; 200–300 are supporting tints. **600–900** are the darker extension from **500 = #3c84c7**
-   * (same hue family; not a re-tint of 100–500). Type: `font-family: Figtree, sans-serif`. PWA green: `--color-agmri-*`.
+   * (same hue family; not a re-tint of 100–500). Type: `font-family: Figtree, sans-serif`. Legacy chrome green (`--color-agmri-*`, #00a300 ramp) is documented separately — reserved for Settings (until refreshed) and legacy surfaces only.
    */
   --color-agmri-app-primary-100: #c5daee;
   --color-agmri-app-primary-200: #b0d4ed;
@@ -82,10 +82,14 @@
   --color-pb-900: #0D1117;
   --color-pb-rgb: 43, 58, 77;
 
-  /* AgMRI: primary = app blue #3c84c7. Shell / PWA / nav = green --color-agmri-* (not "brand primary"). */
+  /* AgMRI: product primary = app blue #3c84c7 (`--color-brand-agmri` = `--color-agmri-app-primary-500`). */
   --color-brand-agmri: var(--color-agmri-app-primary-500);
   --color-brand-agmri-rgb: var(--color-agmri-app-primary-rgb);
 
+  /*
+   * Legacy AgMRI chrome green (#00a300 ramp) — **do not use for new UI.** Kept for parity with unreleased Settings
+   * and other legacy product areas until those ship updated chrome. Prefer app primary blue for new work.
+   */
   --color-agmri-100: #e6f7e6;
   --color-agmri-200: #c5eec5;
   --color-agmri-300: #94e094;
@@ -580,8 +584,8 @@
 }
 
 /* ═══ THEME: AgMRI ═══
- * Apply .theme-agmri to a page shell. Primary / CTAs: app blue #3c84c7 (inherits :root --color-brand-* from --color-agmri-app-primary-*).
- * Nav, tile, and counter badge: green PWA --color-agmri-500. Do not map --color-brand-* to green.
+ * Apply .theme-agmri to a page shell. Primary / CTAs: app blue #3c84c7 (`--color-brand-*` / `--color-action-brand`).
+ * Nav / counter badge still reference **legacy** `--color-agmri-*` green for demos and old shells — not for new chrome.
  */
 .theme-agmri {
   --nav-background: var(--color-agmri-500);
