@@ -1,31 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-pb">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MiTrials Phase 3 — Unified Analysis UI</title>
+  <title>Pivot Bio — MiTrials Phase 3 · Unified Analysis UI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
   <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../../../components/nav.css" />
+  <link rel="stylesheet" href="../../../components/header.css" />
+  <link rel="stylesheet" href="region-report-2.css" />
+  <link rel="stylesheet" href="../../../components/field-map-view-shell.css" />
+  <link rel="stylesheet" href="../../../components/myfs-trials-flow-shell.css" />
   <link rel="stylesheet" href="analysis-ui.css" />
 </head>
-<body class="maa">
-  <header id="maa-entry" class="maa-top">
-    <img class="maa-top__logo" src="../../../assets/agmri-logo.png" alt="AgMRI" />
-    <nav class="maa-crumb" aria-label="Breadcrumb">
-      <a href="index.html">MiTrials</a>
-      · <a href="#">Nitrogen response — Smith East</a>
-      · <strong>Analyze</strong>
-    </nav>
-    <div class="maa-top__actions">
-      <span style="font-size:12px;color:var(--color-text-muted);">Deep link: <code style="font-size:11px;">/analysis?trial=…</code></span>
-      <button type="button" class="maa-btn maa-btn--ghost">Share view</button>
-      <button type="button" class="maa-btn">Close</button>
+<body class="maa rr2">
+<div class="app-shell">
+<aside class="app-nav">
+  <nav class="nav" aria-label="Main navigation">
+    <a href="../../home/home-dashboard.html" class="nav__item">
+      <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.5L12 1.5L21 8.5V19.5C21 20 20.8 20.5 20.4 20.9C20 21.3 19.5 21.5 19 21.5H5C4.5 21.5 4 21.3 3.6 20.9C3.2 20.5 3 20 3 19.5V8.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 21.5V11.5H15V21.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="nav__label">Home</span>
+    </a>
+    <a href="../../growers.html" class="nav__item">
+      <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 24 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 5C6 3.34 7.34 2 9 2C10.66 2 12 3.34 12 5C12 6.66 10.66 8 9 8C7.34 8 6 6.66 6 5ZM9 0C6.24 0 4 2.24 4 5C4 7.76 6.24 10 9 10C11.76 10 14 7.76 14 5C14 2.24 11.76 0 9 0ZM5 12H13C15.67 12 18 14.33 18 17V19H0V17C0 14.33 2.33 12 5 12Z" fill="currentColor"/></svg></span>
+      <span class="nav__label">Growers</span>
+    </a>
+    <a href="../../groups.html" class="nav__item">
+      <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="8" r="3.5" fill="currentColor"/><path d="M5 14h12a4 4 0 014 4v2H1v-2a4 4 0 014-4z" fill="currentColor"/><circle cx="19" cy="11" r="2.5" fill="currentColor"/></svg></span>
+      <span class="nav__label">Groups</span>
+    </a>
+    <a href="../../trials/pb-mitrials-pivot-flow-01-fields.html" class="nav__item">
+      <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 25 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12.7 3.1c.6 0 1-.5 1-1.1V1c0-.6-.4-1.1-1-1.1s-1 .5-1 1.1v1c0 .6.4 1.1 1 1.1zm-6.4 2.1c.4.4 1.1.4 1.5 0s.4-1.1 0-1.5l-.7-.7c-.4-.4-1.1-.4-1.5 0s-.4 1.1 0 1.5l.7.7zM5 11.2h-1c-.6 0-1 .5-1 1s.5 1 1 1h1c.6 0 1-.5 1-1s-.4-1-1-1zm14 0c-.6 0-1 .5-1 1s.5 1 1 1h1c.6 0 1-.5 1-1s-.5-1-1-1h-1zM7.2 11c.1.5.7.8 1.2.6.5-.1.8-.7.6-1.2-.5-1.9.6-3.9 2.5-4.4 1.9-.5 3.9.6 4.4 2.5.2.6.2 1.3 0 1.9-.1.5.2 1.1.7 1.2.5.1 1.1-.2 1.2-.7.8-2.9-.9-5.9-3.8-6.7-2.9-.8-5.9.9-6.7 3.8-.3.9-.3 1.9 0 2.8zM12.5 12.5c.3 0 .5.2.6.4l2.1 10.4c0 .3-.2.6-.5.6h-4.4c-.3 0-.5-.3-.5-.6L11.9 13c0-.3.3-.5.6-.5z"/></svg></span>
+      <span class="nav__label">Fields</span>
+    </a>
+    <a href="../../scout/scout-list-view.html" class="nav__item">
+      <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 25 23" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M13.3.8c1.2-1 3.1-1 4.3 0l1.3 1.2 1.4 3.7 1.3 1.4 2.9 6.7c1.5 2.3 1.3 5.3-.6 7.2-2.3 2.3-6.1 2.3-8.5 0-.9-1-1.5-2.2-1.6-3.4V9h-1v9c0 2.3-1.9 4.2-4.2 4.2-2.3 0-4.2-1.9-4.2-4.2 0-1.1.4-2.1 1.2-2.9l2.9-6.7 1.3-1.4 1.4-3.7 1.3-1.2c1.2-1 3.1-1 4.3 0z"/></svg></span>
+      <span class="nav__label">Scout</span>
+    </a>
+    <a href="../../weather-map-view.html" class="nav__item">
+      <span class="nav__icon" aria-hidden="true"><svg width="100%" height="100%" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.3 1.3a1.2 1.2 0 011.7 0c.2.2.3.4.3.7v2.2a1.2 1.2 0 01-2.4 0V2c0-.3.1-.5.4-.7zm6 2.8a1.15 1.15 0 011.6 1.6l-1.6 1.5a1.15 1.15 0 01-1.6-1.6l1.6-1.5zM8.6 4.1L7 5.7a1.15 1.15 0 01-1.6-1.6l1.6-1.5a1.15 1.15 0 011.6 1.5zm4.4 14.6a6 6 0 100-12 6 6 0 000 12z" fill="currentColor"/></svg></span>
+      <span class="nav__label">Weather</span>
+    </a>
+    <a href="analysis-ui.html" class="nav__item nav__item--active" aria-current="page">
+      <span class="nav__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none"><mask id="maa-pb-nav-analyze-mask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24"><rect width="24" height="24" fill="#D9D9D9"/></mask><g mask="url(#maa-pb-nav-analyze-mask)"><path d="M20.7 22L18.4 19.6c-.3.3-.7.5-1.1.6-.4.1-.8.2-1.3.2-1.2 0-2.3-.4-3.1-1.3-.9-.9-1.4-1.9-1.4-3.1s.5-2.3 1.4-3.1c.8-.9 1.9-1.3 3.1-1.3s2.3.4 3.1 1.3c.9.9 1.4 1.9 1.4 3.1 0 .4-.1.8-.2 1.2s-.3.8-.6 1.1l2.3 2.4c.2.2.3.4.3.7s-.1.5-.3.7-.4.3-.7.3-.3 0-.5-.1zM16 18.3c.7 0 1.3-.3 1.8-.8s.7-1.1.7-1.8-.2-1.3-.7-1.8-1.1-.8-1.8-.8-1.3.3-1.8.8-.7 1.1-.7 1.8.2 1.3.7 1.8 1.1.8 1.8.8zM1.9 17.3c-.2-.2-.3-.4-.3-.7s0-.6.2-.8l3.7-6c.2-.3.4-.4.7-.5h.5c.3 0 .6.1.8.4l2.1 2.4 3.1-5.1c.2-.3.5-.5.9-.5s.7.2.9.5l1.8 2.7h-.4c-.4 0-.7.1-1.1.1l-.5-.8-3 4.9c-.2.3-.4.4-.8.4s-.6-.1-.8-.4l-2.1-2.4-3 4.9c-.1.3-.4.4-.7.5h-.4z" fill="currentColor"/></g></svg></span>
+      <span class="nav__label">Analyze</span>
+    </a>
+    <div class="nav__spacer"></div>
+    <a href="#" class="nav__item">
+      <span class="nav__icon" aria-hidden="true"><span class="material-symbols-outlined">settings</span></span>
+      <span class="nav__label">Settings</span>
+    </a>
+  </nav>
+</aside>
+
+<div class="app-main rr2-app-main">
+  <header class="header header--pb" role="banner">
+    <div class="header__left">
+      <a href="#" class="header__logo" aria-label="Pivot Bio home"><img src="../../../assets/icons/pb-logo-header.svg" alt="Pivot Bio" width="120" height="32" /></a>
+    </div>
+    <div class="header__center">
+      <div class="header__search-wrap">
+        <span class="header__search-icon" aria-hidden="true"><svg viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 19c4.1 0 7.5-3.4 7.5-8s-3.4-8-7.5-8-7.5 3.4-7.5 8 3.4 8 7.5 8z" stroke="currentColor" stroke-width="2"/><path d="M20 21l-4-4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <input type="search" class="header__search" placeholder="Search fields, growers…" aria-label="Search" />
+      </div>
+    </div>
+    <div class="header__right">
+      <span class="header__user-name">Demo user</span>
+      <span class="header__avatar" aria-label="Account">DU</span>
     </div>
   </header>
-
-  <div id="maa-trial-context" class="maa-subbar">
+<div class="maa-app-wrap">
+  <div id="maa-entry" class="maa-subbar">
     <div class="maa-trial-line">
       <span class="maa-trial-line__name">Nitrogen response — Smith East</span>
       <span class="maa-trial-line__meta">Protocol <code>VR-N-2025</code></span>
@@ -54,17 +102,30 @@
   <div class="maa-body">
     <div id="maa-map" class="maa-map-col">
       <div class="maa-map-bg" role="img" aria-label="Field map (demo)"></div>
+      <div class="maa-map-left-controls" aria-label="Map layers and draw tools">
+        <div class="map-top-left-stack flight-actions-container" aria-label="Map layers">
+          <div class="map-layers">
+            <button type="button" class="map-layers__btn" aria-label="Layers"><span class="material-symbols-outlined">layers</span></button>
+            <button type="button" class="map-layers__btn map-layers__btn--imagery map-layers__colorization" aria-label="Imagery colorization"></button>
+            <button type="button" class="map-layers__btn map-layers__btn--aerial" aria-label="Aerial imagery"><span class="material-symbols-outlined">layers</span></button>
+            <button type="button" class="map-layers__btn map-layers__btn--mitrials" aria-label="Trials and treatments">
+              <svg class="map-layers__mitrials-icon" width="22" height="22" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid meet">
+                <path d="M13.333 1.3335H2.66634C1.93301 1.3335 1.33301 1.9335 1.33301 2.66683V13.3335C1.33301 14.0668 1.93301 14.6668 2.66634 14.6668H13.333C14.0663 14.6668 14.6663 14.0668 14.6663 13.3335V2.66683C14.6663 1.9335 14.0663 1.3335 13.333 1.3335ZM10.1997 2.66683C9.66634 3.40016 9.33301 4.3335 9.33301 5.3335H6.66634C6.66634 4.26683 7.19967 3.26683 7.99967 2.66683H10.1997ZM9.33301 9.3335H6.66634C6.66634 8.3335 6.33301 7.40016 5.79967 6.66683H7.99967C8.79967 7.26683 9.33301 8.26683 9.33301 9.3335ZM2.66634 2.66683H6.19967C5.66634 3.40016 5.33301 4.3335 5.33301 5.3335H2.66634V2.66683ZM2.66634 6.66683H3.99967C4.79967 7.26683 5.33301 8.20016 5.33301 9.3335H2.66634V6.66683ZM2.66634 13.3335V10.6668H6.19967C5.66634 11.4002 5.33301 12.3335 5.33301 13.3335H2.66634ZM6.66634 13.3335C6.66634 12.2668 7.19967 11.2668 7.99967 10.6668H10.1997C9.66634 11.4002 9.33301 12.3335 9.33301 13.3335H6.66634ZM13.333 13.3335H10.6663C10.6663 12.2668 11.1997 11.2668 11.9997 10.6668H13.333V13.3335ZM13.333 9.3335H10.6663C10.6663 8.3335 10.333 7.40016 9.79967 6.66683H13.333V9.3335ZM13.333 5.3335H10.6663C10.6663 4.26683 11.1997 3.26683 11.9997 2.66683H13.333V5.3335Z" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div id="maa-map-tools" class="maa-map-tools">
+          <button type="button" class="maa-tool" title="Draw exclusion" aria-pressed="false">✂</button>
+          <button type="button" class="maa-tool" title="Point annotation" aria-pressed="false">📍</button>
+          <button type="button" class="maa-tool" title="Area annotation" aria-pressed="false">▢</button>
+        </div>
+      </div>
       <div class="maa-map-overlay" aria-hidden="true">
         <div class="maa-field-outline"></div>
         <div id="maa-region-protocol" class="maa-region maa-region--protocol" title="Protocol-assigned region"></div>
         <div id="maa-region-adhoc" class="maa-region maa-region--adhoc" title="Ad-hoc region"></div>
         <div id="maa-exclusion-visual" class="maa-exclusion" title="Excluded from analysis"></div>
-      </div>
-
-      <div id="maa-map-tools" class="maa-map-tools">
-        <button type="button" class="maa-tool" title="Draw exclusion" aria-pressed="false">✂</button>
-        <button type="button" class="maa-tool" title="Point annotation" aria-pressed="false">📍</button>
-        <button type="button" class="maa-tool" title="Area annotation" aria-pressed="false">▢</button>
       </div>
 
       <div id="maa-legend" class="maa-map-legend">
@@ -83,7 +144,27 @@
         </div>
       </div>
 
-      <div id="maa-timeseries" class="maa-chart-strip">
+    </div>
+
+    <div class="maa-side-rail maa-side-rail--collapsed" id="maa-side-rail">
+      <button type="button" class="maa-side-rail__handle" id="maa-side-rail-handle" aria-controls="maa-bottom-dock" aria-expanded="true" title="Minimize trial data panel (250px / half)">
+        <span class="material-symbols-outlined maa-side-rail__chev" aria-hidden="true">chevron_right</span>
+      </button>
+      <div class="maa-bottom-dock maa-data-workspace maa-side-rail__panel" id="maa-bottom-dock" role="region" aria-label="Trial data and analytics">
+      <div class="maa-dock-tablist">
+        <div class="maa-dock-tablist__tabs" role="tablist" aria-label="Data panels">
+          <button type="button" id="maa-dock-tab-ndvi" class="maa-dock-tab" role="tab" aria-selected="false" aria-controls="maa-dock-panel-ndvi" tabindex="-1">NDVI trend</button>
+          <button type="button" id="maa-dock-tab-aa" class="maa-dock-tab" role="tab" aria-selected="true" aria-controls="maa-dock-panel-aa" tabindex="0">Advanced analytics</button>
+          <button type="button" id="maa-dock-tab-context" class="maa-dock-tab" role="tab" aria-selected="false" aria-controls="maa-dock-panel-context" tabindex="-1">Trial context</button>
+        </div>
+        <div class="maa-dock-size maa-seg" role="group" aria-label="Trial data panel width">
+          <button type="button" id="maa-dock-size-250" class="maa-dock-size__btn" title="250px data column" aria-pressed="true">250px</button>
+          <button type="button" id="maa-dock-size-half" class="maa-dock-size__btn" title="Half of map and data row" aria-pressed="false">Half</button>
+        </div>
+      </div>
+      <div class="maa-dock-panels">
+        <div id="maa-dock-panel-ndvi" class="maa-dock-panel--ndvi" role="tabpanel" aria-labelledby="maa-dock-tab-ndvi" hidden>
+      <div id="maa-timeseries" class="maa-chart-strip maa-chart-strip--dock">
         <div class="maa-chart-title">NDVI trend (selected regions) · updates with range &amp; exclusions</div>
         <div class="maa-spark" aria-hidden="true">
           <span class="maa-spark__bar" style="height: 35%;"></span>
@@ -102,9 +183,312 @@
           <span>Sep 15</span>
         </div>
       </div>
-    </div>
+        </div>
 
-    <aside id="maa-sidebar" class="maa-sidebar">
+        <div id="maa-dock-panel-aa" role="tabpanel" aria-labelledby="maa-dock-tab-aa">
+      <section class="maa-aa" aria-labelledby="maa-aa-title">
+        <div class="maa-aa__toolbar">
+          <div class="maa-aa__intro">
+            <h2 id="maa-aa-title" class="maa-aa__title">Advanced analytics</h2>
+            <p class="maa-aa__meta">Sample date: 2/11</p>
+          </div>
+          <div class="maa-seg maa-aa__view-toggle" role="group" aria-label="Chart or table view">
+            <button type="button" id="maa-aa-view-charts" aria-pressed="true">Charts</button>
+            <button type="button" id="maa-aa-view-table" aria-pressed="false">Table</button>
+          </div>
+        </div>
+
+        <div class="rr2-trial-tabs" role="tablist" aria-label="Trials">
+          <button type="button" class="rr2-trial-tab" aria-selected="true">Trial 1</button>
+          <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 2</button>
+          <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 3</button>
+          <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 4</button>
+          <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 5</button>
+          <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 6</button>
+          <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 7</button>
+          <button type="button" class="rr2-trial-tab" aria-selected="false">Trial 8</button>
+        </div>
+
+        <div class="rr2-pill-row">
+          <button type="button" class="rr2-pill" aria-selected="true">Tissue sample</button>
+          <button type="button" class="rr2-pill" aria-selected="false">Roots-Nodules</button>
+        </div>
+
+        <div class="maa-aa__baseline">
+          <label class="rr2-select-label" for="maa-aa-baseline">Baseline</label>
+          <select id="maa-aa-baseline" class="rr2-select">
+            <option>This is the baseline selected</option>
+          </select>
+        </div>
+
+        <div id="maa-aa-panel-charts" class="maa-aa__panel">
+          <div class="maa-aa__cards-scroll">
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue nitrogen percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% N</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 96.7%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">3.54</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% N – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 76.7%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">3.48</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% N</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 56.7%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">3.42</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% N – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 43.3%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">3.38</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% N – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 27.7%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">3.33</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% N – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 10%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">3.28</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>3.25</span><span>3.30</span><span>3.35</span><span>3.40</span><span>3.45</span><span>3.50</span><span>3.55</span>
+            </div>
+          </div>
+
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue phosphorus percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% P</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 96.7%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">0.41</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% P – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 76.7%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">0.34</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% P</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 56.7%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">0.33</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% P – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 43.3%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">0.31</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% P – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 27.7%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">0.30</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% P – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 10%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">0.29</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>0.29</span><span>0.31</span><span>0.33</span><span>0.35</span><span>0.37</span><span>0.39</span><span>0.41</span>
+            </div>
+          </div>
+
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue potassium percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% K</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 96.7%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">1.67</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% K – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 76.7%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">1.64</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% K</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 56.7%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">1.62</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% K – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 43.3%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">1.60</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% K – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 27.7%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">1.53</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% K – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 10%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">1.51</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>1.51</span><span>1.54</span><span>1.56</span><span>1.59</span><span>1.62</span><span>1.64</span><span>1.67</span>
+            </div>
+          </div>
+
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue magnesium percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% Mg</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 96.7%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">0.48</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% Mg – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 76.7%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">0.45</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% Mg</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 56.7%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">0.44</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% Mg – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 43.3%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">0.42</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% Mg – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 27.7%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">0.40</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% Mg – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 10%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">0.38</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>0.38</span><span>0.40</span><span>0.41</span><span>0.43</span><span>0.45</span><span>0.46</span><span>0.48</span>
+            </div>
+          </div>
+
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue calcium percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% Ca</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 96.7%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">0.92</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% Ca – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 76.7%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">0.88</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% Ca</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 56.7%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">0.86</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% Ca – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 43.3%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">0.84</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% Ca – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 27.7%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">0.80</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% Ca – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 10%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">0.78</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>0.78</span><span>0.80</span><span>0.83</span><span>0.85</span><span>0.87</span><span>0.90</span><span>0.92</span>
+            </div>
+          </div>
+
+          <div class="rr2-hbar-card">
+            <h2 class="rr2-hbar-card__title">Leaf tissue sodium percent</h2>
+            <div class="rr2-hbar-chart">
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% Na</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 96.7%; background: #3b82f6;"></span></div>
+                <span class="rr2-hbar-val">0.11</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">NTC: 100% Na – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 76.7%; background: #93c5fd;"></span></div>
+                <span class="rr2-hbar-val">0.10</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% Na</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 56.7%; background: #15803d;"></span></div>
+                <span class="rr2-hbar-val">0.09</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBOS: 100% Na – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 43.3%; background: #86efac;"></span></div>
+                <span class="rr2-hbar-val">0.08</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryB: 100% Na – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 27.7%; background: #f472b6;"></span></div>
+                <span class="rr2-hbar-val">0.07</span>
+              </div>
+              <div class="rr2-hbar-row">
+                <span class="rr2-hbar-row__label">PBDDryA: 100% Na – BMP</span>
+                <div class="rr2-hbar-track"><span class="rr2-hbar-fill" style="width: 10%; background: #facc15;"></span></div>
+                <span class="rr2-hbar-val">0.06</span>
+              </div>
+            </div>
+            <div class="rr2-hbar-axis" aria-hidden="true">
+              <span>0.06</span><span>0.07</span><span>0.08</span><span>0.085</span><span>0.09</span><span>0.10</span><span>0.11</span>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <div id="maa-aa-panel-table" class="maa-aa__panel maa-aa__panel--table" hidden>
+          <div class="maa-aa__table-wrap">
+            <table class="maa-aa__table">
+              <thead>
+                <tr>
+                  <th scope="col">Treatment</th>
+                  <th scope="col">N %</th>
+                  <th scope="col">P %</th>
+                  <th scope="col">K %</th>
+                  <th scope="col">Mg %</th>
+                  <th scope="col">Ca %</th>
+                  <th scope="col">Na %</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">NTC: 100%</th><td>3.54</td><td>0.41</td><td>1.67</td><td>0.48</td><td>0.92</td><td>0.11</td></tr>
+                <tr><th scope="row">NTC: 100% – BMP</th><td>3.48</td><td>0.34</td><td>1.64</td><td>0.45</td><td>0.88</td><td>0.10</td></tr>
+                <tr><th scope="row">PBOS: 100%</th><td>3.42</td><td>0.33</td><td>1.62</td><td>0.44</td><td>0.86</td><td>0.09</td></tr>
+                <tr><th scope="row">PBOS: 100% – BMP</th><td>3.38</td><td>0.31</td><td>1.60</td><td>0.42</td><td>0.84</td><td>0.08</td></tr>
+                <tr><th scope="row">PBDDryB: 100% – BMP</th><td>3.33</td><td>0.30</td><td>1.53</td><td>0.40</td><td>0.80</td><td>0.07</td></tr>
+                <tr><th scope="row">PBDDryA: 100% – BMP</th><td>3.28</td><td>0.29</td><td>1.51</td><td>0.38</td><td>0.78</td><td>0.06</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+        </div>
+
+        <div id="maa-dock-panel-context" class="maa-context-panel" role="tabpanel" aria-labelledby="maa-dock-tab-context" hidden>
+          <div class="maa-context-scroll">
       <div id="maa-raw-vs-analysis" class="maa-callout">
         <strong>Raw vs analysis</strong>
         Raw imagery &amp; yield stay immutable. Exclusions and overlays adjust the <em>analysis view</em> only. Reset restores defaults without touching source data.
@@ -178,8 +562,141 @@
         <button type="button" class="maa-btn maa-btn--danger-ghost">Reset analysis</button>
         <span style="font-size:11px;color:var(--color-text-muted);align-self:center;">Clears exclusions &amp; overlay analysis state</span>
       </div>
-    </aside>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
   </div>
 
+</div>
+</div>
+</div>
+
+<script>
+(function () {
+  var railEl = document.getElementById("maa-side-rail");
+  var dockEl = document.getElementById("maa-bottom-dock");
+  var handleEl = document.getElementById("maa-side-rail-handle");
+  var size250 = document.getElementById("maa-dock-size-250");
+  var sizeHalf = document.getElementById("maa-dock-size-half");
+
+  /* Width preset when leaving minimized (handle restores 250px or Half) */
+  var lastWidthMode = "250";
+
+  function setRailSize(mode) {
+    if (!railEl) return;
+    railEl.classList.remove("maa-side-rail--collapsed", "maa-side-rail--half", "maa-side-rail--minimized");
+    if (mode === "half") {
+      railEl.classList.add("maa-side-rail--half");
+      lastWidthMode = "half";
+    } else if (mode === "minimized") {
+      railEl.classList.add("maa-side-rail--minimized");
+    } else {
+      railEl.classList.add("maa-side-rail--collapsed");
+      lastWidthMode = "250";
+    }
+
+    var w250Pressed =
+      mode === "collapsed" ||
+      (mode === "minimized" && lastWidthMode === "250");
+    var halfPressed =
+      mode === "half" ||
+      (mode === "minimized" && lastWidthMode === "half");
+
+    if (handleEl) {
+      handleEl.setAttribute("aria-expanded", mode === "minimized" ? "false" : "true");
+      handleEl.title =
+        mode === "minimized"
+          ? "Restore trial data panel (" + (lastWidthMode === "half" ? "half width" : "250px") + ")"
+          : "Minimize trial data panel (250px / half)";
+    }
+    var chev = handleEl && handleEl.querySelector(".maa-side-rail__chev");
+    if (chev) chev.textContent = mode === "minimized" ? "chevron_left" : "chevron_right";
+
+    if (size250) size250.setAttribute("aria-pressed", w250Pressed ? "true" : "false");
+    if (sizeHalf) sizeHalf.setAttribute("aria-pressed", halfPressed ? "true" : "false");
+
+    if (dockEl) {
+      if (mode === "minimized") dockEl.setAttribute("aria-hidden", "true");
+      else dockEl.removeAttribute("aria-hidden");
+    }
+  }
+
+  if (railEl && size250 && sizeHalf) {
+    size250.addEventListener("click", function () {
+      setRailSize("collapsed");
+    });
+    sizeHalf.addEventListener("click", function () {
+      setRailSize("half");
+    });
+  }
+
+  if (handleEl && railEl) {
+    handleEl.addEventListener("click", function () {
+      if (railEl.classList.contains("maa-side-rail--minimized")) {
+        setRailSize(lastWidthMode === "half" ? "half" : "collapsed");
+      } else {
+        setRailSize("minimized");
+      }
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape" || !railEl) return;
+    if (railEl.classList.contains("maa-side-rail--half")) {
+      e.preventDefault();
+      setRailSize("collapsed");
+    } else if (railEl.classList.contains("maa-side-rail--minimized")) {
+      e.preventDefault();
+      setRailSize(lastWidthMode === "half" ? "half" : "collapsed");
+    }
+  });
+
+  var dockPairs = [
+    { tab: document.getElementById("maa-dock-tab-ndvi"), panel: document.getElementById("maa-dock-panel-ndvi") },
+    { tab: document.getElementById("maa-dock-tab-aa"), panel: document.getElementById("maa-dock-panel-aa") },
+    { tab: document.getElementById("maa-dock-tab-context"), panel: document.getElementById("maa-dock-panel-context") }
+  ];
+
+  function selectDockTab(index) {
+    dockPairs.forEach(function (pair, i) {
+      if (!pair.tab || !pair.panel) return;
+      var on = i === index;
+      pair.tab.setAttribute("aria-selected", on ? "true" : "false");
+      pair.tab.setAttribute("tabindex", on ? "0" : "-1");
+      pair.panel.hidden = !on;
+    });
+  }
+
+  dockPairs.forEach(function (pair, i) {
+    if (!pair.tab) return;
+    pair.tab.addEventListener("click", function () {
+      selectDockTab(i);
+    });
+  });
+
+  var chartsBtn = document.getElementById("maa-aa-view-charts");
+  var tableBtn = document.getElementById("maa-aa-view-table");
+  var panelCharts = document.getElementById("maa-aa-panel-charts");
+  var panelTable = document.getElementById("maa-aa-panel-table");
+  if (chartsBtn && tableBtn && panelCharts && panelTable) {
+    function setAaView(showCharts) {
+      panelCharts.hidden = !showCharts;
+      panelTable.hidden = showCharts;
+      chartsBtn.setAttribute("aria-pressed", showCharts ? "true" : "false");
+      tableBtn.setAttribute("aria-pressed", showCharts ? "false" : "true");
+    }
+
+    chartsBtn.addEventListener("click", function () {
+      setAaView(true);
+    });
+    tableBtn.addEventListener("click", function () {
+      setAaView(false);
+    });
+  }
+})();
+</script>
 </body>
 </html>

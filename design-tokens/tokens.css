@@ -549,7 +549,12 @@
  * Apply .theme-pb to <html> or a page-shell wrapper to swap brand tokens.
  * Nav becomes PB dark navy; header logo swaps to Pivot Bio.
  * Primitive blue, semantic colors, and neutral ramp stay untouched.
+ *
+ * `html.theme-pb` is listed first so specificity beats later sheets that restyle
+ * :root (e.g. myfs-trials-flow-shell.css) — otherwise .theme-pb and :root tie and
+ * load order would leave MyFS green on the rail.
  */
+html.theme-pb,
 .theme-pb {
   --color-brand-100: var(--color-pb-100);
   --color-brand-200: var(--color-pb-200);
