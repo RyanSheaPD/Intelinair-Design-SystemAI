@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add activity — planting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../design-tokens/tokens.css" />
+  <link rel="stylesheet" href="../../../components/tabs.css" />
+  <link rel="stylesheet" href="../../../components/button.css" />
+  <link rel="stylesheet" href="add-activity-work-analyzer-shell.css" />
+</head>
+<body style="margin:0;background:#dfe3e8;">
+  <div class="waw-ai waw-ai__backdrop" role="presentation">
+    <div class="waw-ai__modal" role="dialog" aria-modal="true" aria-labelledby="waw-ai-dialog-title">
+      <div class="waw-ai__chrome">
+        <h1 id="waw-ai-dialog-title" class="waw-ai__title">Add activity</h1>
+        <button type="button" class="waw-ai__close-btn" aria-label="Close dialog">×</button>
+      </div>
+
+      <!--
+        Flight / timeline chicklet glyphs (inline geometry = canonical SVGs in assets/icons/crops/):
+        Planting → equipment-planter.svg · Application → equipment-spray.svg · Tillage → equipment-tillage.svg · Harvest → equipment-harvest.svg
+        Spec: docs/field-view-flight-chicklets.md · README: assets/icons/crops/README.md
+      -->
+      <div class="tabs tabs--category tabs--category-compressed waw-ai__activity-tabs" role="tablist" aria-label="Activity type">
+        <button type="button" class="tabs__item tabs__item--active waw-ai__tab waw-ai__tab--planting" role="tab" aria-selected="true">
+          <span class="tabs__icon" aria-hidden="true">
+            <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M3.66508 5.99874C4.71015 6.35266 5.85802 5.83948 6.23182 4.85C6.60717 3.86051 6.66947 1.17223 5.6244 0.81684C4.58088 0.462925 2.82404 2.57757 2.45024 3.56558C2.078 4.55507 2.62156 5.64483 3.66508 5.99874ZM4.07816 12.9724C4.80495 13.4432 5.76915 13.2274 6.2343 12.493C6.70065 11.7574 6.48625 10.7802 5.75946 10.3082C5.03267 9.83734 2.88986 9.28929 2.42592 10.0262C1.96199 10.763 3.34895 12.5016 4.07816 12.9724ZM7.87949 8.87401C7.2134 8.22469 8.26235 6.09062 8.91664 5.42958C9.56961 4.76724 10.6395 4.75683 11.3069 5.40746C11.9743 6.05679 11.9848 7.11992 11.3305 7.78096C10.6763 8.442 8.54557 9.52334 7.87949 8.87401Z" />
+            </svg>
+          </span>
+          <span class="tabs__label">Planting</span>
+        </button>
+        <button type="button" class="tabs__item waw-ai__tab waw-ai__tab--application" role="tab" aria-selected="false">
+          <span class="tabs__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+              <ellipse cx="12.002" cy="12.9995" rx="1.25" ry="1.25" fill="currentColor" />
+              <ellipse cx="9.50195" cy="16.7495" rx="1.25" ry="1.25" fill="currentColor" />
+              <ellipse cx="7.00195" cy="20.4995" rx="1.25" ry="1.25" fill="currentColor" />
+              <ellipse cx="12.002" cy="20.4995" rx="1.25" ry="1.25" fill="currentColor" />
+              <circle cx="17.002" cy="20.4995" r="1.25" fill="currentColor" />
+              <circle cx="14.502" cy="16.7495" r="1.25" fill="currentColor" />
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M2.50601 3C2.32467 3 2.23694 3.22197 2.36928 3.34595L8.61362 9.19596C8.65068 9.23068 8.69957 9.25 8.75035 9.25H15.2585C15.3094 9.25 15.3583 9.23064 15.3954 9.19586L21.6313 3.34586C21.7635 3.22184 21.6758 3 21.4945 3H2.50601Z" />
+            </svg>
+          </span>
+          <span class="tabs__label">Application</span>
+        </button>
+        <button type="button" class="tabs__item waw-ai__tab waw-ai__tab--tillage" role="tab" aria-selected="false">
+          <span class="tabs__icon" aria-hidden="true">
+            <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+              <path fill="currentColor" d="M14.2 11.4C12.985 11.4 12 12.385 12 13.6C12 14.815 12.985 15.8 14.2 15.8C15.415 15.8 16.4 14.815 16.4 13.6C16.4 12.385 15.415 11.4 14.2 11.4ZM14.2 14.2C13.8693 14.2 13.6 13.9307 13.6 13.6C13.6 13.2692 13.8693 13 14.2 13C14.5308 13 14.8 13.2692 14.8 13.6C14.8 13.9307 14.5308 14.2 14.2 14.2ZM16.2 7H14.6V5.995C14.6 5.642 14.7175 5.301 14.9288 5.024C15.0393 4.879 15.0175 4.6725 14.8958 4.53675L14.355 3.9325C14.1885 3.74625 13.897 3.7595 13.7375 3.952C13.2645 4.5225 13 5.24525 13 5.995V7H10.4418L9.0395 3.7285C8.94739 3.51221 8.79366 3.3278 8.59748 3.19826C8.4013 3.06872 8.17134 2.99977 7.93625 3H4.6C3.93825 3 3.4 3.53825 3.4 4.2V7.863C3.18425 7.69475 2.876 7.7015 2.67775 7.89975L1.9 8.6775C1.68525 8.89225 1.68525 9.2405 1.9 9.45525L2.0265 9.58175C1.90175 9.81325 1.8025 10.0522 1.72875 10.2997H1.55C1.24625 10.2997 1 10.546 1 10.8498V11.9497C1 12.2535 1.24625 12.4998 1.55 12.4998H1.7285C1.8025 12.7475 1.9015 12.9862 2.02625 13.218L1.89975 13.3445C1.685 13.5592 1.685 13.9075 1.89975 14.1223L2.6775 14.9C2.89225 15.1147 3.2405 15.1147 3.45525 14.9L3.58175 14.7735C3.81325 14.8983 4.05225 14.9975 4.29975 15.0712V15.25C4.29975 15.5538 4.546 15.8 4.84975 15.8H5.94975C6.2535 15.8 6.49975 15.5538 6.49975 15.25V15.0715C6.74725 14.9977 6.98625 14.8985 7.21775 14.7738L7.34425 14.9003C7.559 15.115 7.90725 15.115 8.122 14.9003L8.89975 14.1225C9.1145 13.9078 9.1145 13.5595 8.89975 13.3448L8.77325 13.2183C8.898 12.9868 8.99725 12.7478 9.071 12.5003H9.25C9.55375 12.5003 9.8 12.254 9.8 11.9503V11.8003H11.8135C12.3613 11.0755 13.2215 10.6003 14.2 10.6003C14.666 10.6003 15.1018 10.7155 15.495 10.9053L16.7655 9.63475C16.9155 9.48475 16.9998 9.28125 16.9998 9.069V7.8C17 7.35825 16.6418 7 16.2 7ZM5.4 13.4C4.2955 13.4 3.4 12.5045 3.4 11.4C3.4 10.2955 4.2955 9.4 5.4 9.4C6.5045 9.4 7.4 10.2955 7.4 11.4C7.4 12.5045 6.5045 13.4 5.4 13.4ZM5.95 7H5V4.6H7.67225L8.701 7H5.95Z" />
+            </svg>
+          </span>
+          <span class="tabs__label">Tillage</span>
+        </button>
+        <button type="button" class="tabs__item waw-ai__tab waw-ai__tab--harvest" role="tab" aria-selected="false">
+          <span class="tabs__icon" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+              <path fill="currentColor" d="M2.28571 5.71429C2.28571 5.0831 1.77404 4.57143 1.14286 4.57143C0.511675 4.57143 0 5.0831 0 5.71429C0 5.86092 0.027617 6.00111 0.0779335 6.12993L0.754692 9.73931C1.36558 9.36114 2.08587 9.14286 2.85714 9.14286C5.06628 9.14286 6.85714 10.9337 6.85714 13.1429C6.85714 13.3369 6.84333 13.5277 6.81664 13.7143H9.18337C9.15667 13.5277 9.14286 13.3369 9.14286 13.1429C9.14286 10.9337 10.9337 9.14286 13.1429 9.14286C13.9141 9.14286 14.6344 9.36114 15.2453 9.73931L15.9221 6.12993C15.9724 6.00111 16 5.86092 16 5.71429C16 5.0831 15.4883 4.57143 14.8571 4.57143C14.226 4.57143 13.7143 5.0831 13.7143 5.71429H12.5714C12.5714 5.0831 12.0598 4.57143 11.4286 4.57143C10.7974 4.57143 10.2857 5.0831 10.2857 5.71429H9.14286C9.14286 5.0831 8.63118 4.57143 8 4.57143C7.36882 4.57143 6.85714 5.0831 6.85714 5.71429H5.71429C5.71429 5.0831 5.20261 4.57143 4.57143 4.57143C3.94025 4.57143 3.42857 5.0831 3.42857 5.71429H2.28571Z" />
+            </svg>
+          </span>
+          <span class="tabs__label">Harvest</span>
+        </button>
+      </div>
+
+      <div class="waw-ai__stack">
+        <section class="waw-ai__block" aria-labelledby="waw-sec-planting">
+          <h2 id="waw-sec-planting" class="waw-ai__section-title">Planting details</h2>
+          <div class="waw-ai__field-row waw-ai__field-row--date">
+            <div class="waw-ai__cell waw-ai__cell--date">
+              <label class="waw-ai__cell-label" for="waw-m">Month <abbr class="waw-ai__req" title="required">*</abbr></label>
+              <input id="waw-m" class="waw-ai__control" type="text" inputmode="numeric" placeholder="mm" maxlength="2" aria-required="true" />
+            </div>
+            <span class="waw-ai__slash" aria-hidden="true">/</span>
+            <div class="waw-ai__cell waw-ai__cell--date">
+              <label class="waw-ai__cell-label" for="waw-d">Day <abbr class="waw-ai__req" title="required">*</abbr></label>
+              <input id="waw-d" class="waw-ai__control" type="text" inputmode="numeric" placeholder="dd" maxlength="2" aria-required="true" />
+            </div>
+            <span class="waw-ai__slash" aria-hidden="true">/</span>
+            <div class="waw-ai__cell waw-ai__cell--year">
+              <label class="waw-ai__cell-label" for="waw-y">Year <abbr class="waw-ai__req" title="required">*</abbr></label>
+              <div class="waw-ai__year-cal">
+                <select id="waw-y" class="waw-ai__control waw-ai__control--select" aria-label="Year">
+                  <option>2026</option>
+                  <option>2025</option>
+                  <option>2024</option>
+                </select>
+                <button type="button" class="waw-ai__cal-btn" aria-label="Open calendar">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="2" />
+                    <path d="M3 10h18M8 3v4M16 3v4" stroke-linecap="round" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="waw-ai__block waw-ai__block--hybrid" aria-labelledby="waw-sec-hybrid">
+          <h2 id="waw-sec-hybrid" class="waw-ai__section-title">Hybrid details</h2>
+
+          <div class="waw-ai__field-row">
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-crop">Crop type <abbr class="waw-ai__req" title="required">*</abbr></label>
+              <select id="waw-crop" class="waw-ai__control waw-ai__control--select" required>
+                <option value="">Select…</option>
+                <option>Soybeans</option>
+                <option>Corn</option>
+              </select>
+            </div>
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-hybrid">Hybrid name</label>
+              <select id="waw-hybrid" class="waw-ai__control waw-ai__control--select">
+                <option value="">Select…</option>
+              </select>
+            </div>
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-rm">Relative maturity</label>
+              <input id="waw-rm" class="waw-ai__control" type="text" />
+            </div>
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-area">Area</label>
+              <div class="waw-ai__input-affix">
+                <input id="waw-area" class="waw-ai__input-affix-input" type="text" aria-label="Area" />
+                <span class="waw-ai__input-affix-unit">ac</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="waw-ai__field-row">
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-avg-rate">Average rate</label>
+              <div class="waw-ai__input-affix">
+                <input id="waw-avg-rate" class="waw-ai__input-affix-input" type="text" aria-label="Average rate" />
+                <span class="waw-ai__input-affix-unit">seeds/ac</span>
+              </div>
+            </div>
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-plan-rate">Planned rate</label>
+              <div class="waw-ai__input-affix">
+                <input id="waw-plan-rate" class="waw-ai__input-affix-input" type="text" aria-label="Planned rate" />
+                <span class="waw-ai__input-affix-unit">seeds/ac</span>
+              </div>
+            </div>
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-avg-spd">Average speed</label>
+              <div class="waw-ai__input-affix">
+                <input id="waw-avg-spd" class="waw-ai__input-affix-input" type="text" aria-label="Average speed" />
+                <span class="waw-ai__input-affix-unit">mi/hr</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="waw-ai__add">+ Add hybrid</button>
+
+          <p class="waw-ai__totals-hint" id="waw-totals-hint">Pre-filled from projected field data. Edit if needed.</p>
+          <div class="waw-ai__field-row" aria-describedby="waw-totals-hint">
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-total-applied">Total applied</label>
+              <div class="waw-ai__input-affix">
+                <input id="waw-total-applied" class="waw-ai__input-affix-input" type="text" name="totalApplied" value="67,743,268" inputmode="decimal" aria-label="Total applied seeds" />
+                <span class="waw-ai__input-affix-unit">seeds</span>
+              </div>
+            </div>
+            <div class="waw-ai__cell">
+              <label class="waw-ai__cell-label" for="waw-total-planned">Total planned</label>
+              <div class="waw-ai__input-affix">
+                <input id="waw-total-planned" class="waw-ai__input-affix-input" type="text" name="totalPlanned" value="70,233,411" inputmode="decimal" aria-label="Total planned seeds" />
+                <span class="waw-ai__input-affix-unit">seeds</span>
+              </div>
+            </div>
+            <div class="waw-ai__cell waw-ai__cell--wider">
+              <label class="waw-ai__cell-label" for="waw-total-area">Total area</label>
+              <div class="waw-ai__input-affix">
+                <input id="waw-total-area" class="waw-ai__input-affix-input" type="text" name="totalArea" value="463.6" inputmode="decimal" aria-label="Total area in acres" />
+                <span class="waw-ai__input-affix-unit">ac</span>
+              </div>
+            </div>
+          </div>
+          <p class="waw-ai__projection-source">Projection: <strong>0308-Broaddus Big Fld</strong> · Dawson | Chatham-Glenarm</p>
+        </section>
+
+        <section class="waw-ai__block" aria-labelledby="waw-sec-planter">
+          <h2 id="waw-sec-planter" class="waw-ai__section-title">Planter details</h2>
+          <p class="waw-ai__block-lede">Add one row per planter used on this pass. Skip if unknown; totals still use field projection.</p>
+          <div id="waw-planter-list" class="waw-ai__planter-list">
+            <article class="waw-ai__planter-card" data-planter-card>
+              <div class="waw-ai__planter-card-head">
+                <h3 class="waw-ai__planter-card-title">Planter 1</h3>
+              </div>
+              <div class="waw-ai__field-row">
+                <div class="waw-ai__cell">
+                  <label class="waw-ai__cell-label" for="waw-pm-0">Model</label>
+                  <input id="waw-pm-0" class="waw-ai__control" type="text" name="planters[0][model]" data-planter-field="model" />
+                </div>
+                <div class="waw-ai__cell">
+                  <label class="waw-ai__cell-label" for="waw-pb-0">Brand</label>
+                  <input id="waw-pb-0" class="waw-ai__control" type="text" name="planters[0][brand]" data-planter-field="brand" />
+                </div>
+                <div class="waw-ai__cell">
+                  <label class="waw-ai__cell-label" for="waw-rows-0">Row spacing</label>
+                  <select id="waw-rows-0" class="waw-ai__control waw-ai__control--select" name="planters[0][rowSpacing]" data-planter-field="rowSpacing">
+                    <option value="">Select…</option>
+                    <option>15 in</option>
+                    <option>20 in</option>
+                    <option>30 in</option>
+                  </select>
+                </div>
+                <div class="waw-ai__cell">
+                  <label class="waw-ai__cell-label" for="waw-df-0">Down force</label>
+                  <select id="waw-df-0" class="waw-ai__control waw-ai__control--select" name="planters[0][downForce]" data-planter-field="downForce">
+                    <option value="">Select…</option>
+                  </select>
+                </div>
+              </div>
+            </article>
+          </div>
+          <button type="button" class="waw-ai__add" id="waw-add-planter">+ Add planter</button>
+        </section>
+
+        <section class="waw-ai__block waw-ai__block--treatments" aria-labelledby="waw-sec-treatments">
+          <div class="waw-ai__section-head">
+            <h2 id="waw-sec-treatments" class="waw-ai__section-title">Treatments</h2>
+            <span class="waw-ai__optional-tag">Optional</span>
+          </div>
+          <p class="waw-ai__block-lede">Seed treatments, in-furrow products, or other chemistry applied with this planting.</p>
+          <div id="waw-treatment-list" class="waw-ai__treatment-list">
+            <article class="waw-ai__treatment-card" data-treatment-card>
+              <div class="waw-ai__treatment-card-head">
+                <h3 class="waw-ai__treatment-card-title">Treatment 1</h3>
+              </div>
+              <div class="waw-ai__field-row">
+                <div class="waw-ai__cell waw-ai__cell--grow">
+                  <label class="waw-ai__cell-label" for="waw-tr-prod-0">Product</label>
+                  <input id="waw-tr-prod-0" class="waw-ai__control" type="text" name="treatments[0][product]" data-treatment-field="product" placeholder="e.g. Poncho / Vibrance" />
+                </div>
+                <div class="waw-ai__cell">
+                  <label class="waw-ai__cell-label" for="waw-tr-type-0">Type</label>
+                  <select id="waw-tr-type-0" class="waw-ai__control waw-ai__control--select" name="treatments[0][type]" data-treatment-field="type">
+                    <option value="">Select…</option>
+                    <option>Seed treatment</option>
+                    <option>In-furrow</option>
+                    <option>Starter / pop-up</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="waw-ai__cell">
+                  <label class="waw-ai__cell-label" for="waw-tr-rate-0">Rate</label>
+                  <div class="waw-ai__input-affix">
+                    <input id="waw-tr-rate-0" class="waw-ai__input-affix-input" type="text" name="treatments[0][rate]" data-treatment-field="rate" aria-label="Treatment rate" />
+                    <span class="waw-ai__input-affix-unit">oz/cwt</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+          <button type="button" class="waw-ai__add" id="waw-add-treatment">+ Add treatment</button>
+        </section>
+
+        <section class="waw-ai__block" aria-labelledby="waw-sec-setup">
+          <h2 id="waw-sec-setup" class="waw-ai__section-title">Setup</h2>
+          <div class="waw-ai__field-row waw-ai__field-row--setup">
+            <div class="waw-ai__cell">
+              <span class="waw-ai__cell-label" id="waw-lbl-nh3">Planting on NH3 strips</span>
+              <div class="waw-ai__radio-pair" role="group" aria-labelledby="waw-lbl-nh3">
+                <label class="waw-ai__radio"><input type="radio" name="nh3" value="yes" /> Yes</label>
+                <label class="waw-ai__radio"><input type="radio" name="nh3" value="no" checked /> No</label>
+              </div>
+            </div>
+            <div class="waw-ai__cell">
+              <span class="waw-ai__cell-label" id="waw-lbl-hs">High speed</span>
+              <div class="waw-ai__radio-pair" role="group" aria-labelledby="waw-lbl-hs">
+                <label class="waw-ai__radio"><input type="radio" name="hs" value="yes" /> Yes</label>
+                <label class="waw-ai__radio"><input type="radio" name="hs" value="no" checked /> No</label>
+              </div>
+            </div>
+            <div class="waw-ai__cell">
+              <span class="waw-ai__cell-label" id="waw-lbl-amp">After market parts</span>
+              <div class="waw-ai__radio-pair" role="group" aria-labelledby="waw-lbl-amp">
+                <label class="waw-ai__radio"><input type="radio" name="amp" value="yes" /> Yes</label>
+                <label class="waw-ai__radio"><input type="radio" name="amp" value="no" checked /> No</label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="waw-ai__footer">
+        <button type="button" class="waw-ai__footer-cancel">Cancel</button>
+        <button type="button" class="btn" disabled>Save</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="waw-planter-card-template">
+    <article class="waw-ai__planter-card" data-planter-card>
+      <div class="waw-ai__planter-card-head">
+        <h3 class="waw-ai__planter-card-title">Planter</h3>
+        <button type="button" class="waw-ai__planter-remove">Remove planter</button>
+      </div>
+      <div class="waw-ai__field-row">
+        <div class="waw-ai__cell">
+          <span class="waw-ai__cell-label">Model</span>
+          <input class="waw-ai__control" type="text" data-planter-field="model" aria-label="Planter model" />
+        </div>
+        <div class="waw-ai__cell">
+          <span class="waw-ai__cell-label">Brand</span>
+          <input class="waw-ai__control" type="text" data-planter-field="brand" aria-label="Planter brand" />
+        </div>
+        <div class="waw-ai__cell">
+          <span class="waw-ai__cell-label">Row spacing</span>
+          <select class="waw-ai__control waw-ai__control--select" data-planter-field="rowSpacing" aria-label="Row spacing">
+            <option value="">Select…</option>
+            <option>15 in</option>
+            <option>20 in</option>
+            <option>30 in</option>
+          </select>
+        </div>
+        <div class="waw-ai__cell">
+          <span class="waw-ai__cell-label">Down force</span>
+          <select class="waw-ai__control waw-ai__control--select" data-planter-field="downForce" aria-label="Down force">
+            <option value="">Select…</option>
+          </select>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <template id="waw-treatment-card-template">
+    <article class="waw-ai__treatment-card" data-treatment-card>
+      <div class="waw-ai__treatment-card-head">
+        <h3 class="waw-ai__treatment-card-title">Treatment</h3>
+        <button type="button" class="waw-ai__treatment-remove">Remove treatment</button>
+      </div>
+      <div class="waw-ai__field-row">
+        <div class="waw-ai__cell waw-ai__cell--grow">
+          <span class="waw-ai__cell-label">Product</span>
+          <input class="waw-ai__control" type="text" data-treatment-field="product" aria-label="Treatment product" placeholder="e.g. Poncho / Vibrance" />
+        </div>
+        <div class="waw-ai__cell">
+          <span class="waw-ai__cell-label">Type</span>
+          <select class="waw-ai__control waw-ai__control--select" data-treatment-field="type" aria-label="Treatment type">
+            <option value="">Select…</option>
+            <option>Seed treatment</option>
+            <option>In-furrow</option>
+            <option>Starter / pop-up</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="waw-ai__cell">
+          <span class="waw-ai__cell-label">Rate</span>
+          <div class="waw-ai__input-affix">
+            <input class="waw-ai__input-affix-input" type="text" data-treatment-field="rate" aria-label="Treatment rate" />
+            <span class="waw-ai__input-affix-unit">oz/cwt</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    (function () {
+      function syncPlanterBlocks() {
+        var list = document.getElementById("waw-planter-list");
+        if (!list) return;
+        var cards = list.querySelectorAll("[data-planter-card]");
+        cards.forEach(function (card, i) {
+          var title = card.querySelector(".waw-ai__planter-card-title");
+          if (title) title.textContent = "Planter " + (i + 1);
+          var rm = card.querySelector(".waw-ai__planter-remove");
+          if (rm) rm.hidden = i === 0;
+          card.querySelectorAll("[data-planter-field]").forEach(function (el) {
+            var f = el.getAttribute("data-planter-field");
+            el.name = "planters[" + i + "][" + f + "]";
+          });
+        });
+      }
+
+      function syncTreatmentBlocks() {
+        var list = document.getElementById("waw-treatment-list");
+        if (!list) return;
+        var cards = list.querySelectorAll("[data-treatment-card]");
+        cards.forEach(function (card, i) {
+          var title = card.querySelector(".waw-ai__treatment-card-title");
+          if (title) title.textContent = "Treatment " + (i + 1);
+          var rm = card.querySelector(".waw-ai__treatment-remove");
+          if (rm) rm.hidden = i === 0;
+          card.querySelectorAll("[data-treatment-field]").forEach(function (el) {
+            var f = el.getAttribute("data-treatment-field");
+            el.name = "treatments[" + i + "][" + f + "]";
+          });
+        });
+      }
+
+      var addPlanter = document.getElementById("waw-add-planter");
+      var tplPlanter = document.getElementById("waw-planter-card-template");
+      var listPlanter = document.getElementById("waw-planter-list");
+      if (addPlanter && tplPlanter && listPlanter) {
+        addPlanter.addEventListener("click", function () {
+          listPlanter.appendChild(document.importNode(tplPlanter.content, true));
+          syncPlanterBlocks();
+        });
+        listPlanter.addEventListener("click", function (e) {
+          var t = e.target.closest(".waw-ai__planter-remove");
+          if (!t || t.hidden) return;
+          var card = t.closest("[data-planter-card]");
+          if (!card || listPlanter.querySelectorAll("[data-planter-card]").length <= 1) return;
+          card.remove();
+          syncPlanterBlocks();
+        });
+        syncPlanterBlocks();
+      }
+
+      var addTreatment = document.getElementById("waw-add-treatment");
+      var tplTreatment = document.getElementById("waw-treatment-card-template");
+      var listTreatment = document.getElementById("waw-treatment-list");
+      if (addTreatment && tplTreatment && listTreatment) {
+        addTreatment.addEventListener("click", function () {
+          listTreatment.appendChild(document.importNode(tplTreatment.content, true));
+          syncTreatmentBlocks();
+        });
+        listTreatment.addEventListener("click", function (e) {
+          var t = e.target.closest(".waw-ai__treatment-remove");
+          if (!t || t.hidden) return;
+          var card = t.closest("[data-treatment-card]");
+          if (!card || listTreatment.querySelectorAll("[data-treatment-card]").length <= 1) return;
+          card.remove();
+          syncTreatmentBlocks();
+        });
+        syncTreatmentBlocks();
+      }
+    })();
+  </script>
+</body>
+</html>
